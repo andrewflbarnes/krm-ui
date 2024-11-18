@@ -10,9 +10,9 @@ import kings, { leagues, type League } from "../config";
 
 export default function LeagueSelector() {
   const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);
-  const [{ config }, { setLeague }] = useKings()
+  const [k, { setLeague }] = useKings()
   const open = () => Boolean(anchorEl());
-  const handleClose = (league?: League) => {
+  const handleClose = () => (league?: League) => {
     if (league) {
       setLeague(league)
     }
@@ -32,7 +32,7 @@ export default function LeagueSelector() {
           setAnchorEl(event.currentTarget);
         }}
       >
-        {config().name}
+        {k.config().name}
       </Button>
       <Menu
         id="league-selector-menu"
@@ -42,7 +42,7 @@ export default function LeagueSelector() {
         MenuListProps={{ "aria-labelledby": "league-selector-button" }}
       >
         <For each={leagues}>{(league) => {
-          return <MenuItem onClick={[handleClose, league]}>{kings[league].name}</MenuItem>
+          return <MenuItem onClick={[handleClose(), league]}>{kings[league].name}</MenuItem>
         }}
         </For>
       </Menu>

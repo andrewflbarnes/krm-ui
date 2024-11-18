@@ -15,7 +15,11 @@ type LeagueData = {
   }
 }
 async function getLeagueData(url: string): Promise<LeagueData> {
-  const response = await fetch(url)
+  const response = await fetch(url, {
+    headers: {
+      "cache-control": "stale-while-revalidate",
+    }
+  })
   const text = await response.text()
   const data = text.split('\n').map(row => row.split(','))
   return data.reduce((acc, row) => {

@@ -4,7 +4,7 @@ import {
   Link,
   Typography,
 } from "@suid/material";
-import { createEffect, For } from "solid-js";
+import { createEffect, For, Show } from "solid-js";
 import LeagueResults from "../components/LeagueResults";
 import { Suspense } from "solid-js";
 import { createQuery } from "@tanstack/solid-query";
@@ -15,7 +15,7 @@ import { divisions } from "../config";
 
 export default function ResultsView() {
   const [{ config, key: league }] = useKings()
-  createEffect(() => useBreadcrumberUpdate(league()))
+  //createEffect(() => useBreadcrumberUpdate(league()))
   const getLeagueData = async () => {
     const url = config().tracker
     if (!url) {
@@ -41,6 +41,7 @@ export default function ResultsView() {
             divisionResult.push(tr)
           })
         })
+        divisionResult.sort((a, b) => b.total - a.total)
         return {
           name: division,
           results: divisionResult,
@@ -63,23 +64,42 @@ export default function ResultsView() {
         flexDirection: "column",
         gap: "3rem",
         position: "relative",
+        height: "100%",
+        width: "100%",
       }}>
         <Link sx={{ position: "absolute", right: 0 }} target="_blank" rel="noopener" href={`https://www.kingsski.club/${league().toLowerCase()}`}>
           <OpenInNew fontSize="small" />
         </Link>
         <Suspense fallback={<div>Loading...</div>}>
-          <For each={divisionResults()}>{(division) => {
-            return (
-              <div>
-                <Typography mb="1rem" textAlign="center" variant="h4">
-                  {division.name}
-                </Typography>
-                <LeagueResults results={division.results} />
-              </div>
-            )
-          }}</For>
+          <Show when={divisionResults()?.length > 0} fallback={<NoResults />}>
+            <For each={divisionResults()}>{(division) => {
+              return (
+                <div>
+                  <Typography mb="1rem" textAlign="center" variant="h4">
+                    {division.name}
+                  </Typography>
+                  <LeagueResults results={division.results} />
+                </div>
+              )
+            }}</For>
+          </Show>
         </Suspense>
       </Box>
     </>
+  )
+}
+
+function NoResults() {
+  return (
+    <Box sx={{
+      display: "grid",
+      placeItems: "center",
+      height: "100%",
+      width: "100%",
+    }}>
+      <Typography>
+        No results found
+      </Typography>
+    </Box>
   )
 }

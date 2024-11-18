@@ -1,22 +1,26 @@
-import { A } from "@solidjs/router";
+import { A, useLocation } from "@solidjs/router";
 import {
   AppBar,
   Box,
   Toolbar,
   Typography,
 } from "@suid/material";
-import { ParentProps } from "solid-js";
+import { createMemo, ParentProps } from "solid-js";
 import KrmBreadcrumbs from "./Breadcrumbs";
 import LeagueSelector from "./LeagueSelector";
 
 function Link(props: ParentProps<{ href: string }>) {
+  const location = useLocation()
+  const search = createMemo(() => {
+    return location.search
+  })
   return (
     <A
       style={{
         color: "inherit",
         "text-decoration": "inherit",
       }}
-      href={props.href}
+      href={props.href + search()}
     >
       <Typography>
         {props.children}
