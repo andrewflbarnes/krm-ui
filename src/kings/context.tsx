@@ -1,6 +1,7 @@
 import { useSearchParams } from "@solidjs/router";
 import { batch, createContext, createSignal, ParentProps, useContext } from "solid-js"
-import kings, { leagues, type League } from "../config"
+import { leagues, type League } from "./config"
+import kings from "./config"
 
 const makeContext = (league: League) => {
   const [key, setKey] = createSignal(league);

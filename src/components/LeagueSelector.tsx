@@ -4,9 +4,9 @@ import {
   MenuItem,
 
 } from "@suid/material";
-import { createEffect, createSignal, For } from "solid-js";
-import { useKings } from "../hooks/kings";
-import kings, { leagues, type League } from "../config";
+import { createSignal, For } from "solid-js";
+import { useKings } from "../kings";
+import kings, { leagues, type League } from "../kings";
 
 export default function LeagueSelector() {
   const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);

@@ -1,6 +1,6 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { BreadcrumberProvider } from "./hooks/breadcrumb";
-import { KingsProvider } from "./hooks/kings";
+import { KingsProvider } from "./kings";
 import { Route, Router } from "@solidjs/router";
 import Home from "./pages/Home";
 import RaceManager from "./pages/RaceManager";

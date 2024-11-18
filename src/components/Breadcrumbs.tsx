@@ -29,9 +29,9 @@ export default function KrmBreadcrumbs() {
       <For each={breadcrumbs()}>{({ crumb, href, current }, i) => (
         <>
           <Show when={i() === 0}>
-            &nbsp;
+            &ZeroWidthSpace;
           </Show>
-          <Show when={!current} fallback={<Typography>{crumb}</Typography>}>
+          <Show when={!current} fallback={<Typography mr="8px">{crumb}</Typography>}>
             <Link href={href}>
               {crumb}
             </Link>

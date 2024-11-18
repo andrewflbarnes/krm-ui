@@ -4,33 +4,38 @@ import {
   Link,
   Typography,
 } from "@suid/material";
-import { createEffect, For, Show } from "solid-js";
+import { For, Show } from "solid-js";
 import LeagueResults from "../components/LeagueResults";
 import { Suspense } from "solid-js";
 import { createQuery } from "@tanstack/solid-query";
 import { OpenInNew } from "@suid/icons-material";
-import { useBreadcrumberUpdate } from "../hooks/breadcrumb";
-import { useKings } from "../hooks/kings";
-import { divisions } from "../config";
+import { orderResults } from "../kings/utils";
+import { divisions, Result, useKings } from "../kings";
+
+const immediateError = (message: string) => {
+  const error = new Error(message);
+  error.name = "ImmediateError";
+  return error;
+}
 
 export default function ResultsView() {
   const [{ config, key: league }] = useKings()
-  //createEffect(() => useBreadcrumberUpdate(league()))
   const getLeagueData = async () => {
     const url = config().tracker
     if (!url) {
-      return []
+      throw immediateError("No tracker URL found")
     }
     const leagueData = await tracker.getLeagueData(url)
     if (!leagueData) {
-      return []
+      throw immediateError("No data found")
     }
+    // TODO move this to a memo or similar
     return divisions
       .map(division => {
         const divisionResult = []
         Object.values(leagueData).forEach(club => {
           Object.entries(club.teams[division] ?? {}).forEach(([name, { results }]) => {
-            const tr = {
+            const tr: Result = {
               name,
               r1: results[0]?.[1],
               r2: results[1]?.[1],
@@ -41,7 +46,7 @@ export default function ResultsView() {
             divisionResult.push(tr)
           })
         })
-        divisionResult.sort((a, b) => b.total - a.total)
+        divisionResult.sort(orderResults)
         return {
           name: division,
           results: divisionResult,
@@ -53,6 +58,7 @@ export default function ResultsView() {
     queryKey: [league()],
     queryFn: getLeagueData,
     staleTime: 1000 * 60 * 5,
+    retry: (_, e) => e.name === "ImmediateError" ? false : 3,
   }))
 
   const divisionResults = () => query.data
@@ -71,6 +77,11 @@ export default function ResultsView() {
           <OpenInNew fontSize="small" />
         </Link>
         <Suspense fallback={<div>Loading...</div>}>
+          <Show when={query.error}>
+            <Typography variant="h3">
+              {query.error.message}
+            </Typography>
+          </Show>
           <Show when={divisionResults()?.length > 0} fallback={<NoResults />}>
             <For each={divisionResults()}>{(division) => {
               return (

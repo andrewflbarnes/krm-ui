@@ -1,16 +1,8 @@
 import { Box } from "@suid/material";
-import { createEffect, createSignal } from "solid-js";
+import { useKings } from "../kings";
 
-type PortalProps = {
-  league?: string;
-}
-
-export default function Portal({ league = "western" }: PortalProps) {
-  const [ref, setRef] = createSignal<HTMLIFrameElement>();
-
-  createEffect(() => {
-    ref().contentWindow.document.getElementById("header").remove();
-    })
+export default function Portal() {
+  const [{ key: league }] = useKings()
 
   return (
     <Box sx={{
@@ -20,7 +12,7 @@ export default function Portal({ league = "western" }: PortalProps) {
       margin: "-1rem",
       border: 0,
     }}>
-      <iframe ref={setRef} style={{ height: "100%" }} src={`https://www.kingsski.club/${league}`} title={`Kings Ski Club ${league} results`} />
+      <iframe style={{ height: "100%" }} src={`https://www.kingsski.club/${league()}`} title={`Kings Ski Club ${league()} results`} />
     </Box>
   )
 }
