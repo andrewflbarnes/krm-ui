@@ -6,3 +6,16 @@ export type Result = {
   r4?: number;
   total?: number;
 }
+
+export type LeagueData = {
+  [club: string]: {
+    teams: {
+      [division: string]: {
+        [team: string]: {
+          results: [number, number][]
+          total: number,
+        }
+      }
+    }
+  }
+}

@@ -8,7 +8,7 @@ export default function Home() {
       width: "100%",
       "place-items": "center",
     }}>
-      <Typography variant="h1">[ K ]</Typography>
+      <Typography variant="h1"><strong>[ K ]</strong></Typography>
     </div>
   )
 }

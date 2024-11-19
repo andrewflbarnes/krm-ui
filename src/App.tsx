@@ -7,7 +7,7 @@ import RaceManager from "./pages/RaceManager";
 import RaceManagerRoot from "./pages/RaceManagerRoot";
 import RaceManagerRound from "./pages/RaceManagerRound";
 import LeagueManager from "./pages/LeagueManager";
-import ResultsView from "./pages/ResultsView";
+import Tracker from "./pages/Tracker";
 import Portal from "./pages/Portal";
 import Status404 from "./pages/Status404";
 import AppLayout from "./AppLayout";
@@ -28,7 +28,7 @@ export default function App() {
           <Route path="/:round" component={RaceManagerRound} info={{ breadcrumb: "Round" }} />
         </Route>
         <Route path="/league" component={LeagueManager} info={{ breadcrumb: "League" }} />
-        <Route path="/results" component={ResultsView} info={{ breadcrumb: "Results" }} />
+        <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
         <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
         <Route path="*404" component={Status404} info={{ breadcrumb: "OOPS!" }} />
       </Router>

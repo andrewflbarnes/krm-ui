@@ -2,7 +2,7 @@ import { Box } from "@suid/material";
 import { useKings } from "../kings";
 
 export default function Portal() {
-  const [{ key: league }] = useKings()
+  const [{ league }] = useKings()
 
   return (
     <Box sx={{

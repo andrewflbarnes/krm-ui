@@ -52,9 +52,9 @@ export default function KrmAppBar() {
               "flex-direction": "row",
               "justify-content": "center"
             }}>
-              <Box sx={{ flexBasis: 0, flexGrow: 1, display: "flex", flex: "row", alignItems: "center" }}>
+              <Box sx={{ flexBasis: 0, flexGrow: 1, gap: "1em", display: "flex", flex: "row", alignItems: "center" }}>
                 <Link href="/">
-                  {'[ K ]'}
+                  <strong>[ K ]</strong>
                 </Link>
                 <LeagueSelector />
               </Box>
@@ -70,14 +70,14 @@ export default function KrmAppBar() {
                 justifyContent: "flex-end",
                 alignItems: "center",
               }}>
-                <Link href="/results">
-                  Results
-                </Link>
                 <Link href="/race">
                   Race
                 </Link>
                 <Link href="/league">
                   League
+                </Link>
+                <Link href="/tracker">
+                  Tracker
                 </Link>
                 <Link href="/portal">
                   Portal

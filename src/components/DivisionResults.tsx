@@ -19,13 +19,13 @@ type LeagueProps = {
     total?: number;
   }[]
 }
-export default function LeagueResults({ results }: LeagueProps) {
+export default function DivisionResults({ results }: LeagueProps) {
   return (
     <TableContainer component={Paper}>
       <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
         <TableHead>
           <TableRow>
-            <TableCell>Team</TableCell>
+            <TableCell sx={{ width: 200 }}>Team</TableCell>
             <TableCell align="right">Round 1</TableCell>
             <TableCell align="right">Round 2</TableCell>
             <TableCell align="right">Round 3</TableCell>
