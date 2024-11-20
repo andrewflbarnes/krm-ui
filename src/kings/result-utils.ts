@@ -1,5 +1,5 @@
 import { divisions } from "./config"
-import { LeagueData, Result } from "./types"
+import { DivisionResults, LeagueData, Result } from "./types"
 
 export function orderResults(a: Result, b: Result): number {
   const tot = b.total - a.total
@@ -25,16 +25,14 @@ export function orderResults(a: Result, b: Result): number {
   return -1
 }
 
-export type DivisionResults = {
-  [division: string]: Result[]
-}
 export function parseResults(leagueData: LeagueData): DivisionResults {
   return divisions
     .reduce((acc, division) => {
       const divisionResult = []
-      Object.values(leagueData).forEach(club => {
+      Object.entries(leagueData).forEach(([clubName, club]) => {
         Object.entries(club.teams[division] ?? {}).forEach(([name, { results }]) => {
           const tr: Result = {
+            club: clubName,
             name,
             r1: results[0]?.[1],
             r2: results[1]?.[1],

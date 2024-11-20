@@ -38,7 +38,7 @@ export default function LeagueSelector() {
         id="league-selector-menu"
         anchorEl={anchorEl()}
         open={open()}
-        onClose={handleClose}
+        onClose={handleClose()}
         MenuListProps={{ "aria-labelledby": "league-selector-button" }}
       >
         <For each={leagues}>{(league) => {

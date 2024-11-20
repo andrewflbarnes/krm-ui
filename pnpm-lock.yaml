@@ -13,6 +13,9 @@ dependencies:
   solid-js:
     specifier: ^1.9.3
     version: 1.9.3
+  solid-toast:
+    specifier: ^0.5.0
+    version: 0.5.0(solid-js@1.9.3)
 
 devDependencies:
   '@suid/vite-plugin':
@@ -995,6 +998,14 @@ packages:
     transitivePeerDependencies:
       - supports-color
     dev: true
+
+  /solid-toast@0.5.0(solid-js@1.9.3):
+    resolution: {integrity: sha512-t770JakjyS2P9b8Qa1zMLOD51KYKWXbTAyJePVUoYex5c5FH5S/HtUBUbZAWFcqRCKmAE8KhyIiCvDZA8bOnxQ==}
+    peerDependencies:
+      solid-js: ^1.5.4
+    dependencies:
+      solid-js: 1.9.3
+    dev: false
 
   /source-map-js@1.2.1:
     resolution: {integrity: sha512-UXWMKhLOwVKb728IUtQPXxfYU+usdybtUrK/8uGE8CQMvrhOpwvzDBwj0QhSL7MQc7vIsISBG8VQ8+IDQxpfQA==}

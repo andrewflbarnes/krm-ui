@@ -1,9 +1,15 @@
 import { Box, Button, ButtonGroup, Typography } from "@suid/material"
 import { createSignal, For } from "solid-js"
-import { DivisionResults as Results } from "../kings/utils"
+import { Result, DivisionResults as Results } from "../kings"
 import DivisionResults from "./DivisionResults"
 
-export default function DivisionResultsAll(props: { results: Results, editable: boolean }) {
+type Props = {
+  results: Results;
+  editable?: boolean;
+  onEdit?: (division: string, row: Result) => void;
+}
+
+export default function DivisionResultsAll(props: Props) {
   const [division, setDivision] = createSignal("All")
   const results = () => Object.entries(props.results).filter(([div]) => div === division() || division() === "All")
   return (
@@ -18,12 +24,13 @@ export default function DivisionResultsAll(props: { results: Results, editable: 
       </ButtonGroup>
       </Box>
       <For each={results()}>{([division, divisionResults]) => {
+        const handleEdit = (row: Result) => props.onEdit?.(division, row)
         return (
           <Box sx={{ display: "flex", flexDirection: "column" }}>
             <Typography mb="1rem" textAlign="center" variant="h4">
               {division}
             </Typography>
-            <DivisionResults results={divisionResults} />
+            <DivisionResults results={divisionResults} editable={props.editable} onEdit={handleEdit} />
           </Box >
         )
       }}</For>

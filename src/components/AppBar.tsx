@@ -73,8 +73,8 @@ export default function KrmAppBar() {
                 <Link href="/race">
                   Race
                 </Link>
-                <Link href="/league">
-                  League
+                <Link href="/config">
+                  Config
                 </Link>
                 <Link href="/tracker">
                   Tracker

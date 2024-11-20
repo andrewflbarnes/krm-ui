@@ -1,6 +1,7 @@
 import tracker from "../api/tracker";
 import {
   Box,
+  LinearProgress,
   Link,
   Typography,
 } from "@suid/material";
@@ -52,10 +53,10 @@ export default function Tracker() {
         height: "100%",
         width: "100%",
       }}>
-        <Link sx={{ position: "absolute", right: 0 }} target="_blank" rel="noopener" href={`https://www.kingsski.club/${league().toLowerCase()}`}>
-          <OpenInNew fontSize="small" />
-        </Link>
-        <Suspense fallback={<div>Loading...</div>}>
+        <Suspense fallback={<Loading />}>
+          <Link sx={{ position: "absolute", right: 0 }} target="_blank" rel="noopener" href={`https://www.kingsski.club/${league().toLowerCase()}`}>
+            <OpenInNew fontSize="small" />
+          </Link>
           <Switch fallback={<NoResults />}>
             <Match when={query.error}>
               <NoResults>{query.error.message}</NoResults>
@@ -67,6 +68,14 @@ export default function Tracker() {
         </Suspense>
       </Box>
     </>
+  )
+}
+
+function Loading() {
+  return (
+    <Box sx={{ width: "100%" }}>
+      <LinearProgress />
+    </Box>
   )
 }
 
