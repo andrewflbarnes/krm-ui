@@ -11,7 +11,6 @@ export default function RaceManager(props: ParentProps<{}>) {
     navigate(path, { resolve: true })
   }
 
-createEffect(() => console.log(sub()))
   function NavigationListItem(props: ParentProps<{ path: string }>) {
     return (
       <ListItemButton selected={sub() == props.path} onClick={[goto, props.path]} >

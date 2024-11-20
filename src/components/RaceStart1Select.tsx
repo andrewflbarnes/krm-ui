@@ -1,5 +1,5 @@
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, Select, MenuItem } from "@suid/material"
-import { For } from "solid-js"
+import { For, Show } from "solid-js"
 import { createStore } from "solid-js/store"
 import { useKings } from "../kings"
 
@@ -15,6 +15,20 @@ export type ClubTeamNumbers = {
 
 export default function RaceStart1Select(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
   const [k] = useKings()
+  return (
+    <Show when={k.leagueConfig()} fallback={"TODO no race config for selected league"}>
+      <TeamSelector onUpdate={props.onUpdate} />
+    </Show>
+  )
+}
+
+function TeamSelector(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
+  const [k] = useKings()
+  if (!k.leagueConfig()) {
+    return (
+      "TODO no race config for selected league"
+    )
+  }
   const [numTeams, setNumTeams] = createStore(Object.keys(k.leagueConfig()).reduce((acc, club) => {
     acc[club] = {
       mixed: 0,
@@ -26,7 +40,7 @@ export default function RaceStart1Select(props: { onUpdate: (data: ClubTeamNumbe
 
   const updateTeams = (club: string, division: "mixed" | "ladies" | "board", num: number) => {
     setNumTeams(club, division, num)
-    props.onUpdate(numTeams)
+    props.onUpdate({ ...numTeams })
   }
 
   const total = () => Object.values(numTeams).reduce((acc, club) => {

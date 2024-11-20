@@ -12,8 +12,8 @@ export default function LeagueSelector() {
   const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);
   const [k, { setLeague }] = useKings()
   const open = () => Boolean(anchorEl());
-  const handleClose = () => (league?: League) => {
-    if (league) {
+  const handleClose = (league?: League) => () => {
+    if (league && !k.lock()) {
       setLeague(league)
     }
     setAnchorEl(null);
@@ -28,6 +28,7 @@ export default function LeagueSelector() {
         aria-controls={open() ? "league-selector-menu" : undefined}
         aria-haspopup="true"
         aria-expanded={open() ? "true" : undefined}
+        disabled={k.lock()}
         onClick={(event) => {
           setAnchorEl(event.currentTarget);
         }}
@@ -38,11 +39,11 @@ export default function LeagueSelector() {
         id="league-selector-menu"
         anchorEl={anchorEl()}
         open={open()}
-        onClose={handleClose()}
+        onClose={handleClose(null)}
         MenuListProps={{ "aria-labelledby": "league-selector-button" }}
       >
         <For each={leagues}>{(league) => {
-          return <MenuItem onClick={[handleClose(), league]}>{kings[league].name}</MenuItem>
+          return <MenuItem onClick={handleClose(league)}>{kings[league].name}</MenuItem>
         }}
         </For>
       </Menu>
