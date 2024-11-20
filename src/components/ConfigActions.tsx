@@ -1,4 +1,4 @@
-import { Alert, Box, Button } from "@suid/material";
+import { Alert, Box, Button, TextField } from "@suid/material";
 import { useKings } from "../kings";
 import tracker from "../api/tracker"
 import { Delete } from "@suid/icons-material";
@@ -46,9 +46,6 @@ export default function ConfigActions() {
     alert("todo")
   }
 
-  const saveConfig = () => {
-    alert("todo")
-  }
   return (
     <Box
       sx={{
@@ -62,14 +59,15 @@ export default function ConfigActions() {
         }
       }}
     >
-      <Button variant="outlined" disabled={!hasConfig()} onClick={saveConfig}>
-        Save config
-      </Button>
       <Button variant="outlined" disabled={!canUpsert()} onClick={upsertConfig}>
         {hasConfig() ? "Update" : "Load"} config
       </Button>
       <Button disabled={!hasConfig()} color="error" variant="outlined" startIcon={<Delete />} onClick={clearConfig}>
         Clear config
+      </Button>
+      <TextField defaultValue={"Tracking URL not configured"} disabled={true} error={!k.config().tracker} multiline label="Tracking URL" value={k.config().tracker} />
+      <Button variant="outlined" onClick={() => alert("TODO")}>
+        Update Tracking URL
       </Button>
     </Box>
   )

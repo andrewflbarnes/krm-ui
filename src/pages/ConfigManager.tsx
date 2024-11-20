@@ -5,7 +5,7 @@ import ConfigClubs from "../components/ConfigClubs";
 import { createSignal, Show } from "solid-js";
 import { Construction, Settings } from "@suid/icons-material";
 
-export default function LeagueManager() {
+export default function ConfigManager() {
   const [k] = useKings()
   const [actionsOpen, setActionsOpen] = createSignal(false)
   const handleClose = () => {
@@ -19,7 +19,7 @@ export default function LeagueManager() {
         <Settings fontSize="small" />
       </IconButton>
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
-        <Card>
+        <Card sx={{ width: "50%" }}>
           <CardContent>
             <ConfigActions />
           </CardContent>

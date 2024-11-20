@@ -1,4 +1,4 @@
-import { Typography } from "@suid/material";
+import { Box, Typography } from "@suid/material";
 
 export default function Home() {
   return (
@@ -8,7 +8,10 @@ export default function Home() {
       width: "100%",
       "place-items": "center",
     }}>
-      <Typography variant="h1"><strong>[ K ]</strong></Typography>
-    </div>
+      <Box>
+        <Typography align="center" variant="h1"><strong>[ K ]</strong></Typography>
+        <Typography align="center">Welcome to the Kings Race Manager</Typography>
+      </Box>
+    </div >
   )
 }
