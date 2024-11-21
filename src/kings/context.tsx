@@ -60,7 +60,8 @@ export function KingsProvider(props: ParentProps<{}>) {
   // TODO rather than defaulting show error message to user
   const ctxLeague = ctx[0].league()
   if (ctxLeague != l) {
-    history.replaceState({}, "", "?" + qps.toString())
+    const qpstr = qps.toString()
+    history.replaceState({}, "", qpstr.length ? "?" + qps.toString() : "")
   }
 
   return (
