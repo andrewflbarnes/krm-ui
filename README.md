@@ -27,7 +27,7 @@ pnpm serve
 These list are intended to be terse but describe what complete looks like.
 Lists are in a rough order of priority.
 
-[Tech](./docs/TODO_TECH.md)
+[Tech](./docs/TODO_TECH.md)  
 [Features](./docs/TODO_FEATURES.md)
 
 ## Notes
