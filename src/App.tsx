@@ -23,7 +23,7 @@ export default function App() {
       height: "100vh",
       width: "100vw",
     }}>
-      <Router root={HydratedAppLayout}>
+      <Router base="/krm-ui" root={HydratedAppLayout}>
         <Route path="/" component={Home} />
         <Route path="/race" component={RaceManager} info={{ breadcrumb: "Race" }}>
           <Route path="/"/>
