@@ -1,4 +1,4 @@
-import { Alert, Box, Button, Stack } from "@suid/material"
+import { Box, Button, Stack } from "@suid/material"
 import { createEffect, createMemo, createSignal, on, onCleanup, Show } from "solid-js"
 import RaceStart1Select, { ClubTeamNumbers } from "../components/RaceStart1Select"
 import RaceStart2UpdateTeams from "../components/RaceStart2UpdateTeams"
@@ -47,6 +47,7 @@ export default function RaceManagerStart() {
           board: 0,
         })
         const lowDivisions = Object.entries(divisionCounts)
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .filter(([_, count]) => count < 4)
           .map(([division]) => division)
         return [lowDivisions.length == 0, "Divisions must have at least 4 teams: " + lowDivisions.join(", ")]

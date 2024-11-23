@@ -24,11 +24,16 @@ export default function RaceStart1Select(props: { onUpdate: (data: ClubTeamNumbe
 
 function TeamSelector(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
   const [k] = useKings()
-  if (!k.leagueConfig()) {
-    return (
-      "TODO no race config for selected league"
-    )
-  }
+
+  return (
+    <Show when={k.leagueConfig()} fallback={"TODO no race config for selected league"}>
+      <TeamSelectorTable onUpdate={props.onUpdate} />
+    </Show>
+  )
+}
+
+function TeamSelectorTable(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
+  const [k] = useKings()
   const [numTeams, setNumTeams] = createStore(Object.keys(k.leagueConfig()).reduce((acc, club) => {
     acc[club] = {
       mixed: 0,

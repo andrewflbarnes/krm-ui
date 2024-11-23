@@ -3,7 +3,7 @@ import AppBar from "./components/AppBar"
 import { Toaster } from "solid-toast"
 import { Paper } from "@suid/material"
 
-export default function AppLayout(props: ParentProps<{}>) {
+export default function AppLayout(props: ParentProps) {
   return (
     <Paper style={{
       height: "100%",

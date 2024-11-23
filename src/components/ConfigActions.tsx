@@ -1,7 +1,6 @@
-import { Alert, Box, Button, Stack, TextField } from "@suid/material";
+import { Box, Button, Stack, TextField } from "@suid/material";
 import { useKings } from "../kings";
 import tracker from "../api/tracker"
-import { Delete } from "@suid/icons-material";
 import notification from "../hooks/notification";
 import ModalConfirmAction from "./ModalConfirmAction";
 import { createSignal, Show } from "solid-js";

@@ -19,7 +19,7 @@ const BreadcrumberContext = createContext<BreadcrumberContextValue>([{
   override: () => { },
 }])
 
-export function BreadcrumberProvider(props: ParentProps<{}>) {
+export function BreadcrumberProvider(props: ParentProps) {
   const [state, setState] = createStore<BreadcrumberContextState>({
     overrides: {},
   })

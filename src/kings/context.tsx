@@ -53,7 +53,7 @@ const makeContext = (initLeague?: League) => {
 
 const KingsContext = createContext(makeContext())
 
-export function KingsProvider(props: ParentProps<{}>) {
+export function KingsProvider(props: ParentProps) {
   const qps = new URLSearchParams(window.location.search)
   const l = qps.get("league")?.toLowerCase() as League | undefined
   const ctx = makeContext(l)

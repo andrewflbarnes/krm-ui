@@ -1,9 +1,8 @@
 import { useNavigate } from "@solidjs/router";
 import { Box, List, ListItemButton, ListItemText, Paper } from "@suid/material";
-import { createEffect } from "solid-js";
 import { createSignal, ParentProps, Show } from "solid-js";
 
-export default function RaceManager(props: ParentProps<{}>) {
+export default function RaceManager(props: ParentProps) {
   const navigate = useNavigate()
   const [sub, setSub] = createSignal()
   const goto = (path: string) => {

@@ -79,7 +79,7 @@ function Loading() {
   )
 }
 
-function NoResults(props: ParentProps<{}>) {
+function NoResults(props: ParentProps) {
   return (
     <Box sx={{
       display: "grid",

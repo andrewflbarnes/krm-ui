@@ -40,7 +40,7 @@ export default function App() {
   )
 }
 
-function HydratedAppLayout(props: ParentProps<{}>) {
+function HydratedAppLayout(props: ParentProps) {
   const theme = createCustomTheme()
   return (
     <QueryClientProvider client={queryClient}>

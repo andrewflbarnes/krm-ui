@@ -1,5 +1,5 @@
 import { Box, Button, Card, CardActions, CardContent, Chip, TextField, Typography } from "@suid/material";
-import { createSignal, For } from "solid-js";
+import { untrack, createSignal, For } from "solid-js";
 import { Result } from "../kings";
 
 export type ToEdit = {
@@ -8,7 +8,7 @@ export type ToEdit = {
 }
 
 export default function ConfigEditTeam(props: { edit: ToEdit, onDiscard: () => void, onConfirm: () => void }) {
-  const [updated, setUpdate] = createSignal<Result>({ ...props.edit.row })
+  const [updated, setUpdate] = createSignal<Result>({ ...untrack(() => props.edit.row) })
   return (
     <Card sx={{ width: "20em" }}>
       <CardContent>

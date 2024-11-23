@@ -10,7 +10,7 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
   const [club, setClub] = createSignal<string>()
   const [edit, setEdit] = createSignal<ToEdit>()
 
-  const clubs = Object.keys(props.data).sort((a, b) => a.localeCompare(b))
+  const clubs = () => Object.keys(props.data).sort((a, b) => a.localeCompare(b))
   const clubData = () => parseResults(club() == "all" ? props.data : { [club()]: props.data[club()] })
   const handleEdit = (division: string, row: Result) => {
     setEdit({ division, row })
@@ -60,7 +60,7 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
               <ListItemText primary={"All"} />
             </ListItemButton>
           </ListItem>
-          <For each={clubs}>{(c) => (
+          <For each={clubs()}>{(c) => (
             <ListItem disablePadding>
               <ListItemButton selected={club() == c} onClick={[setClub, c]}>
                 <ListItemText primary={c} />
