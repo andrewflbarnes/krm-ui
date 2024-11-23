@@ -36,14 +36,14 @@ jobs:
           corepack enable
           pnpm install
           pnpm build
-          cp dist/index.html dist/404.html
+          cp dist/krm-ui/index.html dist/krm-ui/404.html
       - name: Setup Pages
         uses: actions/configure-pages@v5
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:
           # Upload entire repository
-          path: 'dist'
+          path: 'dist/krm-ui'
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
