@@ -1,8 +1,8 @@
-import { ParentProps } from "solid-js";
+import { ParentProps, Show } from "solid-js";
 import { A, useLocation } from "@solidjs/router";
 import { Box, Typography } from "@suid/material";
 
-export default function Link(props: ParentProps<{ start?: boolean, href: string }>) {
+export default function Link(props: ParentProps<{ start?: boolean, href: string, title?: string }>) {
   const location = useLocation()
   return (
     <Box>
@@ -13,9 +13,12 @@ export default function Link(props: ParentProps<{ start?: boolean, href: string 
         }}
         href={props.href + location.search}
       >
-        <Typography>
+        <Show when={props.title} fallback={props.children}>
+          <Typography>
+            {props.title}
+          </Typography>
           {props.children}
-        </Typography>
+        </Show>
       </A>
     </Box>
   )

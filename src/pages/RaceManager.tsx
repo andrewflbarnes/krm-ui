@@ -1,23 +1,9 @@
-import { useNavigate } from "@solidjs/router";
+import { useLocation } from "@solidjs/router";
 import { Box, List, ListItemButton, ListItemText, Paper } from "@suid/material";
-import { createSignal, ParentProps, Show } from "solid-js";
+import { ParentProps } from "solid-js";
+import Link from "../components/Link";
 
 export default function RaceManager(props: ParentProps) {
-  const navigate = useNavigate()
-  const [sub, setSub] = createSignal()
-  const goto = (path: string) => {
-    setSub(path)
-    navigate(path, { resolve: true })
-  }
-
-  function NavigationListItem(props: ParentProps<{ path: string }>) {
-    return (
-      <ListItemButton selected={sub() == props.path} onClick={[goto, props.path]} >
-        <ListItemText primary={props.children} />
-      </ListItemButton>
-    )
-  }
-
   return (
     <Box sx={{
       display: "flex",
@@ -32,11 +18,25 @@ export default function RaceManager(props: ParentProps) {
           <NavigationListItem path="configure">Configure</NavigationListItem>
         </List>
       </Paper>
-      <Show when={sub()}>
-        <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
-          {props.children}
-        </Paper>
-      </Show>
+      <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
+        {props.children}
+      </Paper>
     </Box>
+  )
+}
+
+function NavigationListItem(props: ParentProps<{ path: string }>) {
+  // This feels hacky and useMatch doesn't support regex/wildcard
+  // Consider uses a more traditional nav approach
+  const location = useLocation()
+  const selected = () => location.pathname.endsWith(props.path)
+  return (
+    <Link href={props.path} start>
+      <ListItemButton selected={selected()}>
+        <ListItemText>
+          {props.children}
+        </ListItemText>
+      </ListItemButton>
+    </Link>
   )
 }

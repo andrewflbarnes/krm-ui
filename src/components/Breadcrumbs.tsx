@@ -32,9 +32,7 @@ export default function KrmBreadcrumbs() {
             &ZeroWidthSpace;
           </Show>
           <Show when={!current} fallback={<Typography mr="8px">{crumb}</Typography>}>
-            <Link href={href}>
-              {crumb}
-            </Link>
+            <Link href={href} title={crumb} />
           </Show>
         </>
       )}</For>

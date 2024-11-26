@@ -1,4 +1,4 @@
-import { ClubSeeding, Division, League, LeagueData, RoundSeeding } from "../kings"
+import { League, LeagueData, RoundSeeding } from "../kings"
 
 function getStorageKeyRounds() {
   return "kings-round-ids"
@@ -77,5 +77,12 @@ export default {
   },
   getRound(id: string): Round {
     return JSON.parse(localStorage.getItem(id))
+  },
+  deleteRound(id: string) {
+    localStorage.removeItem(id)
+    const keyRoundIds = getStorageKeyRounds()
+    const roundIds = JSON.parse(localStorage.getItem(keyRoundIds) ?? "[]") as string[]
+    const updated = roundIds.filter(rid => rid !== id)
+    localStorage.setItem(keyRoundIds, JSON.stringify(updated))
   }
 }
