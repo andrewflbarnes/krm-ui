@@ -2,18 +2,10 @@ import { Add } from "@suid/icons-material"
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, Select, MenuItem, IconButton, TextField } from "@suid/material"
 import { batch, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
-import { Division, useKings } from "../kings"
-
-export type TeamNumbers = {
-  [k in Division[number]]: number;
-}
-
-export type ClubTeamNumbers = {
-  [club: string]: TeamNumbers;
-}
+import { ClubSeeding, Division, useKings } from "../kings"
 
 type ComponentProps = {
-  config: ClubTeamNumbers;
+  config: ClubSeeding;
   onUpdate: (club: string, division: Division, count: number) => void;
 }
 
@@ -47,6 +39,7 @@ function TeamSelector(props: ComponentProps) {
     updateTeams(newTeam(), "mixed", 0)
     updateTeams(newTeam(), "ladies", 0)
     updateTeams(newTeam(), "board", 0)
+    setNewTeam("")
   })
 
   return (
@@ -111,10 +104,10 @@ function TeamSelector(props: ComponentProps) {
             }}</For>
             <TableRow>
               <TableCell>
-                <IconButton onClick={addTeam} size="small" color="info">
+                <IconButton onClick={addTeam} disabled={newTeam()?.length == 0} size="small" color="info">
                   <Add />
                 </IconButton>
-                <TextField size="small" variant="outlined" onChange={e => setNewTeam(e.target.value)} />
+                <TextField size="small" variant="outlined" value={newTeam()} onChange={e => setNewTeam(e.target.value)} />
               </TableCell>
               <TableCell />
               <TableCell />

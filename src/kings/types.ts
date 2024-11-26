@@ -1,3 +1,5 @@
+import { Division } from "./config";
+
 export type Result = {
   club: string;
   name: string;
@@ -22,5 +24,15 @@ export type LeagueData = {
         }
       }
     }
+  }
+}
+
+export type RoundSeeding = {
+  [k in Division[number]]: string[]
+}
+
+export type ClubSeeding = {
+  [club: string]: {
+    [k in Division[number]]: number
   }
 }

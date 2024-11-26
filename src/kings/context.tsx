@@ -3,43 +3,21 @@ import { batch, createContext, createSignal, ParentProps, useContext } from "sol
 import { leagues, type League } from "./config"
 import kings from "./config"
 import { LeagueData } from "./types";
-
-function getStorageKeyLeague() {
-  return "kings-selected-league"
-}
-
-function getStorageKeyLeagueConfig(league: League) {
-  return `kings-${league}-config`
-}
-
-const localPersitence = {
-  saveSelectedLeague(league: League) {
-    localStorage.setItem(getStorageKeyLeague(), league)
-  },
-  getSelectedLeague(): League | null {
-    return localStorage.getItem(getStorageKeyLeague()) as League | null
-  },
-  saveLeagueConfig(league: League, config: LeagueData) {
-    localStorage.setItem(getStorageKeyLeagueConfig(league), JSON.stringify(config))
-  },
-  getLeagueConfig(league: League): LeagueData | null {
-    return JSON.parse(localStorage.getItem(getStorageKeyLeagueConfig(league)))
-  }
-}
+import krmApi from "../api/krm"
 
 const makeContext = (initLeague?: League) => {
   let league = initLeague
   if (!kings[league]) {
-    league = localPersitence.getSelectedLeague()
+    league = krmApi.getSelectedLeague()
   }
   if (!kings[league]) {
     league = leagues[0]
   }
-  localPersitence.saveSelectedLeague(league)
+  krmApi.saveSelectedLeague(league)
   const [lock, setLock] = createSignal(false)
   const [selectedLeague, setSelectedLeague] = createSignal(league);
   const [config, setConfig] = createSignal(kings[league]);
-  const lc = localPersitence.getLeagueConfig(league)
+  const lc = krmApi.getLeagueConfig(league)
   const [leagueConfig, setLeagueConfig] = createSignal(lc)
   const setLeague = (newLeague: League) => {
     batch(() => {
@@ -84,13 +62,13 @@ export function useKings() {
       return
     }
     actions.setLeague(league)
-    localPersitence.saveSelectedLeague(league)
-    const lc = localPersitence.getLeagueConfig(league)
+    krmApi.saveSelectedLeague(league)
+    const lc = krmApi.getLeagueConfig(league)
     actions.setLeagueConfig(lc)
     setSearchParams({ league })
   }
   const setLeagueConfigEnhanced = (config: LeagueData) => {
-    localPersitence.saveLeagueConfig(state.league(), config)
+    krmApi.saveLeagueConfig(state.league(), config)
     actions.setLeagueConfig(config)
   }
   const addLeagueTeams = (teams: { club: string, division: string, team: string }[]) => {

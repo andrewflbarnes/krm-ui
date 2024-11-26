@@ -1,33 +1,38 @@
 import { Box, Button, Stack } from "@suid/material"
 import { createEffect, createSignal, onCleanup, Show } from "solid-js"
-import RaceStart1Select, { ClubTeamNumbers } from "../components/RaceStart1Select"
+import RaceStart1Select from "../components/RaceStart1Select"
 import RaceStart2UpdateTeams from "../components/RaceStart2UpdateTeams"
 import RaceStart3Confirm from "../components/RaceStart3Confirm"
-import { Division, useKings } from "../kings"
+import { ClubSeeding, Division, RoundSeeding, useKings } from "../kings"
+import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
+import { orderSeeds } from "../kings/utils"
 
 export default function RaceManagerStart() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
-  const [numTeams, setNumTeams] = createStore(Object.keys(k.leagueConfig()).reduce((acc, club) => {
+  onCleanup(() => unlock())
+
+  const [numTeams, setNumTeams] = createStore<ClubSeeding>(Object.keys(k.leagueConfig()).reduce((acc, club) => {
     acc[club] = {
       mixed: 0,
       ladies: 0,
       board: 0,
     }
     return acc
-  }, {} as ClubTeamNumbers))
+  }, {}))
 
   const handleTeamNumsUpdate = (club: string, division: Division, count: number) => {
-    setNumTeams(club, division, count)
+    setNumTeams(club, { [division]: count })
   }
-  onCleanup(() => unlock())
 
   const [missingTeams, setMissingTeams] = createSignal<{
     club: string,
     team: string,
     division: string
   }[]>();
+
+  const [seeding, setSeeding] = createSignal<RoundSeeding>();
 
   const steps = [
     {
@@ -74,23 +79,27 @@ export default function RaceManagerStart() {
       content: () => <RaceStart2UpdateTeams missingTeams={missingTeams()} />,
       onArrive: lock,
       validator: () => {
-        if (missingTeams().length < 1) {
-          return [true,]
+        if (missingTeams().length > 0) {
+          try {
+            notification.info("Adding league teams")
+            addLeagueTeams(missingTeams())
+            notification.success("Teams added")
+          } catch (e) {
+            return [false, e.message]
+          }
         }
-        try {
-          notification.info("Adding league teams")
-          addLeagueTeams(missingTeams())
-          notification.success("Teams added")
-          return [true,]
-        } catch (e) {
-          return [false, e.message]
-        }
+
+        const seeding = orderSeeds(k.leagueConfig(), numTeams)
+        setSeeding(seeding)
+
+        return [true,]
       }
     },
     {
       title: "Dummy 1",
-      content: () => <RaceStart3Confirm data={numTeams} />,
+      content: () => <RaceStart3Confirm seeds={seeding()} />,
       validator: () => {
+        krmApi.createRound(k.league(), seeding())
         unlock()
         return [true,]
       }
@@ -115,9 +124,10 @@ export default function RaceManagerStart() {
   }
 
   const handleDone = () => {
+    notification.info("Creating round")
     const [pass, err] = steps[step()].validator()
     if (pass) {
-      alert("TODO done")
+      notification.success("Created round")
     } else {
       notification.error(err)
     }
