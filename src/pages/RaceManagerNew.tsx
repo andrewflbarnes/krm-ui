@@ -1,8 +1,8 @@
 import { Box, Button, Stack } from "@suid/material"
-import { createEffect, createSignal, onCleanup, Show } from "solid-js"
-import RaceStart1Select from "../components/RaceStart1Select"
-import RaceStart2UpdateTeams from "../components/RaceStart2UpdateTeams"
-import RaceStart3Confirm from "../components/RaceStart3Confirm"
+import { createEffect, createSignal, lazy, onCleanup, Show } from "solid-js"
+const RaceStart1Select = lazy(() => import("../components/RaceStart1Select"))
+const RaceStart2UpdateTeams = lazy(() => import("../components/RaceStart2UpdateTeams"))
+const RaceStart3Confirm = lazy(() => import("../components/RaceStart3Confirm"))
 import { ClubSeeding, Division, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
