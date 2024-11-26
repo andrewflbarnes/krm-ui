@@ -2,6 +2,7 @@ import { useParams } from "@solidjs/router"
 import { createQuery } from "@tanstack/solid-query"
 import { Match, Switch } from "solid-js"
 import krmApi from "../api/krm"
+import RunRaceInProgress from "../components/RunRaceInProgress"
 
 export default function RunRace() {
   const params = useParams()
@@ -18,9 +19,7 @@ export default function RunRace() {
         TODO Races are complete
       </Match>
       <Match when={query.data.status == "In Progress"}>
-        <>
-          {query.data.date} {query.data.league}
-        </>
+        <RunRaceInProgress round={query.data} />
       </Match>
     </Switch>
   )
