@@ -6,14 +6,14 @@ import { lazy, ParentProps } from "solid-js";
 import { createTheme, ThemeProvider } from "@suid/material";
 import AppLayout from "./AppLayout";
 const Home = lazy(() => import("./pages/Home"));
-const RaceManager = lazy(() => import("./pages/RaceManager"));
+const RaceManager = lazy(() => import("./pages/Manage"));
 const ConfigManager = lazy(() => import("./pages/ConfigManager"));
 const Tracker = lazy(() => import("./pages/Tracker"));
 const Portal = lazy(() => import("./pages/Portal"));
 const Status404 = lazy(() => import("./pages/Status404"));
-const RaceManagerConfigure = lazy(() => import("./pages/RaceManagerConfigure"));
-const RaceManagerContinue = lazy(() => import("./pages/RaceManagerContinue"));
-const RaceManagerNew = lazy(() => import("./pages/RaceManagerNew"));
+const RaceManagerConfigure = lazy(() => import("./pages/ManageConfigure"));
+const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
+const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRace = lazy(() => import("./pages/RunRace"));
 
 const queryClient = new QueryClient()

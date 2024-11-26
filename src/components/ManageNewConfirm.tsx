@@ -2,7 +2,7 @@ import { List, ListItem, Stack, Typography } from "@suid/material";
 import { For } from "solid-js";
 import { RoundSeeding } from "../kings";
 
-export default function RaceStart2Confirm(props: { seeds: RoundSeeding }) {
+export default function ManageNewConfirm(props: { seeds: RoundSeeding }) {
   return (
     <Stack direction="row" justifyContent="space-evenly">
       <For each={Object.entries(props.seeds)}>{([division, teams]) => {

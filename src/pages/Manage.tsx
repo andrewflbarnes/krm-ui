@@ -3,7 +3,7 @@ import { Box, List, ListItemButton, ListItemText, Paper } from "@suid/material";
 import { ParentProps } from "solid-js";
 import Link from "../components/Link";
 
-export default function RaceManager(props: ParentProps) {
+export default function Manage(props: ParentProps) {
   return (
     <Box sx={{
       display: "flex",

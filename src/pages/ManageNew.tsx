@@ -1,15 +1,15 @@
 import { Box, Button, Stack } from "@suid/material"
 import { createEffect, createSignal, lazy, onCleanup, Show } from "solid-js"
-const RaceStart1Select = lazy(() => import("../components/RaceStart1Select"))
-const RaceStart2UpdateTeams = lazy(() => import("../components/RaceStart2UpdateTeams"))
-const RaceStart3Confirm = lazy(() => import("../components/RaceStart3Confirm"))
+const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
+const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
+const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
 import { ClubSeeding, Division, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
 import { orderSeeds } from "../kings/utils"
 
-export default function RaceManagerNew() {
+export default function ManageNew() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
@@ -37,7 +37,7 @@ export default function RaceManagerNew() {
   const steps = [
     {
       title: "Select Teams",
-      content: () => <RaceStart1Select config={numTeams} onUpdate={handleTeamNumsUpdate} />,
+      content: () => <ManageNewSelect config={numTeams} onUpdate={handleTeamNumsUpdate} />,
       onArrive: unlock,
       validator: () => {
         const divisionCounts = Object.values(numTeams).reduce((acc, next) => {
@@ -76,7 +76,7 @@ export default function RaceManagerNew() {
     },
     {
       title: "Update teams",
-      content: () => <RaceStart2UpdateTeams missingTeams={missingTeams()} />,
+      content: () => <ManageNewUpdateTeams missingTeams={missingTeams()} />,
       onArrive: lock,
       validator: () => {
         if (missingTeams().length > 0) {
@@ -97,7 +97,7 @@ export default function RaceManagerNew() {
     },
     {
       title: "Dummy 1",
-      content: () => <RaceStart3Confirm seeds={seeding()} />,
+      content: () => <ManageNewConfirm seeds={seeding()} />,
       validator: () => {
         krmApi.createRound(k.league(), seeding())
         unlock()

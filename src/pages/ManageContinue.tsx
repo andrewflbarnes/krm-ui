@@ -10,13 +10,14 @@ const statusColor = {
   "Complete": "success",
 }
 
-export default function RaceManagerContinue() {
+export default function ManageContinue() {
   const rounds = krmApi.getRounds();
 
   const handleSelectRound = (id: number) => {
+    console.log(`CLicked round ${id}`)
   }
 
-  const handleMore = (id: number, e: MouseEvent) => {
+  const handleMore = (id: number, e: MouseEvent & { currentTarget: HTMLButtonElement }) => {
     e.stopPropagation()
     setAnchorEl(e.currentTarget);
     setMenuId(id);

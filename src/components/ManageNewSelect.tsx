@@ -9,7 +9,7 @@ type ComponentProps = {
   onUpdate: (club: string, division: Division, count: number) => void;
 }
 
-export default function RaceStart1Select(props: ComponentProps) {
+export default function ManageNewSelect(props: ComponentProps) {
   const [k] = useKings()
   return (
     <Show when={k.leagueConfig()} fallback={"TODO no race config for selected league"}>

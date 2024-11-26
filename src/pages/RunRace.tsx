@@ -7,12 +7,7 @@ export default function RunRace() {
   const params = useParams()
   const query = createQuery(() => ({
     queryKey: [`round-${params.raceid}`],
-    queryFn: () => {
-      console.log(`Starting query for ${params.raceid}`)
-      const r = krmApi.getRound(params.raceid)
-      console.log(`Completed query for ${params.raceid}`, r)
-      return r
-    },
+    queryFn: () => krmApi.getRound(params.raceid)
   }))
 
   return (

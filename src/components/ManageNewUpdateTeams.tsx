@@ -7,7 +7,7 @@ type MissingTeams = {
   division: string;
 }[]
 
-export default function RaceStart2UpdateTeams(props: { missingTeams: MissingTeams }) {
+export default function ManageNewUpdateTeams(props: { missingTeams: MissingTeams }) {
   return (
     <Show when={Object.keys(props.missingTeams).length}>
       <Typography align="center" variant="h3">Missing teams</Typography>
