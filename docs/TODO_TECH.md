@@ -15,6 +15,7 @@
 
 - [ ] Deploy to kingsski.club
 - [ ] Online data sync
+- [ ] Consistent, sensible boundaries of responsiblity between context and api
 
 ## Could
 
