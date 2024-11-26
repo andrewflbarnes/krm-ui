@@ -13,7 +13,7 @@ export default function RaceManager(props: ParentProps) {
     }}>
       <Paper sx={{ width: "10%", height: "fit-content" }} elevation={4} >
         <List>
-          <NavigationListItem path="start">Start</NavigationListItem>
+          <NavigationListItem path="new">New</NavigationListItem>
           <NavigationListItem path="continue">Continue</NavigationListItem>
           <NavigationListItem path="configure">Configure</NavigationListItem>
         </List>

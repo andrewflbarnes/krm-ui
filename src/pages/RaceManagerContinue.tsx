@@ -1,7 +1,8 @@
-import { AcUnit, ArrowRight, Assignment, MoreVert } from "@suid/icons-material";
+import { ArrowRight, Assignment, MoreVert } from "@suid/icons-material";
 import { Chip, IconButton, Menu, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createSignal, For, Show } from "solid-js";
 import krmApi from "../api/krm";
+import Link from "../components/Link";
 
 const statusColor = {
   "Abandoned": "error",
@@ -13,7 +14,6 @@ export default function RaceManagerContinue() {
   const rounds = krmApi.getRounds();
 
   const handleSelectRound = (id: number) => {
-    console.log("Selected round", id, rounds[id]);
   }
 
   const handleMore = (id: number, e: MouseEvent) => {
@@ -68,9 +68,11 @@ export default function RaceManagerContinue() {
                       </IconButton>
                     </Show>
                     <Show when={round.status == "In Progress"}>
-                      <IconButton>
-                        <ArrowRight color="success" />
-                      </IconButton>
+                      <Link href={`/${round.id}`}>
+                        <IconButton>
+                          <ArrowRight color="success" />
+                        </IconButton>
+                      </Link>
                     </Show>
                     <Menu
                       id={ariaId()}

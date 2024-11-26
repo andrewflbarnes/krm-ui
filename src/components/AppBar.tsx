@@ -70,7 +70,7 @@ export default function KrmAppBar() {
                 justifyContent: "flex-end",
                 alignItems: "center",
               }}>
-                <Link href="/race">
+                <Link href="/manage/continue">
                   Race
                 </Link>
                 <Link href="/config">

@@ -9,7 +9,7 @@ import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
 import { orderSeeds } from "../kings/utils"
 
-export default function RaceManagerStart() {
+export default function RaceManagerNew() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
