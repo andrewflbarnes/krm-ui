@@ -1,54 +1,37 @@
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, Select, MenuItem } from "@suid/material"
-import { For, Show } from "solid-js"
-import { createStore } from "solid-js/store"
-import { useKings } from "../kings"
+import { Add } from "@suid/icons-material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, Select, MenuItem, IconButton, TextField } from "@suid/material"
+import { batch, For, Show } from "solid-js"
+import { createSignal } from "solid-js"
+import { Division, useKings } from "../kings"
 
 export type TeamNumbers = {
-  mixed: number;
-  ladies: number;
-  board: number;
+  [k in Division[number]]: number;
 }
 
 export type ClubTeamNumbers = {
   [club: string]: TeamNumbers;
 }
 
-export default function RaceStart1Select(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
+type ComponentProps = {
+  config: ClubTeamNumbers;
+  onUpdate: (club: string, division: Division, count: number) => void;
+}
+
+export default function RaceStart1Select(props: ComponentProps) {
   const [k] = useKings()
   return (
     <Show when={k.leagueConfig()} fallback={"TODO no race config for selected league"}>
-      <TeamSelector onUpdate={props.onUpdate} />
+      <TeamSelector config={props.config} onUpdate={props.onUpdate} />
     </Show>
   )
 }
 
-function TeamSelector(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
-  const [k] = useKings()
-
-  return (
-    <Show when={k.leagueConfig()} fallback={"TODO no race config for selected league"}>
-      <TeamSelectorTable onUpdate={props.onUpdate} />
-    </Show>
-  )
-}
-
-function TeamSelectorTable(props: { onUpdate: (data: ClubTeamNumbers) => void }) {
-  const [k] = useKings()
-  const [numTeams, setNumTeams] = createStore(Object.keys(k.leagueConfig()).reduce((acc, club) => {
-    acc[club] = {
-      mixed: 0,
-      ladies: 0,
-      board: 0,
-    }
-    return acc
-  }, {} as ClubTeamNumbers))
-
-  const updateTeams = (club: string, division: "mixed" | "ladies" | "board", num: number) => {
-    setNumTeams(club, division, num)
-    props.onUpdate({ ...numTeams })
+function TeamSelector(props: ComponentProps) {
+  const updateTeams = (club: string, division: Division, num: number) => {
+    props.onUpdate(club, division, num)
   }
 
-  const total = () => Object.values(numTeams).reduce((acc, club) => {
+  const total = () => Object.values(props.config).reduce((acc, club) => {
     acc.mixed += club.mixed
     acc.ladies += club.ladies
     acc.board += club.board
@@ -57,6 +40,13 @@ function TeamSelectorTable(props: { onUpdate: (data: ClubTeamNumbers) => void })
     mixed: 0,
     ladies: 0,
     board: 0,
+  })
+
+  const [newTeam, setNewTeam] = createSignal("")
+  const addTeam = () => batch(() => {
+    updateTeams(newTeam(), "mixed", 0)
+    updateTeams(newTeam(), "ladies", 0)
+    updateTeams(newTeam(), "board", 0)
   })
 
   return (
@@ -73,7 +63,7 @@ function TeamSelectorTable(props: { onUpdate: (data: ClubTeamNumbers) => void })
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={Object.entries(numTeams)}>{([club, teams]) => {
+            <For each={Object.entries(props.config)}>{([club, teams]) => {
               return (
                 <TableRow>
                   <TableCell>{club}</TableCell>
@@ -119,6 +109,18 @@ function TeamSelectorTable(props: { onUpdate: (data: ClubTeamNumbers) => void })
                 </TableRow>
               )
             }}</For>
+            <TableRow>
+              <TableCell>
+                <IconButton onClick={addTeam} size="small" color="info">
+                  <Add />
+                </IconButton>
+                <TextField size="small" variant="outlined" onChange={e => setNewTeam(e.target.value)} />
+              </TableCell>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell />
+            </TableRow>
             <TableRow>
               <TableCell>Total</TableCell>
               <TableCell align="center">{total().mixed}</TableCell>

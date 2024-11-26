@@ -21,7 +21,7 @@ const config = {
 
 export type League = keyof typeof config
 
-export const divisions = ["Mixed", "Ladies", "Board"] as const
+export const divisions = ["mixed", "ladies", "board"] as const
 
 export type Division = typeof divisions[number]
 

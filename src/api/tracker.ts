@@ -9,10 +9,11 @@ async function getLeagueData(url: string): Promise<LeagueData> {
   const text = await response.text()
   const data = text.split('\n').map(row => row.split(','))
   return data.reduce((acc, row) => {
-    const [division, team, ...results] = row
-    if (division?.length < 1 || team?.length < 1) {
+    const [div, team, ...results] = row
+    if (div?.length < 1 || team?.length < 1) {
       return acc
     }
+    const division = div.toLowerCase()
     const numericResults = results.map(r => r?.length ? parseInt(r) >>> 0 : null)
     const club = team.replace(/ *\d*$/, "")
     if (!acc[club]) {

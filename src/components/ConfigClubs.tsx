@@ -7,7 +7,7 @@ import DivisionResultsAll from "./DivisionResultsAll";
 import ModalConfirmAction from "./ModalConfirmAction";
 
 export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
-  const [club, setClub] = createSignal<string>()
+  const [club, setClub] = createSignal("all")
   const [edit, setEdit] = createSignal<ToEdit>()
 
   const clubs = () => Object.keys(props.data).sort((a, b) => a.localeCompare(b))

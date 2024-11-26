@@ -1,42 +1,41 @@
 import { Box, Button, Stack } from "@suid/material"
-import { createEffect, createMemo, createSignal, on, onCleanup, Show } from "solid-js"
+import { createEffect, createSignal, onCleanup, Show } from "solid-js"
 import RaceStart1Select, { ClubTeamNumbers } from "../components/RaceStart1Select"
 import RaceStart2UpdateTeams from "../components/RaceStart2UpdateTeams"
 import RaceStart3Confirm from "../components/RaceStart3Confirm"
-import { useKings } from "../kings"
+import { Division, useKings } from "../kings"
 import notification from "../hooks/notification"
+import { createStore } from "solid-js/store"
 
 export default function RaceManagerStart() {
-  const [clubTeamNumbers, setClubTeamNumbers] = createSignal<ClubTeamNumbers>({})
-  const handleTeamNumsUpdate = (data: ClubTeamNumbers) => {
-    setClubTeamNumbers(data)
-  }
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
+  const [numTeams, setNumTeams] = createStore(Object.keys(k.leagueConfig()).reduce((acc, club) => {
+    acc[club] = {
+      mixed: 0,
+      ladies: 0,
+      board: 0,
+    }
+    return acc
+  }, {} as ClubTeamNumbers))
+
+  const handleTeamNumsUpdate = (club: string, division: Division, count: number) => {
+    setNumTeams(club, division, count)
+  }
   onCleanup(() => unlock())
-  const missingTeams = createMemo(on([clubTeamNumbers], () => {
-    const lc = k.leagueConfig()
-    return Object.entries(clubTeamNumbers()).reduce((acc, [club, teams]) => {
-      Object.entries(teams).forEach(([division, num]) => {
-        for (let i = 1; i <= num; i++) {
-          // TODO!!! align division case globally
-          const lcDivision = division[0].toUpperCase() + division.slice(1)
-          if (lc[club]?.teams[lcDivision]?.[`${club} ${i}`] || (i == 1 && lc[club]?.teams[lcDivision]?.[club])) {
-            continue
-          }
-          acc.push({ club, team: `${club} ${i}`, division: lcDivision })
-        }
-      })
-      return acc
-    }, [] as { club: string, team: string, division: string }[])
-  }))
+
+  const [missingTeams, setMissingTeams] = createSignal<{
+    club: string,
+    team: string,
+    division: string
+  }[]>();
 
   const steps = [
     {
       title: "Select Teams",
-      content: () => <RaceStart1Select onUpdate={handleTeamNumsUpdate} />,
+      content: () => <RaceStart1Select config={numTeams} onUpdate={handleTeamNumsUpdate} />,
       onArrive: unlock,
       validator: () => {
-        const divisionCounts = Object.values(clubTeamNumbers()).reduce((acc, next) => {
+        const divisionCounts = Object.values(numTeams).reduce((acc, next) => {
           acc.mixed += next.mixed
           acc.ladies += next.ladies
           acc.board += next.board
@@ -50,7 +49,24 @@ export default function RaceManagerStart() {
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .filter(([_, count]) => count < 4)
           .map(([division]) => division)
-        return [lowDivisions.length == 0, "Divisions must have at least 4 teams: " + lowDivisions.join(", ")]
+        if (lowDivisions.length > 0) {
+          return [false, "Divisions must have at least 4 teams: " + lowDivisions.join(", ")]
+        }
+
+        const lc = k.leagueConfig()
+        const missing = Object.entries(numTeams).reduce((acc, [club, teams]) => {
+          Object.entries(teams).forEach(([division, num]) => {
+            for (let i = 1; i <= num; i++) {
+              if (lc[club]?.teams[division]?.[`${club} ${i}`] || (i == 1 && lc[club]?.teams[division]?.[club])) {
+                continue
+              }
+              acc.push({ club, team: `${club} ${i}`, division })
+            }
+          })
+          return acc
+        }, [])
+        setMissingTeams(missing)
+        return [true,]
       }
     },
     {
@@ -73,7 +89,7 @@ export default function RaceManagerStart() {
     },
     {
       title: "Dummy 1",
-      content: () => <RaceStart3Confirm data={clubTeamNumbers()} />,
+      content: () => <RaceStart3Confirm data={numTeams} />,
       validator: () => {
         unlock()
         return [true,]

@@ -1,6 +1,6 @@
 import { Box, Button, ButtonGroup, Typography } from "@suid/material"
 import { createSignal, For } from "solid-js"
-import { Result, DivisionResults as Results } from "../kings"
+import { Result, DivisionResults as Results, Division } from "../kings"
 import DivisionResults from "./DivisionResults"
 
 type Props = {
@@ -10,13 +10,13 @@ type Props = {
 }
 
 export default function DivisionResultsAll(props: Props) {
-  const [division, setDivision] = createSignal("All")
-  const results = () => Object.entries(props.results).filter(([div]) => div === division() || division() === "All")
+  const [division, setDivision] = createSignal<Division | "all">("all")
+  const results = () => Object.entries(props.results).filter(([div]) => div === division() || division() === "all")
   return (
     <Box sx={{ display: "flex", flexDirection: "column", gap: "2em" }}>
       <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
       <ButtonGroup>
-        <For each={["All", "Mixed", "Ladies", "Board"]}>{div => (
+        <For each={["all", "mixed", "ladies", "board"] as const}>{div => (
           <Button onClick={() => setDivision(div)} variant={div == division() ? "contained" : "outlined"}>
             {div}
           </Button>
