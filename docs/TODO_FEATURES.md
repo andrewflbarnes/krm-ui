@@ -8,11 +8,11 @@
 - [x] Pull data from Google Sheets
 - [x] localStorage for persistence
 - [x] Team selection and seeding
+- [x] Race list 1
 
 ## Must
 
 - [ ] Race sheet 1
-- [ ] Race list 1
 - [ ] Pre-start team shuffling
 - [ ] Race sheet 2
 - [ ] Race list 2

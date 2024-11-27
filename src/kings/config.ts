@@ -45,8 +45,8 @@ export const miniLeagueConfig: MiniLeagueConfig = {
     teams: 4,
     races: [
       [1, 2], [3, 4],
-      [1, 3], [2, 4],
-      [4, 1], [3, 2]
+      [2, 3], [4, 1],
+      [1, 3], [4, 2]
     ],
   },
   5: {
@@ -55,6 +55,14 @@ export const miniLeagueConfig: MiniLeagueConfig = {
       [1, 2], [3, 4], [2, 3],
       [4, 5], [5, 1], [4, 2],
       [5, 3], [1, 4], [2, 5], [3, 1]
+    ],
+  },
+  6: {
+    teams: 6,
+    races: [
+      [1, 6], [2, 5], [3, 4], [5, 1], [4, 6],
+      [3, 2], [1, 4], [5, 3], [2, 6], [3, 1],
+      [4, 2], [6, 5], [1, 2], [6, 3], [5, 4],
     ],
   }
 }
@@ -102,6 +110,15 @@ export const raceConfig: RoundConfig = {
         name: "A",
         seeds: [1, 2, 3, 4, 5],
         miniLeague: 5,
+      },
+    ]
+  },
+  6: {
+    round1: [
+      {
+        name: "A",
+        seeds: [1, 2, 3, 4, 5, 6],
+        miniLeague: 6,
       },
     ]
   }

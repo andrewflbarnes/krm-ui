@@ -13,10 +13,6 @@ const statusColor = {
 export default function ManageContinue() {
   const rounds = krmApi.getRounds();
 
-  const handleSelectRound = (id: number) => {
-    console.log(`CLicked round ${id}`)
-  }
-
   const handleMore = (id: number, e: MouseEvent & { currentTarget: HTMLButtonElement }) => {
     e.stopPropagation()
     setAnchorEl(e.currentTarget);
@@ -50,7 +46,7 @@ export default function ManageContinue() {
           <For each={rounds}>{(round, id) => {
             const ariaId = () => `round-selector-menu-${id()}`
             return (
-              <TableRow hover role="button" onClick={[handleSelectRound, id()]} sx={{ cursor: "pointer" }}>
+              <TableRow>
                 <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
                   <Stack direction="row" gap="1em" alignItems="center">
                     <IconButton
