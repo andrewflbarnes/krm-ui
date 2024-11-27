@@ -1,5 +1,5 @@
-import { Check, Close } from "@suid/icons-material";
-import { Chip, FormControlLabel, IconButton, Paper, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow } from "@suid/material";
+import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
+import { Box, Checkbox, Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow } from "@suid/material";
 import { createSignal, For } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Round } from "../api/krm";
@@ -106,8 +106,8 @@ export default function RunRaceInProgress(props: { round: Round }) {
         <TableContainer component={Paper}>
           <Table sx={{ minWidth: 650, maxWidth: "50rem" }} aria-label="simple table dense" size="small">
             <TableBody>
-              <For each={orderedRaces()}>{(race) => {
-                const setWinner = (winner: 1 | 2) => {
+              <For each={orderedRaces()}>{(race, raceNum) => {
+                const setWinner = (winner?: 1 | 2) => {
                   easySetResults(race, 'winner', winner)
                 }
                 const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
@@ -121,16 +121,23 @@ export default function RunRaceInProgress(props: { round: Round }) {
                 const team2Dsq = () => results[race.division]?.[race.group]?.[race.groupRace]?.team2Dsq
                 const winner = () => results[race.division]?.[race.group]?.[race.groupRace]?.winner
                 return (
-                  <TableRow>
-                    <TableCell sx={{ width: "1%", maxWidth: "fit-content" }}>
+                  <TableRow sx={{ "& td": { py: "0 !important" } }}>
+                    <TableCell sx={{ width: "1%", maxWidth: "fit-content", borderBottom: 0 }}>
                       <Stack direction="row" gap="1em" alignItems="center">
-                        <Chip size="small" label="Complete" variant="outlined" color="success" sx={{ visibility: winner() > 0 ? "visible" : "hidden" }} />
-                        <Chip size="small" label="DSQ" variant="outlined" color="error" sx={{ visibility: team1Dsq() || team2Dsq() ? "visible" : "hidden" }} />
+                        <Chip onDelete={() => setWinner()} size="small" label="Complete" variant="filled" color="success" sx={{ visibility: winner() > 0 ? "visible" : "hidden" }} />
+                        <Chip size="small" label="DSQ" variant="filled" color="error" sx={{ visibility: team1Dsq() || team2Dsq() ? "visible" : "hidden" }} />
                         &nbsp;
                       </Stack>
                     </TableCell>
-                    <TableCell>
-                      {race.division[0].toUpperCase()}
+                    <TableCell sx={{ width: "1%" }}>
+                      <Stack direction="row" gap="1em" justifyContent="space-between" alignItems="center">
+                        <Box>
+                          {raceNum() + 1}
+                        </Box>
+                        <Box>
+                          {race.division[0].toUpperCase()}
+                        </Box>
+                      </Stack>
                     </TableCell>
                     <TableCell
                       sx={{ cursor: "pointer" }}
@@ -138,10 +145,21 @@ export default function RunRaceInProgress(props: { round: Round }) {
                       align="left"
                     >
                       <Stack direction="row" alignItems="center">
-                        <IconButton onClick={[toggleDsq, 1]} color={team1Dsq() ? "error" : "inherit"} size="small">
-                          <Close fontSize="small" />
-                        </IconButton>
-                        <Check color={winner() == 1 ? "success" : "inherit"} fontSize="small" />
+                        <Checkbox
+                          icon={<CloseOutlined fontSize="small" color="inherit" />}
+                          checkedIcon={<Cancel fontSize="small" color="error" />}
+                          checked={team1Dsq()}
+                          onClick={[toggleDsq, 1]}
+                          size="small"
+                        />
+                        <Checkbox
+                          sx={{ p: 0 }}
+                          icon={<CheckCircleOutline fontSize="small" color="inherit" />}
+                          checkedIcon={<CheckCircle fontSize="small" color="success" />}
+                          checked={winner() == 1}
+                          size="small"
+                        />
+                        &nbsp;
                         {race.team1}
                       </Stack>
                     </TableCell>
@@ -153,10 +171,21 @@ export default function RunRaceInProgress(props: { round: Round }) {
                     >
                       <Stack direction="row" alignItems="center" justifyContent="end">
                         {race.team2}
-                        <Check color={winner() == 2 ? "success" : "inherit"} fontSize="small" />
-                        <IconButton onClick={[toggleDsq, 2]} color={team2Dsq() ? "error" : "inherit"} size="small">
-                          <Close fontSize="small" />
-                        </IconButton>
+                        &nbsp;
+                        <Checkbox
+                          sx={{ p: 0 }}
+                          icon={<CheckCircleOutline fontSize="small" color="inherit" />}
+                          checkedIcon={<CheckCircle fontSize="small" color="success" />}
+                          checked={winner() == 2}
+                          size="small"
+                        />
+                        <Checkbox
+                          icon={<CloseOutlined fontSize="small" color="inherit" />}
+                          checkedIcon={<Cancel fontSize="small" color="error" />}
+                          checked={team2Dsq()}
+                          onClick={[toggleDsq, 2]}
+                          size="small"
+                        />
                       </Stack>
                     </TableCell>
                   </TableRow>
