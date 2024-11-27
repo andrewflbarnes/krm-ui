@@ -88,7 +88,11 @@ export default (function krmApiLocalStorage(): KrmApi {
         })
     },
     getRound(id: string): Round {
-      return JSON.parse(localStorage.getItem(id))
+      const r = JSON.parse(localStorage.getItem(id))
+      return {
+        ...r,
+        date: r.date ? new Date(r.date) : r,
+      }
     },
     deleteRound(id: string) {
       localStorage.removeItem(id)

@@ -60,9 +60,11 @@ export default function ManageContinue() {
                       <MoreVert />
                     </IconButton>
                     <Show when={round.status != "In Progress"}>
-                      <IconButton>
-                        <Assignment />
-                      </IconButton>
+                      <Link href={`/${round.id}`}>
+                        <IconButton>
+                          <Assignment />
+                        </IconButton>
+                      </Link>
                     </Show>
                     <Show when={round.status == "In Progress"}>
                       <Link href={`/${round.id}`}>

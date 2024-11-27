@@ -1,6 +1,6 @@
 import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
 import { Box, Checkbox, Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow } from "@suid/material";
-import { createSignal, For } from "solid-js";
+import { createSignal, ErrorBoundary, For } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Round } from "../api/krm";
 import { raceConfig, miniLeagueConfig, RoundMiniLeagueConfig, MiniLeagueConfig, Division } from "../kings";
@@ -75,6 +75,23 @@ const orderRaces = (divisionRaces: DivisionRaces, splits: number) => {
 }
 
 export default function RunRaceInProgress(props: { round: Round }) {
+
+  return (
+    <ErrorBoundary fallback={e => (
+      <>
+        <div>
+          Something went wrong - race configuration for that number of teams probably doesn't exist yet :(
+        </div>
+        <div>
+        {e.message}
+        </div>
+      </>
+    )}>
+      <RunRaceInProgressInternal round={props.round} />
+    </ErrorBoundary>
+  )
+}
+function RunRaceInProgressInternal(props: { round: Round }) {
   const [splits, setSplits] = createSignal(1)
   const divRaces = () => divisionRaces(props.round)
   const orderedRaces = () => orderRaces(divRaces(), splits())

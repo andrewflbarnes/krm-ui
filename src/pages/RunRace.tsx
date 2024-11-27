@@ -1,4 +1,5 @@
 import { useParams } from "@solidjs/router"
+import { Typography } from "@suid/material"
 import { createQuery } from "@tanstack/solid-query"
 import { Match, Switch } from "solid-js"
 import krmApi from "../api/krm"
@@ -16,7 +17,15 @@ export default function RunRace() {
       <Match when={query.isLoading}>Loading...</Match>
       <Match when={!query.isSuccess || !query.data}>Races not found :(</Match>
       <Match when={query.data.status != "In Progress"}>
-        TODO Races are complete
+        <Typography>
+          TODO Races are complete for this {query.data.league} round.
+        </Typography>
+        <Typography>
+          Date: {query.data.date.toLocaleDateString()}
+        </Typography>
+        <Typography>
+          {query.data.description}
+        </Typography>
       </Match>
       <Match when={query.data.status == "In Progress"}>
         <RunRaceInProgress round={query.data} />
