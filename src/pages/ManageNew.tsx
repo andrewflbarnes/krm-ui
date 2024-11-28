@@ -8,6 +8,7 @@ import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
 import { orderSeeds } from "../kings/utils"
+import { useNavigate } from "@solidjs/router"
 
 export default function ManageNew() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
@@ -33,6 +34,7 @@ export default function ManageNew() {
   }[]>();
 
   const [seeding, setSeeding] = createSignal<RoundSeeding>();
+  const navigate = useNavigate()
 
   const steps = [
     {
@@ -96,11 +98,9 @@ export default function ManageNew() {
       }
     },
     {
-      title: "Dummy 1",
+      title: "Confirm",
       content: () => <ManageNewConfirm seeds={seeding()} />,
       validator: () => {
-        krmApi.createRound(k.league(), seeding())
-        unlock()
         return [true,]
       }
     },
@@ -125,9 +125,12 @@ export default function ManageNew() {
 
   const handleDone = () => {
     notification.info("Creating round")
+    const r = krmApi.createRound(k.league(), seeding())
     const [pass, err] = steps[step()].validator()
     if (pass) {
+      unlock()
       notification.success("Created round")
+      navigate(`/${r.id}`)
     } else {
       notification.error(err)
     }
