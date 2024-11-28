@@ -1,8 +1,9 @@
 import { Add } from "@suid/icons-material"
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, Select, MenuItem, IconButton, TextField } from "@suid/material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField } from "@suid/material"
 import { batch, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
-import { ClubSeeding, Division, useKings } from "../kings"
+import { ClubSeeding, Division, divisions, useKings } from "../kings"
+import NumberField from "./NumberField"
 
 type ComponentProps = {
   config: ClubSeeding;
@@ -49,10 +50,10 @@ function TeamSelector(props: ComponentProps) {
           <TableHead>
             <TableRow>
               <TableCell>Club</TableCell>
-              <TableCell align="center">Mixed</TableCell>
-              <TableCell align="center">Ladies</TableCell>
-              <TableCell align="center">Board</TableCell>
-              <TableCell align="center">Total</TableCell>
+              <For each={divisions}>{(division) =>
+                <TableCell align="center">{division}</TableCell>
+              }</For>
+              <TableCell />
             </TableRow>
           </TableHead>
           <TableBody>
@@ -60,42 +61,15 @@ function TeamSelector(props: ComponentProps) {
               return (
                 <TableRow>
                   <TableCell>{club}</TableCell>
-                  <TableCell align="center">
-                    <Select
-                      type="number"
-                      size="small"
-                      onChange={(e) => updateTeams(club, "mixed", e.target.value)}
-                      value={teams.mixed}
-                    >
-                      <For each={[...Array(10).keys()]}>{(i) => {
-                        return <MenuItem value={i}>{i}</MenuItem>
-                      }}</For>
-                    </Select>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Select
-                      type="number"
-                      size="small"
-                      onChange={(e) => updateTeams(club, "ladies", e.target.value)}
-                      value={teams.ladies}
-                    >
-                      <For each={[...Array(10).keys()]}>{(i) => {
-                        return <MenuItem value={i}>{i}</MenuItem>
-                      }}</For>
-                    </Select>
-                  </TableCell>
-                  <TableCell align="center">
-                    <Select
-                      type="number"
-                      size="small"
-                      onChange={(e) => updateTeams(club, "board", e.target.value)}
-                      value={teams.board}
-                    >
-                      <For each={[...Array(10).keys()]}>{(i) => {
-                        return <MenuItem value={i}>{i}</MenuItem>
-                      }}</For>
-                    </Select>
-                  </TableCell>
+                  <For each={divisions}>{(division) =>
+                    <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
+                      <NumberField
+                        onChange={(e) => updateTeams(club, division, +e.target.value >>> 0)}
+                        value={teams[division]}
+                        zeroBlank
+                      />
+                    </TableCell>
+                  }</For>
                   <TableCell align="center">
                     {teams.mixed + teams.ladies + teams.board}
                   </TableCell>
