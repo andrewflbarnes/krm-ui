@@ -1,9 +1,10 @@
 import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
-import { Box, Checkbox, Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableCell, TableContainer, TableRow } from "@suid/material";
-import { createSignal, ErrorBoundary, For } from "solid-js";
+import { Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { createEffect, createMemo, createSignal, ErrorBoundary, For, Show, Suspense } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Round } from "../api/krm";
 import { raceConfig, miniLeagueConfig, RoundMiniLeagueConfig, MiniLeagueConfig, Division } from "../kings";
+import styles from "./RunRaceInProgress.module.css";
 
 type AccumulatedConfig = {
   [division in Division]: (MiniLeagueConfig[number] & RoundMiniLeagueConfig)[];
@@ -75,7 +76,7 @@ const orderRaces = (divisionRaces: DivisionRaces, splits: number) => {
 }
 
 export default function RunRaceInProgress(props: { round: Round }) {
-
+  createEffect(() => console.log('rendering RunRaceInProgress', JSON.stringify(props.round)))
   return (
     <ErrorBoundary fallback={e => (
       <>
@@ -83,7 +84,7 @@ export default function RunRaceInProgress(props: { round: Round }) {
           Something went wrong - race configuration for that number of teams probably doesn't exist yet :(
         </div>
         <div>
-        {e.message}
+          {e.message}
         </div>
       </>
     )}>
@@ -91,10 +92,13 @@ export default function RunRaceInProgress(props: { round: Round }) {
     </ErrorBoundary>
   )
 }
+
 function RunRaceInProgressInternal(props: { round: Round }) {
   const [splits, setSplits] = createSignal(1)
-  const divRaces = () => divisionRaces(props.round)
-  const orderedRaces = () => orderRaces(divRaces(), splits())
+  const orderedRaces = createMemo(() => {
+    const divRaces = divisionRaces(props.round)
+    return orderRaces(divRaces, splits())
+  })
   // TODO incremental save
   const [results, setResults] = createStore<Results>({})
   function easySetResults<T extends keyof Result>(race: Race, field: T, value: Result[T]) {
@@ -111,6 +115,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       rd[race.division][race.group][race.groupRace][field] = value
     }))
   }
+  createEffect(() => console.log("RENDER", orderedRaces().length, results.board))
   return (
     <>
       {props.round.date} {props.round.league}
@@ -120,99 +125,109 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           control={<Switch checked={splits() > 1} onChange={() => setSplits(s => s > 1 ? 1 : 3)} />}
           label="grimify"
         />
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650, maxWidth: "50rem" }} aria-label="simple table dense" size="small">
-            <TableBody>
-              <For each={orderedRaces()}>{(race, raceNum) => {
-                const setWinner = (winner?: 1 | 2) => {
-                  easySetResults(race, 'winner', winner)
-                }
-                const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
-                  e.stopPropagation()
-                  const t1Dsq = results[race.division]?.[race.group]?.[race.groupRace]?.team1Dsq
-                  easySetResults(race, 'team1Dsq', dsq == 1 ? !t1Dsq : t1Dsq)
-                  const t2Dsq = results[race.division]?.[race.group]?.[race.groupRace]?.team2Dsq
-                  easySetResults(race, 'team2Dsq', dsq == 2 ? !t2Dsq : t2Dsq)
-                }
-                const team1Dsq = () => results[race.division]?.[race.group]?.[race.groupRace]?.team1Dsq
-                const team2Dsq = () => results[race.division]?.[race.group]?.[race.groupRace]?.team2Dsq
-                const winner = () => results[race.division]?.[race.group]?.[race.groupRace]?.winner
-                return (
-                  <TableRow sx={{ "& td": { py: "0 !important" } }}>
-                    <TableCell sx={{ width: "1%", maxWidth: "fit-content", borderBottom: 0 }}>
-                      <Stack direction="row" gap="1em" alignItems="center">
-                        <Chip onDelete={() => setWinner()} size="small" label="Complete" variant="filled" color="success" sx={{ visibility: winner() > 0 ? "visible" : "hidden" }} />
-                        <Chip size="small" label="DSQ" variant="filled" color="error" sx={{ visibility: team1Dsq() || team2Dsq() ? "visible" : "hidden" }} />
-                        &nbsp;
-                      </Stack>
-                    </TableCell>
-                    <TableCell sx={{ width: "1%" }}>
-                      <Stack direction="row" gap="1em" justifyContent="space-between" alignItems="center">
-                        <Box>
-                          {raceNum() + 1}
-                        </Box>
-                        <Box>
-                          {race.division[0].toUpperCase()}
-                        </Box>
-                      </Stack>
-                    </TableCell>
-                    <TableCell
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => setWinner(1)}
-                      align="left"
-                    >
-                      <Stack direction="row" alignItems="center">
-                        <Checkbox
-                          icon={<CloseOutlined fontSize="small" color="inherit" />}
-                          checkedIcon={<Cancel fontSize="small" color="error" />}
-                          checked={team1Dsq()}
-                          onClick={[toggleDsq, 1]}
-                          size="small"
-                        />
-                        <Checkbox
-                          sx={{ p: 0 }}
-                          icon={<CheckCircleOutline fontSize="small" color="inherit" />}
-                          checkedIcon={<CheckCircle fontSize="small" color="success" />}
-                          checked={winner() == 1}
-                          size="small"
-                        />
-                        &nbsp;
-                        {race.team1}
-                      </Stack>
-                    </TableCell>
-                    <TableCell align="center">v</TableCell>
-                    <TableCell
-                      sx={{ cursor: "pointer" }}
-                      onClick={() => setWinner(2)}
-                      align="right"
-                    >
-                      <Stack direction="row" alignItems="center" justifyContent="end">
-                        {race.team2}
-                        &nbsp;
-                        <Checkbox
-                          sx={{ p: 0 }}
-                          icon={<CheckCircleOutline fontSize="small" color="inherit" />}
-                          checkedIcon={<CheckCircle fontSize="small" color="success" />}
-                          checked={winner() == 2}
-                          size="small"
-                        />
-                        <Checkbox
-                          icon={<CloseOutlined fontSize="small" color="inherit" />}
-                          checkedIcon={<Cancel fontSize="small" color="error" />}
-                          checked={team2Dsq()}
-                          onClick={[toggleDsq, 2]}
-                          size="small"
-                        />
-                      </Stack>
-                    </TableCell>
-                  </TableRow>
-                )
-              }}</For>
-            </TableBody>
-          </Table>
-        </TableContainer>
+        <Typography>
+          <TableContainer component={Paper}>
+            <Table sx={{ minWidth: 650, maxWidth: "50rem" }} aria-label="simple table dense" size="small">
+              <TableBody>
+                <For each={orderedRaces()}>{(race, raceNum) =>
+                  <RaceTableRow
+                    raceNum={raceNum()}
+                    race={race}
+                    result={results[race.division]?.[race.group]?.[race.groupRace]}
+                    resultSetter={easySetResults}
+                  />
+                }</For>
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </Typography>
       </Stack>
     </>
   )
 }
 
+type ResultSetter = <T extends keyof Result>(race: Race, field: T, value: Result[T]) => void
+
+function RaceTableRow(props: {
+  raceNum: number;
+  race: Race;
+  result?: Result;
+  resultSetter: ResultSetter;
+}) {
+  createEffect(() => console.log('rendering race', props.race.division, props.race.group, props.race.groupRace))
+  const setWinner = (winner?: 1 | 2) => {
+    props.resultSetter(props.race, 'winner', winner)
+  }
+  const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
+    e.stopPropagation()
+    const t1Dsq = props.result?.team1Dsq
+    props.resultSetter(props.race, 'team1Dsq', dsq == 1 ? !t1Dsq : t1Dsq)
+    const t2Dsq = props.result?.team2Dsq
+    props.resultSetter(props.race, 'team2Dsq', dsq == 2 ? !t2Dsq : t2Dsq)
+  }
+  const team1Dsq = () => props.result?.team1Dsq
+  const team2Dsq = () => props.result?.team2Dsq
+  const winner = () => props.result?.winner
+  return (
+    <tr style={{ display: "table-row" }}>
+      <td class={styles.td} style={{ width: "14em", border: 0 }}>
+        <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
+          <Show when={winner()}>
+            <Chip onDelete={() => setWinner()} size="small" label="Complete" variant="filled" color="success" />
+          </Show>
+          <Show when={team1Dsq() || team2Dsq()}>
+            <Chip size="small" label="DSQ" variant="filled" color="error" sx={{ visibility: team1Dsq() || team2Dsq() ? "visible" : "hidden" }} />
+          </Show>
+          &nbsp;
+        </div>
+      </td>
+      <td class={styles.td} style={{ width: "1%" }}>
+        <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
+          <div style={{ display: "inline-block" }}>
+            {props.raceNum + 1}
+          </div>
+          <div style={{ display: "inline-block" }}>
+            {props.race.division[0].toUpperCase()}
+          </div>
+        </div>
+      </td>
+      <td
+        class={styles.td}
+        style={{ cursor: "pointer" }}
+        onClick={() => setWinner(1)}
+      >
+        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
+          <div onClick={[toggleDsq, 1]} style={{ display: "contents" }}>
+            <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
+              <Cancel onClick={[toggleDsq, 1]} fontSize="small" color="error" />
+            </Show>
+          </div>
+          <Show when={winner() == 1} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
+            <CheckCircle fontSize="small" color="success" />
+          </Show>
+          &nbsp;
+          {props.race.team1}
+        </div>
+      </td>
+      <td class={styles.td} style={{ "text-align": "center" }}>v</td>
+      <td
+        class={styles.td}
+        style={{ cursor: "pointer" }}
+        onClick={() => setWinner(2)}
+      >
+        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "end" }}>
+          {props.race.team2}
+          &nbsp;
+          <Show when={winner() == 2} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
+            <CheckCircle fontSize="small" color="success" />
+          </Show>
+          <div onClick={[toggleDsq, 2]} style={{ display: "contents" }}>
+            <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
+              <Cancel fontSize="small" color="error" />
+            </Show>
+          </div>
+        </div>
+      </td>
+    </tr>
+  )
+}
