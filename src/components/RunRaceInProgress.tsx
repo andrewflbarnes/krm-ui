@@ -168,6 +168,8 @@ function RaceTableRow(props: {
   const team1Dsq = () => props.result?.team1Dsq
   const team2Dsq = () => props.result?.team2Dsq
   const winner = () => props.result?.winner
+  // Performance degradations with solid + suid once we start to get to around
+  // 20+ rows so we use native elements instead.
   return (
     <tr style={{ display: "table-row" }}>
       <td class={styles.td} style={{ width: "14em", border: 0 }}>
