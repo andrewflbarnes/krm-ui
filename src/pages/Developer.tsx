@@ -44,7 +44,6 @@ export default function Developer() {
 }
 
 function DeveloperData() {
-  const league = localStorage.getItem("kings-selected-league")
   const [show, setShow] = createSignal("")
   const selected = createSelector(show)
   return (
@@ -54,17 +53,21 @@ function DeveloperData() {
       </Button>
       <Show when={selected("league")}>
         <pre>
-          {league}
+          {localStorage.getItem("kings-selected-league")}
         </pre>
       </Show>
-      <Button onClick={[setShow, selected("conf") ? "" : "conf"]}>
-        kings-{league}-config
-      </Button>
-      <Show when={selected("conf")}>
-        <pre>
-          {JSON.stringify(JSON.parse(localStorage.getItem(`kings-${league}-config`)), null, 2)}
-        </pre>
-      </Show>
+      <For each={["western", "northern", "southern", "midlands"]}>{league =>
+        <>
+          <Button onClick={[setShow, selected(league) ? "" : league]}>
+            kings-{league}-config
+          </Button>
+          <Show when={selected(league)}>
+            <pre>
+              {JSON.stringify(JSON.parse(localStorage.getItem(`kings-${league}-config`)), null, 2)}
+            </pre>
+          </Show>
+        </>
+      }</For>
       <Button onClick={[setShow, selected("ids") ? "" : "ids"]}>
         kings-round-ids
       </Button>
