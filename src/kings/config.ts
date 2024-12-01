@@ -41,6 +41,25 @@ export type MiniLeagueConfig = {
 // - the count of teams matches the count of unique teams in races
 // - each unique team races each other
 export const miniLeagueConfig: MiniLeagueConfig = {
+  3: {
+    teams: 3,
+    races: [
+      [1, 2],
+      [2, 3],
+      [3, 1],
+    ],
+  },
+  "3full": {
+    teams: 3,
+    races: [
+      [1, 2],
+      [2, 3],
+      [3, 1],
+      [2, 1],
+      [3, 2],
+      [1, 3],
+    ],
+  },
   4: {
     teams: 4,
     races: [
@@ -95,6 +114,15 @@ export type RoundMiniLeagueConfig = {
 // - r2: there are no duplicate r1 references across round 2
 // - ko: there are no diplicate r2 references across knockouts
 export const raceConfig: RoundConfig = {
+  3: {
+    round1: [
+      {
+        name: "A",
+        seeds: [1, 2, 3],
+        miniLeague: "3full",
+      },
+    ]
+  },
   4: {
     round1: [
       {

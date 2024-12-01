@@ -67,10 +67,10 @@ function ManageNewInternal() {
         })
         const lowDivisions = Object.entries(divisionCounts)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          .filter(([_, count]) => count < 4)
+          .filter(([_, count]) => count < 3)
           .map(([division]) => division)
         if (lowDivisions.length > 0) {
-          return [false, "Divisions must have at least 4 teams: " + lowDivisions.join(", ")]
+          return [false, "Divisions must have at least 3 teams: " + lowDivisions.join(", ")]
         }
 
         const lc = k.leagueConfig()
