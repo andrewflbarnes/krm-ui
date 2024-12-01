@@ -1,9 +1,9 @@
 import { Box, Button, Stack } from "@suid/material"
-import { createEffect, createSignal, lazy, onCleanup, Show } from "solid-js"
+import { createEffect, createSignal, ErrorBoundary, lazy, onCleanup, Show } from "solid-js"
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
-import { ClubSeeding, Division, RoundSeeding, useKings } from "../kings"
+import { ClubSeeding, Division, LeagueData, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
@@ -11,17 +11,30 @@ import { orderSeeds } from "../kings/utils"
 import { useNavigate } from "@solidjs/router"
 
 export default function ManageNew() {
-  const [k, { addLeagueTeams, lock, unlock }] = useKings()
-  onCleanup(() => unlock())
+  return (
+    <ErrorBoundary fallback={e => <div>Something went wrong :( {e.message}</div>}>
+      <ManageNewInternal />
+    </ErrorBoundary>
+  )
+}
 
-  const [numTeams, setNumTeams] = createStore<ClubSeeding>(Object.keys(k.leagueConfig()).reduce((acc, club) => {
+function initConfig(leagueConfig?: LeagueData) {
+  return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
     acc[club] = {
       mixed: 0,
       ladies: 0,
       board: 0,
     }
     return acc
-  }, {}))
+  }, {})
+}
+
+function ManageNewInternal() {
+  const [k, { addLeagueTeams, lock, unlock }] = useKings()
+  onCleanup(() => unlock())
+
+  const [numTeams, setNumTeams] = createStore<ClubSeeding>(initConfig(k.leagueConfig()))
+  createEffect(() => setNumTeams(initConfig(k.leagueConfig())))
 
   const handleTeamNumsUpdate = (club: string, division: Division, count: number) => {
     setNumTeams(club, { [division]: count })

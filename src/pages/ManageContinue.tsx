@@ -1,9 +1,10 @@
 import { ArrowRight, Assignment, MoreVert } from "@suid/icons-material";
 import { Chip, IconButton, Menu, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
-import { createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import krmApi from "../api/krm";
 import Link from "../components/Link";
 import ModalConfirmAction from "../components/ModalConfirmAction";
+import { useKings } from "../kings";
 
 const statusColor = {
   "Abandoned": "error",
@@ -11,13 +12,16 @@ const statusColor = {
   "Complete": "success",
 }
 
-function getSortedRounds() {
-  const unsortedRounds = krmApi.getRounds();
+function getSortedRounds(league: string) {
+  console.log("getSortedRounds", league)
+  const unsortedRounds = krmApi.getRounds(league);
   return unsortedRounds.sort((a, b) => b.date.getTime() - a.date.getTime())
 }
 
 export default function ManageContinue() {
-  const [rounds, setRounds] = createSignal(getSortedRounds())
+  const [k] = useKings()
+  const [rounds, setRounds] = createSignal(getSortedRounds(k.league()))
+  createEffect(() => setRounds(getSortedRounds(k.league())))
 
   const handleMore = (id: number, e: MouseEvent & { currentTarget: HTMLButtonElement }) => {
     e.stopPropagation()
@@ -44,7 +48,7 @@ export default function ManageContinue() {
   }
   const handleDeleteRound = () => {
     krmApi.deleteRound(deleteRound())
-    setRounds(getSortedRounds())
+    setRounds(getSortedRounds(k.league()))
     setDeleteRound()
   }
   return (

@@ -1,6 +1,6 @@
 import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
 import { Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableContainer, Typography } from "@suid/material";
-import { createEffect, createMemo, createSignal, ErrorBoundary, For, Show, Suspense } from "solid-js";
+import { createEffect, createMemo, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Round } from "../api/krm";
 import { raceConfig, miniLeagueConfig, RoundMiniLeagueConfig, MiniLeagueConfig, Division } from "../kings";

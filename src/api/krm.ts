@@ -21,7 +21,7 @@ export type KrmApi = {
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
   createRound(league: League, teams: RoundSeeding): Round;
-  getRounds(): RoundInfo[];
+  getRounds(league?: string): RoundInfo[];
   getRound(id: string): Round;
   deleteRound(id: string): void;
 }
@@ -73,12 +73,13 @@ export default (function krmApiLocalStorage(): KrmApi {
       localStorage.setItem(keyRoundIds, JSON.stringify(roundIds))
       return round
     },
-    getRounds(): RoundInfo[] {
+    getRounds(league?: string): RoundInfo[] {
       const ids = JSON.parse(localStorage.getItem(getStorageKeyRounds()) ?? "[]") as string[]
       // Wasteful but should be fine - can always convert to async for perf
       return ids
-        .map(id => this.getRound(id))
+        .map(id => this.getRound(id) as Round)
         .filter(round => !!round)
+        .filter(round => !league || round.league === league)
         .map(round => {
           return {
             ...round,
