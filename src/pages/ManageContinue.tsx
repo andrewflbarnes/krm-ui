@@ -11,9 +11,13 @@ const statusColor = {
   "Complete": "success",
 }
 
-export default function ManageContinue() {
+function getSortedRounds() {
   const unsortedRounds = krmApi.getRounds();
-  const rounds = unsortedRounds.sort((a, b) => b.date.getTime() - a.date.getTime())
+  return unsortedRounds.sort((a, b) => b.date.getTime() - a.date.getTime())
+}
+
+export default function ManageContinue() {
+  const [rounds, setRounds] = createSignal(getSortedRounds())
 
   const handleMore = (id: number, e: MouseEvent & { currentTarget: HTMLButtonElement }) => {
     e.stopPropagation()
@@ -39,7 +43,8 @@ export default function ManageContinue() {
     setMenuId(-1)
   }
   const handleDeleteRound = () => {
-    alert("todo")
+    krmApi.deleteRound(deleteRound())
+    setRounds(getSortedRounds())
     setDeleteRound()
   }
   return (
@@ -47,9 +52,11 @@ export default function ManageContinue() {
     <ModalConfirmAction
       open={!!deleteRound()}
       onDiscard={() => setDeleteRound()}
+      confirmLabel="Delete"
+      discardLabel="Cancel"
       onConfirm={() => handleDeleteRound()}
     >
-      Are you sure you want to delete this round?
+      Are you sure you want to delete this round? This action cannot be undone!
     </ModalConfirmAction>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
@@ -65,7 +72,7 @@ export default function ManageContinue() {
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={rounds}>{(round, id) => {
+            <For each={rounds()}>{(round, id) => {
               const ariaId = () => `round-selector-menu-${id()}`
               return (
                 <TableRow>
