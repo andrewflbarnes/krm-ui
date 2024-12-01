@@ -3,6 +3,7 @@ import { Chip, IconButton, Menu, MenuItem, Paper, Stack, Table, TableBody, Table
 import { createSignal, For, Show } from "solid-js";
 import krmApi from "../api/krm";
 import Link from "../components/Link";
+import ModalConfirmAction from "../components/ModalConfirmAction";
 
 const statusColor = {
   "Abandoned": "error",
@@ -32,87 +33,105 @@ export default function ManageContinue() {
     alert(msg)
   }
 
+  const [deleteRound, setDeleteRound] = createSignal<string | null>();
+  const handleConfirmDelete = (id: string) => {
+    setDeleteRound(id)
+    setMenuId(-1)
+  }
+  const handleDeleteRound = () => {
+    alert("todo")
+    setDeleteRound()
+  }
   return (
-    <TableContainer component={Paper}>
-      <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
-        <TableHead>
-          <TableRow>
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell />
-            <TableCell align="center">Mixed</TableCell>
-            <TableCell align="center">Ladies</TableCell>
-            <TableCell align="center">Board</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          <For each={rounds}>{(round, id) => {
-            const ariaId = () => `round-selector-menu-${id()}`
-            return (
-              <TableRow>
-                <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
-                  <Stack direction="row" gap="1em" alignItems="center">
-                    <IconButton
-                      id={`round-selector-button-${id()}`}
-                      size="small"
-                      onClick={[handleMore, id()]}
-                      aria-controls={ariaId()}
-                      aria-haspopup="true"
-                      aria-expanded={menuId() == id() || undefined}
-                    >
-                      <MoreVert />
-                    </IconButton>
-                    <Show when={round.status != "In Progress"}>
-                      <Link href={`/${round.id}`}>
-                        <IconButton>
-                          <Assignment />
-                        </IconButton>
-                      </Link>
-                    </Show>
-                    <Show when={round.status == "In Progress"}>
-                      <Link href={`/${round.id}`}>
-                        <IconButton>
-                          <ArrowRight color="success" />
-                        </IconButton>
-                      </Link>
-                    </Show>
-                    <Menu
-                      id={ariaId()}
-                      anchorEl={anchorEl()}
-                      open={menuId() == id()}
-                      onClose={handleClose}
-                      MenuListProps={{ "aria-labelledby": "league-selector-button" }}
-                    >
-                      <MenuItem onClick={() => todo('todo')}>Export</MenuItem>
-                      <MenuItem onClick={() => todo('todo - but probably not!')}>Delete</MenuItem>
-                    </Menu>
-                    {round.date.toLocaleDateString()}
-                  </Stack>
-                </TableCell>
-                <TableCell sx={{ width: "1%", minWidth: "fit-content" }} padding="none">
-                  <Chip size="small" label={round.league} color="primary" variant="outlined" />
-                </TableCell>
-                <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
-                  <Chip size="small" label={round.status} color={statusColor[round.status] ?? "warning"} variant="outlined" />
-                </TableCell>
-                <TableCell align="left">
-                  {round.description}
-                </TableCell>
-                <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
-                  {round.teams["mixed"].length}
-                </TableCell>
-                <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
-                  {round.teams["ladies"].length}
-                </TableCell>
-                <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
-                  {round.teams["board"].length}
-                </TableCell>
-              </TableRow>
-            )
-          }}</For>
-        </TableBody>
-      </Table>
-    </TableContainer>
+    <>
+    <ModalConfirmAction
+      open={!!deleteRound()}
+      onDiscard={() => setDeleteRound()}
+      onConfirm={() => handleDeleteRound()}
+    >
+      Are you sure you want to delete this round?
+    </ModalConfirmAction>
+      <TableContainer component={Paper}>
+        <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
+          <TableHead>
+            <TableRow>
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell />
+              <TableCell align="center">Mixed</TableCell>
+              <TableCell align="center">Ladies</TableCell>
+              <TableCell align="center">Board</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            <For each={rounds}>{(round, id) => {
+              const ariaId = () => `round-selector-menu-${id()}`
+              return (
+                <TableRow>
+                  <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
+                    <Stack direction="row" gap="1em" alignItems="center">
+                      <IconButton
+                        id={`round-selector-button-${id()}`}
+                        size="small"
+                        onClick={[handleMore, id()]}
+                        aria-controls={ariaId()}
+                        aria-haspopup="true"
+                        aria-expanded={menuId() == id() || undefined}
+                      >
+                        <MoreVert />
+                      </IconButton>
+                      <Show when={round.status != "In Progress"}>
+                        <Link href={`/${round.id}`}>
+                          <IconButton>
+                            <Assignment />
+                          </IconButton>
+                        </Link>
+                      </Show>
+                      <Show when={round.status == "In Progress"}>
+                        <Link href={`/${round.id}`}>
+                          <IconButton>
+                            <ArrowRight color="success" />
+                          </IconButton>
+                        </Link>
+                      </Show>
+                      <Menu
+                        id={ariaId()}
+                        anchorEl={anchorEl()}
+                        open={menuId() == id()}
+                        onClose={handleClose}
+                        MenuListProps={{ "aria-labelledby": "league-selector-button" }}
+                      >
+                        <MenuItem onClick={() => todo('todo')}>Export</MenuItem>
+                        <MenuItem onClick={() => handleConfirmDelete(round.id)}>Delete</MenuItem>
+                      </Menu>
+                      {round.date.toLocaleDateString()}
+                    </Stack>
+                  </TableCell>
+                  <TableCell sx={{ width: "1%", minWidth: "fit-content" }} padding="none">
+                    <Chip size="small" label={round.league} color="primary" variant="outlined" />
+                  </TableCell>
+                  <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
+                    <Chip size="small" label={round.status} color={statusColor[round.status] ?? "warning"} variant="outlined" />
+                  </TableCell>
+                  <TableCell align="left">
+                    {round.description}
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
+                    {round.teams["mixed"].length}
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
+                    {round.teams["ladies"].length}
+                  </TableCell>
+                  <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
+                    {round.teams["board"].length}
+                  </TableCell>
+                </TableRow>
+              )
+            }}</For>
+          </TableBody>
+        </Table>
+      </TableContainer>
+    </>
   )
 }
