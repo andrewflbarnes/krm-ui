@@ -6,6 +6,7 @@ import { lazy, ParentProps } from "solid-js";
 import { createTheme, ThemeProvider } from "@suid/material";
 import AppLayout from "./AppLayout";
 const Home = lazy(() => import("./pages/Home"));
+const Developer = lazy(() => import("./pages/Developer"));
 const RaceManager = lazy(() => import("./pages/Manage"));
 const ConfigManager = lazy(() => import("./pages/ConfigManager"));
 const Tracker = lazy(() => import("./pages/Tracker"));
@@ -35,6 +36,7 @@ export default function App() {
         <Route path="/config" component={ConfigManager} info={{ breadcrumb: "Config" }} />
         <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
         <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
+        <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }} />
         <Route path="/:raceid" component={RunRace} info={{ breadcrumb: "Race" }} />
         <Route path="*404" component={Status404} info={{ breadcrumb: "OOPS!" }} />
       </Router>
