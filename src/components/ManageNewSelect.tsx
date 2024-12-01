@@ -1,5 +1,5 @@
 import { Add } from "@suid/icons-material"
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField } from "@suid/material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment } from "@suid/material"
 import { batch, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
 import { ClubSeeding, Division, divisions, useKings } from "../kings"
@@ -78,10 +78,19 @@ function TeamSelector(props: ComponentProps) {
             }}</For>
             <TableRow>
               <TableCell>
-                <IconButton onClick={addTeam} disabled={newTeam()?.length == 0} size="small" color="info">
-                  <Add />
-                </IconButton>
-                <TextField size="small" variant="outlined" value={newTeam()} onChange={e => setNewTeam(e.target.value)} />
+                <TextField
+                  size="small"
+                  variant="outlined"
+                  value={newTeam()}
+                  onChange={e => setNewTeam(e.target.value)}
+                  InputProps={{
+                    startAdornment: <InputAdornment position="start">
+                      <IconButton onClick={addTeam} disabled={newTeam()?.length == 0} size="small" color="info">
+                        <Add />
+                      </IconButton>
+                    </InputAdornment>
+                  }}
+                />
               </TableCell>
               <TableCell />
               <TableCell />
