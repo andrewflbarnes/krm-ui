@@ -16,8 +16,6 @@ export type RoundInfo = Omit<Round, "races">
 // TODO transition to async so we can support indexedDB and an eventual API
 // TODO transition to tanstack query
 export type KrmApi = {
-  saveSelectedLeague(league: League): void;
-  getSelectedLeague(): League | null;
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
   createRound(league: League, teams: RoundSeeding): Round;
@@ -31,10 +29,6 @@ export default (function krmApiLocalStorage(): KrmApi {
     return "kings-round-ids"
   }
 
-  function getStorageKeyLeague() {
-    return "kings-selected-league"
-  }
-
   function getStorageKeyLeagueConfig(league: League) {
     return `kings-${league}-config`
   }
@@ -43,12 +37,6 @@ export default (function krmApiLocalStorage(): KrmApi {
     return `${league}-${new Date().getTime()}`
   }
   return {
-    saveSelectedLeague(league: League) {
-      localStorage.setItem(getStorageKeyLeague(), league)
-    },
-    getSelectedLeague(): League | null {
-      return localStorage.getItem(getStorageKeyLeague()) as League | null
-    },
     saveLeagueConfig(league: League, config: LeagueData) {
       localStorage.setItem(getStorageKeyLeagueConfig(league), JSON.stringify(config))
     },

@@ -5,15 +5,28 @@ import kings from "./config"
 import { LeagueData } from "./types";
 import krmApi from "../api/krm"
 
+function getStorageKeyLeague() {
+  return "kings-selected-league"
+}
+
+const localStorageContext = {
+  getSelectedLeague() {
+    return localStorage.getItem(getStorageKeyLeague()) as League | undefined
+  },
+  saveSelectedLeague(league: League) {
+    localStorage.setItem(getStorageKeyLeague(), league)
+  },
+}
+
 const makeContext = (initLeague?: League) => {
   let league = initLeague
   if (!kings[league]) {
-    league = krmApi.getSelectedLeague()
+    league = localStorageContext.getSelectedLeague()
   }
   if (!kings[league]) {
     league = leagues[0]
   }
-  krmApi.saveSelectedLeague(league)
+  localStorageContext.saveSelectedLeague(league)
   const [lock, setLock] = createSignal(false)
   const [selectedLeague, setSelectedLeague] = createSignal(league);
   const [config, setConfig] = createSignal(kings[league]);
@@ -54,15 +67,17 @@ export function useKings() {
   const [, setSearchParams] = useSearchParams()
   const setLeagueEnhanced = (league: League) => {
     if (state.lock()) {
-      // TODO alert?
+      // TODO notify user/throw error
+      console.error("Attempt to change league but lock in place", state.league(), league)
       return
     }
     if (!kings[league]) {
-      // TODO alert?
+      // TODO notify user/throw error
+      console.error("No config exists for requested league", league, Object.keys(kings))
       return
     }
     actions.setLeague(league)
-    krmApi.saveSelectedLeague(league)
+    localStorageContext.saveSelectedLeague(league)
     const lc = krmApi.getLeagueConfig(league)
     actions.setLeagueConfig(lc)
     setSearchParams({ league })

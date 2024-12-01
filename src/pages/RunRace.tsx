@@ -1,11 +1,20 @@
 import { useParams } from "@solidjs/router"
-import { Typography } from "@suid/material"
 import { createQuery } from "@tanstack/solid-query"
-import { ErrorBoundary, Match, Suspense, Switch } from "solid-js"
+import { ErrorBoundary, Match, onCleanup, onMount, Suspense, Switch } from "solid-js"
 import krmApi, { Round } from "../api/krm"
 import RunRaceInProgress from "../components/RunRaceInProgress"
+import RunRaceComplete from "../components/RunRaceComplete"
+import { useKings } from "../kings"
 
 export default function RunRace() {
+  const [, { lock, unlock }] = useKings()
+  // We lock as an indicator to the user that the it doesn't make sense to be
+  // able to change league while they are running races, even though changing
+  // it has no impact.
+  // TODO sync the race in progress with the selected league or display an
+  // error if the current league does not "own" the race in progress e.g. on nav
+  onMount(() => lock())
+  onCleanup(() => unlock())
   const params = useParams()
   const query = createQuery<Round>(() => ({
     queryKey: [`round-${params.raceid}`],
@@ -22,15 +31,7 @@ export default function RunRace() {
           <Match when={query.isLoading}>Loading...</Match>
           <Match when={!query.isSuccess || !query.data}>Races not found :(</Match>
           <Match when={query.data.status != "In Progress"}>
-            <Typography>
-              TODO Races are complete for this {query.data.league} round.
-            </Typography>
-            <Typography>
-              Date: {query.data.date.toLocaleDateString()}
-            </Typography>
-            <Typography>
-              {query.data.description}
-            </Typography>
+            <RunRaceComplete round={query.data} />
           </Match>
           <Match when={query.data.status == "In Progress"}>
             <RunRaceInProgress round={query.data} />
