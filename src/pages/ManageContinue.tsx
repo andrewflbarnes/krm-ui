@@ -13,7 +13,6 @@ const statusColor = {
 }
 
 function getSortedRounds(league: string) {
-  console.log("getSortedRounds", league)
   const unsortedRounds = krmApi.getRounds(league);
   return unsortedRounds.sort((a, b) => b.date.getTime() - a.date.getTime())
 }

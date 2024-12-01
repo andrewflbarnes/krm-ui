@@ -1,7 +1,7 @@
 import { useParams } from "@solidjs/router"
 import { Typography } from "@suid/material"
 import { createQuery } from "@tanstack/solid-query"
-import { createEffect, ErrorBoundary, Match, Suspense, Switch } from "solid-js"
+import { ErrorBoundary, Match, Suspense, Switch } from "solid-js"
 import krmApi, { Round } from "../api/krm"
 import RunRaceInProgress from "../components/RunRaceInProgress"
 
@@ -14,8 +14,6 @@ export default function RunRace() {
     }),
     staleTime: 1000 * 60 * 5,
   }))
-
-  createEffect(() => console.log('qd', JSON.stringify(query.data)))
 
   return (
     <ErrorBoundary fallback={e => e}>

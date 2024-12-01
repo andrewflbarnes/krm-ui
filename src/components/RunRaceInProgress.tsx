@@ -1,5 +1,5 @@
 import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
-import { Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { Button, ButtonGroup, Chip, FormControlLabel, Paper, Stack, Switch, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { createEffect, createMemo, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Round } from "../api/krm";
@@ -76,7 +76,6 @@ const orderRaces = (divisionRaces: DivisionRaces, splits: number) => {
 }
 
 export default function RunRaceInProgress(props: { round: Round }) {
-  createEffect(() => console.log('rendering RunRaceInProgress', JSON.stringify(props.round)))
   return (
     <ErrorBoundary fallback={e => (
       <>
@@ -115,9 +114,15 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       rd[race.division][race.group][race.groupRace][field] = value
     }))
   }
-  createEffect(() => console.log("RENDER", orderedRaces().length, results.board))
   return (
     <>
+      <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
+        <ButtonGroup>
+          <Button variant="contained">Round 1</Button>
+          <Button disabled>Round 2</Button>
+          <Button disabled>Knockouts</Button>
+        </ButtonGroup>
+      </div>
       {props.round.date} {props.round.league}
       <Stack>
         Race List
@@ -154,7 +159,6 @@ function RaceTableRow(props: {
   result?: Result;
   resultSetter: ResultSetter;
 }) {
-  createEffect(() => console.log('rendering race', props.race.division, props.race.group, props.race.groupRace))
   const setWinner = (winner?: 1 | 2) => {
     props.resultSetter(props.race, 'winner', winner)
   }
