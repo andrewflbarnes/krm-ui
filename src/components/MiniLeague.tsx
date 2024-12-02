@@ -6,6 +6,8 @@ const borderColour = "dimgray"
 const borderStyle = "2px solid"
 const checkSize = "2em"
 const dimOpacity = 0.4
+const dimDelay = "1s"
+const dimIn = "0.3s"
 
 type MiniLeagueProps = {
   name: string;
@@ -94,7 +96,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
               <div
                 style={{
                   opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
-                  transition: "opacity 0.1s",
+                  transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" :dimIn,
+                  "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
                 }}
               >
                 {team}
@@ -135,8 +138,9 @@ export default function MiniLeague(props: MiniLeagueProps) {
                         position: "relative",
                         height: checkSize,
                         width: checkSize,
-                        opacity: highlight() && !highlightRace(raceDetails.idx) ? dimOpacity : 1,
-                        transition: "opacity 0.1s",
+                        opacity: highlight() != null && !highlightRace(raceDetails.idx) ? dimOpacity : 1,
+                        transition: highlight() != null && !highlightRace(raceDetails.idx) ? dimIn : "0s",
+                        "transition-delay": highlight() != null && !highlightRace(raceDetails.idx) ? dimDelay : "0s",
                       }}
                       onClick={() => props.onResultChange({
                         raceIndex: raceDetails.idx,
