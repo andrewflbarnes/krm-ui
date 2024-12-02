@@ -4,7 +4,6 @@ import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
 
 function getSortedRounds(league: string) {
-  console.log('sorted rounds', league)
   const unsortedRounds = krmApi.getRounds(league);
   return unsortedRounds.sort((a, b) => b.date.getTime() - a.date.getTime())
 }

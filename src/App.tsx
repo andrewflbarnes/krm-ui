@@ -36,7 +36,9 @@ export default function App() {
         <Route path="/config" component={ConfigManager} info={{ breadcrumb: "Config" }} />
         <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
         <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
-        <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }} />
+        <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
+          <Route path="/:devview?" />
+        </Route>
         <Route path="/:raceid" component={RunRace} info={{ breadcrumb: "Race" }} />
         <Route path="*404" component={Status404} info={{ breadcrumb: "OOPS!" }} />
       </Router>

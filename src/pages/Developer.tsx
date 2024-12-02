@@ -1,95 +1,50 @@
+import { useNavigate, useParams } from "@solidjs/router";
 import { Button, ButtonGroup } from "@suid/material";
-import { createSelector, createSignal, For, Match, Switch, Show } from "solid-js";
+import { createSelector, For, Show } from "solid-js";
+import { Dynamic } from "solid-js/web";
+import DeveloperConfig from "../components/DeveloperConfig";
+import DeveloperData from "../components/DeveloperData";
+import DeveloperUIComponents from "../components/DeveloperUIComponents";
+
+const devViews = [
+  {
+    href: "config",
+    title: "Config",
+    component: DeveloperConfig,
+  },
+  {
+    href: "data",
+    title: "Data",
+    component: DeveloperData,
+  },
+  {
+    href: "ui",
+    title: "UI Components",
+    component: DeveloperUIComponents,
+  },
+]
 
 export default function Developer() {
-  const [view, setView] = createSignal("c")
-  const selected = createSelector(view)
+  const p = useParams<{ devview?: string }>()
+  const selected = createSelector(() => p.devview)
+  const nav = useNavigate()
   return (
     <>
       <div style={{ display: "flex", "justify-content": "center" }}>
         <ButtonGroup>
-          <Button
-            onClick={[setView, "conf"]}
-            variant={selected("conf") ? "contained" : "outlined"}
-          >
-            Config
-          </Button>
-          <Button
-            onClick={[setView, "data"]}
-            variant={selected("data") ? "contained" : "outlined"}
-          >
-            Data
-          </Button>
-          <Button
-            onClick={[setView, "ui"]}
-            variant={selected("ui") ? "contained" : "outlined"}
-          >
-            UI Components
-          </Button>
+          <For each={devViews}>{view =>
+            <Button
+              variant={selected(view.href) ? "contained" : "outlined"}
+              onClick={() => nav(view.href)}
+            >
+            {view.title}
+            </Button>
+          }</For>
         </ButtonGroup>
       </div>
-      <Switch>
-        <Match when={selected("conf")}>
-          <div>Config</div>
-        </Match>
-        <Match when={selected("data")}>
-          <DeveloperData />
-        </Match>
-        <Match when={selected("ui")}>
-          <div>ui</div>
-        </Match>
-      </Switch>
+      <Show when={p.devview}>
+        <Dynamic component={devViews.find(v => v.href === p.devview)?.component} />
+      </Show>
     </>
-  )
-}
-
-function DeveloperData() {
-  const [show, setShow] = createSignal("")
-  const selected = createSelector(show)
-  return (
-    <div style={{ display: "flex", "flex-direction": "column", "align-items": "start" }}>
-      <Button onClick={[setShow, selected("league") ? "" : "league"]}>
-        kings-selected-league
-      </Button>
-      <Show when={selected("league")}>
-        <pre>
-          {localStorage.getItem("kings-selected-league")}
-        </pre>
-      </Show>
-      <For each={["western", "northern", "southern", "midlands"]}>{league =>
-        <>
-          <Button onClick={[setShow, selected(league) ? "" : league]}>
-            kings-{league}-config
-          </Button>
-          <Show when={selected(league)}>
-            <pre>
-              {JSON.stringify(JSON.parse(localStorage.getItem(`kings-${league}-config`)), null, 2)}
-            </pre>
-          </Show>
-        </>
-      }</For>
-      <Button onClick={[setShow, selected("ids") ? "" : "ids"]}>
-        kings-round-ids
-      </Button>
-      <Show when={selected("ids")}>
-        <pre>
-          {JSON.stringify(JSON.parse(localStorage.getItem("kings-round-ids")), null, 2)}
-        </pre>
-      </Show>
-      <For each={JSON.parse(localStorage.getItem("kings-round-ids"))}>
-        {(id: string) => (
-          <>
-            <Button onClick={[setShow, selected(id) ? "" : id]}>
-              {id}
-            </Button>
-            <Show when={selected(id)}>
-              <pre>
-                {JSON.stringify(JSON.parse(localStorage.getItem(id)), null, 2)}
-              </pre>
-            </Show>
-          </>
-        )}
-      </For>
-    </div>
   )
 }
