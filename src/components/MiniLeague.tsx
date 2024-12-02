@@ -13,9 +13,10 @@ type MiniLeagueProps = {
     t2Dsq?: string;
   } | undefined>;
   onResultChange: (result: {
-    winner: string;
-    winnerIdx: number;
-    winnerOrd: 0 | 1 | 2;
+    raceIndex: number;
+    winner: undefined | string;
+    winnerIdx: undefined | number;
+    winnerOrd: undefined | 1 | 2;
   }) => void;
 }
 
@@ -73,7 +74,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
     <Typography>
       <table style={{ "border-spacing": "3px 0", "border-right": "1px solid #404040" }}>
         <caption style={{ "text-align": "left" }}>Group {props.name}</caption>
-        <For each={props.teams}>{(team) => (
+        <For each={props.teams}>{(team, teamIndex) => (
           <tr>
             <th style={{ "text-align": "left", position: "relative", height: "2em", width: "10em" }} scope="row">
               <div>
@@ -116,10 +117,16 @@ export default function MiniLeague(props: MiniLeagueProps) {
                         height: "2em",
                         width: "2em",
                       }}
+                      onClick={() => props.onResultChange({
+                        raceIndex: raceDetails.idx,
+                        winner: team,
+                        winnerIdx: teamIndex(),
+                        winnerOrd: ti,
+                      })}
                     >
                       <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
                         <Show when={props.results[raceDetails.idx]?.winner === ti} fallback={<CheckCircleOutline />}>
-                          <CheckCircle />
+                          <CheckCircle color="success" />
                         </Show>
                       </div>
                     </td>

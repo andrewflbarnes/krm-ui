@@ -105,6 +105,20 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       rd[race.division][race.group][race.groupRace][field] = value
     }))
   }
+  const easySetMlResults = (division: Division, group: string, groupRace: number, winner: undefined | 1 | 2) => {
+    setResults(produce(rd => {
+      if (!rd[division]) {
+        rd[division] = {}
+      }
+      if (!rd[division][group]) {
+        rd[division][group] = {}
+      }
+      if (!rd[division][group][groupRace]) {
+        rd[division][group][groupRace] = {}
+      }
+      rd[division][group][groupRace].winner = winner
+    }))
+  }
 
   const [view, setView] = createSignal<"list" | "mini">("list")
   const selectedView = createSelector(view)
@@ -133,8 +147,10 @@ function RunRaceInProgressInternal(props: { round: Round }) {
                   name={ml.name + " " + div}
                   races={ml.races}
                   teams={props.round.teams[div].filter((_, i) => ml.seeds.includes(i + 1))}
-                  results={[]} // TODO
-                  onResultChange={() => {}} // TODO
+                  results={results[div]?.[ml.name] ?? []}
+                  onResultChange={(e) => {
+                    easySetMlResults(div as Division, ml.name, e.raceIndex, e.winnerOrd)
+                  }}
                 />
               )}</For>
             )}</For>
