@@ -1,11 +1,22 @@
+import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
 import { Typography } from "@suid/material";
-import { createMemo, createSelector, createSignal, For, Match, Switch } from "solid-js";
+import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 
 type MiniLeagueProps = {
   name: string;
   teams: string[];
   races: [number, number][];
   collapsed?: boolean;
+  results: Array<{
+    winner: 0 | 1 | 2;
+    t1Dsq?: string;
+    t2Dsq?: string;
+  } | undefined>;
+  onResultChange: (result: {
+    winner: string;
+    winnerIdx: number;
+    winnerOrd: 0 | 1 | 2;
+  }) => void;
 }
 
 // NOTE: t1idx and t2idx are 1-indexed since this is human understandable when
@@ -60,7 +71,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
   })
   return (
     <Typography>
-      <table style={{ "border-collapse": "collapse", "border-right": "1px solid #404040" }}>
+      <table style={{ "border-spacing": "3px 0", "border-right": "1px solid #404040" }}>
         <caption style={{ "text-align": "left" }}>Group {props.name}</caption>
         <For each={props.teams}>{(team) => (
           <tr>
@@ -88,6 +99,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   }
                 }
               }
+              const ti = raceDetails?.t1 == team ? 1 : 2
               return (
                 <Switch>
                   <Match when={!!raceDetails}>
@@ -95,21 +107,25 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       onMouseEnter={() => setHighlight(raceDetails.idx)}
                       onMouseLeave={() => setHighlight(prev => prev == raceDetails.idx ? null : prev)}
                       style={{
-                        background: "aliceblue",
-                        "border-top": topBorder ? "1px solid #404040" : "",
-                        "border-bottom": botBorder ? "1px solid #404040" : "",
-                        "border-left": highlightRace(raceDetails.idx) ? "3px solid green" : "1px solid #404040",
-                        "border-right": highlightRace(raceDetails.idx) ? "3px solid green" : "",
+                        cursor: "pointer",
+                        "border-top": topBorder ? "2px solid #404040" : "",
+                        "border-bottom": botBorder ? "2px solid #404040" : "",
+                        "border-left": highlightRace(raceDetails.idx) ? "3px solid green" : "3px solid #404040",
+                        "border-right": highlightRace(raceDetails.idx) ? "3px solid green" : "3px solid #404040",
                         position: "relative",
                         height: "2em",
                         width: "2em",
                       }}
                     >
-                      <div />
+                      <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
+                        <Show when={props.results[raceDetails.idx]?.winner === ti} fallback={<CheckCircleOutline />}>
+                          <CheckCircle />
+                        </Show>
+                      </div>
                     </td>
                   </Match>
                   <Match when={!raceDetails}>
-                    <td />
+                    <td style={{ background: "dimgray" }} />
                   </Match>
                 </Switch>
               )

@@ -18,6 +18,8 @@ export default function DeveloperUIComponents() {
 
 const teams = ["Bath 1", "Bristol 2", "Plymouth 1", "Exeter 3", "Aber 1", "Cardiff 2"]
 function MiniLeagueDemo() {
+  const results = []
+  const handleResultChange = (result) => { }
   return (
     <For each={Object.entries(miniLeagueConfig)}>{([name, config]) => {
       const [collapsed, setCollapsed] = createSignal(false)
@@ -28,7 +30,13 @@ function MiniLeagueDemo() {
             control={<Switch checked={collapsed()} onChange={() => setCollapsed(c => !c)} />}
             label="collapsed"
           />
-          <MiniLeague name={name} races={config.races} teams={competingTeams} collapsed={collapsed()} />
+          <MiniLeague
+            name={name}
+            races={config.races}
+            teams={competingTeams} collapsed={collapsed()}
+            results={results}
+            onResultChange={handleResultChange}
+          />
         </div>
       )
     }}</For>
