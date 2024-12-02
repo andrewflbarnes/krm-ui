@@ -1,9 +1,10 @@
 import { Button, ButtonGroup, FormControlLabel, Stack, Switch } from "@suid/material";
-import { createMemo, createSignal, ErrorBoundary } from "solid-js";
+import { createMemo, createSelector, createSignal, Switch as SSwitch, ErrorBoundary, Match, For } from "solid-js";
 import { createStore, produce } from "solid-js/store";
 import { Round } from "../api/krm";
 import { raceConfig, miniLeagueConfig, RoundMiniLeagueConfig, MiniLeagueConfig, Division } from "../kings";
 import { Race, RaceResult } from "../types";
+import MiniLeague from "./MiniLeague";
 import RaceList, { ResultSetter } from "./RaceList";
 
 type AccumulatedConfig = {
@@ -19,7 +20,10 @@ type Results = {
 }
 
 type DivisionRaces = {
-  [divsion in Division]: Race[];
+  [divsion in Division]: {
+    races: Race[];
+    conf: (MiniLeagueConfig[number] & RoundMiniLeagueConfig)[];
+  }
 }
 
 const divisionRaces = (round: Round): DivisionRaces => {
@@ -33,25 +37,26 @@ const divisionRaces = (round: Round): DivisionRaces => {
   }, {} as AccumulatedConfig)
 
   return Object.entries(r1conf).reduce((acc, [division, divisionConf]) => {
-    acc[division] = divisionConf.flatMap(ml => {
-      return ml.races.map((race, i) => ({
-        group: ml.name,
-        groupRace: i,
-        team1: round.teams[division][ml.seeds[race[0] - 1] - 1],
-        team2: round.teams[division][ml.seeds[race[1] - 1] - 1],
-        division,
-      }))
-    })
+    acc[division] = {
+      races: divisionConf.flatMap(ml => {
+        return ml.races.map((race, i) => ({
+          group: ml.name,
+          groupRace: i,
+          team1: round.teams[division][ml.seeds[race[0] - 1] - 1],
+          team2: round.teams[division][ml.seeds[race[1] - 1] - 1],
+          division,
+        }))
+      }),
+      conf: r1conf[division],
+    }
     return acc
-  }, {} as {
-    [division in Division]: Race[]
-  })
+  }, {} as DivisionRaces)
 }
 
 const orderRaces = (divisionRaces: DivisionRaces, splits: number) => {
   const or: Race[] = [];
   for (let i = 0; i < splits; i++) {
-    Object.values(divisionRaces).forEach((races) => {
+    Object.values(divisionRaces).forEach(({ races }) => {
       const size = races.length / splits
       const start = i * size
       const end = Math.min((i + 1) * size, races.length)
@@ -80,9 +85,9 @@ export default function RunRaceInProgress(props: { round: Round }) {
 
 function RunRaceInProgressInternal(props: { round: Round }) {
   const [splits, setSplits] = createSignal(1)
+  const conf = createMemo(() => divisionRaces(props.round))
   const orderedRaces = createMemo(() => {
-    const divRaces = divisionRaces(props.round)
-    return orderRaces(divRaces, splits())
+    return orderRaces(conf(), splits())
   })
   // TODO incremental save
   const [results, setResults] = createStore<Results>({})
@@ -100,6 +105,9 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       rd[race.division][race.group][race.groupRace][field] = value
     }))
   }
+
+  const [view, setView] = createSignal<"list" | "mini">("list")
+  const selectedView = createSelector(view)
   return (
     <>
       <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
@@ -111,19 +119,38 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       </div>
       <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
         <ButtonGroup>
-          <Button variant="contained">Race List</Button>
-          <Button disabled>Mini leagues</Button>
+          <Button onClick={[setView, "list"]} variant={selectedView("list") ? "contained" : "outlined"}>Race List</Button>
+          <Button onClick={[setView, "mini"]} variant={selectedView("mini") ? "contained" : "outlined"}>Mini Leagues</Button>
         </ButtonGroup>
       </div>
       {props.round.date} {props.round.league}
-      <Stack>
-        Race List
-        <FormControlLabel
-          control={<Switch checked={splits() > 1} onChange={() => setSplits(s => s > 1 ? 1 : 3)} />}
-          label="grimify"
-        />
-        <RaceList results={results} orderedRaces={orderedRaces()} onResultUpdate={easySetResults} /> 
-      </Stack>
+      <SSwitch>
+        <Match when={view() === "mini"}>
+          <Stack>
+            <For each={Object.entries(conf())}>{([div, divConf]) => (
+              <For each={divConf.conf}>{(ml) => (
+                <MiniLeague
+                  name={ml.name + " " + div}
+                  races={ml.races}
+                  teams={props.round.teams[div].filter((_, i) => ml.seeds.includes(i + 1))}
+                  results={[]} // TODO
+                  onResultChange={() => {}} // TODO
+                />
+              )}</For>
+            )}</For>
+          </Stack>
+        </Match>
+        <Match when={view() === "list"}>
+          <Stack>
+            Race List
+            <FormControlLabel
+              control={<Switch checked={splits() > 1} onChange={() => setSplits(s => s > 1 ? 1 : 3)} />}
+              label="grimify"
+            />
+            <RaceList results={results} orderedRaces={orderedRaces()} onResultUpdate={easySetResults} />
+          </Stack>
+        </Match>
+      </SSwitch>
     </>
   )
 }
