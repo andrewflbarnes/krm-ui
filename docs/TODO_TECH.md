@@ -13,6 +13,7 @@
 
 ## Should
 
+- [ ] Refactor to a common model for in progress race list and mini league views
 - [ ] Deploy to kingsski.club
 - [ ] Online data sync
 - [ ] Consistent, sensible boundaries of responsiblity between context and api

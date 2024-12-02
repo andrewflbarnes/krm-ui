@@ -5,9 +5,11 @@ import { createMemo, createSelector, createSignal, For, Match, Show, Switch } fr
 const borderColour = "dimgray"
 const borderStyle = "2px solid"
 const checkSize = "2em"
-const dimOpacity = 0.4
-const dimDelay = "1s"
-const dimIn = "0.3s"
+// The below can be used to control dimming all races except the hovered one,
+// though it can be a little janky
+const dimOpacity = 1  // opacity to dim to
+const dimDelay = "0s" // delay before dimming starts
+const dimIn = "0s"    // transition time for dimming
 
 type MiniLeagueProps = {
   name: string;
@@ -123,6 +125,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 }
               }
               const ti = raceDetails?.t1 == team ? 1 : 2
+              const dim = () => highlight() != null && !highlightRace(raceDetails?.idx)
               return (
                 <Switch>
                   <Match when={!!raceDetails}>
@@ -138,9 +141,9 @@ export default function MiniLeague(props: MiniLeagueProps) {
                         position: "relative",
                         height: checkSize,
                         width: checkSize,
-                        opacity: highlight() != null && !highlightRace(raceDetails.idx) ? dimOpacity : 1,
-                        transition: highlight() != null && !highlightRace(raceDetails.idx) ? dimIn : "0s",
-                        "transition-delay": highlight() != null && !highlightRace(raceDetails.idx) ? dimDelay : "0s",
+                        opacity: dim() ? dimOpacity : 1,
+                        transition: `opacity ${dim() ? dimIn : "0s"}`,
+                        "transition-delay": dim() ? dimDelay : "0s",
                       }}
                       onClick={() => props.onResultChange({
                         raceIndex: raceDetails.idx,

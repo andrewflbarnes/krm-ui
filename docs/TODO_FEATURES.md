@@ -9,18 +9,20 @@
 - [x] localStorage for persistence
 - [x] Team selection and seeding
 - [x] Race list 1
+- [x] Race sheet 1
+- [x] Visualise configuration presets for mini leagues
 
 ## Must
 
-- [ ] Race sheet 1
 - [ ] Pre-start team shuffling
 - [ ] Race sheet 2
 - [ ] Race list 2
 - [ ] Knockouts
 - [ ] DSQ tracking
 - [ ] Automatic DSQ resolution
-- [ ] Visualise configuration presets for numbers of teams
-- [ ] Modify configuration presets for numbers of teams
+- [ ] Modify configuration presets for mini leagues
+- [ ] Visualise configuration presets for rounds
+- [ ] Modify configuration presets for rounds
 
 ## Should
 
