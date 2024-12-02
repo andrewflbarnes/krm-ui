@@ -2,6 +2,11 @@ import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
 import { Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 
+const borderColour = "dimgray"
+const borderStyle = "2px solid"
+const checkSize = "2em"
+const dimOpacity = 0.4
+
 type MiniLeagueProps = {
   name: string;
   teams: string[];
@@ -70,14 +75,28 @@ export default function MiniLeague(props: MiniLeagueProps) {
     })
     return ret
   })
+
+  const highlightTeams = createMemo(() => {
+    if (highlight() == null) {
+      return []
+    }
+    const race = props.races[highlight()]
+    return [props.teams[race[0] - 1], props.teams[race[1] - 1]]
+  })
+
   return (
     <Typography>
-      <table style={{ "border-spacing": "3px 0", "border-right": "1px solid #404040" }}>
+      <table style={{ "border-spacing": "3px 0" }}>
         <caption style={{ "text-align": "left" }}>Group {props.name}</caption>
         <For each={props.teams}>{(team, teamIndex) => (
           <tr>
             <th style={{ "text-align": "left", position: "relative", height: "2em", width: "10em" }} scope="row">
-              <div>
+              <div
+                style={{
+                  opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
+                  transition: "opacity 0.1s",
+                }}
+              >
                 {team}
               </div>
             </th>
@@ -109,13 +128,15 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       onMouseLeave={() => setHighlight(prev => prev == raceDetails.idx ? null : prev)}
                       style={{
                         cursor: "pointer",
-                        "border-top": topBorder ? "2px solid #404040" : "",
-                        "border-bottom": botBorder ? "2px solid #404040" : "",
-                        "border-left": highlightRace(raceDetails.idx) ? "3px solid green" : "3px solid #404040",
-                        "border-right": highlightRace(raceDetails.idx) ? "3px solid green" : "3px solid #404040",
+                        "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
+                        "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
+                        "border-left": highlightRace(raceDetails.idx) ? `${borderStyle} green` : `${borderStyle} ${borderColour}`,
+                        "border-right": highlightRace(raceDetails.idx) ? `${borderStyle} green` : `${borderStyle} ${borderColour}`,
                         position: "relative",
-                        height: "2em",
-                        width: "2em",
+                        height: checkSize,
+                        width: checkSize,
+                        opacity: highlight() && !highlightRace(raceDetails.idx) ? dimOpacity : 1,
+                        transition: "opacity 0.1s",
                       }}
                       onClick={() => props.onResultChange({
                         raceIndex: raceDetails.idx,
@@ -132,7 +153,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     </td>
                   </Match>
                   <Match when={!raceDetails}>
-                    <td style={{ background: "dimgray" }} />
+                    <td style={{ background: borderColour }} />
                   </Match>
                 </Switch>
               )

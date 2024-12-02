@@ -2,6 +2,7 @@ import { FormControlLabel, Switch, Typography } from "@suid/material";
 import { createSignal, For, ParentProps } from "solid-js";
 import MiniLeague from "./MiniLeague";
 import { miniLeagueConfig } from "../kings";
+import notification from "../hooks/notification";
 
 export default function DeveloperUIComponents() {
   return (
@@ -18,12 +19,19 @@ export default function DeveloperUIComponents() {
 
 const teams = ["Bath 1", "Bristol 2", "Plymouth 1", "Exeter 3", "Aber 1", "Cardiff 2"]
 function MiniLeagueDemo() {
-  const results = []
-  const handleResultChange = (result) => { }
   return (
     <For each={Object.entries(miniLeagueConfig)}>{([name, config]) => {
       const [collapsed, setCollapsed] = createSignal(false)
       const competingTeams = teams.slice(0, config.teams)
+      const [results, setResults] = createSignal(Array.from(Array(config.teams)))
+      const handleResultChange = (result) => {
+        const newResults = [ ...results()]
+        newResults[result.raceIndex] = {
+          winner: result.winnerOrd,
+        }
+        setResults(newResults)
+        notification.info("Received result change event: " + JSON.stringify(result))
+      }
       return (
         <div style={{ "margin-top": "1em", "margin-bottom": "1em" }}>
           <FormControlLabel
@@ -34,7 +42,7 @@ function MiniLeagueDemo() {
             name={name}
             races={config.races}
             teams={competingTeams} collapsed={collapsed()}
-            results={results}
+            results={results()}
             onResultChange={handleResultChange}
           />
         </div>
