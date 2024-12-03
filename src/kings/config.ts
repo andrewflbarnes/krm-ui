@@ -166,4 +166,18 @@ export const raceConfig: {
       },
     ] satisfies readonly MiniLeagueConfig[],
   },
+  8: {
+    set1: [
+      {
+        name: "A",
+        seeds: [1, 4, 5, 8],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "B",
+        seeds: [2, 3, 6, 7],
+        template: miniLeagueTemplates.mini4,
+      },
+    ] satisfies readonly MiniLeagueConfig[],
+  },
 } as const
