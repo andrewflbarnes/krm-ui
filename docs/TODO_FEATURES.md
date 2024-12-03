@@ -14,6 +14,8 @@
 
 ## Must
 
+- [ ] Mini leagues show wins
+- [ ] Mini leagues show positions
 - [ ] Pre-start team shuffling
 - [ ] Race sheet 2
 - [ ] Race list 2

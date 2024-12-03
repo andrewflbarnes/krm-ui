@@ -23,7 +23,9 @@ function MiniLeagueDemo() {
     <For each={Object.entries(miniLeagueTemplates)}>{([name, config]) => {
       const [collapsed, setCollapsed] = createSignal(false)
       const competingTeams = teams.slice(0, config.teams)
-      const [results, setResults] = createSignal(Array.from(Array(config.teams)))
+      const [results, setResults] = createSignal(Array.from(Array(config.races.length)).map(() => ({
+        winner: undefined,
+      })))
       const handleResultChange = (result) => {
         const newResults = [ ...results()]
         newResults[result.raceIndex] = {
