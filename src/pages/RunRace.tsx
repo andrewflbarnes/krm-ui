@@ -17,7 +17,7 @@ export default function RunRace() {
   onCleanup(() => unlock())
   const params = useParams()
   const query = createQuery<Round>(() => ({
-    queryKey: [`round-${params.raceid}`],
+    queryKey: [params.raceid],
     queryFn: async () => new Promise((res) => {
       res(krmApi.getRound(params.raceid))
     }),

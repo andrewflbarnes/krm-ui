@@ -1,20 +1,13 @@
 import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
 import { Chip, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
-import { Race, RaceResult } from "../types";
+import { Race } from "../kings";
 import styles from "./RaceList.module.css";
 
-export type ResultSetter = <T extends keyof RaceResult>(race: Race, field: T, value: RaceResult[T]) => void
+export type ResultSetter = <T extends keyof Pick<Race, "winner" | "team1Dsq" | "team2Dsq" >>(race: Race, field: T, value: Race[T]) => void
 
 type RaceListProps = {
   orderedRaces: Race[],
-  results: {
-    [division: string]: {
-      [group: string]: {
-        [groupRace: number]: RaceResult
-      }
-    }
-  };
   onResultUpdate: ResultSetter;
 }
 
@@ -28,7 +21,6 @@ export default function RaceList(props: RaceListProps) {
               <RaceTableRow
                 raceNum={raceNum()}
                 race={race}
-                result={props.results[race.division]?.[race.group]?.[race.groupRace]}
                 resultSetter={props.onResultUpdate}
               />
             }</For>
@@ -42,7 +34,6 @@ export default function RaceList(props: RaceListProps) {
 function RaceTableRow(props: {
   raceNum: number;
   race: Race;
-  result?: RaceResult;
   resultSetter: ResultSetter;
 }) {
   const setWinner = (winner?: 1 | 2) => {
@@ -50,14 +41,14 @@ function RaceTableRow(props: {
   }
   const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
-    const t1Dsq = props.result?.team1Dsq
+    const t1Dsq = props.race.team1Dsq
     props.resultSetter(props.race, 'team1Dsq', dsq == 1 ? !t1Dsq : t1Dsq)
-    const t2Dsq = props.result?.team2Dsq
+    const t2Dsq = props.race.team2Dsq
     props.resultSetter(props.race, 'team2Dsq', dsq == 2 ? !t2Dsq : t2Dsq)
   }
-  const team1Dsq = () => props.result?.team1Dsq
-  const team2Dsq = () => props.result?.team2Dsq
-  const winner = () => props.result?.winner
+  const team1Dsq = () => props.race.team1Dsq
+  const team2Dsq = () => props.race.team2Dsq
+  const winner = () => props.race.winner
   // Performance degradations with solid + suid once we start to get to around
   // 20+ rows so we use native elements instead.
   return (

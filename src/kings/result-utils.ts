@@ -1,7 +1,7 @@
 import { divisions } from "./config"
 import { DivisionResults, LeagueData, Result } from "./types"
 
-export function orderResults(a: Result, b: Result): number {
+function orderResults(a: Result, b: Result): number {
   const tot = b.total - a.total
   if (tot !== 0) {
     return tot

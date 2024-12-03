@@ -17,7 +17,7 @@ type MiniLeagueProps = {
   races: [number, number][];
   collapsed?: boolean;
   results: Array<{
-    winner: 0 | 1 | 2;
+    winner?: 1 | 2;
     t1Dsq?: string;
     t2Dsq?: string;
   } | undefined>;

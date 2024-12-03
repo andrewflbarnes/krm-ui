@@ -30,26 +30,27 @@ export default typedConfig
 
 export const leagues: League[] = Object.keys(config) as League[]
 
-export type MiniLeagueConfig = {
-  [k: number | string]: {
-    teams: number;
-    races: [number, number][];
-  }
+export type MiniLeagueTemplate = {
+  readonly teams: number;
+  readonly races: readonly [number, number][];
 }
 
 // TODO testing to validate the below i.e.
 // - the count of teams matches the count of unique teams in races
 // - each unique team races each other
-export const miniLeagueConfig: MiniLeagueConfig = {
-  3: {
+// Naming convention is <type><number of teams>
+// - type: mini - a normal mini league
+// - type: full - a mini league which contains every team from that round
+export const miniLeagueTemplates = {
+  "mini3": {
     teams: 3,
     races: [
       [1, 2],
       [2, 3],
       [3, 1],
-    ],
+    ]satisfies readonly [number, number][],
   },
-  "3full": {
+  "full3": {
     teams: 3,
     races: [
       [1, 2],
@@ -58,47 +59,46 @@ export const miniLeagueConfig: MiniLeagueConfig = {
       [2, 1],
       [3, 2],
       [1, 3],
-    ],
+    ]satisfies readonly [number, number][],
   },
-  4: {
+  "mini4": {
     teams: 4,
     races: [
       [1, 2], [3, 4],
       [2, 3], [4, 1],
       [1, 3], [4, 2]
-    ],
+    ]satisfies readonly [number, number][],
   },
-  5: {
+  "mini5": {
     teams: 5,
     races: [
       [1, 2], [3, 4], [2, 3],
       [4, 5], [5, 1], [4, 2],
       [5, 3], [1, 4], [2, 5], [3, 1]
-    ],
+    ]satisfies readonly [number, number][],
   },
-  6: {
+  "mini6": {
     teams: 6,
     races: [
       [1, 6], [2, 5], [3, 4], [5, 1], [4, 6],
       [3, 2], [1, 4], [5, 3], [2, 6], [3, 1],
       [4, 2], [6, 5], [1, 2], [6, 3], [5, 4],
-    ],
+    ]satisfies readonly [number, number][],
   }
+} as const satisfies {
+  [k: string]: MiniLeagueTemplate
+}
+
+export type MiniLeagueConfig = {
+  readonly name: string;
+  readonly seeds: number[];
+  readonly template: MiniLeagueTemplate;
 }
 
 export type RoundConfig = {
-  [teamCount: number]: {
-    round1: RoundMiniLeagueConfig[];
-    round2?: RoundMiniLeagueConfig[];
-    knockout?: string[];
-  }
-}
-
-export type RoundMiniLeagueConfig = {
-  name: string;
-  seeds: number[];
-  // TODO get exact types for the below using derived types and consts etc.
-  miniLeague: keyof MiniLeagueConfig;
+  readonly set1: MiniLeagueConfig[];
+  readonly set2?: MiniLeagueConfig[];
+  readonly knockout?: string[];
 }
 
 // TODO testing to validate the below i.e.
@@ -113,41 +113,43 @@ export type RoundMiniLeagueConfig = {
 // - r2: the mini league is for the same number of teams as appear in the seeds
 // - r2: there are no duplicate r1 references across round 2
 // - ko: there are no diplicate r2 references across knockouts
-export const raceConfig: RoundConfig = {
+export const raceConfig: {
+  [k: number]: RoundConfig
+} = {
   3: {
-    round1: [
+    set1: [
       {
         name: "A",
         seeds: [1, 2, 3],
-        miniLeague: "3full",
+        template: miniLeagueTemplates.full3,
       },
-    ]
+    ] satisfies readonly MiniLeagueConfig[],
   },
   4: {
-    round1: [
+    set1: [
       {
         name: "A",
         seeds: [1, 2, 3, 4],
-        miniLeague: 4,
+        template: miniLeagueTemplates.mini4,
       },
-    ]
+    ] satisfies readonly MiniLeagueConfig[],
   },
   5: {
-    round1: [
+    set1: [
       {
         name: "A",
         seeds: [1, 2, 3, 4, 5],
-        miniLeague: 5,
+        template: miniLeagueTemplates.mini5,
       },
-    ]
+    ] satisfies readonly MiniLeagueConfig[],
   },
   6: {
-    round1: [
+    set1: [
       {
         name: "A",
         seeds: [1, 2, 3, 4, 5, 6],
-        miniLeague: 6,
+        template: miniLeagueTemplates.mini6,
       },
-    ]
+    ] satisfies readonly MiniLeagueConfig[],
   }
-}
+} as const

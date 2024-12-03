@@ -1,7 +1,7 @@
 import { FormControlLabel, Switch, Typography } from "@suid/material";
 import { createSignal, For, ParentProps } from "solid-js";
 import MiniLeague from "./MiniLeague";
-import { miniLeagueConfig } from "../kings";
+import { miniLeagueTemplates } from "../kings";
 import notification from "../hooks/notification";
 
 export default function DeveloperUIComponents() {
@@ -20,7 +20,7 @@ export default function DeveloperUIComponents() {
 const teams = ["Bath 1", "Bristol 2", "Plymouth 1", "Exeter 3", "Aber 1", "Cardiff 2"]
 function MiniLeagueDemo() {
   return (
-    <For each={Object.entries(miniLeagueConfig)}>{([name, config]) => {
+    <For each={Object.entries(miniLeagueTemplates)}>{([name, config]) => {
       const [collapsed, setCollapsed] = createSignal(false)
       const competingTeams = teams.slice(0, config.teams)
       const [results, setResults] = createSignal(Array.from(Array(config.teams)))

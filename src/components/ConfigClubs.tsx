@@ -1,7 +1,7 @@
 import { Box, List, ListItem, ListItemButton, ListItemText, Modal, Paper } from "@suid/material";
 import { createSignal, For, ParentProps, Show } from "solid-js";
 import { LeagueData, Result } from "../kings";
-import { parseResults } from "../kings/result-utils";
+import { parseResults } from "../kings/utils";
 import ConfigEditTeam, { ToEdit } from "./ConfigEditTeam";
 import DivisionResultsAll from "./DivisionResultsAll";
 import ModalConfirmAction from "./ModalConfirmAction";
