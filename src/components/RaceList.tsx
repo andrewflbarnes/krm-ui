@@ -4,11 +4,9 @@ import { For, Show } from "solid-js";
 import { Race } from "../kings";
 import styles from "./RaceList.module.css";
 
-export type ResultSetter = <T extends keyof Pick<Race, "winner" | "team1Dsq" | "team2Dsq" >>(race: Race, field: T, value: Race[T]) => void
-
 type RaceListProps = {
   orderedRaces: Race[],
-  onResultUpdate: ResultSetter;
+  onRaceUpdate: (race: Race) => void;
 }
 
 export default function RaceList(props: RaceListProps) {
@@ -21,7 +19,7 @@ export default function RaceList(props: RaceListProps) {
               <RaceTableRow
                 raceNum={raceNum()}
                 race={race}
-                resultSetter={props.onResultUpdate}
+                onRaceUpdate={props.onRaceUpdate}
               />
             }</For>
           </TableBody>
@@ -34,17 +32,25 @@ export default function RaceList(props: RaceListProps) {
 function RaceTableRow(props: {
   raceNum: number;
   race: Race;
-  resultSetter: ResultSetter;
+  onRaceUpdate: (race: Race) => void;
 }) {
   const setWinner = (winner?: 1 | 2) => {
-    props.resultSetter(props.race, 'winner', winner)
+    const updated = {
+      ...props.race,
+      winner,
+    }
+    props.onRaceUpdate(updated)
   }
   const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
     const t1Dsq = props.race.team1Dsq
-    props.resultSetter(props.race, 'team1Dsq', dsq == 1 ? !t1Dsq : t1Dsq)
     const t2Dsq = props.race.team2Dsq
-    props.resultSetter(props.race, 'team2Dsq', dsq == 2 ? !t2Dsq : t2Dsq)
+    const updated = {
+      ...props.race,
+      team1Dsq: dsq == 1 ? !t1Dsq : t1Dsq,
+      team2Dsq: dsq == 2 ? !t2Dsq : t2Dsq,
+    }
+    props.onRaceUpdate(updated)
   }
   const team1Dsq = () => props.race.team1Dsq
   const team2Dsq = () => props.race.team2Dsq

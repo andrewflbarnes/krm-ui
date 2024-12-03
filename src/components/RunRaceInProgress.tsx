@@ -2,9 +2,9 @@ import { Button, ButtonGroup, FormControlLabel, Stack, Switch } from "@suid/mate
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createMemo, createSelector, createSignal, Switch as SSwitch, ErrorBoundary, Match, For } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
-import { Division, Race } from "../kings";
+import { Race } from "../kings";
 import MiniLeague from "./MiniLeague";
-import RaceList, { ResultSetter } from "./RaceList";
+import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 
 const orderRaces = (divisionRaces: SetRaces, splits: number) => {
@@ -60,16 +60,13 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     }
   }))
 
-  const easySetResults: ResultSetter = function(race, field, value) {
-    const updated = {
-      ...race,
-      [field]: value,
-    }
+  const handleRaceUpdate = (race: Race) => {
     mut.mutate({
       id: props.round.id,
-      race: updated,
+      race,
     })
   }
+  // TODO consolidate to using the above, move minileaguelist to component
   const easySetMlResults = (race: Race, winner: undefined | 1 | 2) => {
     const updated = {
       ...race,
@@ -124,7 +121,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
               control={<Switch checked={splits() > 1} onChange={() => setSplits(s => s > 1 ? 1 : 3)} />}
               label="grimify"
             />
-            <RaceList orderedRaces={orderedRaces()} onResultUpdate={easySetResults} />
+            <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} />
           </Stack>
         </Match>
       </SSwitch>
