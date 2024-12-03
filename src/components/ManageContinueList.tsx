@@ -4,6 +4,8 @@ import { createSignal, For, Show } from "solid-js";
 import Link from "./Link";
 import ModalConfirmAction from "./ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
+import download from "downloadjs";
+import krmApi from "../api/krm"
 
 const statusColor = {
   "Abandoned": "error",
@@ -30,13 +32,14 @@ export default function ManageContinueList(props: ManageContinueListProps) {
 
   const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);
   const [menuId, setMenuId] = createSignal(-1);
-  const todo = (msg: string) => {
-    setAnchorEl(null);
-    setMenuId(-1);
-    alert(msg)
-  }
 
   const [deleteRound, setDeleteRound] = createSignal<string | null>();
+  const handleConfirmExport = (id: string) => {
+    handleClose()
+    const round = krmApi.getRound(id);
+    const blob = new Blob([JSON.stringify(round, null, 2)], { type: "application/json" })
+    download(blob, `${round.id}.json`)
+  }
   const handleConfirmDelete = (id: string) => {
     setDeleteRound(id)
     setMenuId(-1)
@@ -107,7 +110,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                         onClose={handleClose}
                         MenuListProps={{ "aria-labelledby": "league-selector-button" }}
                       >
-                        <MenuItem onClick={() => todo('todo')}>Export</MenuItem>
+                        <MenuItem onClick={() => handleConfirmExport(round.id)}>Export</MenuItem>
                         <MenuItem onClick={() => handleConfirmDelete(round.id)}>Delete</MenuItem>
                       </Menu>
                       {round.date.toLocaleDateString()}

@@ -12,12 +12,14 @@
     "@suid/icons-material": "^0.8.1",
     "@suid/material": "^0.18.0",
     "@tanstack/solid-query": "^5.60.6",
+    "downloadjs": "^1.4.7",
     "solid-js": "^1.9.3",
     "solid-toast": "^0.5.0"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
     "@suid/vite-plugin": "^0.3.1",
+    "@types/downloadjs": "^1.4.6",
     "eslint": "^9.15.0",
     "eslint-plugin-solid": "^0.14.4",
     "globals": "^15.12.0",

@@ -11,8 +11,6 @@ export default function RunRace() {
   // We lock as an indicator to the user that the it doesn't make sense to be
   // able to change league while they are running races, even though changing
   // it has no impact.
-  // TODO sync the race in progress with the selected league or display an
-  // error if the current league does not "own" the race in progress e.g. on nav
   onMount(() => lock())
   onCleanup(() => unlock())
   const params = useParams()
