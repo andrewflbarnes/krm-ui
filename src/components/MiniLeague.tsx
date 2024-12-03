@@ -1,6 +1,6 @@
 import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
 import { Typography } from "@suid/material";
-import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
+import { createComputed, createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 
 // TODO use theme colors
 const borderColour = "dimgray"
@@ -92,16 +92,65 @@ export default function MiniLeague(props: MiniLeagueProps) {
     return [props.teams[race[0] - 1], props.teams[race[1] - 1]]
   })
 
+  const [teamWins, setTeamWins] = createSignal<{
+    [team: string]: number;
+  }>({})
+  createComputed(() => {
+    const tws = {}
+    const results = props.results
+    props.teams.forEach((team, teamIndex) => {
+      tws[team] = props.races.filter(([t1, t2], ri) =>
+        (t1 == teamIndex + 1 && results[ri].winner == 1) ||
+        (t2 == teamIndex + 1 && results[ri].winner == 2))
+        .length
+    })
+    setTeamWins(tws)
+  })
+
+  const teamPositions = () => {
+    const check = Object.entries(teamWins()).map(([team, wins]) => ({
+      team,
+      wins,
+    }))
+    check.sort((a, b) => b.wins - a.wins)
+    const pos: string[][] = []
+    let lastWins = 999
+    check.forEach(teamPos => {
+      if (teamPos.wins < lastWins) {
+        pos.push([])
+        lastWins = teamPos.wins
+      }
+      pos[pos.length - 1].push(teamPos.team)
+    })
+    return pos
+  }
+
   return (
     <Typography>
       <table style={{ "border-spacing": "3px 0" }}>
         <caption style={{ "text-align": "left" }}>Group {props.name}</caption>
         <For each={props.teams}>{(team, teamIndex) => {
-          console.log(props.teams, props.races, props.results)
-          const wins = () => props.races.filter(([t1, t2], ri) =>
-            (t1 == teamIndex() + 1 && props.results[ri].winner == 1) ||
-            (t2 == teamIndex() + 1 && props.results[ri].winner == 2))
-            .length
+          const wins = () => teamWins()[team]
+          const pos = () => teamPositions().findIndex(p => p.includes(team))
+          const posStr = () => {
+            const p = pos()
+            if (teamPositions()[p].length == props.teams.length) {
+              if (props.results.some(r => !r.winner)) {
+                return ""
+              }
+            }
+            const joint = teamPositions()[p].length > 1 ? "joint " : ""
+            switch (p) {
+              case 0:
+                return `${joint} 1st 🥇`
+              case 1:
+                return `${joint} 2nd 🥈`
+              case 2:
+                return `${joint} 3rd 🥉`
+              default:
+                return `${joint}${p + 1}th`
+            }
+          }
           return (
             <tr>
               <th style={{ "text-align": "left", position: "relative", height: "2em", width: "10em" }} scope="row">
@@ -182,8 +231,11 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 }}
               >
                 <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                  {wins}
+                  {wins()}
                 </div>
+              </td>
+              <td>
+                {posStr()}
               </td>
             </tr>
           )
