@@ -54,7 +54,8 @@ export default (function krmApiLocalStorage(): KrmApi {
   function saveRound(round: Round) {
     localStorage.setItem(round.id, JSON.stringify(round))
     const keyRoundIds = getStorageKeyRounds()
-    const roundIds = JSON.parse(localStorage.getItem(keyRoundIds) ?? "[]") as string[]
+    let roundIds = JSON.parse(localStorage.getItem(keyRoundIds) ?? "[]") as string[]
+    roundIds = roundIds.filter(rid => rid !== round.id)
     roundIds.push(round.id)
     localStorage.setItem(keyRoundIds, JSON.stringify(roundIds))
   }
