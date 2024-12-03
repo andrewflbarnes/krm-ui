@@ -128,14 +128,23 @@ export default function MiniLeague(props: MiniLeagueProps) {
   return (
     <Typography>
       <table style={{ "border-spacing": "3px 0" }}>
-        <caption style={{ "text-align": "left" }}>Group {props.name}</caption>
+        <thead>
+          <tr>
+            <td>Group {props.name}</td>
+            <td colspan={collapsedRaces().length}>
+              <Show when={props.results.every(({ winner }) => !!winner)}>
+                <Typography variant="caption" color="success.main">Complete</Typography>
+              </Show>
+            </td>
+          </tr>
+        </thead>
         <For each={props.teams}>{(team, teamIndex) => {
           const wins = () => teamWins()[team]
           const pos = () => teamPositions().findIndex(p => p.includes(team))
           const posStr = () => {
             const p = pos()
             if (teamPositions()[p].length == props.teams.length) {
-              if (props.results.some(r => !r.winner)) {
+              if (!props.results.some(r => r.winner)) {
                 return ""
               }
             }
