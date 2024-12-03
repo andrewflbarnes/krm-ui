@@ -45,8 +45,8 @@ function TeamSelector(props: ComponentProps) {
 
   return (
     <>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
+      <TableContainer component={Paper} sx={{ justifyContent: "center", display: "flex" }}>
+        <Table sx={{ minWidth: 650, maxWidth: 1024 }} aria-label="simple table dense" size="small">
           <TableHead>
             <TableRow>
               <TableCell>Club</TableCell>
