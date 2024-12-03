@@ -2,7 +2,9 @@ import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
 import { Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 
+// TODO use theme colors
 const borderColour = "dimgray"
+const highlightColour = "lightgreen"
 const borderStyle = "2px solid"
 const checkSize = "2em"
 // The below can be used to control dimming all races except the hovered one,
