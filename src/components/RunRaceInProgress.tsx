@@ -118,6 +118,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           <Stack>
             Race List
             <FormControlLabel
+              sx={{ width: "fit-content" }}
               control={<Switch checked={splits() > 1} onChange={() => setSplits(s => s > 1 ? 1 : 3)} />}
               label="grimify"
             />
