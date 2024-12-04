@@ -1,5 +1,5 @@
 import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
-import { Typography } from "@suid/material";
+import { Menu, MenuItem, Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
 import { calcTeamResults, collapseRaces } from "../kings/utils";
@@ -74,131 +74,153 @@ export default function MiniLeague(props: MiniLeagueProps) {
     return prepos
   })
 
-  return (
-    <Typography>
-      <table style={{ "border-spacing": "3px 0" }}>
-        <thead>
-          <tr>
-            <td>Group {props.name}</td>
-            <td colspan={collapsedRaces().length}>
-              <Show when={props.races.every(({ winner }) => !!winner)}>
-                <Typography variant="caption" color="success.main">Complete</Typography>
-              </Show>
-            </td>
-          </tr>
-        </thead>
-        <For each={props.teams}>{(team, teamIndex) => {
-          const wins = () => teamPositions().wins[team]
-          const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
-          const posStr = () => {
-            const p = pos()
-            if (teamPositions().pos[p].length == props.teams.length) {
-              if (!props.races.some(r => r.winner)) {
-                return ""
-              }
-            }
-            const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
-            switch (p) {
-              case 0:
-                return `${joint} 1st 🥇`
-              case 1:
-                return `${joint} 2nd 🥈`
-              case 2:
-                return `${joint} 3rd 🥉`
-              default:
-                return `${joint}${p + 1}th`
-            }
-          }
-          return (
-            <tr>
-              <th style={{ "text-align": "left", position: "relative", height: "2em", width: "10em" }} scope="row">
-                <div
-                  style={{
-                    opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
-                    transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimIn,
-                    "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
-                  }}
-                >
-                  {team}
-                </div>
-              </th>
-              <For each={collapsedRaces()}>{(races) => {
-                const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
-                let topBorder = false
-                let botBorder = false
-                if (raceDetails) {
-                  const { team1, team2, teamMlIndices: [t1idx, t2idx] } = raceDetails
-                  const needsBorder = !!raceDetails && Math.abs(t1idx - t2idx) > 1
-                  if (needsBorder) {
-                    botBorder = true
-                    topBorder = true
-                  } else {
+  const [anchorEl, setAnchorEl] = createSignal<HTMLTableColElement | null>(null)
 
-                    if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
-                      botBorder = true
-                    } else {
-                      topBorder = true
-                    }
-                  }
-                }
-                const ti = raceDetails?.team1 == team ? 1 : 2
-                const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
-                return (
-                  <Switch>
-                    <Match when={!!raceDetails}>
-                      <td
-                        onMouseEnter={() => setHighlight(raceDetails.groupRace)}
-                        onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
-                        style={{
-                          cursor: "pointer",
-                          "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
-                          "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
-                          "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                          "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                          position: "relative",
-                          height: checkSize,
-                          width: checkSize,
-                          opacity: dim() ? dimOpacity : 1,
-                          transition: `opacity ${dim() ? dimIn : "0s"}`,
-                          "transition-delay": dim() ? dimDelay : "0s",
-                        }}
-                        onClick={() => props.onResultChange({
-                          raceIndex: raceDetails.groupRace,
-                          winner: team,
-                          winnerIdx: teamIndex(),
-                          winnerOrd: ti,
-                        })}
-                      >
-                        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                          <Show when={raceDetails.winner === ti} fallback={<CheckCircleOutline />}>
-                            <CheckCircle color="success" />
-                          </Show>
-                        </div>
-                      </td>
-                    </Match>
-                    <Match when={!raceDetails}>
-                      <td style={{ background: borderColour }} />
-                    </Match>
-                  </Switch>
-                )
-              }}</For>
-              <td
-                style={{
-                  height: checkSize,
-                  width: checkSize,
-                }}
-              >
-                <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                  {wins()}
-                </div>
-              </td>
-              <td>
-                {posStr()}
+  // TODO split up the below into separate components maybe
+  return (
+    <>
+      <Menu
+        //id="league-selector-menu"
+        anchorEl={anchorEl()}
+        open={!!anchorEl()}
+        onClose={() => setAnchorEl(null)}
+        //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
+      >
+        <MenuItem onClick={() => {
+          setAnchorEl(null)
+          alert('todo')
+        }}>dsq</MenuItem>
+      </Menu>
+      <Typography>
+        <table style={{ "border-spacing": "3px 0" }}>
+          <thead>
+            <tr>
+              <td>Group {props.name}</td>
+              <td colspan={collapsedRaces().length}>
+                <Show when={props.races.every(({ winner }) => !!winner)}>
+                  <Typography variant="caption" color="success.main">Complete</Typography>
+                </Show>
               </td>
             </tr>
-          )
-        }}</For>
-      </table>
-    </Typography>
+          </thead>
+          <For each={props.teams}>{(team, teamIndex) => {
+            const wins = () => teamPositions().wins[team]
+            const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
+            const posStr = () => {
+              const p = pos()
+              if (teamPositions().pos[p].length == props.teams.length) {
+                if (!props.races.some(r => r.winner)) {
+                  return ""
+                }
+              }
+              const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
+              switch (p) {
+                case 0:
+                  return `${joint} 1st 🥇`
+                case 1:
+                  return `${joint} 2nd 🥈`
+                case 2:
+                  return `${joint} 3rd 🥉`
+                default:
+                  return `${joint}${p + 1}th`
+              }
+            }
+            return (
+              <tr>
+                <th style={{ "text-align": "left", position: "relative", height: "2em", width: "10em" }} scope="row">
+                  <div
+                    style={{
+                      opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
+                      transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimIn,
+                      "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
+                    }}
+                  >
+                    {team}
+                  </div>
+                </th>
+                <For each={collapsedRaces()}>{(races) => {
+                  const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
+                  let topBorder = false
+                  let botBorder = false
+                  if (raceDetails) {
+                    const { team1, team2, teamMlIndices: [t1idx, t2idx] } = raceDetails
+                    const needsBorder = !!raceDetails && Math.abs(t1idx - t2idx) > 1
+                    if (needsBorder) {
+                      botBorder = true
+                      topBorder = true
+                    } else {
+
+                      if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
+                        botBorder = true
+                      } else {
+                        topBorder = true
+                      }
+                    }
+                  }
+                  const ti = raceDetails?.team1 == team ? 1 : 2
+                  const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
+                  const handleContext = (race: Race, e: MouseEvent) => {
+                    e.preventDefault()
+                    setAnchorEl(e.currentTarget as HTMLTableColElement)
+                  }
+                  return (
+                    <Switch>
+                      <Match when={!!raceDetails}>
+                        <td
+                          onMouseEnter={() => setHighlight(raceDetails.groupRace)}
+                          onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
+                          style={{
+                            cursor: "pointer",
+                            "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
+                            "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
+                            "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                            "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                            position: "relative",
+                            height: checkSize,
+                            width: checkSize,
+                            opacity: dim() ? dimOpacity : 1,
+                            transition: `opacity ${dim() ? dimIn : "0s"}`,
+                            "transition-delay": dim() ? dimDelay : "0s",
+                          }}
+                          onContextMenu={[handleContext, raceDetails]}
+                          onClick={() => props.onResultChange({
+                            raceIndex: raceDetails.groupRace,
+                            winner: team,
+                            winnerIdx: teamIndex(),
+                            winnerOrd: ti,
+                          })}
+                        >
+                          <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
+                            <Show when={raceDetails.winner === ti} fallback={<CheckCircleOutline />}>
+                              <CheckCircle color="success" />
+                            </Show>
+                          </div>
+                        </td>
+                      </Match>
+                      <Match when={!raceDetails}>
+                        <td style={{ background: borderColour }} />
+                      </Match>
+                    </Switch>
+                  )
+                }}</For>
+                <td
+                  style={{
+                    height: checkSize,
+                    width: checkSize,
+                  }}
+                >
+                  <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
+                    {wins()}
+                  </div>
+                </td>
+                <td>
+                  {posStr()}
+                </td>
+              </tr>
+            )
+          }}</For>
+        </table>
+      </Typography>
+    </>
   )
 }
