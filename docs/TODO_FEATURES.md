@@ -11,16 +11,20 @@
 - [x] Race list 1
 - [x] Race sheet 1
 - [x] Visualise configuration presets for mini leagues
+- [x] Mini leagues show wins
+- [x] Mini leagues show positions
+- [x] DSQ tracking
+- [x] Export data
 
 ## Must
 
-- [ ] Mini leagues show wins
-- [ ] Mini leagues show positions
+- [ ] Print race list ("light" mode equivalent, alternatively screenshot)
+- [ ] Print race sheet ("light" mode equivalent, alternatively screenshot)
+- [ ] Print knockout ("light" mode equivalent, alternatively screenshot)
 - [ ] Pre-start team shuffling
 - [ ] Race sheet 2
 - [ ] Race list 2
 - [ ] Knockouts
-- [ ] DSQ tracking
 - [ ] Automatic DSQ resolution
 - [ ] Modify configuration presets for mini leagues
 - [ ] Visualise configuration presets for rounds
@@ -28,8 +32,9 @@
 
 ## Should
 
-- [ ] Export data
-- [ ] Import data
+- [ ] DSQ reasons
+- [ ] Import data from file
+- [ ] Import data via link (base64)
 - [ ] Ability to run individual board races
 
 ## Could
