@@ -33,9 +33,9 @@ function MiniLeagueDemo() {
         groupRace: ri,
         teamMlIndices: r,
       }))))
-      const handleResultChange = (result) => {
+      const handleResultChange = (result: Race) => {
         const newRaces = [ ...races()]
-        newRaces[result.raceIndex].winner = result.winnerOrd
+        newRaces[result.groupRace] = result
         setRaces(newRaces)
         notification.info("Received result change event: " + JSON.stringify(result))
       }

@@ -15,6 +15,7 @@
 - [x] Mini leagues show positions
 - [x] DSQ tracking
 - [x] Export data
+- [x] Automatic DSQ resolution
 
 ## Must
 
@@ -25,7 +26,6 @@
 - [ ] Race sheet 2
 - [ ] Race list 2
 - [ ] Knockouts
-- [ ] Automatic DSQ resolution
 - [ ] Modify configuration presets for mini leagues
 - [ ] Visualise configuration presets for rounds
 - [ ] Modify configuration presets for rounds

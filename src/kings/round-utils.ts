@@ -68,30 +68,76 @@ type TeamResults = {
 // For the latter draws are indicated by multiple teams in an array e.g.
 // [[team1, team2], [team3]]
 // indicates team1 and team2 are joint first and team3 is third
-export function calcTeamResults(teams: string[], allRaces: Race[]): TeamResults {
+export function calcTeamResults(teams: string[], races: Race[], maxDepth: number = 2): TeamResults {
+  // prepos is the positions when looking at wins across the whole minileague
+  // In this case we ay have drawn teams whenever two or more teams share the
+  // same number of wins
+  const prepos = calcTeamResultsIter(teams, races)
+  // We don't worry about recursing deeper than 2 levels since it's not
+  // possible to have more than 2 layer of determinate draws. I realise
+  // it's somewhat lazy not explaining why here but on a basic level we
+  // don't support large enough mini leagues for this.
+  // More generally we only need to support 1 layer of recursing for a complete
+  // mini league, having 2 unless us to display "accurate" positions in
+  // partial completion states. We may remove this as it might be considered
+  // irrelevant
+  for (let depth = 0; depth < maxDepth; depth++) {
+    // pos are the positions when looking at wins within drawn teams - i.e.
+    // taking into account only races between the other drawn teams we can,
+    // usually, work out the relative positions
+    const pos: string[][] = []
+    prepos.pos.forEach((drawnTeams) => {
+      if (drawnTeams.length == 1) {
+        pos.push(drawnTeams)
+        return
+      }
+      const drawnResults = calcTeamResultsIter(drawnTeams, races)
+      Array.prototype.push.apply(pos, drawnResults.pos)
+    })
+    // update based on the current iteration
+    prepos.pos = pos
+  }
+  return prepos
+}
+
+function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
   const tws: {
-    [team: string]: number;
+    [team: string]: {
+      wins: number;
+      winWeight: number;
+    }
   } = {}
   const races = allRaces.filter(({ team1, team2 }) => teams.includes(team1) && teams.includes(team2))
   teams.forEach((team) => {
-    const wins = races.filter(({ team1, team2, winner }) =>
+    const wonRaces = races.filter(({ team1, team2, winner }) =>
       (team1 == team && winner == 1) ||
       (team2 == team && winner == 2))
-      .length
-    tws[team] = wins
+
+    tws[team] = {
+      wins: wonRaces.length,
+      winWeight: races.reduce((acc, r) => {
+        const { team1, team1Dsq, team2, team2Dsq } = r
+        if ((team1 == team && team1Dsq) || (team2 == team && team2Dsq)) {
+          acc += wonRaces.includes(r) ? 9 : -1
+        } else {
+          acc += wonRaces.includes(r) ? 10 : 0
+        }
+        return acc
+      }, 0),
+    }
   })
   const check = Object.entries(tws).map(([team, wins]) => ({
     team,
-    wins,
+    ...wins,
   }))
-  check.sort((a, b) => b.wins - a.wins)
+  check.sort((a, b) => b.winWeight - a.winWeight)
 
   const pos: string[][] = []
-  let lastWins = 999
+  let lastWinWeight = 999
   check.forEach(teamPos => {
-    if (teamPos.wins < lastWins) {
+    if (teamPos.winWeight < lastWinWeight) {
       pos.push([])
-      lastWins = teamPos.wins
+      lastWinWeight = teamPos.winWeight
     }
     pos[pos.length - 1].push(teamPos.team)
   })

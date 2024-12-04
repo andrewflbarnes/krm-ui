@@ -37,37 +37,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
   })
 
 
-  const teamPositions = createMemo(() => {
-    // prepos is the positions when looking at wins across the whole minileague
-    // In this case we ay have drawn teams whenever two or more teams share the
-    // same number of wins
-    const prepos = calcTeamResults(props.teams, props.races)
-    // We don't worry about recursing deeper than 2 levels since it's not
-    // possible to have more than 2 layer of determinate draws. I realise
-    // it's somewhat lazy not explaining why here but on a basic level we
-    // don't support large enough mini leagues for this.
-    // More generally we only need to support 1 layer of recursing for a complete
-    // mini league, having 2 unless us to display "accurate" positions in
-    // partial completion states. We may remove this as it might be considered
-    // irrelevant
-    for (let depth = 0; depth < 2; depth++) {
-      // pos are the positions when looking at wins within drawn teams - i.e.
-      // taking into account only races between the other drawn teams we can,
-      // usually, work out the relative positions
-      const pos: string[][] = []
-      prepos.pos.forEach((drawnTeams) => {
-        if (drawnTeams.length == 1) {
-          pos.push(drawnTeams)
-          return
-        }
-        const drawnResults = calcTeamResults(drawnTeams, props.races)
-        Array.prototype.push.apply(pos, drawnResults.pos)
-      })
-      // update based on the current iteration
-      prepos.pos = pos
-    }
-    return prepos
-  })
+  const teamPositions = createMemo(() => calcTeamResults(props.teams, props.races))
 
   const [anchorEl, setAnchorEl] = createSignal<HTMLTableColElement | null>(null)
   const [ctxRace, setCtxRace] = createSignal<[Race, string]>()
