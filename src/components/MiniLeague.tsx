@@ -20,12 +20,7 @@ type MiniLeagueProps = {
   teams: string[];
   races: Race[];
   collapsed?: boolean;
-  onResultChange: (result: {
-    raceIndex: number;
-    winner: undefined | string;
-    winnerIdx: undefined | number;
-    winnerOrd: undefined | 1 | 2;
-  }) => void;
+  onResultChange: (race: Race) => void;
 }
 
 export default function MiniLeague(props: MiniLeagueProps) {
@@ -75,6 +70,12 @@ export default function MiniLeague(props: MiniLeagueProps) {
   })
 
   const [anchorEl, setAnchorEl] = createSignal<HTMLTableColElement | null>(null)
+  const [ctxRace, setCtxRace] = createSignal<[Race, string]>()
+  const handleContext = (ctx: [Race, string], e: MouseEvent) => {
+    e.preventDefault()
+    setAnchorEl(e.currentTarget as HTMLTableColElement)
+    setCtxRace(ctx)
+  }
 
   // TODO split up the below into separate components maybe
   return (
@@ -84,11 +85,18 @@ export default function MiniLeague(props: MiniLeagueProps) {
         anchorEl={anchorEl()}
         open={!!anchorEl()}
         onClose={() => setAnchorEl(null)}
-        //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
+      //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
       >
         <MenuItem onClick={() => {
           setAnchorEl(null)
-          alert('todo')
+          const [r, t] = ctxRace()
+          const f: keyof Pick<Race, "team1Dsq" | "team2Dsq"> = r.team1 == t
+            ? "team1Dsq"
+            : "team2Dsq"
+          props.onResultChange({
+            ...r,
+            [f]: !r[f]
+          })
         }}>dsq</MenuItem>
       </Menu>
       <Typography>
@@ -103,7 +111,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
               </td>
             </tr>
           </thead>
-          <For each={props.teams}>{(team, teamIndex) => {
+          <For each={props.teams}>{(team) => {
             const wins = () => teamPositions().wins[team]
             const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
             const posStr = () => {
@@ -158,11 +166,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     }
                   }
                   const ti = raceDetails?.team1 == team ? 1 : 2
+                  const dsq = raceDetails && (ti == 1 ? raceDetails.team1Dsq : raceDetails.team2Dsq)
                   const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
-                  const handleContext = (race: Race, e: MouseEvent) => {
-                    e.preventDefault()
-                    setAnchorEl(e.currentTarget as HTMLTableColElement)
-                  }
                   return (
                     <Switch>
                       <Match when={!!raceDetails}>
@@ -182,17 +187,17 @@ export default function MiniLeague(props: MiniLeagueProps) {
                             transition: `opacity ${dim() ? dimIn : "0s"}`,
                             "transition-delay": dim() ? dimDelay : "0s",
                           }}
-                          onContextMenu={[handleContext, raceDetails]}
-                          onClick={() => props.onResultChange({
-                            raceIndex: raceDetails.groupRace,
-                            winner: team,
-                            winnerIdx: teamIndex(),
-                            winnerOrd: ti,
-                          })}
+                          onContextMenu={[handleContext, [raceDetails, team]]}
+                          onClick={() => props.onResultChange({ ...raceDetails, winner: ti })}
                         >
-                          <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                            <Show when={raceDetails.winner === ti} fallback={<CheckCircleOutline />}>
-                              <CheckCircle color="success" />
+                          <div style={{
+                            display: "flex",
+                            "flex-direction": "row",
+                            "align-items": "center",
+                            "justify-content": "center",
+                          }}>
+                            <Show when={raceDetails.winner === ti} fallback={<CheckCircleOutline color={dsq ? "error" : "inherit"} />}>
+                              <CheckCircle color={dsq ? "error" : "success"} />
                             </Show>
                           </div>
                         </td>

@@ -66,17 +66,6 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       race,
     })
   }
-  // TODO consolidate to using the above, move minileaguelist to component
-  const easySetMlResults = (race: Race, winner: undefined | 1 | 2) => {
-    const updated = {
-      ...race,
-      winner,
-    }
-    mut.mutate({
-      id: props.round.id,
-      race: updated,
-    })
-  }
 
   const [view, setView] = createSignal<"list" | "mini">("list")
   const selectedView = createSelector(view)
@@ -105,9 +94,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
                   name={name + " " + div}
                   races={races}
                   teams={props.round.teams[div as Division].filter(t => races.some(r => r.team1 === t || r.team2 === t))}
-                  onResultChange={(e) => {
-                    easySetMlResults(races[e.raceIndex], e.winnerOrd)
-                  }}
+                  onResultChange={handleRaceUpdate}
                 />
               )}</For>
             )}</For>
