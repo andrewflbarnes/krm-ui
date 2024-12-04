@@ -1,7 +1,7 @@
 import { FormControlLabel, Switch, Typography } from "@suid/material";
-import { createSignal, For, ParentProps } from "solid-js";
+import { createComputed, createSignal, For, ParentProps } from "solid-js";
 import MiniLeague from "./MiniLeague";
-import { miniLeagueTemplates } from "../kings";
+import { miniLeagueTemplates, Race } from "../kings";
 import notification from "../hooks/notification";
 
 export default function DeveloperUIComponents() {
@@ -23,15 +23,20 @@ function MiniLeagueDemo() {
     <For each={Object.entries(miniLeagueTemplates)}>{([name, config]) => {
       const [collapsed, setCollapsed] = createSignal(false)
       const competingTeams = teams.slice(0, config.teams)
-      const [results, setResults] = createSignal(Array.from(Array(config.races.length)).map(() => ({
-        winner: undefined,
-      })))
+      const [races, setRaces] = createSignal<Race[]>()
+      createComputed(() => setRaces(config.races.map((r, ri) => ({
+        team1: competingTeams[r[0] - 1],
+        team2: competingTeams[r[1] - 1],
+        division: "mixed" as const,
+        set: "set1" as const,
+        group: "Z",
+        groupRace: ri,
+        teamMlIndices: r,
+      }))))
       const handleResultChange = (result) => {
-        const newResults = [ ...results()]
-        newResults[result.raceIndex] = {
-          winner: result.winnerOrd,
-        }
-        setResults(newResults)
+        const newRaces = [ ...races()]
+        newRaces[result.raceIndex].winner = result.winnerOrd
+        setRaces(newRaces)
         notification.info("Received result change event: " + JSON.stringify(result))
       }
       return (
@@ -42,9 +47,8 @@ function MiniLeagueDemo() {
           />
           <MiniLeague
             name={name}
-            races={config.races}
+            races={races()}
             teams={competingTeams} collapsed={collapsed()}
-            results={results()}
             onResultChange={handleResultChange}
           />
         </div>

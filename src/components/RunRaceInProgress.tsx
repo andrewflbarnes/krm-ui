@@ -2,7 +2,7 @@ import { Button, ButtonGroup, FormControlLabel, Stack, Switch } from "@suid/mate
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createMemo, createSelector, createSignal, Switch as SSwitch, ErrorBoundary, Match, For } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
-import { Race } from "../kings";
+import { Division, Race } from "../kings";
 import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
@@ -103,9 +103,8 @@ function RunRaceInProgressInternal(props: { round: Round }) {
               <For each={Object.entries(divRaces)}>{([name, races]) => (
                 <MiniLeague
                   name={name + " " + div}
-                  races={races.map(({ teamMlIndices }) => teamMlIndices)}
-                  teams={props.round.teams[div].filter((_, i) => races.some(({ teamMlIndices }) => teamMlIndices.includes(i + 1)))}
-                  results={races}
+                  races={races}
+                  teams={props.round.teams[div as Division].filter(t => races.some(r => r.team1 === t || r.team2 === t))}
                   onResultChange={(e) => {
                     easySetMlResults(races[e.raceIndex], e.winnerOrd)
                   }}
