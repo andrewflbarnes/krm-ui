@@ -2,6 +2,7 @@ import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
 import { Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
+import { calcTeamResults, collapseRaces } from "../kings/utils";
 
 // TODO use theme colors
 const borderColour = "dimgray"
@@ -27,86 +28,10 @@ type MiniLeagueProps = {
   }) => void;
 }
 
-// NOTE: t1idx and t2idx are 1-indexed since this is human understandable when
-// configuring minileagues e.g. team 1 vs team 2 rather than team 0 vs team 1
-type CollapseRaces = Race[][]
-
-function collapseRaces(races: Race[], collapsed: boolean) {
-  if (!collapsed) {
-    return races.map(r => [r])
-  }
-
-  const ret: CollapseRaces = []
-  races.forEach((race) => {
-    const addNew = ret.length == 0
-    if (addNew) {
-      ret[0] = []
-    }
-
-    const last = ret[ret.length - 1]
-    const currTeams = [race.team1, race.team2]
-    const conflict = last.some(l => [l.team1, l.team2].some(t => currTeams.includes(t)))
-
-    if (conflict) {
-      ret.push([race])
-    } else {
-      last.push(race)
-    }
-  })
-  return ret
-}
-
-type TeamResults = {
-  pos: string[][];
-  wins: {
-    [team: string]: number;
-  }
-}
-
-// note teams is a subset of those in races and results are only calculated
-// based on races where both teams are in the subset
-function calcTeamResults(teams: string[], allRaces: Race[]): TeamResults {
-  const tws: {
-    [team: string]: number;
-  } = {}
-  const races = allRaces.filter(({ team1, team2 }) => teams.includes(team1) && teams.includes(team2))
-  teams.forEach((team) => {
-    const wins = races.filter(({ team1, team2, winner }) =>
-      (team1 == team && winner == 1) ||
-      (team2 == team && winner == 2))
-      .length
-    tws[team] = wins
-  })
-  const check = Object.entries(tws).map(([team, wins]) => ({
-    team,
-    wins,
-  }))
-  check.sort((a, b) => b.wins - a.wins)
-
-  const pos: string[][] = []
-  let lastWins = 999
-  check.forEach(teamPos => {
-    if (teamPos.wins < lastWins) {
-      pos.push([])
-      lastWins = teamPos.wins
-    }
-    pos[pos.length - 1].push(teamPos.team)
-  })
-  const wins = check.reduce((acc, { team, wins }) => {
-    acc[team] = wins
-    return acc
-  }, {})
-
-  return {
-    pos,
-    wins,
-  }
-}
-
 export default function MiniLeague(props: MiniLeagueProps) {
   const [highlight, setHighlight] = createSignal<number | null>(null);
   const highlightRace = createSelector(highlight)
-  const collapsedRaces = createMemo<CollapseRaces>(() => collapseRaces(props.races, props.collapsed))
+  const collapsedRaces = createMemo(() => collapseRaces(props.races, props.collapsed))
 
   const highlightTeams = createMemo(() => {
     if (highlight() == null) {
@@ -117,7 +42,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
   })
 
 
-  const teamPositions = createMemo<TeamResults>(() => {
+  const teamPositions = createMemo(() => {
     // prepos is the positions when looking at wins across the whole minileague
     // In this case we ay have drawn teams whenever two or more teams share the
     // same number of wins
@@ -133,6 +58,10 @@ export default function MiniLeague(props: MiniLeagueProps) {
       }
       const drawnResults = calcTeamResults(drawnTeams, props.races)
       Array.prototype.push.apply(pos, drawnResults.pos)
+      // We don't worry about recursing deeper than 1 level since it's not
+      // possible to have more than 1 layer of determinate draws. I realise
+      // it's somewhat lazy not explaining why here but on a basic level we
+      // don't support large enough mini leagues for this
     })
     return {
       pos,
