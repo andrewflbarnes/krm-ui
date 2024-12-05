@@ -1,6 +1,6 @@
-import { Button, ButtonGroup, FormControlLabel, Stack, Switch } from "@suid/material";
+import { Button, ButtonGroup, Stack } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { createMemo, createSelector, createSignal, Switch as SSwitch, ErrorBoundary, Match, For } from "solid-js";
+import { createMemo, createSelector, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
 import { Division, Race } from "../kings";
 import MiniLeague from "./MiniLeague";
@@ -67,27 +67,32 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     })
   }
 
-  const [view, setView] = createSignal<"list" | "mini">("list")
+  const [view, setView] = createSignal<"list" | "mini" | "both">("list")
   const selectedView = createSelector(view)
   return (
     <>
       <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
-        <ButtonGroup>
+        <ButtonGroup sx={{ "& > *": { width: "10em" } }}>
           <Button variant="contained">Round 1</Button>
           <Button disabled>Round 2</Button>
           <Button disabled>Knockouts</Button>
         </ButtonGroup>
       </div>
       <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
-        <ButtonGroup>
+        <ButtonGroup sx={{ "& > *": { width: "10em" } }}>
           <Button onClick={[setView, "list"]} variant={selectedView("list") ? "contained" : "outlined"}>Race List</Button>
+          <Button onClick={[setView, "both"]} variant={selectedView("both") ? "contained" : "outlined"}>Both</Button>
           <Button onClick={[setView, "mini"]} variant={selectedView("mini") ? "contained" : "outlined"}>Mini Leagues</Button>
         </ButtonGroup>
       </div>
-      {props.round.date} {props.round.league}
-      <SSwitch>
-        <Match when={view() === "mini"}>
+      <div style={{ display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-between" : "center" }}>
+        <Show when={selectedView("list") || selectedView("both")}>
           <Stack>
+            <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} balance={!selectedView("both")} />
+          </Stack>
+        </Show>
+        <Show when={view() === "mini" || view()  == "both"}>
+          <Stack gap="2em">
             <For each={Object.entries(props.round.races.set1)}>{([div, divRaces]) => (
               <For each={Object.entries(divRaces)}>{([name, races]) => (
                 <MiniLeague
@@ -99,19 +104,8 @@ function RunRaceInProgressInternal(props: { round: Round }) {
               )}</For>
             )}</For>
           </Stack>
-        </Match>
-        <Match when={view() === "list"}>
-          <Stack>
-            Race List
-            <FormControlLabel
-              sx={{ width: "fit-content" }}
-              control={<Switch checked={splits() > 1} onChange={() => setSplits(s => s > 1 ? 1 : 3)} />}
-              label="grimify"
-            />
-            <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} />
-          </Stack>
-        </Match>
-      </SSwitch>
+        </Show>
+      </div>
     </>
   )
 }

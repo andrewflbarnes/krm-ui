@@ -7,19 +7,21 @@ import styles from "./RaceList.module.css";
 type RaceListProps = {
   orderedRaces: Race[],
   onRaceUpdate: (race: Race) => void;
+  balance?: boolean;
 }
 
 export default function RaceList(props: RaceListProps) {
   return (
     <Typography>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650, maxWidth: "50rem" }} aria-label="simple table dense" size="small">
+        <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
           <TableBody>
             <For each={props.orderedRaces}>{(race, raceNum) =>
               <RaceTableRow
                 raceNum={raceNum()}
                 race={race}
                 onRaceUpdate={props.onRaceUpdate}
+                balance={props.balance}
               />
             }</For>
           </TableBody>
@@ -33,6 +35,7 @@ function RaceTableRow(props: {
   raceNum: number;
   race: Race;
   onRaceUpdate: (race: Race) => void;
+  balance: boolean;
 }) {
   const setWinner = (winner?: 1 | 2) => {
     const updated = {
@@ -70,7 +73,7 @@ function RaceTableRow(props: {
           &nbsp;
         </div>
       </td>
-      <td class={styles.td} style={{ width: "1%" }}>
+      <td class={styles.td} style={{ width: "5em" }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
           <div style={{ display: "inline-block" }}>
             {props.raceNum + 1}
@@ -117,6 +120,10 @@ function RaceTableRow(props: {
           </div>
         </div>
       </td>
+      <Show when={props.balance}>
+        <td class={styles.td} style={{ width: "5em", border: 0 }} />
+        <td class={styles.td} style={{ width: "14em", border: 0 }} />
+      </Show>
     </tr>
   )
 }

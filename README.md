@@ -29,10 +29,3 @@ Lists are in a rough order of priority.
 
 [Tech](./docs/TODO_TECH.md)  
 [Features](./docs/TODO_FEATURES.md)
-
-## Notes
-
-The various plugins for vite are currently downgraded as a results of a bug
-in `vite-solid-plugin >= 2.2.x`. An issue has been raised [here][vite-build-bug].
-
-[vite-build-bug]: https://github.com/solidjs/vite-plugin-solid/issues/164

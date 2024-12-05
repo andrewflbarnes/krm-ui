@@ -117,10 +117,11 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
       wins: wonRaces.length,
       winWeight: races.reduce((acc, r) => {
         const { team1, team1Dsq, team2, team2Dsq } = r
+        if (wonRaces.includes(r)) {
+          acc += 10
+        }
         if ((team1 == team && team1Dsq) || (team2 == team && team2Dsq)) {
-          acc += wonRaces.includes(r) ? 9 : -1
-        } else {
-          acc += wonRaces.includes(r) ? 10 : 0
+          acc -= 1
         }
         return acc
       }, 0),
