@@ -85,7 +85,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           <Button onClick={[setView, "mini"]} variant={selectedView("mini") ? "contained" : "outlined"}>Mini Leagues</Button>
         </ButtonGroup>
       </div>
-      <div style={{ display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-between" : "center" }}>
+      <div style={{ display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
         <Show when={selectedView("list") || selectedView("both")}>
           <Stack>
             <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} balance={!selectedView("both")} />
