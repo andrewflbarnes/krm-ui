@@ -1,11 +1,12 @@
-import { ArrowRight, Assignment, MoreVert } from "@suid/icons-material";
-import { Chip, IconButton, Menu, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
+import { ArrowRight, Assignment } from "@suid/icons-material";
+import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createSignal, For, Show } from "solid-js";
 import Link from "./Link";
 import ModalConfirmAction from "./ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
 import download from "downloadjs";
 import krmApi from "../api/krm"
+import MoreMenu from "./MoreMenu";
 
 const statusColor = {
   "Abandoned": "error",
@@ -19,30 +20,14 @@ type ManageContinueListProps = {
 }
 
 export default function ManageContinueList(props: ManageContinueListProps) {
-
-  const handleMore = (id: number, e: MouseEvent & { currentTarget: HTMLButtonElement }) => {
-    e.stopPropagation()
-    setAnchorEl(e.currentTarget);
-    setMenuId(id);
-  }
-  const handleClose = () => {
-    setAnchorEl(null);
-    setMenuId(-1);
-  }
-
-  const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);
-  const [menuId, setMenuId] = createSignal(-1);
-
   const [deleteRound, setDeleteRound] = createSignal<string | null>();
   const handleConfirmExport = (id: string) => {
-    handleClose()
     const round = krmApi.getRound(id);
     const blob = new Blob([JSON.stringify(round, null, 2)], { type: "application/json" })
     download(blob, `${round.id}.json`)
   }
   const handleConfirmDelete = (id: string) => {
     setDeleteRound(id)
-    setMenuId(-1)
   }
   const handleDeleteRound = () => {
     props.onDeleteRound(deleteRound())
@@ -73,22 +58,27 @@ export default function ManageContinueList(props: ManageContinueListProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={props.rounds}>{(round, id) => {
-              const ariaId = () => `round-selector-menu-${id()}`
+            <For each={props.rounds}>{(round) => {
               return (
                 <TableRow>
                   <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
                     <Stack direction="row" gap="1em" alignItems="center">
-                      <IconButton
-                        id={`round-selector-button-${id()}`}
-                        size="small"
-                        onClick={[handleMore, id()]}
-                        aria-controls={ariaId()}
-                        aria-haspopup="true"
-                        aria-expanded={menuId() == id() || undefined}
-                      >
-                        <MoreVert />
-                      </IconButton>
+                      <MoreMenu id={round.id}>{(handleClose) => {
+                        const confirmDelete = () => {
+                          handleConfirmDelete(round.id)
+                          handleClose()
+                        }
+                        const confirmExport = () => {
+                          handleConfirmExport(round.id)
+                          handleClose()
+                        }
+                        return (
+                          <>
+                            <MenuItem onClick={confirmExport}>Export</MenuItem>
+                            <MenuItem onClick={confirmDelete}>Delete</MenuItem>
+                          </>
+                        )
+                      }}</MoreMenu>
                       <Show when={round.status != "In Progress"}>
                         <Link href={`/${round.id}`}>
                           <IconButton>
@@ -103,16 +93,6 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                           </IconButton>
                         </Link>
                       </Show>
-                      <Menu
-                        id={ariaId()}
-                        anchorEl={anchorEl()}
-                        open={menuId() == id()}
-                        onClose={handleClose}
-                        MenuListProps={{ "aria-labelledby": "league-selector-button" }}
-                      >
-                        <MenuItem onClick={() => handleConfirmExport(round.id)}>Export</MenuItem>
-                        <MenuItem onClick={() => handleConfirmDelete(round.id)}>Delete</MenuItem>
-                      </Menu>
                       {round.date.toLocaleDateString()}
                     </Stack>
                   </TableCell>

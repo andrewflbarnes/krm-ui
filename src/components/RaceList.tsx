@@ -1,7 +1,8 @@
 import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
-import { Chip, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { Race } from "../kings";
+import MoreMenu from "./MoreMenu";
 import styles from "./RaceList.module.css";
 
 type RaceListProps = {
@@ -62,20 +63,34 @@ function RaceTableRow(props: {
   // 20+ rows so we use native elements instead.
   return (
     <tr style={{ display: "table-row" }}>
-      <td class={styles.td} style={{ width: "14em", border: 0 }}>
+      <td class={styles.td} style={{ width: "10em", border: 0 }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
           <Show when={winner()}>
-            <Chip onDelete={() => setWinner()} size="small" label="Complete" variant="filled" color="success" />
+            <Typography variant="caption" color="success.main">Complete</Typography>
           </Show>
           <Show when={team1Dsq() || team2Dsq()}>
-            <Chip size="small" label="DSQ" variant="filled" color="error" sx={{ visibility: team1Dsq() || team2Dsq() ? "visible" : "hidden" }} />
+            <Typography variant="caption" color="error">DSQ</Typography>
           </Show>
           &nbsp;
         </div>
       </td>
-      <td class={styles.td} style={{ width: "5em" }}>
+      <td class={styles.td} style={{ width: "8em" }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
-          <div style={{ display: "inline-block" }}>
+          <MoreMenu id={`${props.race.set}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
+            const handleReset = () => {
+              handleClose()
+              props.onRaceUpdate({
+                ...props.race,
+                winner: undefined,
+                team1Dsq: undefined,
+                team2Dsq: undefined
+              })
+            }
+            return (
+              <MenuItem onClick={handleReset}>Reset</MenuItem>
+            )
+          }}</MoreMenu>
+          <div style={{ display: "inline-block", flex: "1 0 0" }}>
             {props.raceNum + 1}
           </div>
           <div style={{ display: "inline-block" }}>
@@ -121,8 +136,8 @@ function RaceTableRow(props: {
         </div>
       </td>
       <Show when={props.balance}>
-        <td class={styles.td} style={{ width: "5em", border: 0 }} />
-        <td class={styles.td} style={{ width: "14em", border: 0 }} />
+        <td class={styles.td} style={{ width: "8em", border: 0 }} />
+        <td class={styles.td} style={{ width: "10em", border: 0 }} />
       </Show>
     </tr>
   )
