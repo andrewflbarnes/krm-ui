@@ -33,8 +33,9 @@ jobs:
         uses: actions/checkout@v4
       - name: Install and build
         run: |
-          corepack enable
           pnpm install
+          pnpm pkg set version=$(pnpm pkg get version | awk -F'"' '{print $2}')-$(git rev-parse --short HEAD)
+          corepack enable
           pnpm build
           cp dist/krm-ui/index.html dist/krm-ui/404.html
       - name: Setup Pages

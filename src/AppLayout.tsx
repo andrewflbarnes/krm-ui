@@ -1,5 +1,6 @@
 import { ParentProps } from "solid-js"
 import AppBar from "./components/AppBar"
+import AppFooter from "./components/AppFooter"
 import { Toaster } from "solid-toast"
 import { Paper } from "@suid/material"
 
@@ -23,6 +24,9 @@ export default function AppLayout(props: ParentProps) {
       }}>
         {props.children}
       </main>
+      <div style={{ "flex-grow": 0 }}>
+        <AppFooter />
+      </div>
     </Paper>
   )
 }
