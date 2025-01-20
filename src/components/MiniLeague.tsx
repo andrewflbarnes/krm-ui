@@ -20,6 +20,7 @@ type MiniLeagueProps = {
   teams: string[];
   races: Race[];
   collapsed?: boolean;
+  live?: boolean;
   onResultChange: (race: Race) => void;
 }
 
@@ -46,6 +47,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
     setAnchorEl(e.currentTarget as HTMLTableColElement)
     setCtxRace(ctx)
   }
+  const finished = () => props.races.every(({ winner }) => !!winner)
 
   // TODO split up the below into separate components maybe
   return (
@@ -82,7 +84,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
             </tr>
           </thead>
           <For each={props.teams}>{(team) => {
-            const wins = () => teamPositions().wins[team]
+            const wins = () => teamPositions().data[team]?.wins
             const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
             const posStr = () => {
               const p = pos()
@@ -94,11 +96,11 @@ export default function MiniLeague(props: MiniLeagueProps) {
               const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
               switch (p) {
                 case 0:
-                  return `${joint} 1st 🥇`
+                  return `${joint}1st 🥇`
                 case 1:
-                  return `${joint} 2nd 🥈`
+                  return `${joint}2nd 🥈`
                 case 2:
-                  return `${joint} 3rd 🥉`
+                  return `${joint}3rd 🥉`
                 default:
                   return `${joint}${p + 1}th`
               }
@@ -189,7 +191,9 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   </div>
                 </td>
                 <td>
-                  {posStr()}
+                  <Show when={finished() || props.live}>
+                    {posStr()}
+                  </Show>
                 </td>
               </tr>
             )

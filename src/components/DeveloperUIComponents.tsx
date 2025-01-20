@@ -22,6 +22,7 @@ function MiniLeagueDemo() {
   return (
     <For each={Object.entries(miniLeagueTemplates)}>{([name, config]) => {
       const [collapsed, setCollapsed] = createSignal(false)
+      const [live, setLive] = createSignal(false)
       const competingTeams = teams.slice(0, config.teams)
       const [races, setRaces] = createSignal<Race[]>()
       createComputed(() => setRaces(config.races.map((r, ri) => ({
@@ -45,10 +46,16 @@ function MiniLeagueDemo() {
             control={<Switch checked={collapsed()} onChange={() => setCollapsed(c => !c)} />}
             label="collapsed"
           />
+          <FormControlLabel
+            control={<Switch checked={live()} onChange={() => setLive(c => !c)} />}
+            label="live"
+          />
           <MiniLeague
             name={name}
             races={races()}
-            teams={competingTeams} collapsed={collapsed()}
+            teams={competingTeams}
+            collapsed={collapsed()}
+            live={live()}
             onResultChange={handleResultChange}
           />
         </div>

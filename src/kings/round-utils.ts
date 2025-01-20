@@ -55,8 +55,11 @@ export function collapseRaces(races: Race[], collapsed: boolean): Race[][] {
 
 type TeamResults = {
   pos: string[][];
-  wins: {
-    [team: string]: number;
+  data: {
+    [team: string]: {
+      wins: number;
+      finished: boolean;
+    }
   }
 }
 
@@ -73,6 +76,13 @@ export function calcTeamResults(teams: string[], races: Race[], maxDepth: number
   // In this case we ay have drawn teams whenever two or more teams share the
   // same number of wins
   const prepos = calcTeamResultsIter(teams, races)
+  // Also perform a one of to check if each team has finsihed all their
+  // races.
+  const unfinished = teams.filter(team => races.some(({ team1, team2, winner }) =>
+    ((team1 == team|| team2 == team) && winner > 0)))
+  Object.entries(prepos.data).forEach(([team, data]) => {
+    data.finished = !unfinished.includes(team)
+  })
   // We don't worry about recursing deeper than 2 levels since it's not
   // possible to have more than 2 layer of determinate draws. I realise
   // it's somewhat lazy not explaining why here but on a basic level we
@@ -143,12 +153,14 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
     pos[pos.length - 1].push(teamPos.team)
   })
   const wins = check.reduce((acc, { team, wins }) => {
-    acc[team] = wins
+    acc[team] = {
+      wins,
+    }
     return acc
   }, {})
 
   return {
     pos,
-    wins,
+    data: wins,
   }
 }
