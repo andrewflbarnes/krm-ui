@@ -6,7 +6,7 @@ import { Paper } from "@suid/material"
 
 export default function AppLayout(props: ParentProps) {
   return (
-    <Paper style={{
+    <Paper elevation={0} style={{
       height: "100%",
       width: "100%",
       display: "flex",
