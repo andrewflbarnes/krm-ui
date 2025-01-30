@@ -95,9 +95,15 @@ export type MiniLeagueConfig = {
   readonly template: MiniLeagueTemplate;
 }
 
+export type MiniLeagueConfigS2 = {
+  readonly name: string;
+  readonly seeds: { group: string, position: number }[];
+  readonly template: MiniLeagueTemplate;
+}
+
 export type RoundConfig = {
   readonly set1: MiniLeagueConfig[];
-  readonly set2?: MiniLeagueConfig[];
+  readonly set2?: MiniLeagueConfigS2[];
   readonly knockout?: string[];
 }
 
@@ -165,6 +171,18 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ] satisfies readonly MiniLeagueConfig[],
+    set2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 2 },
+          { group: "A", position: 1 },
+          { group: "B", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ] satisfies readonly MiniLeagueConfigS2[],
   },
   8: {
     set1: [
@@ -179,5 +197,27 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ] satisfies readonly MiniLeagueConfig[],
+    set2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 2 },
+          { group: "A", position: 1 },
+          { group: "B", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 3 },
+          { group: "B", position: 4 },
+          { group: "A", position: 3 },
+          { group: "B", position: 4 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ] satisfies readonly MiniLeagueConfigS2[],
   },
 } as const
