@@ -114,10 +114,10 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       <div style={{ "padding": "1em", gap: "1em", display: "flex", "align-items": "center", "justify-content": "start" }}>
         <Selector
           title="Stage"
-          current="Round 1"
+          current="Stage 1"
           options={[
-            { label: "Round 1", value: "Round 1" },
-            //{ label: "Round 2", value: "Round 2" },
+            { label: "Stage 1", value: "Stage 1" },
+            //{ label: Stage 2", value: "Stage 2" },
             //{ label: "Knockouts", value: "Knockouts" },
           ]}
         />
