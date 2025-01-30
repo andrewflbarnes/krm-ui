@@ -42,6 +42,7 @@ export type Race = {
   set: "set1" | "set2";
   group: string;
   groupRace: number;
+  // The 1-indexed team indices from the minileage seeds
   teamMlIndices: [number, number];
   team1: string;
   team2: string;

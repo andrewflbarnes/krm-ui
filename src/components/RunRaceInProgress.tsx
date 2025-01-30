@@ -80,30 +80,30 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   const selectedView = createSelector(view)
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
+      <IconButton sx={{ position: "absolute", right: 0 }} onClick={[setActionsOpen, true]}>
+        <Settings fontSize="small" />
+      </IconButton>
+      <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
+        <Card sx={{ width: "50%" }}>
+          <CardContent>
+            <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
+              <FormControlLabel
+                control={<InputSwitch checked={northern()} onChange={() => setNorthern(v => !v)} />}
+                label="Race list: northern style"
+              />
+              <FormControlLabel
+                control={<InputSwitch checked={mlCollapse()} onChange={() => setMlCollapse(v => !v)} />}
+                label="Minileague: collapse"
+              />
+              <FormControlLabel
+                control={<InputSwitch checked={mlLive()} onChange={() => setMlLive(v => !v)} />}
+                label="Minileague: live resuts"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </Modal>
       <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
-        <IconButton sx={{ position: "absolute", right: 0 }} onClick={[setActionsOpen, true]}>
-          <Settings fontSize="small" />
-        </IconButton>
-        <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
-          <Card sx={{ width: "50%" }}>
-            <CardContent>
-              <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
-                <FormControlLabel
-                  control={<InputSwitch checked={northern()} onChange={() => setNorthern(v => !v)} />}
-                  label="Race list: northern style"
-                />
-                <FormControlLabel
-                  control={<InputSwitch checked={mlCollapse()} onChange={() => setMlCollapse(v => !v)} />}
-                  label="Minileague: collapse"
-                />
-                <FormControlLabel
-                  control={<InputSwitch checked={mlLive()} onChange={() => setMlLive(v => !v)} />}
-                  label="Minileague: live resuts"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        </Modal>
         <ButtonGroup sx={{ "& > *": { width: "10em" } }}>
           <Button variant="contained">Round 1</Button>
           <Button disabled>Round 2</Button>
