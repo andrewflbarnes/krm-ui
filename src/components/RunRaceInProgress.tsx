@@ -3,6 +3,7 @@ import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createMemo, createSelector, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
 import { Division, Race } from "../kings";
+import Selector from "../ui/Selector";
 import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
@@ -76,7 +77,14 @@ function RunRaceInProgressInternal(props: { round: Round }) {
 
   const [mlLive, setMlLive] = createSignal(false)
   const [mlCollapse, setMlCollapse] = createSignal(false)
-  const [view, setView] = createSignal<"list" | "mini" | "both">("list")
+  const views = {
+    "list": "Race List",
+    "mini": "Mini Leagues",
+    "both": "Both",
+  } as const
+  const options = Object.entries(views).map(([value, label]) => ({ value, label }))
+  type View = keyof typeof views
+  const [view, setView] = createSignal<View>("list")
   const selectedView = createSelector(view)
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
@@ -103,19 +111,30 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           </CardContent>
         </Card>
       </Modal>
-      <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
-        <ButtonGroup sx={{ "& > *": { width: "10em" } }}>
-          <Button variant="contained">Round 1</Button>
-          <Button disabled>Round 2</Button>
-          <Button disabled>Knockouts</Button>
-        </ButtonGroup>
-      </div>
-      <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
-        <ButtonGroup sx={{ "& > *": { width: "10em" } }}>
-          <Button onClick={[setView, "list"]} variant={selectedView("list") ? "contained" : "outlined"}>Race List</Button>
-          <Button onClick={[setView, "both"]} variant={selectedView("both") ? "contained" : "outlined"}>Both</Button>
-          <Button onClick={[setView, "mini"]} variant={selectedView("mini") ? "contained" : "outlined"}>Mini Leagues</Button>
-        </ButtonGroup>
+      <div style={{ "padding": "1em", gap: "1em", display: "flex", "align-items": "center", "justify-content": "start" }}>
+        <Selector
+          title="Stage"
+          current="Round 1"
+          options={[
+            { label: "Round 1", value: "Round 1" },
+            //{ label: "Round 2", value: "Round 2" },
+            //{ label: "Knockouts", value: "Knockouts" },
+          ]}
+        />
+        <Selector
+          title="View"
+          current={views[view()]}
+          onClose={(v: View) => setView(v ?? view())}
+          options={options}
+        />
+        <div style={{ "margin-left": "auto" }}>
+        {/*<Button
+            color="success"
+            variant="outlined"
+          >
+            Start Stage 2
+          </Button>*/}
+        </div>
       </div>
       <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
         <Stack direction="row" gap="1em" style={{ "justify-content": "center" }}>
