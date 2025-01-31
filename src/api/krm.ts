@@ -1,8 +1,14 @@
-import { Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding } from "../kings"
+import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding } from "../kings"
+
+export type GroupRaces = {
+  teams: string[];
+  races: Race[];
+  results?: string[][];
+}
 
 export type SetRaces = {
   [division in Division]: {
-    [group: string]: Race[]
+    [group: string]: GroupRaces;
   }
 }
 
@@ -75,11 +81,12 @@ export default (function krmApiLocalStorage(): KrmApi {
         [division in Division]: RoundConfig;
       })
 
-      const races = Object.entries(config).reduce((acc, [division, divisionConf]) => {
-        acc[division] = divisionConf.set1.reduce((accd, { template, name, seeds }) => {
-          accd[name] = template.races.map((race, i) => ({
+      const races = divisions.reduce((acc, division) => {
+        const divisionConf = config[division]
+        acc[division] = divisionConf.set1.reduce((accd, { template, name: groupName, seeds }) => {
+          const races: Race[] = template.races.map((race, i) => ({
             set: "set1",
-            group: name,
+            group: groupName,
             groupRace: i,
             // both race indexes and seeds are 1-indexed
             teamMlIndices: race,
@@ -87,16 +94,18 @@ export default (function krmApiLocalStorage(): KrmApi {
             team2: teams[division][seeds[race[1] - 1] - 1],
             division: division as Division,
           }))
+          accd[groupName] = {
+            races,
+            teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+          }
           return accd
-        }, {} as {
-          [group: string]: Race[]
-        })
+        }, {} as SetRaces[Division])
         return acc
-      }, {} as {
-        [division in Division]: {
-          [group: string]: Race[]
-        }
-      })
+      }, {
+        mixed: {},
+        ladies: {},
+        board: {},
+      } as SetRaces)
       // TODO details
       const round: Round = {
         id: newStorageKeyRound(league),
@@ -146,7 +155,7 @@ export default (function krmApiLocalStorage(): KrmApi {
     updateRace(id, race) {
       const { set, division, group, groupRace } = race
       const round: Round = this.getRound(id)
-      const groupRaces = round.races[set]?.[division]?.[group]
+      const groupRaces = round.races[set]?.[division]?.[group].races
       if (!groupRaces || !groupRaces[groupRace]) {
         console.error(`No race exists for ${set} ${division} ${group} ${groupRace}`, round.races)
         throw new Error(`No race exists for ${set} ${division} ${group} ${groupRace}`)

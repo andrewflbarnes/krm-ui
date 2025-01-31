@@ -14,7 +14,7 @@ const orderRaces = (divisionRaces: SetRaces, splits: number) => {
   for (let i = 0; i < splits; i++) {
     Object.values(divisionRaces).forEach((groupRaces) => {
       // TODO we need to split when there is more than 1 group!
-      Object.values(groupRaces).forEach(races => {
+      Object.values(groupRaces).forEach(({ races }) => {
         const size = races.length / splits
         const start = i * size
         const end = Math.min((i + 1) * size, races.length)
@@ -149,7 +149,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
             <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
               <Stack gap="2em">
                 <For each={Object.entries(props.round.races.set1)}>{([div, divRaces]) => (
-                  <For each={Object.entries(divRaces)}>{([name, races]) => (
+                  <For each={Object.entries(divRaces)}>{([name, { races }]) => (
                     <MiniLeague
                       live={mlLive()}
                       collapsed={mlCollapse()}
