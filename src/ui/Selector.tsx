@@ -7,7 +7,7 @@ import {
   Select,
 } from "@suid/material";
 import { SelectChangeEvent } from "@suid/material/Select";
-import { createSignal, createUniqueId, Switch, For, Match } from "solid-js";
+import { createSignal, createUniqueId, JSX, Switch, For, Match } from "solid-js";
 
 type SelectorProps<T> = {
   title?: string;
@@ -19,6 +19,7 @@ type SelectorProps<T> = {
     label: string;
     value: T;
   }[];
+  containerProps?: JSX.HTMLAttributes<HTMLDivElement>;
 }
 
 export default function Selector<T>(props: SelectorProps<T>) {
@@ -32,7 +33,7 @@ export default function Selector<T>(props: SelectorProps<T>) {
   const id = createUniqueId();
 
   return (
-    <div>
+    <div {...props.containerProps}>
       <Switch>
         <Match when={props.type == "input" || !props.type}>
           <FormControl fullWidth>

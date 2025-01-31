@@ -1,4 +1,4 @@
-import { Button, ButtonGroup, Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
+import { Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createMemo, createSelector, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
@@ -8,6 +8,7 @@ import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 import { Settings } from "@suid/icons-material";
+import PopoverButton from "../ui/PopoverButton";
 
 const orderRaces = (divisionRaces: SetRaces, splits: number) => {
   const or: Race[] = [];
@@ -86,6 +87,20 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   type View = keyof typeof views
   const [view, setView] = createSignal<View>("list")
   const selectedView = createSelector(view)
+  const errors = () => {
+    // FIXME don't hardcode set 1
+    return Object.entries(props.round.races.set1).reduce((acc, [div, divRaces]) => {
+      Object.entries(divRaces).forEach(([group, dr]) => {
+        if (dr.conflict) {
+          const draws = dr.results?.filter(r => r.length > 1) || []
+          if (draws.length) {
+            draws.forEach(draw => acc.push(`Draw in ${div} group ${group}: ${draw.join(", ")}`))
+          }
+        }
+      })
+      return acc
+    }, [])
+  }
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
       <IconButton sx={{ position: "absolute", right: 0 }} onClick={[setActionsOpen, true]}>
@@ -113,6 +128,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       </Modal>
       <div style={{ "padding": "1em", gap: "1em", display: "flex", "align-items": "center", "justify-content": "start" }}>
         <Selector
+          containerProps={{ style: { "min-width": "10em" } }}
           title="Stage"
           current="Stage 1"
           options={[
@@ -122,13 +138,19 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           ]}
         />
         <Selector
+          containerProps={{ style: { "min-width": "10em" } }}
           title="View"
           current={views[view()]}
           onClose={(v: View) => setView(v ?? view())}
           options={options}
         />
         <div style={{ "margin-left": "auto" }}>
-        {/*<Button
+          <Show when={errors().length}>
+            <PopoverButton
+              errors={errors()}
+            />
+          </Show>
+          {/*<Button
             color="success"
             variant="outlined"
           >
