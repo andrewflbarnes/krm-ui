@@ -1,8 +1,11 @@
 import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding } from "../kings"
+import { calcTeamResults } from "../kings/round-utils";
 
 export type GroupRaces = {
   teams: string[];
   races: Race[];
+  complete: boolean;
+  conflict: boolean;
   results?: string[][];
 }
 
@@ -97,6 +100,8 @@ export default (function krmApiLocalStorage(): KrmApi {
           accd[groupName] = {
             races,
             teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+            complete: false,
+            conflict: false,
           }
           return accd
         }, {} as SetRaces[Division])
@@ -155,12 +160,25 @@ export default (function krmApiLocalStorage(): KrmApi {
     updateRace(id, race) {
       const { set, division, group, groupRace } = race
       const round: Round = this.getRound(id)
-      const groupRaces = round.races[set]?.[division]?.[group].races
+      const groupData = round.races[set]?.[division]?.[group]
+      const groupRaces = groupData?.races
       if (!groupRaces || !groupRaces[groupRace]) {
         console.error(`No race exists for ${set} ${division} ${group} ${groupRace}`, round.races)
+        // FIXME the below doesn't result in any feedback to the user on the UI
         throw new Error(`No race exists for ${set} ${division} ${group} ${groupRace}`)
       }
       groupRaces[groupRace] = race
+
+      const complete = groupRaces.every(r => r.winner)
+      groupData.complete = complete
+
+      if (complete) {
+        const results = calcTeamResults(groupData.teams, groupRaces)
+        groupData.results = results.pos
+        const conflict = results.pos.some(p => p.length > 1)
+        groupData.conflict = conflict
+      }
+
       saveRound(round)
     },
   }
