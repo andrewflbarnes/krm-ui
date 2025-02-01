@@ -11,13 +11,13 @@ import { Settings } from "@suid/icons-material";
 import PopoverButton from "../ui/PopoverButton";
 import notification from "../hooks/notification";
 
+// TODO move to a utility file
 const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) => {
   const topSplits = northern ? splits : 1;
   const inSplits = northern ? 1 : splits;
   const or: Race[] = [];
   for (let i = 0; i < topSplits; i++) {
     Object.values(divisionRaces).forEach((groupRaces) => {
-      // TODO we need to split when there is more than 1 group!
       for (let j = 0; j < inSplits; j++) {
         const split = i + j
         Object.values(groupRaces).forEach(({ races }) => {
@@ -87,6 +87,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     setActionsOpen(false)
   }
 
+  const readonly = () => false
   const [mlLive, setMlLive] = createSignal(false)
   const [mlCollapse, setMlCollapse] = createSignal(false)
   const views = {
@@ -180,7 +181,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           <Show when={selectedView("list") || selectedView("both")}>
             <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
               <Stack>
-                <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} />
+                <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={readonly()} />
               </Stack>
             </Card>
           </Show>
@@ -196,6 +197,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
                       races={races}
                       teams={props.round.teams[div as Division].filter(t => races.some(r => r.team1 === t || r.team2 === t))}
                       onResultChange={handleRaceUpdate}
+                      readonly={readonly()}
                     />
                   )}</For>
                 )}</For>

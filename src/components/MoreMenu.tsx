@@ -2,7 +2,7 @@ import { MoreVert } from "@suid/icons-material";
 import { IconButton, Menu } from "@suid/material";
 import { createSignal, FlowProps, JSX } from "solid-js";
 
-export default function MoreMenu(props: FlowProps<{ id: string }, (onClose: () => void) => JSX.Element>) {
+export default function MoreMenu(props: FlowProps<{ id: string, disabled?: boolean }, (onClose: () => void) => JSX.Element>) {
   const buttonId = () => `more-menu-button-${props.id}`
   const menuId = () => `more-menu-menu-${props.id}`
   const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);
@@ -21,6 +21,7 @@ export default function MoreMenu(props: FlowProps<{ id: string }, (onClose: () =
         aria-controls={menuId()}
         aria-haspopup="true"
         aria-expanded={open()}
+        disabled={props.disabled}
       >
         <MoreVert />
       </IconButton>

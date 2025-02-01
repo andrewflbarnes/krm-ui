@@ -22,6 +22,7 @@ type MiniLeagueProps = {
   collapsed?: boolean;
   live?: boolean;
   onResultChange: (race: Race) => void;
+  readonly?: boolean;
 }
 
 export default function MiniLeague(props: MiniLeagueProps) {
@@ -147,7 +148,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                           onMouseEnter={() => setHighlight(raceDetails.groupRace)}
                           onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
                           style={{
-                            cursor: "pointer",
+                            cursor: props.readonly ? "inherit" : "pointer",
                             "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
                             "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
                             "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
@@ -159,8 +160,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                             transition: `opacity ${dim() ? dimIn : "0s"}`,
                             "transition-delay": dim() ? dimDelay : "0s",
                           }}
-                          onContextMenu={[handleContext, [raceDetails, team]]}
-                          onClick={() => props.onResultChange({ ...raceDetails, winner: ti })}
+                          onContextMenu={props.readonly ? null : [handleContext, [raceDetails, team]]}
+                          onClick={() => !props.readonly && props.onResultChange({ ...raceDetails, winner: ti })}
                         >
                           <div style={{
                             display: "flex",

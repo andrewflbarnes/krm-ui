@@ -8,6 +8,7 @@ import styles from "./RaceList.module.css";
 type RaceListProps = {
   orderedRaces: Race[],
   onRaceUpdate: (race: Race) => void;
+  readonly?: boolean;
 }
 
 export default function RaceList(props: RaceListProps) {
@@ -21,6 +22,7 @@ export default function RaceList(props: RaceListProps) {
                 raceNum={raceNum()}
                 race={race}
                 onRaceUpdate={props.onRaceUpdate}
+                readonly={props.readonly}
               />
             }</For>
           </TableBody>
@@ -34,6 +36,7 @@ function RaceTableRow(props: {
   raceNum: number;
   race: Race;
   onRaceUpdate: (race: Race) => void;
+  readonly?: boolean;
 }) {
   const setWinner = (winner?: 1 | 2) => {
     const updated = {
@@ -62,20 +65,22 @@ function RaceTableRow(props: {
     <tr style={{ display: "table-row" }}>
       <td class={styles.td} style={{ width: "8em" }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
-          <MoreMenu id={`${props.race.set}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
-            const handleReset = () => {
-              handleClose()
-              props.onRaceUpdate({
-                ...props.race,
-                winner: undefined,
-                team1Dsq: undefined,
-                team2Dsq: undefined
-              })
-            }
-            return (
-              <MenuItem onClick={handleReset}>Reset</MenuItem>
-            )
-          }}</MoreMenu>
+          <div style={{ visibility: props.readonly ? "hidden" : "visible" }} >
+            <MoreMenu id={`${props.race.set}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
+              const handleReset = () => {
+                handleClose()
+                props.onRaceUpdate({
+                  ...props.race,
+                  winner: undefined,
+                  team1Dsq: undefined,
+                  team2Dsq: undefined
+                })
+              }
+              return (
+                <MenuItem onClick={handleReset}>Reset</MenuItem>
+              )
+            }}</MoreMenu>
+          </div>
           <div style={{ display: "inline-block", flex: "1 0 0" }}>
             {props.raceNum + 1}
           </div>
@@ -86,13 +91,13 @@ function RaceTableRow(props: {
       </td>
       <td
         class={styles.td}
-        style={{ cursor: "pointer" }}
-        onClick={() => setWinner(1)}
+        style={{ cursor: props.readonly ? "inherit" : "pointer" }}
+        onClick={() => !props.readonly && setWinner(1)}
       >
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
           <div onClick={[toggleDsq, 1]} style={{ display: "contents" }}>
             <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
-              <Cancel onClick={[toggleDsq, 1]} fontSize="small" color="error" />
+              <Cancel onClick={props.readonly ? null : [toggleDsq, 1]} fontSize="small" color="error" />
             </Show>
           </div>
           <Show when={winner() == 1} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
@@ -105,8 +110,8 @@ function RaceTableRow(props: {
       <td class={styles.td} style={{ "text-align": "center" }}>v</td>
       <td
         class={styles.td}
-        style={{ cursor: "pointer" }}
-        onClick={() => setWinner(2)}
+        style={{ cursor: props.readonly ? "inherit" : "pointer" }}
+        onClick={() => !props.readonly && setWinner(2)}
       >
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "end" }}>
           {props.race.team2}
@@ -114,7 +119,7 @@ function RaceTableRow(props: {
           <Show when={winner() == 2} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
             <CheckCircle fontSize="small" color="success" />
           </Show>
-          <div onClick={[toggleDsq, 2]} style={{ display: "contents" }}>
+          <div onClick={props.readonly ? null : [toggleDsq, 2]} style={{ display: "contents" }}>
             <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
               <Cancel fontSize="small" color="error" />
             </Show>
