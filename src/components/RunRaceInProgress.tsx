@@ -1,36 +1,10 @@
-import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
-import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { createComputed, createEffect, createMemo, createSelector, createSignal, ErrorBoundary, For, on, Show } from "solid-js";
-import { Round, SetRaces } from "../api/krm";
-import { Division, Race } from "../kings";
+import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Switch as InputSwitch } from "@suid/material";
+import { createComputed, createMemo, createSignal, ErrorBoundary, on, Show } from "solid-js";
+import { Round } from "../api/krm";
 import Selector from "../ui/Selector";
-import MiniLeague from "./MiniLeague";
-import RaceList from "./RaceList";
-import krmApi from "../api/krm";
+import RunRaceInProgressStage from "./RunRaceInProgressStage";
 import { Settings } from "@suid/icons-material";
 import PopoverButton from "../ui/PopoverButton";
-import notification from "../hooks/notification";
-
-// TODO move to a utility file
-const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) => {
-  const topSplits = northern ? splits : 1;
-  const inSplits = northern ? 1 : splits;
-  const or: Race[] = [];
-  for (let i = 0; i < topSplits; i++) {
-    Object.values(divisionRaces).forEach((groupRaces) => {
-      for (let j = 0; j < inSplits; j++) {
-        const split = i + j
-        Object.values(groupRaces).forEach(({ races }) => {
-          const size = races.length / splits
-          const start = split * size
-          const end = Math.min((split + 1) * size, races.length)
-          races.slice(start, end).forEach(r => or.push(r))
-        })
-      }
-    })
-  }
-  return or
-}
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -50,33 +24,6 @@ export default function RunRaceInProgress(props: { round: Round }) {
 }
 
 function RunRaceInProgressInternal(props: { round: Round }) {
-  const queryClient = useQueryClient()
-
-  const mut = createMutation(() => ({
-    mutationKey: [props.round.id],
-    mutationFn: async (data: { id: string, race: Race }) => new Promise((res) => {
-      krmApi.updateRace(data.id, data.race);
-      res({});
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [props.round.id],
-      })
-    }
-  }))
-  createEffect(on(() => mut.isPending, (pend) => {
-    if (!pend && mut.error) {
-      notification.error(`Failed to update race: ${mut.error.message}`)
-    }
-  }))
-
-  const handleRaceUpdate = (race: Race) => {
-    mut.mutate({
-      id: props.round.id,
-      race,
-    })
-  }
-
   const [actionsOpen, setActionsOpen] = createSignal(false)
   const handleClose = () => {
     setActionsOpen(false)
@@ -111,7 +58,6 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   const options = Object.entries(views).map(([value, label]) => ({ value, label }))
   type View = keyof typeof views
   const [view, setView] = createSignal<View>("list")
-  const selectedView = createSelector(view)
   const errors = createMemo(() => {
     // FIXME don't hardcode set 1
     return Object.entries(props.round.races[stage()]).reduce((acc, [div, divRaces]) => {
@@ -136,10 +82,6 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   const proceed = () => {
     return Object.values(props.round.races[stage()]).every(g => Object.values(g).every(r => r.complete))
   }
-
-  const orderedRaces = createMemo(() => {
-    return orderRaces(props.round.races[stage()], splits(), northern())
-  })
 
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
@@ -198,36 +140,16 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           </Show>
         </div>
       </div>
-      <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
-        <Stack direction="row" gap="1em" style={{ "justify-content": "center" }}>
-          <Show when={selectedView("list") || selectedView("both")}>
-            <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
-              <Stack>
-                <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={readonly()} />
-              </Stack>
-            </Card>
-          </Show>
-          <Show when={view() === "mini" || view() == "both"}>
-            <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
-              <Stack gap="2em">
-                <For each={Object.entries(props.round.races[stage()])}>{([div, divRaces]) => (
-                  <For each={Object.entries(divRaces)}>{([name, { races }]) => (
-                    <MiniLeague
-                      live={mlLive()}
-                      collapsed={mlCollapse()}
-                      name={name + " " + div}
-                      races={races}
-                      teams={props.round.teams[div as Division].filter(t => races.some(r => r.team1 === t || r.team2 === t))}
-                      onResultChange={handleRaceUpdate}
-                      readonly={readonly()}
-                    />
-                  )}</For>
-                )}</For>
-              </Stack>
-            </Card>
-          </Show>
-        </Stack>
-      </div>
+      <RunRaceInProgressStage
+        round={props.round}
+        readonly={readonly()}
+        stage={stage()}
+        live={mlLive()}
+        collapse={mlCollapse()}
+        northern={northern()}
+        splits={splits()}
+        view={view()}
+      />
     </div>
   )
 }
