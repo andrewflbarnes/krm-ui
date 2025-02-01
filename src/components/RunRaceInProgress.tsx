@@ -9,6 +9,7 @@ import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 import { Settings } from "@suid/icons-material";
 import PopoverButton from "../ui/PopoverButton";
+import notification from "../hooks/notification";
 
 const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) => {
   const topSplits = northern ? splits : 1;
@@ -66,6 +67,11 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       queryClient.invalidateQueries({
         queryKey: [props.round.id],
       })
+    }
+  }))
+  createEffect(on(() => mut.isPending, (pend) => {
+    if (!pend && mut.error) {
+      notification.error(`Failed to update race: ${mut.error.message}`)
     }
   }))
 
