@@ -29,7 +29,7 @@ export type Round = {
   races: {
     set1: SetRaces;
     set2?: SetRaces;
-    knockout?: unknown;
+    knockout?: SetRaces;
   }
 }
 

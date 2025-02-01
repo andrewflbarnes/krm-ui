@@ -7,6 +7,7 @@ import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 import notification from "../hooks/notification";
+import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 
 // TODO move to a utility file
 const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) => {
@@ -28,8 +29,7 @@ const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) 
   }
   return or
 }
-
-export default function RunRaceInProgressStage(props: {
+type RunRaceInProgressStageProps = {
   round: Round;
   readonly?: boolean;
   stage: "set1" | "set2";
@@ -38,7 +38,17 @@ export default function RunRaceInProgressStage(props: {
   northern?: boolean;
   splits: number;
   view: "mini" | "list" | "both";
-}) {
+}
+
+export default function RunRaceInProgressStage(props: RunRaceInProgressStageProps) {
+  return (
+    <BasicErrorBoundary message="failed to render this stage">
+      <RunRaceInProgressStageInternal {...props} />
+    </BasicErrorBoundary>
+  )
+}
+
+function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const queryClient = useQueryClient()
 
   const mut = createMutation(() => ({
