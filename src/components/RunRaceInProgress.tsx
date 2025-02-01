@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { createMemo, createSelector, createSignal, ErrorBoundary, For, Show } from "solid-js";
+import { createEffect, createMemo, createSelector, createSignal, ErrorBoundary, For, on, Show } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
 import { Division, Race } from "../kings";
 import Selector from "../ui/Selector";
@@ -10,17 +10,22 @@ import krmApi from "../api/krm";
 import { Settings } from "@suid/icons-material";
 import PopoverButton from "../ui/PopoverButton";
 
-const orderRaces = (divisionRaces: SetRaces, splits: number) => {
+const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) => {
+  const topSplits = northern ? splits : 1;
+  const inSplits = northern ? 1 : splits;
   const or: Race[] = [];
-  for (let i = 0; i < splits; i++) {
+  for (let i = 0; i < topSplits; i++) {
     Object.values(divisionRaces).forEach((groupRaces) => {
       // TODO we need to split when there is more than 1 group!
-      Object.values(groupRaces).forEach(({ races }) => {
-        const size = races.length / splits
-        const start = i * size
-        const end = Math.min((i + 1) * size, races.length)
-        races.slice(start, end).forEach(r => or.push(r))
-      })
+      for (let j = 0; j < inSplits; j++) {
+        const split = i + j
+        Object.values(groupRaces).forEach(({ races }) => {
+          const size = races.length / splits
+          const start = split * size
+          const end = Math.min((split + 1) * size, races.length)
+          races.slice(start, end).forEach(r => or.push(r))
+        })
+      }
     })
   }
   return or
@@ -45,9 +50,9 @@ export default function RunRaceInProgress(props: { round: Round }) {
 
 function RunRaceInProgressInternal(props: { round: Round }) {
   const [northern, setNorthern] = createSignal(false)
-  const splits = () => northern() ? 3 : 1
+  const splits = () => 3
   const orderedRaces = createMemo(() => {
-    return orderRaces(props.round.races.set1, splits())
+    return orderRaces(props.round.races.set1, splits(), northern())
   })
   const queryClient = useQueryClient()
 
@@ -157,6 +162,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
             <Button
               color="success"
               variant="outlined"
+              onClick={() => alert('todo')}
             >
               Start Stage 2
             </Button>
