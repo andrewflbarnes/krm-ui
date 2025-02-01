@@ -160,7 +160,8 @@ export default (function krmApiLocalStorage(): KrmApi {
     updateRace(id, race) {
       const { set, division, group, groupRace } = race
       const round: Round = this.getRound(id)
-      const groupData = round.races[set]?.[division]?.[group]
+      const setRaces = round.races[set]
+      const groupData = setRaces?.[division]?.[group]
       const groupRaces = groupData?.races
       if (!groupRaces || !groupRaces[groupRace]) {
         console.error(`No race exists for ${set} ${division} ${group} ${groupRace}`, round.races)

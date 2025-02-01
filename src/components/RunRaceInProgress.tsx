@@ -163,7 +163,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           <Show when={selectedView("list") || selectedView("both")}>
             <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
               <Stack>
-                <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} balance={!selectedView("both")} />
+                <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} />
               </Stack>
             </Card>
           </Show>

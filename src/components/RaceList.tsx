@@ -8,7 +8,6 @@ import styles from "./RaceList.module.css";
 type RaceListProps = {
   orderedRaces: Race[],
   onRaceUpdate: (race: Race) => void;
-  balance?: boolean;
 }
 
 export default function RaceList(props: RaceListProps) {
@@ -22,7 +21,6 @@ export default function RaceList(props: RaceListProps) {
                 raceNum={raceNum()}
                 race={race}
                 onRaceUpdate={props.onRaceUpdate}
-                balance={props.balance}
               />
             }</For>
           </TableBody>
@@ -36,7 +34,6 @@ function RaceTableRow(props: {
   raceNum: number;
   race: Race;
   onRaceUpdate: (race: Race) => void;
-  balance: boolean;
 }) {
   const setWinner = (winner?: 1 | 2) => {
     const updated = {
@@ -63,17 +60,6 @@ function RaceTableRow(props: {
   // 20+ rows so we use native elements instead.
   return (
     <tr style={{ display: "table-row" }}>
-      <td class={styles.td} style={{ width: "10em", border: 0 }}>
-        <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
-          <Show when={winner()}>
-            <Typography variant="caption" color="success.main">Complete</Typography>
-          </Show>
-          <Show when={team1Dsq() || team2Dsq()}>
-            <Typography variant="caption" color="error">DSQ</Typography>
-          </Show>
-          &nbsp;
-        </div>
-      </td>
       <td class={styles.td} style={{ width: "8em" }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
           <MoreMenu id={`${props.race.set}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
@@ -135,10 +121,17 @@ function RaceTableRow(props: {
           </div>
         </div>
       </td>
-      <Show when={props.balance}>
-        <td class={styles.td} style={{ width: "8em", border: 0 }} />
-        <td class={styles.td} style={{ width: "10em", border: 0 }} />
-      </Show>
+      <td class={styles.td} style={{ width: "10em", border: 0 }}>
+        <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
+          <Show when={winner()}>
+            <Typography variant="caption" color="success.main">Complete</Typography>
+          </Show>
+          <Show when={team1Dsq() || team2Dsq()}>
+            <Typography variant="caption" color="error">DSQ</Typography>
+          </Show>
+          &nbsp;
+        </div>
+      </td>
     </tr>
   )
 }
