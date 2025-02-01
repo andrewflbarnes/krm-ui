@@ -6,6 +6,7 @@
 - [x] Deploy to GitHub pages
 - [x] Upgrade vite-solid-plugin when [fix is available][vite-build-bug]
 - [x] Refactor to a common model for in progress race list and mini league views
+- [x] Deploy to andrewflbarnes.com
 
 ## Must
 
@@ -18,9 +19,5 @@
 - [ ] Deploy to kingsski.club
 - [ ] Online data sync
 - [ ] Consistent, sensible boundaries of responsiblity between context and api
-
-## Could
-
-- [ ] Deploy to andrewflbarnes.com
 
 [vite-build-bug]: https://github.com/solidjs/vite-plugin-solid/issues/164

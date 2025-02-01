@@ -26,6 +26,7 @@
 - [ ] Race sheet 2
 - [ ] Race list 2
 - [ ] Knockouts
+- [ ] Draw Resolution
 - [ ] Modify configuration presets for mini leagues
 - [ ] Visualise configuration presets for rounds
 - [ ] Modify configuration presets for rounds
@@ -39,5 +40,5 @@
 
 ## Could
 
-- [ ] Push to results Google Sheets
-- [ ] Push to results to website
+- [ ] Push results to Google Sheets
+- [ ] Push results to website
