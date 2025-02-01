@@ -1,4 +1,4 @@
-import { Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
+import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createMemo, createSelector, createSignal, ErrorBoundary, For, Show } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
@@ -87,7 +87,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   type View = keyof typeof views
   const [view, setView] = createSignal<View>("list")
   const selectedView = createSelector(view)
-  const errors = () => {
+  const errors = createMemo(() => {
     // FIXME don't hardcode set 1
     return Object.entries(props.round.races.set1).reduce((acc, [div, divRaces]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
@@ -100,6 +100,9 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       })
       return acc
     }, [])
+  })
+  const proceed = () => {
+    return Object.values(props.round.races.set1).every(g => Object.values(g).every(r => r.complete))
   }
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
@@ -150,12 +153,14 @@ function RunRaceInProgressInternal(props: { round: Round }) {
               errors={errors()}
             />
           </Show>
-          {/*<Button
-            color="success"
-            variant="outlined"
-          >
-            Start Stage 2
-          </Button>*/}
+          <Show when={proceed() && !errors().length}>
+            <Button
+              color="success"
+              variant="outlined"
+            >
+              Start Stage 2
+            </Button>
+          </Show>
         </div>
       </div>
       <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
