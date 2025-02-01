@@ -1,7 +1,7 @@
 import { Card, Stack } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, For, createEffect, createMemo, on } from "solid-js";
-import { Round, SetRaces } from "../api/krm";
+import { Round, StageRaces } from "../api/krm";
 import { Division, Race } from "../kings";
 import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
@@ -10,7 +10,7 @@ import notification from "../hooks/notification";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 
 // TODO move to a utility file
-const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) => {
+const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean) => {
   const topSplits = northern ? splits : 1;
   const inSplits = northern ? 1 : splits;
   const or: Race[] = [];
@@ -32,7 +32,7 @@ const orderRaces = (divisionRaces: SetRaces, splits: number, northern: boolean) 
 type RunRaceInProgressStageProps = {
   round: Round;
   readonly?: boolean;
-  stage: "set1" | "set2";
+  stage: "stage1" | "stage2";
   live?: boolean;
   collapse?: boolean;
   northern?: boolean;

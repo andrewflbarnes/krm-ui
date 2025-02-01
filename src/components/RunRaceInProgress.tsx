@@ -16,8 +16,8 @@ export default function RunRaceInProgress(props: { round: Round }) {
 }
 
 const stages = {
-  "set1": "Stage 1",
-  "set2": "Stage 2",
+  "stage1": "Stage 1",
+  "stage2": "Stage 2",
   "knockout": "Knockouts",
 } as const
 type Stage = keyof typeof stages
@@ -30,8 +30,8 @@ const views = {
 type View = keyof typeof views
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 
-function isStage(s: string): "set1" | "set2" | null {
-  return s == "set1" || s == "set2" ? s : null
+function isStage(s: string): "stage1" | "stage1" | null {
+  return s == "stage1" || s == "stage1" ? s : null
 }
 
 function isKnockout(s: string): "knockout" | null {
@@ -52,8 +52,8 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   createComputed(on(() => props.round.status, () => {
     const roundStage = (function() {
       switch (props.round.status) {
-        case "set1":
-        case "set2":
+        case "stage1":
+        case "stage2":
         case "knockout":
           return props.round.status
         default:
@@ -65,7 +65,6 @@ function RunRaceInProgressInternal(props: { round: Round }) {
 
   const [view, setView] = createSignal<View>("list")
   const errors = createMemo(() => {
-    // FIXME don't hardcode set 1
     return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {

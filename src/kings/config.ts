@@ -102,8 +102,8 @@ export type MiniLeagueConfigS2 = {
 }
 
 export type RoundConfig = {
-  readonly set1: MiniLeagueConfig[];
-  readonly set2?: MiniLeagueConfigS2[];
+  readonly stage1: MiniLeagueConfig[];
+  readonly stage2?: MiniLeagueConfigS2[];
   readonly knockout?: string[];
 }
 
@@ -123,7 +123,7 @@ export const raceConfig: {
   [k: number]: RoundConfig
 } = {
   3: {
-    set1: [
+    stage1: [
       {
         name: "A",
         seeds: [1, 2, 3],
@@ -132,7 +132,7 @@ export const raceConfig: {
     ] satisfies readonly MiniLeagueConfig[],
   },
   4: {
-    set1: [
+    stage1: [
       {
         name: "A",
         seeds: [1, 2, 3, 4],
@@ -141,7 +141,7 @@ export const raceConfig: {
     ] satisfies readonly MiniLeagueConfig[],
   },
   5: {
-    set1: [
+    stage1: [
       {
         name: "A",
         seeds: [1, 2, 3, 4, 5],
@@ -150,7 +150,7 @@ export const raceConfig: {
     ] satisfies readonly MiniLeagueConfig[],
   },
   6: {
-    set1: [
+    stage1: [
       {
         name: "A",
         seeds: [1, 2, 3, 4, 5, 6],
@@ -159,7 +159,7 @@ export const raceConfig: {
     ] satisfies readonly MiniLeagueConfig[],
   },
   7: {
-    set1: [
+    stage1: [
       {
         name: "A",
         seeds: [1, 4, 5, 7],
@@ -171,7 +171,7 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ] satisfies readonly MiniLeagueConfig[],
-    set2: [
+    stage2: [
       {
         name: "I",
         seeds: [
@@ -185,7 +185,7 @@ export const raceConfig: {
     ] satisfies readonly MiniLeagueConfigS2[],
   },
   8: {
-    set1: [
+    stage1: [
       {
         name: "A",
         seeds: [1, 4, 5, 8],
@@ -197,7 +197,7 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ] satisfies readonly MiniLeagueConfig[],
-    set2: [
+    stage2: [
       {
         name: "I",
         seeds: [

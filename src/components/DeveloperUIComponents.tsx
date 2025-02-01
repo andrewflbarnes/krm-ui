@@ -29,7 +29,7 @@ function MiniLeagueDemo() {
         team1: competingTeams[r[0] - 1],
         team2: competingTeams[r[1] - 1],
         division: "mixed" as const,
-        set: "set1" as const,
+        stage: "stage1" as const,
         group: "Z",
         groupRace: ri,
         teamMlIndices: r,

@@ -66,7 +66,7 @@ function RaceTableRow(props: {
       <td class={styles.td} style={{ width: "8em" }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
           <div style={{ visibility: props.readonly ? "hidden" : "visible" }} >
-            <MoreMenu id={`${props.race.set}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
+            <MoreMenu id={`${props.race.stage}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
               const handleReset = () => {
                 handleClose()
                 props.onRaceUpdate({
