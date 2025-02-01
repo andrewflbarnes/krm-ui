@@ -178,6 +178,9 @@ export default (function krmApiLocalStorage(): KrmApi {
         groupData.results = results.pos
         const conflict = results.pos.some(p => p.length > 1)
         groupData.conflict = conflict
+      } else {
+        groupData.results = undefined
+        groupData.conflict = false
       }
 
       saveRound(round)
