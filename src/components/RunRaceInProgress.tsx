@@ -1,6 +1,6 @@
 import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
-import { createEffect, createMemo, createSelector, createSignal, ErrorBoundary, For, on, Show } from "solid-js";
+import { createComputed, createEffect, createMemo, createSelector, createSignal, ErrorBoundary, For, on, Show } from "solid-js";
 import { Round, SetRaces } from "../api/krm";
 import { Division, Race } from "../kings";
 import Selector from "../ui/Selector";
@@ -37,7 +37,7 @@ export default function RunRaceInProgress(props: { round: Round }) {
     <ErrorBoundary fallback={e => (
       <>
         <div>
-          Something went wrong - race configuration for that number of teams probably doesn't exist yet :(
+          Something went wrong - race configuration for that number of teams or stage probably doesn't exist yet :(
         </div>
         <div>
           {e.message}
@@ -50,11 +50,6 @@ export default function RunRaceInProgress(props: { round: Round }) {
 }
 
 function RunRaceInProgressInternal(props: { round: Round }) {
-  const [northern, setNorthern] = createSignal(false)
-  const splits = () => 3
-  const orderedRaces = createMemo(() => {
-    return orderRaces(props.round.races.set1, splits(), northern())
-  })
   const queryClient = useQueryClient()
 
   const mut = createMutation(() => ({
@@ -87,9 +82,27 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     setActionsOpen(false)
   }
 
-  const readonly = () => false
-  const [mlLive, setMlLive] = createSignal(false)
-  const [mlCollapse, setMlCollapse] = createSignal(false)
+  const stages = {
+    "set1": "Stage 1",
+    //"set2": "Stage 2",
+    //"knockout": "Knockouts",
+  } as const
+  type Stage = keyof typeof stages
+  const stageOptions = Object.entries(stages).map(([value, label]) => ({ value, label }))
+  const [stage, setStage] = createSignal<Stage>("set1")
+  createComputed(on(() => props.round.status, () => {
+    const roundStage = (function() {
+      switch (props.round.status) {
+        case "set1":
+        //case "set2":
+        //case "knockout":
+          return props.round.status
+        default:
+          return stage()
+      }
+    })()
+    setStage(roundStage)
+  }))
   const views = {
     "list": "Race List",
     "mini": "Mini Leagues",
@@ -101,7 +114,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   const selectedView = createSelector(view)
   const errors = createMemo(() => {
     // FIXME don't hardcode set 1
-    return Object.entries(props.round.races.set1).reduce((acc, [div, divRaces]) => {
+    return Object.entries(props.round.races[stage()]).reduce((acc, [div, divRaces]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {
           const draws = dr.results?.filter(r => r.length > 1) || []
@@ -113,9 +126,21 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       return acc
     }, [])
   })
+
+  const readonly = () => props.round.status != stage()
+  const [mlLive, setMlLive] = createSignal(false)
+  const [mlCollapse, setMlCollapse] = createSignal(false)
+  const [northern, setNorthern] = createSignal(false)
+  const splits = () => 3
+
   const proceed = () => {
-    return Object.values(props.round.races.set1).every(g => Object.values(g).every(r => r.complete))
+    return Object.values(props.round.races[stage()]).every(g => Object.values(g).every(r => r.complete))
   }
+
+  const orderedRaces = createMemo(() => {
+    return orderRaces(props.round.races[stage()], splits(), northern())
+  })
+
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
       <IconButton sx={{ position: "absolute", right: 0 }} onClick={[setActionsOpen, true]}>
@@ -145,12 +170,9 @@ function RunRaceInProgressInternal(props: { round: Round }) {
         <Selector
           containerProps={{ style: { "min-width": "10em" } }}
           title="Stage"
-          current="Stage 1"
-          options={[
-            { label: "Stage 1", value: "Stage 1" },
-            //{ label: Stage 2", value: "Stage 2" },
-            //{ label: "Knockouts", value: "Knockouts" },
-          ]}
+          current={stages[stage()]}
+          onClose={(v: Stage) => setStage(v ?? stage())}
+          options={stageOptions}
         />
         <Selector
           containerProps={{ style: { "min-width": "10em" } }}
@@ -188,7 +210,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           <Show when={view() === "mini" || view() == "both"}>
             <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": selectedView("both") ? "space-around" : "center" }}>
               <Stack gap="2em">
-                <For each={Object.entries(props.round.races.set1)}>{([div, divRaces]) => (
+                <For each={Object.entries(props.round.races[stage()])}>{([div, divRaces]) => (
                   <For each={Object.entries(divRaces)}>{([name, { races }]) => (
                     <MiniLeague
                       live={mlLive()}
