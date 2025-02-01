@@ -3,10 +3,14 @@ import { ParentProps } from "solid-js";
 
 type ModalConfirmActionProps = {
   open: boolean;
-  onDiscard: () => void;
-  onConfirm: () => void;
   confirmLabel?: string;
+  onConfirm: () => void;
+  confirmVariant?: "text" | "outlined" | "contained";
+  confirmColor?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
   discardLabel?: string;
+  onDiscard: () => void;
+  discardVariant?: "text" | "outlined" | "contained";
+  discardColor?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
 }
 export default function ModalConfirmAction(props: ParentProps<ModalConfirmActionProps>) {
   return (
@@ -21,10 +25,18 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
           </Typography>
         </CardContent>
         <CardActions>
-          <Button onClick={props.onConfirm}>
+          <Button
+            onClick={props.onConfirm}
+            variant={ props.confirmVariant || "text" }
+            color={ props.confirmColor || "primary" }
+          >
             {props.confirmLabel || "Yes"}
           </Button>
-          <Button onClick={props.onDiscard}>
+          <Button
+            onClick={props.onDiscard}
+            variant={ props.discardVariant || "text" }
+            color={ props.discardColor || "primary" }
+          >
             {props.discardLabel || "No"}
           </Button>
         </CardActions>

@@ -2,7 +2,7 @@ import { ArrowRight, Assignment } from "@suid/icons-material";
 import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createSignal, For, Show } from "solid-js";
 import Link from "./Link";
-import ModalConfirmAction from "./ModalConfirmAction";
+import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
 import download from "downloadjs";
 import krmApi from "../api/krm"
@@ -39,6 +39,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
         open={!!deleteRound()}
         onDiscard={() => setDeleteRound()}
         confirmLabel="Delete"
+        confirmColor="error"
         discardLabel="Cancel"
         onConfirm={() => handleDeleteRound()}
       >

@@ -4,7 +4,7 @@ import { LeagueData, Result } from "../kings";
 import { parseResults } from "../kings/utils";
 import ConfigEditTeam, { ToEdit } from "./ConfigEditTeam";
 import DivisionResultsAll from "./DivisionResultsAll";
-import ModalConfirmAction from "./ModalConfirmAction";
+import ModalConfirmAction from "../ui/ModalConfirmAction";
 
 export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
   const [club, setClub] = createSignal("all")

@@ -2,7 +2,7 @@ import { Box, Button, Stack, TextField } from "@suid/material";
 import { useKings } from "../kings";
 import tracker from "../api/tracker"
 import notification from "../hooks/notification";
-import ModalConfirmAction from "./ModalConfirmAction";
+import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { createSignal, Show } from "solid-js";
 
 export default function ConfigActions() {
