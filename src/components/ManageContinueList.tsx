@@ -9,9 +9,8 @@ import krmApi from "../api/krm"
 import MoreMenu from "./MoreMenu";
 
 const statusColor = {
-  "Abandoned": "error",
-  "In Progress": "warning",
-  "Complete": "success",
+  "abandoned": "error",
+  "complete": "success",
 }
 
 type ManageContinueListProps = {
@@ -60,6 +59,8 @@ export default function ManageContinueList(props: ManageContinueListProps) {
           </TableHead>
           <TableBody>
             <For each={props.rounds}>{(round) => {
+              const inProgress = () => round.status != "complete" && round.status != "abandoned"
+              const status = () => inProgress() ? "in progress" : round.status
               return (
                 <TableRow>
                   <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
@@ -80,20 +81,15 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                           </>
                         )
                       }}</MoreMenu>
-                      <Show when={round.status != "In Progress"}>
-                        <Link href={`/${round.id}`}>
-                          <IconButton>
-                            <Assignment />
-                          </IconButton>
-                        </Link>
-                      </Show>
-                      <Show when={round.status == "In Progress"}>
-                        <Link href={`/${round.id}`}>
-                          <IconButton>
+                      <Link href={`/${round.id}`}>
+                        <IconButton>
+                          <Show when={inProgress()}
+                            fallback={<Assignment />}
+                          >
                             <ArrowRight color="success" />
-                          </IconButton>
-                        </Link>
-                      </Show>
+                          </Show>
+                        </IconButton>
+                      </Link>
                       {round.date.toLocaleDateString()}
                     </Stack>
                   </TableCell>
@@ -101,7 +97,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                     <Chip size="small" label={round.league} color="primary" variant="outlined" />
                   </TableCell>
                   <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
-                    <Chip size="small" label={round.status} color={statusColor[round.status] ?? "warning"} variant="outlined" />
+                    <Chip size="small" label={status()} color={statusColor[round.status] ?? "warning"} variant="outlined" />
                   </TableCell>
                   <TableCell align="left">
                     {round.description}

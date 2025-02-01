@@ -18,7 +18,7 @@ export type SetRaces = {
 export type Round = {
   id: string;
   league: League;
-  status: string;
+  status: "set1" | "set2" | "knockout" | "complete" | "abandoned";
   date: Date;
   description: string;
   venue: string;
@@ -118,7 +118,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         date: new Date(),
         description: "Round 2",
         venue: "Gloucester",
-        status: "In Progress",
+        status: "set1",
         config,
         races: {
           set1: races,

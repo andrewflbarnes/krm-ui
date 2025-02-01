@@ -22,16 +22,17 @@ export default function RunRace() {
     staleTime: 1000 * 60 * 5,
   }))
 
+  const inProgress = () => query.data.status != "complete" && query.data.status != "abandoned"
   return (
     <ErrorBoundary fallback={e => e}>
       <Suspense fallback="Loading...">
         <Switch>
           <Match when={query.isLoading}>Loading...</Match>
           <Match when={!query.isSuccess || !query.data}>Races not found :(</Match>
-          <Match when={query.data.status != "In Progress"}>
+          <Match when={!inProgress()}>
             <RunRaceComplete round={query.data} />
           </Match>
-          <Match when={query.data.status == "In Progress"}>
+          <Match when={inProgress()}>
             <RunRaceInProgress round={query.data} />
           </Match>
         </Switch>
