@@ -172,7 +172,7 @@ export default function RunRaceInProgressHeader(props: {
               confirmLabel="Yes"
               onConfirm={handleProgress}
               discardLabel="No"
-              onDiscard={setProgressConfirmation}
+              onDiscard={() => setProgressConfirmation(false)}
             >
               Are you sure? This will lock in the current results.
             </ModalConfirmAction>

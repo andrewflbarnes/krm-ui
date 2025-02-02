@@ -27,15 +27,15 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
         <CardActions>
           <Button
             onClick={props.onConfirm}
-            variant={ props.confirmVariant || "text" }
-            color={ props.confirmColor || "primary" }
+            variant={props.confirmVariant || "text"}
+            color={props.confirmColor || "primary"}
           >
             {props.confirmLabel || "Yes"}
           </Button>
           <Button
             onClick={props.onDiscard}
-            variant={ props.discardVariant || "text" }
-            color={ props.discardColor || "primary" }
+            variant={props.discardVariant || "text"}
+            color={props.discardColor || "primary"}
           >
             {props.discardLabel || "No"}
           </Button>

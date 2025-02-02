@@ -36,7 +36,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
     <>
       <ModalConfirmAction
         open={!!deleteRound()}
-        onDiscard={setDeleteRound}
+        onDiscard={() => setDeleteRound()}
         confirmLabel="Delete"
         confirmColor="error"
         discardLabel="Cancel"
