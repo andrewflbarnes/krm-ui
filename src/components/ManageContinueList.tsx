@@ -6,7 +6,7 @@ import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
 import download from "downloadjs";
 import krmApi from "../api/krm"
-import MoreMenu from "./MoreMenu";
+import MoreMenu from "../ui/MoreMenu";
 
 const statusColor = {
   "abandoned": "error",

@@ -3,7 +3,7 @@ import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell
 import { batch, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
 import { ClubSeeding, Division, divisions, useKings } from "../kings"
-import NumberField from "./NumberField"
+import NumberField from "../ui/NumberField"
 
 type ComponentProps = {
   config: ClubSeeding;

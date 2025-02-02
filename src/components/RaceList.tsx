@@ -2,7 +2,7 @@ import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/ic
 import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { Race } from "../kings";
-import MoreMenu from "./MoreMenu";
+import MoreMenu from "../ui/MoreMenu";
 import styles from "./RaceList.module.css";
 
 type RaceListProps = {
