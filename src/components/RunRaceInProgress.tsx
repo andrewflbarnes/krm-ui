@@ -1,9 +1,9 @@
-import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Switch as InputSwitch } from "@suid/material";
+import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
 import { createComputed, createMemo, createSignal, Match, on, Show, Switch } from "solid-js";
 import { Round } from "../api/krm";
 import Selector from "../ui/Selector";
 import RunRaceInProgressStage from "./RunRaceInProgressStage";
-import { Settings } from "@suid/icons-material";
+import { ErrorOutlineRounded } from "@suid/icons-material";
 import PopoverButton from "../ui/PopoverButton";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 
@@ -85,14 +85,26 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   const splits = () => 3
 
   const proceed = () => {
+    if (errors().length) {
+      return false
+    }
     return Object.values(props.round.races[stage()] || {}).every(g => Object.values(g).every(r => r.complete))
+  }
+  const proceedText = () => {
+    switch (props.round.status) {
+      case "stage1":
+        return "Start Stage 2"
+      case "stage2":
+        return "Start Knockouts"
+      case "knockout":
+        return "Finish"
+      default:
+        return `This shouldn't be showing (${props.round.status})!`
+    }
   }
 
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
-      <IconButton sx={{ position: "absolute", right: 0 }} onClick={[setActionsOpen, true]}>
-        <Settings fontSize="small" />
-      </IconButton>
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
         <Card sx={{ width: "50%" }}>
           <CardContent>
@@ -128,21 +140,28 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           onClose={(v: View) => setView(v ?? view())}
           options={options}
         />
-        <div style={{ "margin-left": "auto" }}>
+        <div style={{ "margin-left": "auto", display: "flex", gap: "1em" }}>
           <Show when={errors().length}>
             <PopoverButton
-              errors={errors()}
+              title="Errors"
+              messages={errors()}
+              color="error"
+              startIcon={<ErrorOutlineRounded />}
             />
           </Show>
-          <Show when={proceed() && !errors().length}>
+          <Show when={proceed()}>
             <Button
               color="success"
-              variant="outlined"
               onClick={() => alert('todo')}
             >
-              Start Stage 2
+              {proceedText()}
             </Button>
           </Show>
+          <Button
+            onClick={[setActionsOpen, true]}
+          >
+            Options
+          </Button>
         </div>
       </div>
 

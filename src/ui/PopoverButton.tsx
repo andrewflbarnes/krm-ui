@@ -1,12 +1,14 @@
-import { Warning } from "@suid/icons-material";
 import { Button, Popover, Typography } from "@suid/material";
-import { createSignal, For, ParentProps } from "solid-js";
+import { createSignal, For, JSX } from "solid-js";
 
-// TODO make this more general rather than specific for warning/errors
-
-type PopoverButtonProps = ParentProps<{
-  errors: string[];
-}>
+type PopoverButtonProps = {
+  title: string;
+  messages: string[];
+  startIcon?: JSX.Element;
+  endIcon?: JSX.Element;
+  variant?: "text" | "outlined" | "contained";
+  color?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
+}
 
 export default function PopoverButton(props: PopoverButtonProps) {
 
@@ -23,18 +25,18 @@ export default function PopoverButton(props: PopoverButtonProps) {
   };
 
   const open = () => Boolean(anchorEl());
-  const id = () => (open() ? `${props.children}-popover` : undefined);
+  const id = () => (open() ? `${props.title}-popover` : undefined);
 
   return (
     <>
       <Button
         aria-describedby={id()}
         onClick={handleClick}
-        color="warning"
-        variant="outlined"
-        startIcon={<Warning />}
+        color={props.color || "primary"}
+        startIcon={props.startIcon}
+        endIcon={props.endIcon}
       >
-        {props.children || "Errors"}
+        {props.title}
       </Button>
 
       <Popover
@@ -47,7 +49,7 @@ export default function PopoverButton(props: PopoverButtonProps) {
           horizontal: "left",
         }}
       >
-        <For each={props.errors}>{(error) => (
+        <For each={props.messages}>{(error) => (
           <Typography sx={{ p: 2 }}>{error}</Typography>
         )}</For>
       </Popover>

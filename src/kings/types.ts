@@ -39,7 +39,7 @@ export type ClubSeeding = {
 
 export type Race = {
   division: Division;
-  stage: "stage1" | "stage2";
+  stage: "stage1" | "stage2" | "knockout";
   group: string;
   groupRace: number;
   // The 1-indexed team indices from the minileage seeds

@@ -91,20 +91,18 @@ export const miniLeagueTemplates = {
 
 export type MiniLeagueConfig = {
   readonly name: string;
-  readonly seeds: number[];
-  readonly template: MiniLeagueTemplate;
-}
-
-export type MiniLeagueConfigS2 = {
-  readonly name: string;
   readonly seeds: { group: string, position: number }[];
   readonly template: MiniLeagueTemplate;
 }
 
 export type RoundConfig = {
   readonly stage1: MiniLeagueConfig[];
-  readonly stage2?: MiniLeagueConfigS2[];
-  readonly knockout?: string[];
+  readonly stage2?: MiniLeagueConfig[];
+  readonly knockout?: MiniLeagueConfig[];
+}
+
+function wrapStage1Seeds(seeds: number[]): { group: string, position: number }[] {
+  return seeds.map(seed => ({ group: "Seeds", position: seed }))
 }
 
 // TODO testing to validate the below i.e.
@@ -126,7 +124,7 @@ export const raceConfig: {
     stage1: [
       {
         name: "A",
-        seeds: [1, 2, 3],
+        seeds: wrapStage1Seeds([1, 2, 3]),
         template: miniLeagueTemplates.full3,
       },
     ] satisfies readonly MiniLeagueConfig[],
@@ -135,7 +133,7 @@ export const raceConfig: {
     stage1: [
       {
         name: "A",
-        seeds: [1, 2, 3, 4],
+        seeds: wrapStage1Seeds([1, 2, 3, 4]),
         template: miniLeagueTemplates.mini4,
       },
     ] satisfies readonly MiniLeagueConfig[],
@@ -144,7 +142,7 @@ export const raceConfig: {
     stage1: [
       {
         name: "A",
-        seeds: [1, 2, 3, 4, 5],
+        seeds: wrapStage1Seeds([1, 2, 3, 4, 5]),
         template: miniLeagueTemplates.mini5,
       },
     ] satisfies readonly MiniLeagueConfig[],
@@ -153,7 +151,7 @@ export const raceConfig: {
     stage1: [
       {
         name: "A",
-        seeds: [1, 2, 3, 4, 5, 6],
+        seeds: wrapStage1Seeds([1, 2, 3, 4, 5, 6]),
         template: miniLeagueTemplates.mini6,
       },
     ] satisfies readonly MiniLeagueConfig[],
@@ -162,12 +160,12 @@ export const raceConfig: {
     stage1: [
       {
         name: "A",
-        seeds: [1, 4, 5, 7],
+        seeds: wrapStage1Seeds([1, 4, 5, 7]),
         template: miniLeagueTemplates.mini4,
       },
       {
         name: "B",
-        seeds: [2, 3, 6],
+        seeds: wrapStage1Seeds([2, 3, 6]),
         template: miniLeagueTemplates.mini3,
       },
     ] satisfies readonly MiniLeagueConfig[],
@@ -182,18 +180,18 @@ export const raceConfig: {
         ],
         template: miniLeagueTemplates.mini4,
       },
-    ] satisfies readonly MiniLeagueConfigS2[],
+    ] satisfies readonly MiniLeagueConfig[],
   },
   8: {
     stage1: [
       {
         name: "A",
-        seeds: [1, 4, 5, 8],
+        seeds: wrapStage1Seeds([1, 4, 5, 8]),
         template: miniLeagueTemplates.mini4,
       },
       {
         name: "B",
-        seeds: [2, 3, 6, 7],
+        seeds: wrapStage1Seeds([2, 3, 6, 7]),
         template: miniLeagueTemplates.mini4,
       },
     ] satisfies readonly MiniLeagueConfig[],
@@ -218,6 +216,6 @@ export const raceConfig: {
         ],
         template: miniLeagueTemplates.mini4,
       },
-    ] satisfies readonly MiniLeagueConfigS2[],
+    ] satisfies readonly MiniLeagueConfig[],
   },
 } as const
