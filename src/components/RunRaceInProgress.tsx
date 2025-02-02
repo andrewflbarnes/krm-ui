@@ -9,6 +9,7 @@ import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import krmApi from "../api/krm";
 import notification from "../hooks/notification";
+import RunRaceInProgressHeader, { type Stage, type View } from "./RunRaceInProgressHeader";
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -17,21 +18,6 @@ export default function RunRaceInProgress(props: { round: Round }) {
     </BasicErrorBoundary>
   )
 }
-
-const stages = {
-  "stage1": "Stage 1",
-  "stage2": "Stage 2",
-  "knockout": "Knockouts",
-} as const
-type Stage = keyof typeof stages
-
-const views = {
-  "list": "Race List",
-  "mini": "Mini Leagues",
-  "both": "Both",
-} as const
-type View = keyof typeof views
-const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 
 function isStage(s: string): "stage1" | "stage2" | null {
   return s == "stage1" || s == "stage2" ? s : null
@@ -42,15 +28,6 @@ function isKnockout(s: string): "knockout" | null {
 }
 
 function RunRaceInProgressInternal(props: { round: Round }) {
-  const [actionsOpen, setActionsOpen] = createSignal(false)
-  const handleClose = () => {
-    setActionsOpen(false)
-  }
-  const stageFilter = () => {
-    const idx = Object.keys(stages).indexOf(props.round.status)
-    return (idx > -1 ? idx : Object.keys(stages).length) + 1
-  }
-  const stageOptions = () => Object.entries(stages).slice(0, stageFilter()).map(([value, label]) => ({ value, label }))
   const [stage, setStage] = createSignal<Stage>("knockout")
   createComputed(on(() => props.round.status, () => {
     const roundStage = (function() {
@@ -67,19 +44,6 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   }))
 
   const [view, setView] = createSignal<View>("list")
-  const errors = createMemo(() => {
-    return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]) => {
-      Object.entries(divRaces).forEach(([group, dr]) => {
-        if (dr.conflict) {
-          const draws = dr.results?.filter(r => r.length > 1) || []
-          if (draws.length) {
-            draws.forEach(draw => acc.push(`Draw in ${div} group ${group}: ${draw.join(", ")}`))
-          }
-        }
-      })
-      return acc
-    }, [])
-  })
 
   const readonly = () => props.round.status != stage()
   const [mlLive, setMlLive] = createSignal(false)
@@ -87,54 +51,22 @@ function RunRaceInProgressInternal(props: { round: Round }) {
   const [northern, setNorthern] = createSignal(false)
   const splits = () => 3
 
-  const proceed = () => {
-    if (errors().length) {
-      return false
-    }
-    return Object.values(props.round.races[stage()] || {}).every(g => Object.values(g).every(r => r.complete))
-  }
-  const proceedText = () => {
-    switch (props.round.status) {
-      case "stage1":
-        return "Start Stage 2"
-      case "stage2":
-        return "Start Knockouts"
-      case "knockout":
-        return "Finish"
-      default:
-        return `This shouldn't be showing (${props.round.status})!`
-    }
-  }
-
-  const queryClient = useQueryClient()
-
-  const progressRound = createMutation(() => ({
-    mutationKey: ["progressRound"],
-    mutationFn: async (data: { id: string }) => new Promise((res) => {
-      krmApi.progressRound(data.id);
-      res({});
-    }),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: [props.round.id],
-      })
-    }
-  }))
-
-  createEffect(on(() => progressRound.isPending, (pend) => {
-    if (!pend && progressRound.error) {
-      notification.error(`Failed to progress round: ${progressRound.error.message}`)
-    }
-  }))
-
-  const handleProgressRound = () => {
-    progressRound.mutate({
-      id: props.round.id,
-    })
-  }
-
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
+      <RunRaceInProgressHeader
+        round={props.round}
+        northern={northern()}
+        onNorthernChange={() => setNorthern(v => !v)}
+        collapse={mlCollapse()}
+        onCollapseChange={() => setMlCollapse(v => !v)}
+        live={mlLive()}
+        onLiveChange={() => setMlLive(v => !v)}
+        view={view()}
+        onViewChange={setView}
+        stage={stage()}
+        onStageChange={setStage}
+      />
+      {/*
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
         <Card sx={{ width: "50%" }}>
           <CardContent>
@@ -194,6 +126,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           </Button>
         </div>
       </div>
+      */}
 
       <Switch>
         <Match when={isKnockout(stage())}>

@@ -36,11 +36,11 @@ export default function ManageContinueList(props: ManageContinueListProps) {
     <>
       <ModalConfirmAction
         open={!!deleteRound()}
-        onDiscard={() => setDeleteRound()}
+        onDiscard={setDeleteRound}
         confirmLabel="Delete"
         confirmColor="error"
         discardLabel="Cancel"
-        onConfirm={() => handleDeleteRound()}
+        onConfirm={handleDeleteRound}
       >
         Are you sure you want to delete this round? This action cannot be undone!
       </ModalConfirmAction>
