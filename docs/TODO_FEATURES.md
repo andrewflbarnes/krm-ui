@@ -16,6 +16,8 @@
 - [x] DSQ tracking
 - [x] Export data
 - [x] Automatic DSQ resolution
+- [x] Race sheet 2
+- [x] Race list 2
 
 ## Must
 
@@ -23,8 +25,6 @@
 - [ ] Print race sheet ("light" mode equivalent, alternatively screenshot)
 - [ ] Print knockout ("light" mode equivalent, alternatively screenshot)
 - [ ] Pre-start team shuffling
-- [ ] Race sheet 2
-- [ ] Race list 2
 - [ ] Knockouts
 - [ ] Draw Resolution
 - [ ] Modify configuration presets for mini leagues
