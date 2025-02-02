@@ -7,16 +7,19 @@ import { ErrorBoundary, FlowProps } from "solid-js";
   */
 export default function BasicErrorBoundary(props: FlowProps<{ message?: string }>) {
   return (
-    <ErrorBoundary fallback={e => (
-      <>
-        <div>
-          Something went wrong{props.message ? ` - ${props.message}` : ""} :(
-        </div>
-        <div>
-          {e.message}
-        </div>
-      </>
-    )}>
+    <ErrorBoundary fallback={e => {
+      console.error(e)
+      return (
+        <>
+          <div>
+            Something went wrong{props.message ? ` - ${props.message}` : ""} :(
+          </div>
+          <div>
+            {e.message}
+          </div>
+        </>
+      )
+    }}>
       {props.children}
     </ErrorBoundary>
   )

@@ -1,5 +1,5 @@
 import { Box, Button, Stack } from "@suid/material"
-import { createEffect, createSignal, ErrorBoundary, lazy, onCleanup, Show } from "solid-js"
+import { createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
@@ -9,12 +9,13 @@ import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
 import { orderSeeds } from "../kings/utils"
 import { useNavigate } from "@solidjs/router"
+import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 
 export default function ManageNew() {
   return (
-    <ErrorBoundary fallback={e => <div>Something went wrong :( {e.message}</div>}>
+    <BasicErrorBoundary>
       <ManageNewInternal />
-    </ErrorBoundary>
+    </BasicErrorBoundary>
   )
 }
 
@@ -49,7 +50,15 @@ function ManageNewInternal() {
   const [seeding, setSeeding] = createSignal<RoundSeeding>();
   const navigate = useNavigate()
 
-  const steps = [
+  type Step = {
+    title: string;
+    content: () => JSX.Element;
+    onArrive?: () => void;
+    skip?: () => boolean;
+    validator: () => [boolean, string?]
+  }
+
+  const steps: Step[] = [
     {
       title: "Select Teams",
       content: () => <ManageNewSelect config={numTeams} onUpdate={handleTeamNumsUpdate} />,
@@ -93,6 +102,7 @@ function ManageNewInternal() {
       title: "Update teams",
       content: () => <ManageNewUpdateTeams missingTeams={missingTeams()} />,
       onArrive: lock,
+      skip: () => missingTeams().length < 1,
       validator: () => {
         if (missingTeams().length > 0) {
           try {
@@ -120,19 +130,39 @@ function ManageNewInternal() {
   ]
 
   const [step, setStep] = createSignal(0)
-
+  const [skipped, setSkipped] = createSignal([])
+  createEffect(on(seeding, () => {
+    setSkipped([])
+  }))
   const handleNext = () => {
     const [pass, err] = steps[step()].validator()
-    if (pass) {
-      setStep(step() + 1)
-    } else {
+    if (!pass) {
       notification.error(err)
+      return
     }
+    let nextStep = step() + 1
+    steps[nextStep].onArrive?.()
+    const skips = []
+    while (steps[nextStep].skip?.()) {
+      skips.push(nextStep)
+      steps[nextStep].validator()
+      nextStep++
+      steps[nextStep].onArrive?.()
+    }
+    setSkipped(prev => prev.concat(skips))
+    setStep(nextStep)
   }
 
   const handlePrev = () => {
+    console.log(skipped())
     if (step() > 0) {
-      setStep(step() - 1)
+      let nextStep = step() - 1
+      while (skipped().includes(nextStep) && nextStep > 0) {
+        steps[nextStep].onArrive?.()
+        nextStep--
+      }
+      setStep(nextStep)
+      steps[nextStep].onArrive?.()
     }
   }
 
@@ -148,8 +178,6 @@ function ManageNewInternal() {
       notification.error(err)
     }
   }
-
-  createEffect(() => steps[step()].onArrive?.())
 
   return (
     <Stack flexDirection="column" height="100%">
