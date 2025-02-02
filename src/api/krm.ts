@@ -240,14 +240,14 @@ export default (function krmApiLocalStorage(): KrmApi {
 
       const nextRaces = divisions.reduce((acc, division) => {
         const divisionConf = config[division]
-        acc[division] = divisionConf[nextStatus].reduce((accd, { template, name: groupName, seeds }) => {
+        acc[division] = divisionConf[nextStatus]?.reduce((accd, { template, name: groupName, seeds }) => {
           // both race indexes and seeds are 1-indexed
           const lastStageDivisionRaces = round.races[status][division]
 
           const races: Race[] = template.races.map((race, i) => {
             const seed1 = seeds[race[0] - 1]
             const team1 = lastStageDivisionRaces[seed1.group].results[seed1.position - 1][0]
-            const seed2 = seeds[race[0] - 1]
+            const seed2 = seeds[race[1] - 1]
             const team2 = lastStageDivisionRaces[seed2.group].results[seed2.position - 1][0]
             return {
               stage: nextStatus,

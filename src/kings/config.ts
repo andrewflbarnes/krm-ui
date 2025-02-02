@@ -200,8 +200,8 @@ export const raceConfig: {
         name: "I",
         seeds: [
           { group: "A", position: 1 },
-          { group: "B", position: 2 },
-          { group: "A", position: 1 },
+          { group: "B", position: 1 },
+          { group: "A", position: 2 },
           { group: "B", position: 2 },
         ],
         template: miniLeagueTemplates.mini4,
@@ -210,8 +210,8 @@ export const raceConfig: {
         name: "II",
         seeds: [
           { group: "A", position: 3 },
-          { group: "B", position: 4 },
-          { group: "A", position: 3 },
+          { group: "B", position: 3 },
+          { group: "A", position: 4 },
           { group: "B", position: 4 },
         ],
         template: miniLeagueTemplates.mini4,

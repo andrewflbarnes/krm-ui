@@ -1,11 +1,14 @@
 import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
-import { createComputed, createMemo, createSignal, Match, on, Show, Switch } from "solid-js";
+import { createComputed, createEffect, createMemo, createSignal, Match, on, Show, Switch } from "solid-js";
 import { Round } from "../api/krm";
 import Selector from "../ui/Selector";
 import RunRaceInProgressStage from "./RunRaceInProgressStage";
 import { ErrorOutlineRounded } from "@suid/icons-material";
 import PopoverButton from "../ui/PopoverButton";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
+import { createMutation, useQueryClient } from "@tanstack/solid-query";
+import krmApi from "../api/krm";
+import notification from "../hooks/notification";
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -30,8 +33,8 @@ const views = {
 type View = keyof typeof views
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 
-function isStage(s: string): "stage1" | "stage1" | null {
-  return s == "stage1" || s == "stage1" ? s : null
+function isStage(s: string): "stage1" | "stage2" | null {
+  return s == "stage1" || s == "stage2" ? s : null
 }
 
 function isKnockout(s: string): "knockout" | null {
@@ -103,6 +106,33 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     }
   }
 
+  const queryClient = useQueryClient()
+
+  const progressRound = createMutation(() => ({
+    mutationKey: ["progressRound"],
+    mutationFn: async (data: { id: string }) => new Promise((res) => {
+      krmApi.progressRound(data.id);
+      res({});
+    }),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: [props.round.id],
+      })
+    }
+  }))
+
+  createEffect(on(() => progressRound.isPending, (pend) => {
+    if (!pend && progressRound.error) {
+      notification.error(`Failed to progress round: ${progressRound.error.message}`)
+    }
+  }))
+
+  const handleProgressRound = () => {
+    progressRound.mutate({
+      id: props.round.id,
+    })
+  }
+
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
@@ -152,7 +182,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           <Show when={proceed()}>
             <Button
               color="success"
-              onClick={() => alert('todo')}
+              onClick={handleProgressRound}
             >
               {proceedText()}
             </Button>
@@ -188,7 +218,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           />
         }</Match>
         <Match when={true}>
-          <div>Unknown stage</div>
+          <div>Unknown stage: {stage()}</div>
         </Match>
       </Switch>
     </div>
