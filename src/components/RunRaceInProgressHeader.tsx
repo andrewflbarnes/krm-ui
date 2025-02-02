@@ -66,7 +66,13 @@ export default function RunRaceInProgressHeader(props: {
     if (errors().length) {
       return false
     }
-    return Object.values(props.round.races[props.round.status] || {}).every(g => Object.values(g).every(r => r.complete))
+
+    const races = props.round.races[props.round.status]
+    if (!races) {
+      return false
+    }
+
+    return Object.values(races).every(g => Object.values(g).every(r => r.complete))
   }
   const proceedText = () => {
     switch (props.round.status) {
