@@ -128,13 +128,8 @@ function RaceTableRow(props: {
       </td>
       <td class={styles.td} style={{ width: "10em", border: 0 }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
-          <Show when={winner()}>
-            <Typography variant="caption" color="success.main">Complete</Typography>
-          </Show>
-          <Show when={team1Dsq() || team2Dsq()}>
-            <Typography variant="caption" color="error">DSQ</Typography>
-          </Show>
-          &nbsp;
+          <Typography style={{ visibility: winner() ? null : "hidden" }} variant="caption" color="success.main">Complete</Typography>
+          <Typography style={{ visibility: team1Dsq() || team2Dsq() ? null : "hidden" }} variant="caption" color="error">DSQ</Typography>
         </div>
       </td>
     </tr>
