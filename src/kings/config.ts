@@ -42,6 +42,12 @@ export type MiniLeagueTemplate = {
 // - type: mini - a normal mini league
 // - type: full - a mini league which contains every team from that round
 export const miniLeagueTemplates = {
+  "knockout": {
+    teams: 2,
+    races: [
+      [1, 2],
+    ]satisfies readonly [number, number][],
+  },
   "mini3": {
     teams: 3,
     races: [
@@ -215,6 +221,41 @@ export const raceConfig: {
           { group: "B", position: 4 },
         ],
         template: miniLeagueTemplates.mini4,
+      },
+    ] satisfies readonly MiniLeagueConfig[],
+    // TODO helper function(s) for knockout
+    knockout: [
+      {
+        name: "1st/2nd",
+        seeds: [
+          { group: "I", position: 1 },
+          { group: "I", position: 2 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "3rd/4th",
+        seeds: [
+          { group: "I", position: 3 },
+          { group: "I", position: 4 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "5th/6th",
+        seeds: [
+          { group: "II", position: 1 },
+          { group: "II", position: 2 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "7th/8th",
+        seeds: [
+          { group: "II", position: 3 },
+          { group: "II", position: 4 },
+        ],
+        template: miniLeagueTemplates.knockout,
       },
     ] satisfies readonly MiniLeagueConfig[],
   },

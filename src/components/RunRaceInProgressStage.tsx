@@ -32,7 +32,7 @@ const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean
 type RunRaceInProgressStageProps = {
   round: Round;
   readonly?: boolean;
-  stage: "stage1" | "stage2";
+  stage: "stage1" | "stage2" | "knockout";
   live?: boolean;
   collapse?: boolean;
   northern?: boolean;
@@ -90,7 +90,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
         <Show when={showList()}>
           <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showBoth() ? "space-around" : "center" }}>
             <Stack>
-              <RaceList orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={props.readonly} />
+              <RaceList knockout={props.stage == "knockout"} orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={props.readonly} />
             </Stack>
           </Card>
         </Show>

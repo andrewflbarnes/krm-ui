@@ -12,8 +12,8 @@ export default function RunRaceInProgress(props: { round: Round }) {
   )
 }
 
-function isStage(s: string): "stage1" | "stage2" | null {
-  return s == "stage1" || s == "stage2" ? s : null
+function isStage(s: string): "knockout" | "stage1" | "stage2" | null {
+  return s == "stage1" || s == "stage2"|| s == "knockout" ? s : null
 }
 
 function isKnockout(s: string): "knockout" | null {
@@ -61,9 +61,11 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       />
 
       <Switch>
+      {/*
         <Match when={isKnockout(stage())}>
           <div>Knockouts are not yet implemented :(</div>
         </Match>
+        */}
         {
           /* keyed match as the child contains an error boundary and we want to
            * force a re-render when the stage changes as in this case it can

@@ -9,6 +9,7 @@ type RaceListProps = {
   orderedRaces: Race[],
   onRaceUpdate: (race: Race) => void;
   readonly?: boolean;
+  knockout?: boolean;
 }
 
 export default function RaceList(props: RaceListProps) {
@@ -20,6 +21,7 @@ export default function RaceList(props: RaceListProps) {
             <For each={props.orderedRaces}>{(race, raceNum) =>
               <RaceTableRow
                 raceNum={raceNum()}
+                raceStr={props.knockout ? race.group : null}
                 race={race}
                 onRaceUpdate={props.onRaceUpdate}
                 readonly={props.readonly}
@@ -34,6 +36,7 @@ export default function RaceList(props: RaceListProps) {
 
 function RaceTableRow(props: {
   raceNum: number;
+  raceStr?: string;
   race: Race;
   onRaceUpdate: (race: Race) => void;
   readonly?: boolean;
@@ -82,7 +85,7 @@ function RaceTableRow(props: {
             }}</MoreMenu>
           </div>
           <div style={{ display: "inline-block", flex: "1 0 0" }}>
-            {props.raceNum + 1}
+            {props.raceStr || (props.raceNum + 1)}
           </div>
           <div style={{ display: "inline-block" }}>
             {props.race.division[0].toUpperCase()}

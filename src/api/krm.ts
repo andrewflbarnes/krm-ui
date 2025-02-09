@@ -192,11 +192,10 @@ export default (function krmApiLocalStorage(): KrmApi {
       const nextStatus = (function(): "stage2" | "knockout" | "complete" {
         switch (status) {
           case "stage1":
+            // TODO if config has no stage 2 races go straight to knockouts
             return "stage2"
           case "stage2":
-            console.error("Progressing stage2 not implemented")
-            throw new Error("Progressing stage2 not implemented")
-          //return "knockout"
+            return "knockout"
           case "knockout":
             console.error("Progressing knockouts not implemented")
             throw new Error("Progressing knockouts not implemented")
@@ -206,6 +205,8 @@ export default (function krmApiLocalStorage(): KrmApi {
             throw new Error(`Cannot progress round with status ${status}`)
         }
       })()
+
+      // TODO knockouts may only rely on stage 1
       const races: StageRaces = round.races[status]
       if (!races) {
         const err = `No races exist for stage ${status} - cannot progress`
