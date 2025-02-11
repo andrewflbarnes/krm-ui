@@ -5,6 +5,8 @@ import { Route, Router } from "@solidjs/router";
 import { lazy, ParentProps } from "solid-js";
 import { createTheme, ThemeProvider } from "@suid/material";
 import AppLayout from "./AppLayout";
+import { ClerkProvider } from "clerk-solidjs";
+import { dark } from "@clerk/themes";
 const Home = lazy(() => import("./pages/Home"));
 const Developer = lazy(() => import("./pages/Developer"));
 const RaceManager = lazy(() => import("./pages/Manage"));
@@ -18,6 +20,7 @@ const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRace = lazy(() => import("./pages/RunRace"));
 
 const queryClient = new QueryClient()
+const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
 export default function App() {
   return (
@@ -49,17 +52,19 @@ export default function App() {
 function HydratedAppLayout(props: ParentProps) {
   const theme = createCustomTheme()
   return (
-    <QueryClientProvider client={queryClient}>
-      <BreadcrumberProvider>
-        <KingsProvider>
-          <ThemeProvider theme={theme}>
-            <AppLayout>
-              {props.children}
-            </AppLayout>
-          </ThemeProvider>
-        </KingsProvider>
-      </BreadcrumberProvider>
-    </QueryClientProvider>
+    <ClerkProvider publishableKey={clerkPubKey} appearance={{ baseTheme: dark}}>
+      <QueryClientProvider client={queryClient}>
+        <BreadcrumberProvider>
+          <KingsProvider>
+            <ThemeProvider theme={theme}>
+              <AppLayout>
+                {props.children}
+              </AppLayout>
+            </ThemeProvider>
+          </KingsProvider>
+        </BreadcrumberProvider>
+      </QueryClientProvider>
+    </ClerkProvider>
   )
 }
 

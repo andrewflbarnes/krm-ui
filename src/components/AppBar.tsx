@@ -5,6 +5,7 @@ import {
   Toolbar,
   Typography,
 } from "@suid/material";
+import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "clerk-solidjs";
 import { createMemo, ParentProps } from "solid-js";
 import KrmBreadcrumbs from "./Breadcrumbs";
 import LeagueSelector from "./LeagueSelector";
@@ -82,6 +83,18 @@ export default function KrmAppBar() {
                 <Link href="/portal">
                   Portal
                 </Link>
+                <ClerkLoaded>
+                  <SignedIn>
+                    <UserButton />
+                  </SignedIn>
+                  <SignedOut>
+                    <SignInButton style={{ cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
+                      <Typography sx={{ color: theme => theme.palette.text.primary }} >
+                        Sign In
+                      </Typography>
+                    </SignInButton>
+                  </SignedOut>
+                </ClerkLoaded>
               </Box>
             </nav>
           </Toolbar>
