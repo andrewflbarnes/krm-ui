@@ -1,6 +1,6 @@
 {
   "name": "krm-ui",
-  "version": "0.1.0-staging",
+  "version": "0.1.0",
   "private": true,
   "scripts": {
     "build": "vite build",

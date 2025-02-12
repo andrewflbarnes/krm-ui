@@ -3,6 +3,13 @@
 pnpm install -g corepack@latest
 corepack enable
 pnpm install
-pnpm pkg set version="$(pnpm pkg get version | awk -F'"' '{print $2}')-$(git rev-parse --short HEAD)"
+# shellcheck disable=SC2153
+branch=$BRANCH
+if [ "$branch" = "master" ]
+then
+  branch=
+fi
+pnpm pkg set version="$(pnpm pkg get version | awk -F'"' '{print $2}')-${branch:+$branch-}$(git rev-parse --short HEAD)"
+pnpm pkg get version
 pnpm build
 cp netlify/_redirects dist/_redirects
