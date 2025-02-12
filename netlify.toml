@@ -1,5 +1,8 @@
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
+  [plugins.inputs.settings]
+    preset = "desktop"
+
   [[plugins.inputs.audits]]
     path = "/krm-ui/"
