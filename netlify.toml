@@ -1,6 +1,5 @@
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
-  # to audit an HTML file other than index.html in the build directory
   [[plugins.inputs.audits]]
-    path = "/krm-ui"
+    path = "/krm-ui/"
