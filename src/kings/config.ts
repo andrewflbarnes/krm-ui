@@ -226,18 +226,10 @@ export const raceConfig: {
     // TODO helper function(s) for knockout
     knockout: [
       {
-        name: "1st/2nd",
+        name: "7th/8th",
         seeds: [
-          { group: "I", position: 1 },
-          { group: "I", position: 2 },
-        ],
-        template: miniLeagueTemplates.knockout,
-      },
-      {
-        name: "3rd/4th",
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "I", position: 4 },
+          { group: "II", position: 3 },
+          { group: "II", position: 4 },
         ],
         template: miniLeagueTemplates.knockout,
       },
@@ -250,10 +242,18 @@ export const raceConfig: {
         template: miniLeagueTemplates.knockout,
       },
       {
-        name: "7th/8th",
+        name: "3rd/4th",
         seeds: [
-          { group: "II", position: 3 },
-          { group: "II", position: 4 },
+          { group: "I", position: 3 },
+          { group: "I", position: 4 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "1st/2nd",
+        seeds: [
+          { group: "I", position: 1 },
+          { group: "I", position: 2 },
         ],
         template: miniLeagueTemplates.knockout,
       },
