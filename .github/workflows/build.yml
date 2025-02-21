@@ -1,6 +1,9 @@
 # Simple workflow for verifying build
 name: Verify build
 
+permissions:
+  contents: read
+
 on:
   # Runs on pushes targeting the default branch
   push:
