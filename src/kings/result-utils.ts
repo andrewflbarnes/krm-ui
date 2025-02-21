@@ -1,5 +1,4 @@
-import { divisions } from "./config"
-import { DivisionResults, LeagueData, Result } from "./types"
+import { divisions, DivisionResults, LeagueData, Result } from "./types"
 
 function orderResults(a: Result, b: Result): number {
   const tot = b.total - a.total

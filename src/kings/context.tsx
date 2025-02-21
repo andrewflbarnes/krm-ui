@@ -1,8 +1,8 @@
 import { useSearchParams } from "@solidjs/router";
 import { batch, createContext, createSignal, ParentProps, useContext } from "solid-js"
-import { leagues, type League } from "./config"
 import kings from "./config"
-import { LeagueData } from "./types";
+import { League, LeagueData } from "./types";
+import { leagues } from "./types";
 import krmApi from "../api/krm"
 
 function getStorageKeyLeague() {

@@ -1,3 +1,5 @@
+import { League, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
+
 export type LeagueConfig = {
   name: string;
   tracker?: string;
@@ -17,23 +19,13 @@ const config = {
   southern: {
     name: "Southern",
   },
+  scotland: {
+    name: "Scotland",
+  },
 } as const
-
-export type League = keyof typeof config
-
-export const divisions = ["mixed", "ladies", "board"] as const
-
-export type Division = typeof divisions[number]
 
 const typedConfig: Record<League, LeagueConfig> = config
 export default typedConfig
-
-export const leagues: League[] = Object.keys(config) as League[]
-
-export type MiniLeagueTemplate = {
-  readonly teams: number;
-  readonly races: readonly [number, number][];
-}
 
 // TODO testing to validate the below i.e.
 // - the count of teams matches the count of unique teams in races
@@ -46,7 +38,7 @@ export const miniLeagueTemplates = {
     teams: 2,
     races: [
       [1, 2],
-    ]satisfies readonly [number, number][],
+    ],
   },
   "mini3": {
     teams: 3,
@@ -54,7 +46,7 @@ export const miniLeagueTemplates = {
       [1, 2],
       [2, 3],
       [3, 1],
-    ]satisfies readonly [number, number][],
+    ],
   },
   "full3": {
     teams: 3,
@@ -65,7 +57,7 @@ export const miniLeagueTemplates = {
       [2, 1],
       [3, 2],
       [1, 3],
-    ]satisfies readonly [number, number][],
+    ],
   },
   "mini4": {
     teams: 4,
@@ -73,7 +65,7 @@ export const miniLeagueTemplates = {
       [1, 2], [3, 4],
       [2, 3], [4, 1],
       [1, 3], [4, 2]
-    ]satisfies readonly [number, number][],
+    ],
   },
   "mini5": {
     teams: 5,
@@ -81,7 +73,7 @@ export const miniLeagueTemplates = {
       [1, 2], [3, 4], [2, 3],
       [4, 5], [5, 1], [4, 2],
       [5, 3], [1, 4], [2, 5], [3, 1]
-    ]satisfies readonly [number, number][],
+    ],
   },
   "mini6": {
     teams: 6,
@@ -89,26 +81,63 @@ export const miniLeagueTemplates = {
       [1, 6], [2, 5], [3, 4], [5, 1], [4, 6],
       [3, 2], [1, 4], [5, 3], [2, 6], [3, 1],
       [4, 2], [6, 5], [1, 2], [6, 3], [5, 4],
-    ]satisfies readonly [number, number][],
+    ],
   }
 } as const satisfies {
   [k: string]: MiniLeagueTemplate
 }
 
-export type MiniLeagueConfig = {
-  readonly name: string;
-  readonly seeds: { group: string, position: number }[];
-  readonly template: MiniLeagueTemplate;
-}
-
-export type RoundConfig = {
-  readonly stage1: MiniLeagueConfig[];
-  readonly stage2?: MiniLeagueConfig[];
-  readonly knockout?: MiniLeagueConfig[];
-}
-
 function wrapStage1Seeds(seeds: number[]): { group: string, position: number }[] {
   return seeds.map(seed => ({ group: "Seeds", position: seed }))
+}
+
+function wrapSingleGroupResults(numTeams: number): readonly ResultsConfig[] {
+  return Array.from({ length: numTeams }, (_, i) => ({ stage: "stage1", group: "A", position: i + 1, rank: i + 1 }))
+}
+
+function resultsForGroup(stage: RaceStage, group: string, positions: {
+  position: number,
+  rank: number,
+}[]): readonly ResultsConfig[] {
+  return positions.map(position => ({ stage, group, ...position }))
+}
+
+export function asKnockoutId(num: number) {
+  const mod = num % 10
+  if ([11, 12, 13].includes(num) || mod > 3 || mod === 0) {
+    return `${num}th`
+  }
+  switch (num % 10) {
+    case 1:
+      return `${num}st`
+    case 2:
+      return `${num}nd`
+    case 3:
+      return `${num}rd`
+  }
+}
+
+export function resultsFromKnockout(numTeams: number): readonly ResultsConfig[] {
+  if (numTeams % 2 !== 0) {
+    throw new Error("Only even numbers of teams are supported")
+  }
+  const results: ResultsConfig[] = []
+  for (let i = 1; i <= numTeams; i += 2) {
+    const group = `${asKnockoutId(i)}/${asKnockoutId(i + 1)}`
+    results.push({
+      stage: "knockout",
+      group,
+      position: 1,
+      rank: i,
+    })
+    results.push({
+      stage: "knockout",
+      group,
+      position: 2,
+      rank: i + 1,
+    })
+  }
+  return results
 }
 
 // TODO testing to validate the below i.e.
@@ -133,7 +162,9 @@ export const raceConfig: {
         seeds: wrapStage1Seeds([1, 2, 3]),
         template: miniLeagueTemplates.full3,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
+    // TODO unnecessary knockouts?
+    results: wrapSingleGroupResults(3),
   },
   4: {
     stage1: [
@@ -142,7 +173,9 @@ export const raceConfig: {
         seeds: wrapStage1Seeds([1, 2, 3, 4]),
         template: miniLeagueTemplates.mini4,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
+    // TODO unnecessary knockouts?
+    results: wrapSingleGroupResults(4),
   },
   5: {
     stage1: [
@@ -151,7 +184,9 @@ export const raceConfig: {
         seeds: wrapStage1Seeds([1, 2, 3, 4, 5]),
         template: miniLeagueTemplates.mini5,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
+    // TODO unnecessary knockouts?
+    results: wrapSingleGroupResults(5),
   },
   6: {
     stage1: [
@@ -160,7 +195,9 @@ export const raceConfig: {
         seeds: wrapStage1Seeds([1, 2, 3, 4, 5, 6]),
         template: miniLeagueTemplates.mini6,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
+    // TODO unnecessary knockouts?
+    results: wrapSingleGroupResults(6),
   },
   7: {
     stage1: [
@@ -174,7 +211,7 @@ export const raceConfig: {
         seeds: wrapStage1Seeds([2, 3, 6]),
         template: miniLeagueTemplates.mini3,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
     stage2: [
       {
         name: "I",
@@ -186,7 +223,30 @@ export const raceConfig: {
         ],
         template: miniLeagueTemplates.mini4,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 3 },
+          { group: "B", position: 3 },
+          { group: "A", position: 4 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    // TODO unnecessary knockouts?
+    results: [
+      ...resultsForGroup("stage2", "I", [
+        { position: 1, rank: 1 },
+        { position: 2, rank: 2 },
+        { position: 3, rank: 3 },
+        { position: 4, rank: 4 },
+      ]),
+      ...resultsForGroup("stage2", "II", [
+        { position: 1, rank: 5 },
+        { position: 2, rank: 6 },
+        { position: 3, rank: 7 },
+      ])
+    ],
   },
   8: {
     stage1: [
@@ -200,7 +260,7 @@ export const raceConfig: {
         seeds: wrapStage1Seeds([2, 3, 6, 7]),
         template: miniLeagueTemplates.mini4,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
     stage2: [
       {
         name: "I",
@@ -222,8 +282,8 @@ export const raceConfig: {
         ],
         template: miniLeagueTemplates.mini4,
       },
-    ] satisfies readonly MiniLeagueConfig[],
-    // TODO helper function(s) for knockout
+    ],
+    // FIXME EXAMPLE ONLY!!! THESE KNOCKOUTS ARE UNNECESSARY
     knockout: [
       {
         name: "7th/8th",
@@ -257,6 +317,22 @@ export const raceConfig: {
         ],
         template: miniLeagueTemplates.knockout,
       },
-    ] satisfies readonly MiniLeagueConfig[],
+    ],
+    // TODO unnecessary knockouts?
+    results: resultsFromKnockout(8),
+    //results: [
+    //  ...resultsForGroup("stage2", "I", [
+    //    { position: 1, rank: 1 },
+    //    { position: 2, rank: 2 },
+    //    { position: 3, rank: 3 },
+    //    { position: 4, rank: 4 },
+    //  ]),
+    //  ...resultsForGroup("stage2", "II", [
+    //    { position: 1, rank: 5 },
+    //    { position: 2, rank: 6 },
+    //    { position: 3, rank: 7 },
+    //    { position: 4, rank: 8 },
+    //  ])
+    //],
   },
 } as const

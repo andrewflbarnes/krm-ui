@@ -60,7 +60,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
           <TableBody>
             <For each={props.rounds}>{(round) => {
               const inProgress = () => round.status != "complete" && round.status != "abandoned"
-              const status = () => inProgress() ? "in progress" : round.status
+              const status = () => inProgress() ? `in progress: ${round.status}` : round.status
               return (
                 <TableRow>
                   <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>

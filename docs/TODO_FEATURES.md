@@ -19,6 +19,7 @@
 - [x] Race sheet 2
 - [x] Race list 2
 - [x] Knockouts
+- [x] Results
 
 ## Must
 

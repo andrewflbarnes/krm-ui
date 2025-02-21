@@ -1,37 +1,5 @@
-import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding } from "../kings"
+import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId } from "../kings"
 import { calcTeamResults } from "../kings/round-utils";
-
-export type GroupRaces = {
-  teams: string[];
-  races: Race[];
-  complete: boolean;
-  conflict: boolean;
-  results?: string[][];
-}
-
-export type StageRaces = {
-  [division in Division]: {
-    [group: string]: GroupRaces;
-  }
-}
-
-export type Round = {
-  id: string;
-  league: League;
-  status: "stage1" | "stage2" | "knockout" | "complete" | "abandoned";
-  date: Date;
-  description: string;
-  venue: string;
-  teams: RoundSeeding;
-  config: {
-    [division in Division]: RoundConfig;
-  };
-  races: {
-    stage1: StageRaces;
-    stage2?: StageRaces;
-    knockout?: StageRaces;
-  }
-}
 
 export type RoundInfo = Omit<Round, "races">
 
@@ -68,6 +36,128 @@ export default (function krmApiLocalStorage(): KrmApi {
     roundIds = roundIds.filter(rid => rid !== round.id)
     roundIds.push(round.id)
     localStorage.setItem(keyRoundIds, JSON.stringify(roundIds))
+  }
+
+  function progressRoundStage(round: Round, status: "stage1" | "stage2", nextStatus: "stage2" | "knockout") {
+    // TODO knockouts may only rely on stage 1
+    const races: StageRaces = round.races[status]
+    if (!races) {
+      const err = `No races exist for stage ${status} - cannot progress`
+      console.error(err, round.races)
+      throw new Error(err)
+    }
+
+    const ready = Object.values(races)
+      .every(divRaces => Object.values(divRaces)
+        .every(groupRaces => groupRaces.complete && !groupRaces.conflict))
+    if (!ready) {
+      const err = `Races for ${status} are incomplete or results conflict - cannot progress`
+      console.error(err, round.races)
+      throw new Error(err)
+    }
+
+    const { teams } = round
+
+    const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
+      acc[division] = raceConfig[seeds.length]
+      return acc
+    }, {} as {
+      [division in Division]: RoundConfig;
+    })
+
+    const nextRaces = divisions.reduce((acc, division) => {
+      const divisionConf = config[division]
+      acc[division] = divisionConf[nextStatus]?.reduce((accd, { template, name: groupName, seeds }) => {
+        // both race indexes and seeds are 1-indexed
+        const lastStageDivisionRaces = round.races[status][division]
+
+        const races: Race[] = template.races.map((race, i) => {
+          const seed1 = seeds[race[0] - 1]
+          const team1 = lastStageDivisionRaces[seed1.group].results[seed1.position - 1][0]
+          const seed2 = seeds[race[1] - 1]
+          const team2 = lastStageDivisionRaces[seed2.group].results[seed2.position - 1][0]
+          return {
+            stage: nextStatus,
+            group: groupName,
+            groupRace: i,
+            teamMlIndices: race,
+            team1,
+            team2,
+            division: division as Division,
+          }
+        })
+        accd[groupName] = {
+          races,
+          teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+          complete: false,
+          conflict: false,
+        }
+        return accd
+      }, {} as StageRaces[Division])
+      return acc
+    }, {
+      mixed: {},
+      ladies: {},
+      board: {},
+    } as StageRaces)
+
+    round.races[nextStatus] = nextRaces
+  }
+
+  function completeRound(round: Round) {
+    const { status } = round
+    // Prior stage races must be complete or not exist (e.g. all divisions < 7 teams)
+    const races = round.races[status]
+
+    const ready = Object.values(races)
+      .every(divRaces => Object.values(divRaces)
+        .every(groupRaces => groupRaces.complete && !groupRaces.conflict))
+    if (!ready) {
+      const err = `Races for ${status} are incomplete or results conflict - cannot progress`
+      console.error(err, round.races)
+      throw new Error(err)
+    }
+
+    const { teams } = round
+
+    const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
+      acc[division] = raceConfig[seeds.length]
+      return acc
+    }, {} as {
+      [division in Division]: RoundConfig;
+    })
+
+    const results = divisions.reduce((acc, division) => {
+      const divisionConf = config[division].results
+      divisionConf.forEach(({ stage, group, position, rank }) => {
+        const divisionResults = acc[division]
+        let rankResult: RoundResult = divisionResults.find(r => r.rank === rank)
+        if (!rankResult) {
+          rankResult = {
+            rank,
+            rankStr: asKnockoutId(rank),
+            teams: [],
+          }
+        } else if (rankResult.teams.length < 2) {
+          rankResult.rankStr = "Joint " + rankResult.rankStr
+        }
+        const team = round.races[stage]?.[division]?.[group]?.results?.[position - 1]?.[0]
+        if (!team) {
+          console.error(`No team found for ${division} ${stage} ${group} ${position}`)
+        }
+        rankResult.teams.push(team)
+        divisionResults.push(rankResult)
+      })
+      return acc
+    }, {
+      mixed: [],
+      ladies: [],
+      board: [],
+    } as {
+      [division in Division]: RoundResult[];
+    })
+
+    round.results = results
   }
 
   return {
@@ -193,89 +283,21 @@ export default (function krmApiLocalStorage(): KrmApi {
         switch (status) {
           case "stage1":
             // TODO if config has no stage 2 races go straight to knockouts
+            progressRoundStage(round, status, "stage2")
             return "stage2"
           case "stage2":
+            progressRoundStage(round, status, "knockout")
             return "knockout"
           case "knockout":
-            console.error("Progressing knockouts not implemented")
-            throw new Error("Progressing knockouts not implemented")
-          //return "complete"
+            completeRound(round)
+            return "complete"
           default:
             console.error(`Cannot progress round with status ${status}`)
             throw new Error(`Cannot progress round with status ${status}`)
         }
       })()
 
-      // TODO knockouts may only rely on stage 1
-      const races: StageRaces = round.races[status]
-      if (!races) {
-        const err = `No races exist for stage ${status} - cannot progress`
-        console.error(err, round.races)
-        throw new Error(err)
-      }
-
-      const ready = Object.values(races)
-        .every(divRaces => Object.values(divRaces)
-          .every(groupRaces => groupRaces.complete && !groupRaces.conflict))
-      if (!ready) {
-        const err = `Races for ${status} are incomplete or results conflict - cannot progress`
-        console.error(err, round.races)
-        throw new Error(err)
-      }
-
       round.status = nextStatus
-
-      if (nextStatus === "complete") {
-        this.saveRound(round)
-        return
-      }
-
-      const { teams } = round
-
-      const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
-        acc[division] = raceConfig[seeds.length]
-        return acc
-      }, {} as {
-        [division in Division]: RoundConfig;
-      })
-
-      const nextRaces = divisions.reduce((acc, division) => {
-        const divisionConf = config[division]
-        acc[division] = divisionConf[nextStatus]?.reduce((accd, { template, name: groupName, seeds }) => {
-          // both race indexes and seeds are 1-indexed
-          const lastStageDivisionRaces = round.races[status][division]
-
-          const races: Race[] = template.races.map((race, i) => {
-            const seed1 = seeds[race[0] - 1]
-            const team1 = lastStageDivisionRaces[seed1.group].results[seed1.position - 1][0]
-            const seed2 = seeds[race[1] - 1]
-            const team2 = lastStageDivisionRaces[seed2.group].results[seed2.position - 1][0]
-            return {
-              stage: nextStatus,
-              group: groupName,
-              groupRace: i,
-              teamMlIndices: race,
-              team1,
-              team2,
-              division: division as Division,
-            }
-          })
-          accd[groupName] = {
-            races,
-            teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
-            complete: false,
-            conflict: false,
-          }
-          return accd
-        }, {} as StageRaces[Division])
-        return acc
-      }, {
-        mixed: {},
-        ladies: {},
-        board: {},
-      } as StageRaces)
-
-      round.races[nextStatus] = nextRaces
 
       saveRound(round)
     },
