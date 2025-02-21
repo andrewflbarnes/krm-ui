@@ -1,4 +1,11 @@
 {
+  "redirects": [
+    {
+      "source": "/",
+      "destination": "/krm-ui/",
+      "type": 302
+    }
+  ],
   "rewrites": [
     {
       "source": "krm-ui/**",
