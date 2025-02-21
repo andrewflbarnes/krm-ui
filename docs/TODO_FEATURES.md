@@ -18,6 +18,7 @@
 - [x] Automatic DSQ resolution
 - [x] Race sheet 2
 - [x] Race list 2
+- [x] Knockouts
 
 ## Must
 
@@ -25,8 +26,10 @@
 - [ ] Print race sheet ("light" mode equivalent, alternatively screenshot)
 - [ ] Print knockout ("light" mode equivalent, alternatively screenshot)
 - [ ] Pre-start team shuffling
-- [ ] Knockouts
 - [ ] Draw Resolution
+- [ ] Race bys (team unavailable)
+- [ ] Race skips (teams unavailable)
+- [ ] Knockout draws (teams unavailable/race unrun)
 - [ ] Modify configuration presets for mini leagues
 - [ ] Visualise configuration presets for rounds
 - [ ] Modify configuration presets for rounds
