@@ -1,7 +1,8 @@
 import { useParams } from "@solidjs/router"
 import { createQuery } from "@tanstack/solid-query"
 import { ErrorBoundary, Match, onCleanup, onMount, Suspense, Switch } from "solid-js"
-import krmApi, { Round } from "../api/krm"
+import krmApi from "../api/krm"
+import { Round } from "../kings"
 import RunRaceInProgress from "../components/RunRaceInProgress"
 import RunRaceComplete from "../components/RunRaceComplete"
 import { useKings } from "../kings"
@@ -22,7 +23,7 @@ export default function RunRace() {
     staleTime: 1000 * 60 * 5,
   }))
 
-  const inProgress = () => query.data.status != "complete" && query.data.status != "abandoned"
+  const inProgress = () => query.data.status != "abandoned"
   return (
     <ErrorBoundary fallback={e => e}>
       <Suspense fallback="Loading...">

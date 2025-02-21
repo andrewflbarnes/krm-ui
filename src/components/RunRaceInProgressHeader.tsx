@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
-import { Round } from "../api/krm";
+import { Round } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
 import krmApi from "../api/krm";
@@ -13,6 +13,7 @@ const stages = {
   "stage1": "Stage 1",
   "stage2": "Stage 2",
   "knockout": "Knockouts",
+  "complete": "Results",
 } as const
 export type Stage = keyof typeof stages
 

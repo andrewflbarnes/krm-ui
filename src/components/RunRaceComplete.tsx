@@ -1,5 +1,5 @@
 import { Typography } from "@suid/material";
-import { Round } from "../api/krm";
+import { Round } from "../kings";
 
 export default function RunRaceComplete(props: { round: Round }) {
   return (

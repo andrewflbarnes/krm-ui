@@ -1,8 +1,9 @@
 import { createComputed, createSignal, Match, on, Switch } from "solid-js";
-import { Round } from "../api/krm";
+import { Round } from "../kings";
 import RunRaceInProgressStage from "./RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RunRaceInProgressHeader, { type Stage, type View } from "./RunRaceInProgressHeader";
+import RunRaceResults from "./RunRaceResults";
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -16,23 +17,10 @@ function isStage(s: string): "knockout" | "stage1" | "stage2" | null {
   return s == "stage1" || s == "stage2"|| s == "knockout" ? s : null
 }
 
-function isKnockout(s: string): "knockout" | null {
-  return s == "knockout" ? s : null
-}
-
 function RunRaceInProgressInternal(props: { round: Round }) {
   const [stage, setStage] = createSignal<Stage>("knockout")
   createComputed(on(() => props.round.status, () => {
-    const roundStage = (function() {
-      switch (props.round.status) {
-        case "stage1":
-        case "stage2":
-        case "knockout":
-          return props.round.status
-        default:
-          return stage()
-      }
-    })()
+    const roundStage = props.round.status !== "abandoned" ? props.round.status : stage()
     setStage(roundStage)
   }))
 
@@ -84,6 +72,9 @@ function RunRaceInProgressInternal(props: { round: Round }) {
             view={view()}
           />
         }</Match>
+        <Match when={stage() == "complete"}>
+          <RunRaceResults round={props.round} />
+        </Match>
         <Match when={true}>
           <div>Unknown stage: {stage()}</div>
         </Match>
