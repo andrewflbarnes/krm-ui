@@ -98,9 +98,9 @@ function RaceTableRow(props: {
         onClick={() => !props.readonly && setWinner(1)}
       >
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
-          <div onClick={[toggleDsq, 1]} style={{ display: "contents" }}>
+          <div onClick={props.readonly ? null : [toggleDsq, 1]} style={{ display: "contents" }}>
             <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
-              <Cancel onClick={props.readonly ? null : [toggleDsq, 1]} fontSize="small" color="error" />
+              <Cancel fontSize="small" color="error" />
             </Show>
           </div>
           <Show when={winner() == 1} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
