@@ -154,7 +154,8 @@ export default function RunRaceInProgressHeader(props: {
         <Selector
           containerProps={{ style: { "min-width": "10em" } }}
           title="View"
-          current={views[props.view]}
+          disabled={props.stage == "complete"}
+          current={props.stage == "complete" ? "-" : views[props.view]}
           onClose={(v: View) => props.onViewChange(v ?? props.view)}
           options={options}
         />
