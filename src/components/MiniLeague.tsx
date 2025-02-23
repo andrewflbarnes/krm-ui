@@ -76,8 +76,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
         <table style={{ "border-spacing": "3px 0" }}>
           <thead>
             <tr>
-              <td>Group {props.name}</td>
-              <td colspan={collapsedRaces().length}>
+              <td colspan={collapsedRaces().length + 2}>Group {props.name}</td>
+              <td colspan={1}>
                 <Show when={props.races.every(({ winner }) => !!winner)}>
                   <Typography variant="caption" color="success.main">Complete</Typography>
                 </Show>
@@ -191,7 +191,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     {wins()}
                   </div>
                 </td>
-                <td>
+                <td style={{ width: "7em" }}>
                   <Show when={finished() || props.live}>
                     {posStr()}
                   </Show>
