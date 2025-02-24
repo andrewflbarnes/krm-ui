@@ -10,7 +10,7 @@ import { Suspense } from "solid-js";
 import { createQuery } from "@tanstack/solid-query";
 import { OpenInNew } from "@suid/icons-material";
 import { parseResults } from "../kings/utils";
-import { useKings } from "../kings";
+import { LeagueData, useKings } from "../kings";
 import DivisionResultsAll from "../components/DivisionResultsAll";
 
 const immediateError = (message: string) => {
@@ -20,13 +20,9 @@ const immediateError = (message: string) => {
 }
 
 export default function Tracker() {
-  const [{ config, league }] = useKings()
+  const [{ league }] = useKings()
   const getLeagueData = async () => {
-    const url = config().tracker
-    if (!url) {
-      throw immediateError("No tracker URL found")
-    }
-    const leagueData = await tracker.getLeagueData(url)
+    const leagueData: LeagueData = await tracker.getLeagueData(league())
     if (!leagueData) {
       throw immediateError("No data found")
     }

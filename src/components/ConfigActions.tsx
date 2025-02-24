@@ -14,13 +14,8 @@ export default function ConfigActions() {
   const handleCancelUpsert = () => setConfirmingUpsert(false)
   const upsertConfig = () => {
     setConfirmingUpsert(false)
-    const url = k.config().tracker
-    if (!url) {
-      notification.error("Tracing URL not set")
-      return
-    }
     notification.info(`Loading config for ${k.league()} league...`)
-    tracker.getLeagueData(url)
+    tracker.getLeagueData(k.league())
       .then(data => {
         setLeagueConfig(data)
         notification.success(`Config loaded for ${k.league()} league`)
