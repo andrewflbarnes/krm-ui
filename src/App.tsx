@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { BreadcrumberProvider } from "./hooks/breadcrumb";
 import { KingsProvider } from "./kings";
 import { Route, Router } from "@solidjs/router";
-import { lazy, ParentProps } from "solid-js";
-import { createTheme, ThemeProvider } from "@suid/material";
+import { createMemo, createSignal, lazy, ParentProps } from "solid-js";
+import { createPalette, createTheme, ThemeProvider } from "@suid/material";
 import AppLayout from "./AppLayout";
 import { ClerkProvider } from "clerk-solidjs";
 import { dark } from "@clerk/themes";
@@ -50,14 +50,38 @@ export default function App() {
 }
 
 function HydratedAppLayout(props: ParentProps) {
-  const theme = createCustomTheme()
+  const savedMode = (function() {
+    const m = localStorage.getItem("theme-mode")
+    switch (m) {
+      case "light":
+      case "dark":
+        return m
+      default:
+        localStorage.setItem("theme-mode", "dark")
+        return "dark"
+    }
+  })()
+
+  const [mode, setMode] = createSignal<"light" | "dark">(savedMode);
+
+  const palette = createMemo(() => {
+    return createPalette({ mode: mode() });
+  });
+
+  const theme = createTheme({ palette: palette });
+
+  const handleModeChange = () => setMode(m => {
+    const newMode = m === "light" ? "dark" : "light"
+    localStorage.setItem("theme-mode", newMode)
+    return newMode
+  })
   return (
-    <ClerkProvider publishableKey={clerkPubKey} appearance={{ baseTheme: dark}}>
+    <ClerkProvider publishableKey={clerkPubKey} appearance={{ baseTheme: dark }}>
       <QueryClientProvider client={queryClient}>
         <BreadcrumberProvider>
           <KingsProvider>
             <ThemeProvider theme={theme}>
-              <AppLayout>
+              <AppLayout onModeChange={handleModeChange}>
                 {props.children}
               </AppLayout>
             </ThemeProvider>
@@ -66,12 +90,4 @@ function HydratedAppLayout(props: ParentProps) {
       </QueryClientProvider>
     </ClerkProvider>
   )
-}
-
-function createCustomTheme() {
-  return createTheme({
-    palette: {
-      mode: "dark"
-    }
-  })
 }
