@@ -111,9 +111,8 @@ function ManageNewInternal() {
       validator: () => {
         if (missingTeams().length > 0) {
           try {
-            notification.info("Adding league teams")
             addLeagueTeams(missingTeams())
-            notification.success("Teams added")
+            notification.success("Missing teams added")
           } catch (e) {
             return [false, e.message]
           }
@@ -172,12 +171,10 @@ function ManageNewInternal() {
   }
 
   const handleDone = () => {
-    notification.info("Creating round")
     const r = krmApi.createRound(k.league(), seeding())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()
-      notification.success("Created round")
       navigate(`/${r.id}`)
     } else {
       notification.error(err)
