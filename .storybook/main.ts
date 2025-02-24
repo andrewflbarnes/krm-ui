@@ -11,5 +11,19 @@ const config: StorybookConfig = {
     name: "storybook-solidjs-vite",
     options: {},
   },
+  managerHead: (head, { configType }) => {
+    if (configType === "PRODUCTION") {
+      return `
+        ${head}
+        <base href="/krm-ui-storybook/">
+      `;
+    }
+  },
+  viteFinal: (config, { configType }) => {
+    if (configType === "PRODUCTION") {
+      config.base = "/krm-ui-storybook/";
+    }
+    return config
+  }
 };
 export default config;
