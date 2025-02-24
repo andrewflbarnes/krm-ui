@@ -20,6 +20,7 @@
 - [x] Race list 2
 - [x] Knockouts
 - [x] Results
+- [x] Light and dark mode
 
 ## Must
 
@@ -34,13 +35,13 @@
 - [ ] Modify configuration presets for mini leagues
 - [ ] Visualise configuration presets for rounds
 - [ ] Modify configuration presets for rounds
+- [ ] Ability to run individual board races
 
 ## Should
 
 - [ ] DSQ reasons
 - [ ] Import data from file
 - [ ] Import data via link (base64)
-- [ ] Ability to run individual board races
 
 ## Could
 

@@ -7,6 +7,7 @@
 - [x] Upgrade vite-solid-plugin when [fix is available][vite-build-bug]
 - [x] Refactor to a common model for in progress race list and mini league views
 - [x] Deploy to andrewflbarnes.com
+- [x] Protect sensitive variables with serverless function calls
 
 ## Must
 
