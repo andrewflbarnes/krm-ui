@@ -2,13 +2,11 @@ import { League, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } fro
 
 export type LeagueConfig = {
   name: string;
-  tracker?: string;
 }
 
 const config = {
   western: {
     name: "Western",
-    tracker: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRVRr4PgIw99JJ5ez9fFmfmLHwUTm5c-BYHpEsztFg2k3P2PCPe5yj0q2dzDUvx0qoUmkZl5B8gkfC4/pub?gid=0&single=true&output=csv&range=A6:K100',
   },
   midlands: {
     name: "Midlands",

@@ -1,5 +1,5 @@
 import { LightModeOutlined } from "@suid/icons-material";
-import { IconButton, Paper, Typography, useTheme } from "@suid/material";
+import { IconButton, Paper, Typography } from "@suid/material";
 import { ClerkLoaded, SignedIn, useUser } from "clerk-solidjs";
 
 export default function AppFooter(props: {
@@ -22,7 +22,7 @@ export default function AppFooter(props: {
               </Typography>
             </SignedIn>
           </ClerkLoaded>
-          <IconButton onClick={props.onModeChange}>
+          <IconButton aria-label="Toggle light/dark mode" onClick={props.onModeChange}>
             <LightModeOutlined fontSize="small" />
           </IconButton>
         </div>
