@@ -10,6 +10,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@alenaksu/json-viewer": "^2.1.2",
     "@clerk/themes": "^2.2.17",
     "@solidjs/router": "^0.15.1",
     "@suid/icons-material": "^0.8.1",

@@ -1,52 +1,46 @@
-import { Button } from "@suid/material";
-import { Show, For, createSignal, createSelector } from "solid-js";
+import { Button, Card, CardContent, Modal } from "@suid/material";
+import { For, createSignal } from "solid-js";
+
 export default function DeveloperData() {
-  const [show, setShow] = createSignal("")
-  const selected = createSelector(show)
+  const [data, setData] = createSignal<string | undefined>()
   return (
-    <div style={{ display: "flex", "flex-direction": "column", "align-items": "start" }}>
-      <Button onClick={[setShow, selected("league") ? "" : "league"]}>
-        kings-selected-league
-      </Button>
-      <Show when={selected("league")}>
-        <pre>
-          {localStorage.getItem("kings-selected-league")}
-        </pre>
-      </Show>
-      <For each={["western", "northern", "southern", "midlands"]}>{league =>
-        <>
-          <Button onClick={[setShow, selected(league) ? "" : league]}>
+    <>
+      <Modal
+        open={!!data()}
+        sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}
+        onClose={() => setData(undefined)}
+      >
+        <Card sx={{
+          height: "80%",
+          width: "80%",
+          maxWidth: "1024px",
+          overflow: "scroll",
+        }}>
+          <CardContent sx={{ display: "grid", placeItems: "center" }}>
+            <json-viewer style={{ width: "100%" }}>
+              {JSON.stringify(data(), null, 2)}
+            </json-viewer>
+          </CardContent>
+        </Card>
+      </Modal>
+      <div style={{ display: "flex", "flex-direction": "column", "align-items": "start" }}>
+        kings-selected-league: {localStorage.getItem("kings-selected-league")}
+        <For each={["western", "northern", "southern", "midlands"]}>{league =>
+          <Button onClick={[setData, JSON.parse(localStorage.getItem(`kings-${league}-config`)) || "N/A"]}>
             kings-{league}-config
           </Button>
-          <Show when={selected(league)}>
-            <pre>
-              {JSON.stringify(JSON.parse(localStorage.getItem(`kings-${league}-config`)), null, 2)}
-            </pre>
-          </Show>
-        </>
-      }</For>
-      <Button onClick={[setShow, selected("ids") ? "" : "ids"]}>
-        kings-round-ids
-      </Button>
-      <Show when={selected("ids")}>
-        <pre>
-          {JSON.stringify(JSON.parse(localStorage.getItem("kings-round-ids")), null, 2)}
-        </pre>
-      </Show>
-      <For each={JSON.parse(localStorage.getItem("kings-round-ids"))}>
-        {(id: string) => (
-          <>
-            <Button onClick={[setShow, selected(id) ? "" : id]}>
+        }</For>
+        <Button onClick={[setData, JSON.parse(localStorage.getItem("kings-round-ids"))]}>
+          kings-round-ids
+        </Button>
+        <For each={JSON.parse(localStorage.getItem("kings-round-ids"))}>
+          {(id: string) => (
+            <Button onClick={[setData, JSON.parse(localStorage.getItem(id))]}>
               {id}
             </Button>
-            <Show when={selected(id)}>
-              <pre>
-                {JSON.stringify(JSON.parse(localStorage.getItem(id)), null, 2)}
-              </pre>
-            </Show>
-          </>
-        )}
-      </For>
-    </div>
+          )}
+        </For>
+      </div>
+    </>
   )
 }

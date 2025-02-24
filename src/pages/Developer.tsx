@@ -4,7 +4,6 @@ import { createSelector, For, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 import DeveloperConfig from "../components/DeveloperConfig";
 import DeveloperData from "../components/DeveloperData";
-import DeveloperUIComponents from "../components/DeveloperUIComponents";
 
 const devViews = [
   {
@@ -16,11 +15,6 @@ const devViews = [
     href: "data",
     title: "Data",
     component: DeveloperData,
-  },
-  {
-    href: "ui",
-    title: "UI Components",
-    component: DeveloperUIComponents,
   },
 ]
 
