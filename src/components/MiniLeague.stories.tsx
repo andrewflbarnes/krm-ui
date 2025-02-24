@@ -1,8 +1,6 @@
 import type { Meta, StoryObj } from 'storybook-solidjs';
-import { createSignal, untrack } from "solid-js";
+import { createEffect, createSignal, untrack } from "solid-js";
 import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
-
-
 import MiniLeague from './MiniLeague';
 
 const teams = [
@@ -34,6 +32,9 @@ const MiniLeagueWithHandler = (props: {
   readonly?: boolean;
 }) => {
   const [races, setRaces] = createSignal<Race[]>(untrack(() => props.races))
+  createEffect(() => {
+    setRaces(props.races)
+  })
   const handleResultChange = (result: Race) => {
     const newRaces = [...races()]
     newRaces[result.groupRace] = result
