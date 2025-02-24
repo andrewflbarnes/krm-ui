@@ -36,7 +36,10 @@ function ManageNewInternal() {
 
   const [numTeams, setNumTeams] = createStore<ClubSeeding>(initConfig(k.leagueConfig()))
   createEffect(() => {
-    setNumTeams(initConfig(k.leagueConfig()))
+    setNumTeams(nt => ({
+      ...initConfig(k.leagueConfig()),
+      ...nt,
+    }))
   })
 
   const handleTeamNumsUpdate = (club: string, division: Division, count: number) => {
