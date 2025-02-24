@@ -88,8 +88,8 @@ export default function KrmAppBar() {
                     <UserButton />
                   </SignedIn>
                   <SignedOut>
-                    <SignInButton style={{ cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
-                      <Typography sx={{ color: theme => theme.palette.text.primary }} >
+                    <SignInButton style={{ color: "inherit", cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
+                      <Typography >
                         Sign In
                       </Typography>
                     </SignInButton>
