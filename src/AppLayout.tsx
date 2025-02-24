@@ -14,7 +14,7 @@ export default function AppLayout(props: ParentProps<{
       display: "flex",
       "flex-direction": "column",
     }}>
-      <Toaster />
+      <Toaster position="bottom-right" />
       <div style={{ "flex-grow": 0 }}>
         <AppBar />
       </div>
