@@ -2,4 +2,7 @@ node_modules/
 node_modules*/
 dist/
 
+# Local Netlify folder
+.netlify
+
 *storybook.log

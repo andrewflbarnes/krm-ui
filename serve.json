@@ -8,8 +8,8 @@
   ],
   "rewrites": [
     {
-      "source": "krm-ui/**",
-      "destination": "krm-ui/index.html"
+      "source": "/krm-ui/**",
+      "destination": "/krm-ui/index.html"
     }
   ]
 }
