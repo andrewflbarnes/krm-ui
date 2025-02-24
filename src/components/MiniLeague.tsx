@@ -1,4 +1,4 @@
-import { CheckCircle, CheckCircleOutline } from "@suid/icons-material";
+import { CancelOutlined, CheckCircle, CheckCircleOutline, Circle, CircleOutlined } from "@suid/icons-material";
 import { Menu, MenuItem, Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
@@ -169,9 +169,17 @@ export default function MiniLeague(props: MiniLeagueProps) {
                             "align-items": "center",
                             "justify-content": "center",
                           }}>
-                            <Show when={raceDetails.winner === ti} fallback={<CheckCircleOutline color={dsq ? "error" : "inherit"} />}>
-                              <CheckCircle color={dsq ? "error" : "success"} />
-                            </Show>
+                            <Switch>
+                              <Match when={raceDetails.winner === ti}>
+                                <CheckCircle color={dsq ? "error" : "success"} />
+                              </Match>
+                              <Match when={dsq}>
+                                <CancelOutlined color={"error"} />
+                              </Match>
+                              <Match when={true}>
+                                <CircleOutlined />
+                              </Match>
+                            </Switch>
                           </div>
                         </td>
                       </Match>

@@ -1,4 +1,4 @@
-import { Cancel, CheckCircle, CheckCircleOutline, CloseOutlined } from "@suid/icons-material";
+import { Cancel, CancelOutlined, CheckCircle, CheckCircleOutline, CircleOutlined, CloseOutlined } from "@suid/icons-material";
 import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { Race } from "../kings";
@@ -100,10 +100,10 @@ function RaceTableRow(props: {
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
           <div onClick={props.readonly ? null : [toggleDsq, 1]} style={{ display: "contents" }}>
             <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
-              <Cancel fontSize="small" color="error" />
+              <CancelOutlined fontSize="small" color="error" />
             </Show>
           </div>
-          <Show when={winner() == 1} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
+          <Show when={winner() == 1} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
             <CheckCircle fontSize="small" color="success" />
           </Show>
           &nbsp;
@@ -119,12 +119,12 @@ function RaceTableRow(props: {
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "end" }}>
           {props.race.team2}
           &nbsp;
-          <Show when={winner() == 2} fallback={<CheckCircleOutline fontSize="small" color="inherit" />}>
+          <Show when={winner() == 2} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
             <CheckCircle fontSize="small" color="success" />
           </Show>
           <div onClick={props.readonly ? null : [toggleDsq, 2]} style={{ display: "contents" }}>
             <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
-              <Cancel fontSize="small" color="error" />
+              <CancelOutlined fontSize="small" color="error" />
             </Show>
           </div>
         </div>
