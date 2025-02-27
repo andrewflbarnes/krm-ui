@@ -1,8 +1,7 @@
 import { Card, Stack } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, For, createEffect, createMemo, on } from "solid-js";
-import { Round, StageRaces } from "../api/krm";
-import { Division, Race } from "../kings";
+import { Division, Race, Round, StageRaces } from "../kings";
 import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
@@ -15,17 +14,20 @@ const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean
   const inSplits = northern ? 1 : splits;
   const or: Race[] = [];
   for (let i = 0; i < topSplits; i++) {
-    Object.values(divisionRaces).forEach((groupRaces) => {
-      for (let j = 0; j < inSplits; j++) {
-        const split = i + j
-        Object.values(groupRaces).forEach(({ races }) => {
-          const size = races.length / splits
-          const start = split * size
-          const end = Math.min((split + 1) * size, races.length)
-          races.slice(start, end).forEach(r => or.push(r))
-        })
-      }
-    })
+    Object.entries(divisionRaces)
+      .sort((a, b) => b.toLocaleString().localeCompare(a.toLocaleString()))
+      .map(([, races]) => races)
+      .forEach((groupRaces) => {
+        for (let j = 0; j < inSplits; j++) {
+          const split = i + j
+          Object.values(groupRaces).forEach(({ races }) => {
+            const size = races.length / splits
+            const start = split * size
+            const end = Math.min((split + 1) * size, races.length)
+            races.slice(start, end).forEach(r => or.push(r))
+          })
+        }
+      })
   }
   return or
 }

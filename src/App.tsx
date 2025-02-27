@@ -19,7 +19,6 @@ const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
 const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRace = lazy(() => import("./pages/RunRace"));
 import { Toaster } from "solid-toast";
-import notification from "./hooks/notification";
 
 const queryClient = new QueryClient()
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
