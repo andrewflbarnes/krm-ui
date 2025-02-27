@@ -8,8 +8,6 @@ import { createSignal, Show } from "solid-js";
 export default function ConfigActions() {
   const [k, { setLeagueConfig }] = useKings()
   const hasConfig = () => !!k.leagueConfig()
-  const canUpsert = () => k.config().tracker
-
   const [confirmingUpsert, setConfirmingUpsert] = createSignal(false)
   const handleCancelUpsert = () => setConfirmingUpsert(false)
   const upsertConfig = () => {
@@ -25,17 +23,19 @@ export default function ConfigActions() {
       })
   }
 
-  const [mutTracker, setMutTracker] = createSignal(k.config().tracker)
+  // TODO store and use the custom tracker URL(s)
+  const dummyTracker = "https://example.com"
+  const [mutTracker, setMutTracker] = createSignal(dummyTracker)
   const [updatingTracker, setUpdatingTracker] = createSignal(false)
   const [confirmingUpdateTracker, setConfirmingUpdateTracker] = createSignal(false)
   const handleCancelUpdateTracker = () => {
-    setMutTracker(k.config().tracker)
+    setMutTracker(dummyTracker)
     setUpdatingTracker(false)
   }
   const updateTracker = () => {
     alert("TODO update to " + mutTracker())
     notification.success("Tracker URL updated")
-    setMutTracker(k.config().tracker)
+    setMutTracker(dummyTracker)
     setConfirmingUpdateTracker(false)
     setUpdatingTracker(false)
   }
@@ -53,7 +53,7 @@ export default function ConfigActions() {
         }
       }}
     >
-      <Button variant="outlined" disabled={!canUpsert()} onClick={[setConfirmingUpsert, true]}>
+      <Button variant="outlined" onClick={[setConfirmingUpsert, true]}>
         {hasConfig() ? "Update" : "Load"} config
       </Button>
       <ModalConfirmAction open={confirmingUpsert()} onDiscard={handleCancelUpsert} onConfirm={upsertConfig}>
@@ -62,7 +62,7 @@ export default function ConfigActions() {
       <Stack flexDirection="row" gap="1em" sx={{ "& > *":{ flexBasis: 0, flexGrow: 1 } }}>
         <Show when={!updatingTracker()}>
           <Button variant="outlined" onClick={[setUpdatingTracker, true]}>
-            Update Tracking URL
+            Custom Tracking URL
           </Button>
         </Show>
         <Show when={updatingTracker()}>
