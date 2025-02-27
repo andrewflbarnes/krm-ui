@@ -1,12 +1,13 @@
 import { ArrowRight, Assignment } from "@suid/icons-material";
 import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
-import { createSignal, For, Show } from "solid-js";
+import { createMemo, createSignal, For, Show } from "solid-js";
 import Link from "./Link";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
 import download from "downloadjs";
 import krmApi from "../api/krm"
 import MoreMenu from "../ui/MoreMenu";
+import { useAuth } from "../hooks/auth";
 
 const statusColor = {
   "abandoned": "error",
@@ -21,6 +22,7 @@ type ManageContinueListProps = {
 
 export default function ManageContinueList(props: ManageContinueListProps) {
   const [deleteRound, setDeleteRound] = createSignal<string | null>();
+  const { userId, authenticated } = useAuth()
   const handleConfirmExport = (id: string) => {
     const round = krmApi.getRound(id);
     const blob = new Blob([JSON.stringify(round, null, 2)], { type: "application/json" })
@@ -33,6 +35,19 @@ export default function ManageContinueList(props: ManageContinueListProps) {
     props.onDeleteRound(deleteRound())
     setDeleteRound()
   }
+  const rounds = createMemo(() => props.rounds.reduce((acc, round) => {
+    if (round.owner == "local" || round.owner == userId()) {
+      acc.owned.push(round)
+    } else {
+      acc.readonly.push(round)
+    }
+    return acc
+  }, {
+    owned: [],
+    readonly: [],
+  }))
+  const split = () => rounds().owned.length != props.rounds.length && rounds().readonly.length != props.rounds.length
+
   return (
     <>
       <ModalConfirmAction
@@ -45,17 +60,52 @@ export default function ManageContinueList(props: ManageContinueListProps) {
       >
         Are you sure you want to delete this round? This action cannot be undone!
       </ModalConfirmAction>
+      <Show when={rounds().owned.length > 0}>
+        <RoundInfoList
+          rounds={rounds().owned}
+          handleConfirmDelete={handleConfirmDelete}
+          handleConfirmExport={handleConfirmExport}
+          handleUploadRound={props.onUploadRound}
+          canUpload={authenticated()}
+          owned={true}
+          headings={true}
+        />
+      </Show>
+      <Show when={rounds().readonly.length > 0}>
+        <RoundInfoList
+          rounds={rounds().readonly}
+          handleConfirmDelete={handleConfirmDelete}
+          handleConfirmExport={handleConfirmExport}
+          handleUploadRound={props.onUploadRound}
+          headings={!split()}
+        />
+      </Show>
+    </>
+  )
+}
+
+function RoundInfoList(props: {
+  handleConfirmDelete: (id: string) => void;
+  handleConfirmExport: (id: string) => void;
+  handleUploadRound: (id: string) => void;
+  rounds: RoundInfo[];
+  canUpload?: boolean;
+  owned?: boolean;
+  headings?: boolean;
+}) {
+  return (
+    <>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
           <TableHead>
             <TableRow>
+              <TableCell>{props.owned ? "Your" : "Other"} rounds</TableCell>
               <TableCell />
               <TableCell />
               <TableCell />
-              <TableCell />
-              <TableCell align="center">Mixed</TableCell>
-              <TableCell align="center">Ladies</TableCell>
-              <TableCell align="center">Board</TableCell>
+              <TableCell align="center" sx={{ color: props.headings ? "" : "transparent" }}>Mixed</TableCell>
+              <TableCell align="center" sx={{ color: props.headings ? "" : "transparent" }}>Ladies</TableCell>
+              <TableCell align="center" sx={{ color: props.headings ? "" : "transparent" }}>Board</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -68,22 +118,24 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                     <Stack direction="row" gap="1em" alignItems="center">
                       <MoreMenu id={round.id}>{(handleClose) => {
                         const confirmDelete = () => {
-                          handleConfirmDelete(round.id)
+                          props.handleConfirmDelete(round.id)
                           handleClose()
                         }
                         const confirmExport = () => {
-                          handleConfirmExport(round.id)
+                          props.handleConfirmExport(round.id)
                           handleClose()
                         }
                         const doUpload = () => {
-                          props.onUploadRound(round.id)
+                          props.handleUploadRound(round.id)
                           handleClose()
                         }
                         return (
                           <>
                             <MenuItem onClick={confirmExport}>Export</MenuItem>
                             <MenuItem onClick={confirmDelete}>Delete</MenuItem>
-                            <MenuItem onClick={doUpload}>Upload</MenuItem>
+                            <Show when={props.canUpload}>
+                              <MenuItem onClick={doUpload}>Upload</MenuItem>
+                            </Show>
                           </>
                         )
                       }}</MoreMenu>
