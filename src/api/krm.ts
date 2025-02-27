@@ -1,5 +1,7 @@
 import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId } from "../kings"
 import { calcTeamResults } from "../kings/round-utils";
+import { auth, db, serde } from "../firebase";
+import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 
 export type RoundInfo = Omit<Round, "races">
 
@@ -14,6 +16,8 @@ export type KrmApi = {
   deleteRound(id: string): void;
   updateRace(id: string, race: Race): void;
   progressRound(id: string): void;
+  uploadRound(id: string): Promise<void>;
+  syncRounds(league: string): Promise<RoundInfo[]>;
 }
 
 export default (function krmApiLocalStorage(): KrmApi {
@@ -160,6 +164,14 @@ export default (function krmApiLocalStorage(): KrmApi {
     round.results = results
   }
 
+  function getRound(id: string): Round {
+    const r = JSON.parse(localStorage.getItem(id))
+    return {
+      ...r,
+      date: r.date ? new Date(r.date) : r,
+    }
+  }
+
   return {
     saveLeagueConfig(league: League, config: LeagueData) {
       localStorage.setItem(getStorageKeyLeagueConfig(league), JSON.stringify(config))
@@ -205,6 +217,7 @@ export default (function krmApiLocalStorage(): KrmApi {
       // TODO details
       const round: Round = {
         id: newStorageKeyRound(league),
+        owner: "local",
         league,
         date: new Date(),
         description: "Round 2",
@@ -234,13 +247,7 @@ export default (function krmApiLocalStorage(): KrmApi {
           }
         })
     },
-    getRound(id: string): Round {
-      const r = JSON.parse(localStorage.getItem(id))
-      return {
-        ...r,
-        date: r.date ? new Date(r.date) : r,
-      }
-    },
+    getRound,
     deleteRound(id: string) {
       localStorage.removeItem(id)
       const keyRoundIds = getStorageKeyRounds()
@@ -301,5 +308,37 @@ export default (function krmApiLocalStorage(): KrmApi {
 
       saveRound(round)
     },
+    async uploadRound(id: string) {
+      const owner = auth?.currentUser?.uid
+      if (!owner) {
+        throw new Error("User is not logged in and fully authenticated")
+      }
+      // TODO use built in support for converters in firestore
+      const round = getRound(id)
+      if (owner !== round.owner && round.owner !== "local") {
+        throw new Error("Cannot update rounds you do not own")
+      }
+      const fsRound = serde.toFirestoreRound(round)
+      const payload = {
+        ...fsRound,
+        owner,
+      }
+
+      const ref = doc(db, "rounds", id)
+      await setDoc(ref, payload)
+    },
+    async syncRounds(league: string) {
+      const roundsRef = collection(db, "rounds")
+      const q = query(roundsRef, where("league", "==", league))
+      const rounds = await getDocs(q)
+      // FIXME detect dups
+      const dl = rounds.docs
+        .map(doc => doc.data())
+        .map(d => serde.fromFirestoreRound(d as unknown as Round))
+      // todo detect conflicts
+      dl.forEach(saveRound)
+      // todo we need to ensure any in state rounds are refreshed
+      return dl
+    }
   }
 })()

@@ -88,6 +88,7 @@ export type RoundResult = {
 
 export type Round = {
   id: string;
+  owner: string;
   league: League;
   status: RoundStatus;
   date: Date;

@@ -18,6 +18,7 @@
     "@tanstack/solid-query": "^5.60.6",
     "clerk-solidjs": "^2.0.10",
     "downloadjs": "^1.4.7",
+    "firebase": "^11.3.1",
     "solid-js": "^1.9.3",
     "solid-toast": "^0.5.0"
   },

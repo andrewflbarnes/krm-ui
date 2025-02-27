@@ -16,6 +16,7 @@ const statusColor = {
 type ManageContinueListProps = {
   rounds: RoundInfo[];
   onDeleteRound: (id: string) => void;
+  onUploadRound: (id: string) => void;
 }
 
 export default function ManageContinueList(props: ManageContinueListProps) {
@@ -74,10 +75,15 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                           handleConfirmExport(round.id)
                           handleClose()
                         }
+                        const doUpload = () => {
+                          props.onUploadRound(round.id)
+                          handleClose()
+                        }
                         return (
                           <>
                             <MenuItem onClick={confirmExport}>Export</MenuItem>
                             <MenuItem onClick={confirmDelete}>Delete</MenuItem>
+                            <MenuItem onClick={doUpload}>Upload</MenuItem>
                           </>
                         )
                       }}</MoreMenu>
