@@ -18,6 +18,8 @@ const RaceManagerConfigure = lazy(() => import("./pages/ManageConfigure"));
 const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
 const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRace = lazy(() => import("./pages/RunRace"));
+import { Toaster } from "solid-toast";
+import notification from "./hooks/notification";
 
 const queryClient = new QueryClient()
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
@@ -28,6 +30,7 @@ export default function App() {
       height: "100vh",
       width: "100vw",
     }}>
+      <Toaster position="bottom-right" />
       <Router base={`${import.meta.env.BASE_URL}`} root={HydratedAppLayout}>
         <Route path="/" component={Home} />
         <Route path="/manage" component={RaceManager} info={{ breadcrumb: "Manage" }}>

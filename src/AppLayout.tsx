@@ -1,7 +1,6 @@
 import { ParentProps } from "solid-js"
 import AppBar from "./components/AppBar"
 import AppFooter from "./components/AppFooter"
-import { Toaster } from "solid-toast"
 import { Paper } from "@suid/material"
 
 export default function AppLayout(props: ParentProps<{
@@ -14,7 +13,6 @@ export default function AppLayout(props: ParentProps<{
       display: "flex",
       "flex-direction": "column",
     }}>
-      <Toaster position="bottom-right" />
       <div style={{ "flex-grow": 0 }}>
         <AppBar />
       </div>
