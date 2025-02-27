@@ -125,6 +125,8 @@ export type RoundResult = {
 export type Round = {
   /** The unique ID of the round */
   id: string;
+  /** The user this round is owned by i.e. usually the creator */
+  owner: string;
   /** The league this round is part of */
   league: League;
   /** The current status of the round */

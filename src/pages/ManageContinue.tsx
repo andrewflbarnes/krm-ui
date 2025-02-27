@@ -2,6 +2,8 @@ import { createComputed, createSignal } from "solid-js";
 import krmApi, { RoundInfo } from "../api/krm";
 import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
+import notification from "../hooks/notification";
+import { Button } from "@suid/material";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
@@ -20,9 +22,28 @@ export default function ManageContinue() {
     setRounds(getSortedRounds(k.league()))
   }
 
+  const handleUploadRound = (id: string) => {
+    notification.info("Uploading round...")
+    krmApi.uploadRound(id)
+      .then(() => notification.success("Round uploaded"))
+      .catch(e => {
+        console.error(e)
+        notification.error(e.message)
+      })
+  }
+
+  const download = async () => {
+    await krmApi.syncRounds(k.league())
+    setRounds(getSortedRounds(k.league()))
+    notification.success("Rounds downloaded")
+  }
+
   return (
     <>
-      <ManageContinueList rounds={rounds()} onDeleteRound={handleDeleteRound} />
+      <Button onClick={download}>
+        Download
+      </Button>
+      <ManageContinueList rounds={rounds()} onDeleteRound={handleDeleteRound} onUploadRound={handleUploadRound} />
     </>
   )
 }

@@ -207,6 +207,7 @@ export function createRound(id: string, league: League, teams: RoundSeeding, dis
   } as StageRaces)
   return {
     id,
+    owner: "local",
     league,
     date: new Date(),
     description: "Round 2",

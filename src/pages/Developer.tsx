@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Button, ButtonGroup } from "@suid/material";
-import { createSelector, For, Show } from "solid-js";
+import { createSelector, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
-import DeveloperData from "../components/DeveloperData";
+const DeveloperData = lazy(() => import("../components/DeveloperData"));
 
 const devViews = [
   {
