@@ -6,6 +6,7 @@ import RunRaceResults from "../components/RunRaceResults";
 import { Card, Typography } from "@suid/material";
 import { stages, useRaceOptions } from "../hooks/results";
 import { isStage } from "../kings/utils";
+import { useAuth } from "../hooks/auth";
 
 export default function RunRaceInProgress() {
   return (
@@ -23,7 +24,9 @@ function RunRaceInProgressInternal() {
   const query = useRound()
   const round = () => query.data
 
-  const readonly = () => round().status !== stage()
+  const { userId } = useAuth()
+
+  const readonly = () => round().status != stage() || (round().owner != userId() && round().owner != "local")
 
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
