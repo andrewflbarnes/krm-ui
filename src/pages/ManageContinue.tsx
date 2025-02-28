@@ -4,6 +4,7 @@ import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
 import notification from "../hooks/notification";
 import { Button } from "@suid/material";
+import ModalConfirmAction from "../ui/ModalConfirmAction";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
@@ -32,7 +33,9 @@ export default function ManageContinue() {
       })
   }
 
-  const download = async () => {
+  const [download, setDownload] = createSignal(false)
+  const handleDownload = async () => {
+    setDownload(false)
     await krmApi.syncRounds(k.league())
     setRounds(getSortedRounds(k.league()))
     notification.success("Rounds downloaded")
@@ -40,7 +43,14 @@ export default function ManageContinue() {
 
   return (
     <>
-      <Button onClick={download}>
+      <ModalConfirmAction
+        open={download()}
+        onConfirm={handleDownload}
+        onDiscard={() => setDownload(false)}
+      >
+        This will overwrite any tracked rounds which have not been uploaded/synced, are you sure?
+      </ModalConfirmAction>
+      <Button onClick={[setDownload, true]}>
         Download
       </Button>
       <ManageContinueList rounds={rounds()} onDeleteRound={handleDeleteRound} onUploadRound={handleUploadRound} />

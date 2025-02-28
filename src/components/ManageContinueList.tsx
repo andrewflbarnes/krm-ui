@@ -37,17 +37,19 @@ export default function ManageContinueList(props: ManageContinueListProps) {
     setDeleteRound()
   }
   const rounds = createMemo(() => props.rounds.reduce((acc, round) => {
-    if (round.owner == "local" || round.owner == userId()) {
-      acc.owned.push(round)
+    if (round.owner == "local") {
+      acc.untracked.push(round)
+    } else if (round.owner == userId()) {
+      acc.tracked.push(round)
     } else {
       acc.readonly.push(round)
     }
     return acc
   }, {
-    owned: [],
+    untracked: [],
+    tracked: [],
     readonly: [],
   }))
-  const split = () => rounds().owned.length != props.rounds.length && rounds().readonly.length != props.rounds.length
 
   const [info, setInfo] = createSignal<RoundInfo | null>();
 
@@ -68,16 +70,28 @@ export default function ManageContinueList(props: ManageContinueListProps) {
         round={info()}
         onClose={() => setInfo()}
       />
-      <Show when={rounds().owned.length > 0}>
+      <Show when={rounds().tracked.length > 0}>
         <RoundInfoList
-          rounds={rounds().owned}
+          rounds={rounds().tracked}
           handleConfirmDelete={handleConfirmDelete}
           handleConfirmExport={handleConfirmExport}
           handleUploadRound={props.onUploadRound}
           handleInfo={(roundInfo) => setInfo(roundInfo)}
           canUpload={authenticated()}
-          owned={true}
+          whose={"Your tracked"}
           headings={true}
+        />
+      </Show>
+      <Show when={rounds().untracked.length > 0}>
+        <RoundInfoList
+          rounds={rounds().untracked}
+          handleConfirmDelete={handleConfirmDelete}
+          handleConfirmExport={handleConfirmExport}
+          handleUploadRound={props.onUploadRound}
+          handleInfo={(roundInfo) => setInfo(roundInfo)}
+          canUpload={authenticated()}
+          whose={"Your untracked"}
+          headings={rounds().tracked.length > 0}
         />
       </Show>
       <Show when={rounds().readonly.length > 0}>
@@ -87,7 +101,8 @@ export default function ManageContinueList(props: ManageContinueListProps) {
           handleConfirmExport={handleConfirmExport}
           handleUploadRound={props.onUploadRound}
           handleInfo={(roundInfo) => setInfo(roundInfo)}
-          headings={!split()}
+          headings={rounds().tracked.length > 0 || rounds().untracked.length > 0}
+          whose="Others'"
         />
       </Show>
     </div>
@@ -101,7 +116,7 @@ function RoundInfoList(props: {
   handleInfo: (roundInfo: RoundInfo) => void;
   rounds: RoundInfo[];
   canUpload?: boolean;
-  owned?: boolean;
+  whose: string;
   headings?: boolean;
 }) {
   return (
@@ -110,7 +125,7 @@ function RoundInfoList(props: {
         <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
           <TableHead>
             <TableRow>
-              <TableCell>{props.owned ? "Your" : "Other"} rounds</TableCell>
+              <TableCell>{props.whose} rounds</TableCell>
               {/*<TableCell />*/}
               <TableCell />
               <TableCell />
