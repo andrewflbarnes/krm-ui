@@ -4,6 +4,7 @@ import RunRaceInProgressStage from "./RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RunRaceInProgressHeader, { type Stage, type View } from "./RunRaceInProgressHeader";
 import RunRaceResults from "./RunRaceResults";
+import { useAuth } from "../hooks/auth";
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -24,9 +25,11 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     setStage(roundStage)
   }))
 
+  const { userId } = useAuth()
+
   const [view, setView] = createSignal<View>("list")
 
-  const readonly = () => props.round.status != stage()
+  const readonly = () => props.round.status != stage() || (props.round.owner != userId() && props.round.owner != "local")
   const [live, setLive] = createSignal(false)
   const [collapse, setCollapse] = createSignal(false)
   const [northern, setNorthern] = createSignal(false)

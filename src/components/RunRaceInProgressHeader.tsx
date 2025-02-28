@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
+import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { Round } from "../kings";
@@ -6,8 +6,9 @@ import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
 import krmApi from "../api/krm";
 import notification from "../hooks/notification";
-import { ErrorOutlineRounded } from "@suid/icons-material";
+import { ErrorOutlineRounded, Upload } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
+import { useAuth } from "../hooks/auth";
 
 const stages = {
   "stage1": "Stage 1",
@@ -63,7 +64,14 @@ export default function RunRaceInProgressHeader(props: {
     }, [])
   })
 
+  const { userId, authenticated } = useAuth()
+  const owned = () => props.round.owner == "local" || props.round.owner == userId()
+
   const proceed = () => {
+    if (!owned()) {
+      return false
+    }
+
     if (errors().length) {
       return false
     }
@@ -75,6 +83,7 @@ export default function RunRaceInProgressHeader(props: {
 
     return Object.values(races).every(g => Object.values(g).every(r => r.complete))
   }
+
   const proceedText = () => {
     switch (props.round.status) {
       case "stage1":
@@ -160,6 +169,11 @@ export default function RunRaceInProgressHeader(props: {
           options={options}
         />
         <div style={{ "margin-left": "auto", display: "flex", gap: "1em" }}>
+          <Show when={owned()}>
+            <IconButton disabled={!authenticated()}>
+              <Upload />
+            </IconButton>
+          </Show>
           <Show when={errors().length}>
             <PopoverButton
               title="Errors"
