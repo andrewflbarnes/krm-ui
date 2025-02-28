@@ -1,4 +1,4 @@
-import { ArrowRight, Assignment } from "@suid/icons-material";
+import { ArrowRight, Assignment, InfoOutlined } from "@suid/icons-material";
 import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import Link from "./Link";
@@ -8,6 +8,7 @@ import download from "downloadjs";
 import krmApi from "../api/krm"
 import MoreMenu from "../ui/MoreMenu";
 import { useAuth } from "../hooks/auth";
+import ModalRoundInfo from "../ui/ModalRoundInfo";
 
 const statusColor = {
   "abandoned": "error",
@@ -48,8 +49,10 @@ export default function ManageContinueList(props: ManageContinueListProps) {
   }))
   const split = () => rounds().owned.length != props.rounds.length && rounds().readonly.length != props.rounds.length
 
+  const [info, setInfo] = createSignal<RoundInfo | null>();
+
   return (
-    <>
+    <div>
       <ModalConfirmAction
         open={!!deleteRound()}
         onDiscard={() => setDeleteRound()}
@@ -60,12 +63,18 @@ export default function ManageContinueList(props: ManageContinueListProps) {
       >
         Are you sure you want to delete this round? This action cannot be undone!
       </ModalConfirmAction>
+      <ModalRoundInfo
+        open={!!info()}
+        round={info()}
+        onClose={() => setInfo()}
+      />
       <Show when={rounds().owned.length > 0}>
         <RoundInfoList
           rounds={rounds().owned}
           handleConfirmDelete={handleConfirmDelete}
           handleConfirmExport={handleConfirmExport}
           handleUploadRound={props.onUploadRound}
+          handleInfo={(roundInfo) => setInfo(roundInfo)}
           canUpload={authenticated()}
           owned={true}
           headings={true}
@@ -77,10 +86,11 @@ export default function ManageContinueList(props: ManageContinueListProps) {
           handleConfirmDelete={handleConfirmDelete}
           handleConfirmExport={handleConfirmExport}
           handleUploadRound={props.onUploadRound}
+          handleInfo={(roundInfo) => setInfo(roundInfo)}
           headings={!split()}
         />
       </Show>
-    </>
+    </div>
   )
 }
 
@@ -88,6 +98,7 @@ function RoundInfoList(props: {
   handleConfirmDelete: (id: string) => void;
   handleConfirmExport: (id: string) => void;
   handleUploadRound: (id: string) => void;
+  handleInfo: (roundInfo: RoundInfo) => void;
   rounds: RoundInfo[];
   canUpload?: boolean;
   owned?: boolean;
@@ -100,7 +111,7 @@ function RoundInfoList(props: {
           <TableHead>
             <TableRow>
               <TableCell>{props.owned ? "Your" : "Other"} rounds</TableCell>
-              <TableCell />
+              {/*<TableCell />*/}
               <TableCell />
               <TableCell />
               <TableCell align="center" sx={{ color: props.headings ? "" : "transparent" }}>Mixed</TableCell>
@@ -151,14 +162,21 @@ function RoundInfoList(props: {
                       {round.date.toLocaleDateString()}
                     </Stack>
                   </TableCell>
+                  {/*
                   <TableCell sx={{ width: "1%", minWidth: "fit-content" }} padding="none">
                     <Chip size="small" label={round.league} color="primary" variant="outlined" />
                   </TableCell>
+                  */}
                   <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
                     <Chip size="small" label={status()} color={statusColor[round.status] ?? "warning"} variant="outlined" />
                   </TableCell>
                   <TableCell align="left">
-                    {round.description}
+                    <div style={{ display: "flex", "align-items": "center" }}>
+                      <IconButton onClick={() => props.handleInfo(round)}>
+                        <InfoOutlined fontSize="small" />
+                      </IconButton>
+                      {round.description}
+                    </div>
                   </TableCell>
                   <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
                     {round.teams["mixed"].length}
