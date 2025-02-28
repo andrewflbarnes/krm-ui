@@ -1,11 +1,17 @@
-import { LightModeOutlined } from "@suid/icons-material";
+import { For, JSX, Show } from "solid-js";
+import { Accessible, LightModeOutlined } from "@suid/icons-material";
 import { IconButton, Paper, Typography } from "@suid/material";
-import { ClerkLoaded, SignedIn, useUser } from "clerk-solidjs";
+import { ClerkLoaded, SignedIn } from "clerk-solidjs";
+import { useAuth } from "../hooks/auth";
+
+const flairs: [(roles: string[]) => boolean, JSX.Element][] = [
+  [(roles) => roles.includes("life_member"), <Accessible fontSize="small" />],
+]
 
 export default function AppFooter(props: {
   onModeChange: () => void;
 }) {
-  const { user } = useUser()
+  const { username, roles } = useAuth()
   return (
     <footer>
       <Paper elevation={5} style={{ display: "flex", "flex-direction": "row", padding: "0 1em", margin: 0, "align-items": "center" }}>
@@ -17,9 +23,17 @@ export default function AppFooter(props: {
         <div style={{ "margin-left": "auto", display: "flex", gap: "1em", "align-items": "center" }}>
           <ClerkLoaded>
             <SignedIn>
-              <Typography variant="subtitle2">
-                {user().username}
-              </Typography>
+              <div style={{ "text-align": "center", display: "flex" }}>
+                <Typography variant="subtitle2">
+                  {username()}
+                </Typography>
+                &nbsp;
+                <For each={flairs}>{([test, flair]) => (
+                  <Show when={test(roles())}>
+                    {flair}
+                  </Show>
+                )}</For>
+              </div>
             </SignedIn>
           </ClerkLoaded>
           <IconButton aria-label="Toggle light/dark mode" onClick={props.onModeChange}>
