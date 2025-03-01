@@ -15,6 +15,22 @@ EOF
 netlify dev
 ```
 
+## Optional functionality
+
+To enable integration with clerk for user login and persistence to firestore,
+add `VITE_CLERK_PUBLISHABLE_KEY` to your `.env` file.
+
+To enable config to be loaded from Kings tracking sheets add the published
+endpoint and relevant cell ranges as `TRACKER_WESTERN` to your `.env` file.
+The tracker depends on a netlify function to proxy the request which allows us
+to keep the URL a secret in deployed environments. You can run the full stack
+using the `netlify` cli tool.
+
+```bash
+npm i -g netlify
+netlify dev
+```
+
 ## Build
 
 To generate the static site
