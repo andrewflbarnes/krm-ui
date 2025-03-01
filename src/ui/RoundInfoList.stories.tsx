@@ -1,0 +1,119 @@
+import type { Meta, StoryObj } from 'storybook-solidjs';
+import { fn } from '@storybook/test';
+import RoundInfoList from './RoundInfoList';
+import { miniLeagueTemplates } from '../kings';
+import { RoundInfo } from '../api/krm';
+import { Route, Router } from '@solidjs/router';
+
+const meta = {
+  title: 'Kings/RoundInfoList',
+  render: props => (
+    <Router>
+      <Route path="/*" component={() => <RoundInfoList {...props} />} />
+    </Router>
+  ),
+  component: RoundInfoList,
+  parameters: {
+    layout: 'centered',
+  },
+  tags: ['autodocs'],
+  argTypes: {
+  },
+  args: {
+    handleInfo: fn(),
+    handleConfirmDelete: fn(),
+    handleConfirmExport: fn(),
+    handleUploadRound: fn(),
+    canUpload: true,
+    userId: "owner-id",
+  },
+} satisfies Meta<typeof RoundInfoList>;
+
+export default meta;
+type Story = StoryObj<typeof meta>;
+
+const exampleRound: RoundInfo = {
+  id: "round-id-12345",
+  status: "complete",
+  venue: "Gloucester",
+  description: "This is a local round with a lengthy description for the round",
+  teams: {
+    mixed: [],
+    ladies: [],
+    board: [],
+  },
+  owner: "local",
+  league: "western",
+  date: new Date(),
+  config: {
+    mixed: {
+      stage1: [{ name: "A", seeds: [{ group: "Seeds", position: 1 }], template: miniLeagueTemplates.mini4 }],
+      results: [{ stage: "stage1", group: "A", position: 1, rank: 1 }],
+    },
+    ladies: {
+      stage1: [{ name: "A", seeds: [{ group: "Seeds", position: 1 }], template: miniLeagueTemplates.mini4 }],
+      results: [{ stage: "stage1", group: "A", position: 1, rank: 1 }],
+    },
+    board: {
+      stage1: [{ name: "A", seeds: [{ group: "Seeds", position: 1 }], template: miniLeagueTemplates.mini4 }],
+      results: [{ stage: "stage1", group: "A", position: 1, rank: 1 }],
+    },
+  }
+}
+
+const trackedRound: RoundInfo = {
+  ...exampleRound,
+  owner: "owner-id",
+  description: "This round is tracked",
+}
+
+const otherRound: RoundInfo = {
+  ...exampleRound,
+  owner: "other-owner-id",
+  description: "This round is untracked",
+}
+
+/**
+  * Displays a list of rounds
+  */
+export const Default: Story = {
+  args: {
+    rounds: [exampleRound, trackedRound, otherRound],
+  },
+};
+
+/**
+  * Displays a list of rounds
+  */
+export const Multiple: Story = {
+  args: {
+    rounds: [exampleRound, trackedRound, otherRound, exampleRound, trackedRound, otherRound],
+  },
+};
+
+/**
+  * Displays a list of rounds without any tracked
+  */
+export const NoTracked: Story = {
+  args: {
+    rounds: [exampleRound, otherRound],
+  },
+};
+
+/**
+  * Displays a list of rounds without any untracked
+  */
+export const NoUntracked: Story = {
+  args: {
+    rounds: [trackedRound, otherRound],
+  },
+};
+
+/**
+  * Displays a list of rounds without any owned
+  */
+export const NoOwned: Story = {
+  args: {
+    rounds: [otherRound],
+  },
+};
