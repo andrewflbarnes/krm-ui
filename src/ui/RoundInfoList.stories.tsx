@@ -38,9 +38,9 @@ const exampleRound: RoundInfo = {
   venue: "Gloucester",
   description: "This is a local round with a lengthy description for the round",
   teams: {
-    mixed: [],
-    ladies: [],
-    board: [],
+    mixed: ["Bath 1", "Bristol 1", "Cardiff 1", "Exeter 1", "Plymouth 1", "Swansea 1"],
+    ladies: ["Plymouth 1", "Swansea 1"],
+    board: ["Aberystwyth 1", "Bath 1", "Bristol 1", "Cardiff 1", "Exeter 1", "Plymouth 1", "Swansea 1"],
   },
   owner: "local",
   league: "western",
@@ -65,12 +65,14 @@ const trackedRound: RoundInfo = {
   ...exampleRound,
   owner: "owner-id",
   description: "This round is tracked",
+  status: "stage1",
 }
 
 const otherRound: RoundInfo = {
   ...exampleRound,
   owner: "other-owner-id",
   description: "This round is untracked",
+  status: "knockout",
 }
 
 /**
