@@ -326,6 +326,10 @@ export default (function krmApiLocalStorage(): KrmApi {
 
       const ref = doc(db, "rounds", id)
       await setDoc(ref, payload)
+      if (owner !== round.owner) {
+        round.owner = owner
+        saveRound(round)
+      }
     },
     async syncRounds(league: string) {
       const roundsRef = collection(db, "rounds")
