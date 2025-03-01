@@ -27,6 +27,7 @@ export default function ManageContinue() {
     notification.info("Uploading round...")
     krmApi.uploadRound(id)
       .then(() => notification.success("Round uploaded"))
+      .then(() => setRounds(getSortedRounds(k.league())))
       .catch(e => {
         console.error(e)
         notification.error(e.message)

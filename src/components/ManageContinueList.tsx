@@ -1,20 +1,11 @@
-import { ArrowRight, Assignment, InfoOutlined } from "@suid/icons-material";
-import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
-import { createMemo, createSignal, For, Show } from "solid-js";
-import Link from "./Link";
+import { createSignal } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
 import download from "downloadjs";
 import krmApi from "../api/krm"
-import MoreMenu from "../ui/MoreMenu";
 import { useAuth } from "../hooks/auth";
 import ModalRoundInfo from "../ui/ModalRoundInfo";
 import RoundInfoList from "../ui/RoundInfoList";
-
-const statusColor = {
-  "abandoned": "error",
-  "complete": "success",
-}
 
 type ManageContinueListProps = {
   rounds: RoundInfo[];
