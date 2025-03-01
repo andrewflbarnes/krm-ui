@@ -1,19 +1,11 @@
-import { ArrowRight, Assignment, InfoOutlined } from "@suid/icons-material";
-import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
-import { createMemo, createSignal, For, Show } from "solid-js";
-import Link from "./Link";
+import { createSignal } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { RoundInfo } from "../api/krm";
 import download from "downloadjs";
 import krmApi from "../api/krm"
-import MoreMenu from "../ui/MoreMenu";
 import { useAuth } from "../hooks/auth";
 import ModalRoundInfo from "../ui/ModalRoundInfo";
-
-const statusColor = {
-  "abandoned": "error",
-  "complete": "success",
-}
+import RoundInfoList from "../ui/RoundInfoList";
 
 type ManageContinueListProps = {
   rounds: RoundInfo[];
@@ -36,21 +28,6 @@ export default function ManageContinueList(props: ManageContinueListProps) {
     props.onDeleteRound(deleteRound())
     setDeleteRound()
   }
-  const rounds = createMemo(() => props.rounds.reduce((acc, round) => {
-    if (round.owner == "local") {
-      acc.untracked.push(round)
-    } else if (round.owner == userId()) {
-      acc.tracked.push(round)
-    } else {
-      acc.readonly.push(round)
-    }
-    return acc
-  }, {
-    untracked: [],
-    tracked: [],
-    readonly: [],
-  }))
-
   const [info, setInfo] = createSignal<RoundInfo | null>();
 
   return (
@@ -70,45 +47,20 @@ export default function ManageContinueList(props: ManageContinueListProps) {
         round={info()}
         onClose={() => setInfo()}
       />
-      <Show when={rounds().tracked.length > 0}>
-        <RoundInfoList
-          rounds={rounds().tracked}
-          handleConfirmDelete={handleConfirmDelete}
-          handleConfirmExport={handleConfirmExport}
-          handleUploadRound={props.onUploadRound}
-          handleInfo={(roundInfo) => setInfo(roundInfo)}
-          canUpload={authenticated()}
-          whose={"Your tracked"}
-          headings={true}
-        />
-      </Show>
-      <Show when={rounds().untracked.length > 0}>
-        <RoundInfoList
-          rounds={rounds().untracked}
-          handleConfirmDelete={handleConfirmDelete}
-          handleConfirmExport={handleConfirmExport}
-          handleUploadRound={props.onUploadRound}
-          handleInfo={(roundInfo) => setInfo(roundInfo)}
-          canUpload={authenticated()}
-          whose={"Your untracked"}
-          headings={rounds().tracked.length > 0}
-        />
-      </Show>
-      <Show when={rounds().readonly.length > 0}>
-        <RoundInfoList
-          rounds={rounds().readonly}
-          handleConfirmDelete={handleConfirmDelete}
-          handleConfirmExport={handleConfirmExport}
-          handleUploadRound={props.onUploadRound}
-          handleInfo={(roundInfo) => setInfo(roundInfo)}
-          headings={rounds().tracked.length > 0 || rounds().untracked.length > 0}
-          whose="Others'"
-        />
-      </Show>
+      <RoundInfoList
+        rounds={props.rounds}
+        handleConfirmDelete={handleConfirmDelete}
+        handleConfirmExport={handleConfirmExport}
+        handleUploadRound={props.onUploadRound}
+        handleInfo={(roundInfo) => setInfo(roundInfo)}
+        canUpload={authenticated()}
+        userId={userId()}
+      />
     </div>
   )
 }
 
+/*
 function RoundInfoList(props: {
   handleConfirmDelete: (id: string) => void;
   handleConfirmExport: (id: string) => void;
@@ -126,7 +78,6 @@ function RoundInfoList(props: {
           <TableHead>
             <TableRow>
               <TableCell>{props.whose} rounds</TableCell>
-              {/*<TableCell />*/}
               <TableCell />
               <TableCell />
               <TableCell align="center" sx={{ color: props.headings ? "" : "transparent" }}>Mixed</TableCell>
@@ -177,11 +128,6 @@ function RoundInfoList(props: {
                       {round.date.toLocaleDateString()}
                     </Stack>
                   </TableCell>
-                  {/*
-                  <TableCell sx={{ width: "1%", minWidth: "fit-content" }} padding="none">
-                    <Chip size="small" label={round.league} color="primary" variant="outlined" />
-                  </TableCell>
-                  */}
                   <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
                     <Chip size="small" label={status()} color={statusColor[round.status] ?? "warning"} variant="outlined" />
                   </TableCell>
@@ -211,3 +157,4 @@ function RoundInfoList(props: {
     </>
   )
 }
+*/
