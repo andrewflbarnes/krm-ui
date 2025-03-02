@@ -1,5 +1,5 @@
 import { Box, List, ListItem, ListItemButton, ListItemText, Modal, Paper } from "@suid/material";
-import { createSignal, For, ParentProps, Show } from "solid-js";
+import { createComputed, createSignal, For, on, ParentProps, Show } from "solid-js";
 import { LeagueData, Result } from "../kings";
 import { parseResults } from "../kings/utils";
 import ConfigEditTeam, { ToEdit } from "./ConfigEditTeam";
@@ -11,6 +11,9 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
   const [edit, setEdit] = createSignal<ToEdit>()
 
   const clubs = () => Object.keys(props.data).sort((a, b) => a.localeCompare(b))
+  createComputed(on(() => props.data, () => {
+    setClub("all")
+  }))
   const clubData = () => parseResults(club() == "all" ? props.data : { [club()]: props.data[club()] })
   const handleEdit = (division: string, row: Result) => {
     setEdit({ division, row })
