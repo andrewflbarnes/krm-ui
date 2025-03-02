@@ -14,6 +14,7 @@ type RoundInfoListProps = {
   handleConfirmDelete: (id: string) => void;
   handleConfirmExport: (id: string) => void;
   handleUploadRound: (id: string) => void;
+  onCopyToClipboard : (id: string) => void;
   handleInfo: (roundInfo: RoundInfo) => void;
   rounds: RoundInfo[];
   canUpload?: boolean;
@@ -69,6 +70,7 @@ export default function RoundInfoList(props: RoundInfoListProps) {
                           handleConfirmExport={props.handleConfirmExport}
                           handleUploadRound={props.handleUploadRound}
                           handleInfo={props.handleInfo}
+                          onCopyToClipboard={props.onCopyToClipboard}
                           canUpload={props.canUpload}
                         />
                       </Show>
@@ -89,6 +91,7 @@ function RoundInfoRow(props: {
   handleConfirmDelete: (id: string) => void;
   handleConfirmExport: (id: string) => void;
   handleUploadRound: (id: string) => void;
+  onCopyToClipboard: (id: string) => void;
   handleInfo: (roundInfo: RoundInfo) => void;
   canUpload?: boolean;
 }) {
@@ -111,6 +114,10 @@ function RoundInfoRow(props: {
               props.handleUploadRound(props.round.id)
               handleClose()
             }
+            const copyToClipboard = () => {
+              props.onCopyToClipboard(props.round.id)
+              handleClose()
+            }
             return (
               <>
                 <MenuItem onClick={confirmExport}>Export</MenuItem>
@@ -118,6 +125,7 @@ function RoundInfoRow(props: {
                 <Show when={props.canUpload}>
                   <MenuItem onClick={doUpload}>Upload</MenuItem>
                 </Show>
+                <MenuItem onClick={copyToClipboard}>Copy to clipboard</MenuItem>
               </>
             )
           }}</MoreMenu>
