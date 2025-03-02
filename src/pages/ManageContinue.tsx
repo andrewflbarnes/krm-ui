@@ -18,6 +18,9 @@ export default function ManageContinue() {
     setRounds(getSortedRounds(k.league()))
   })
 
+
+  // TODO we should use a render prop equivalent, below is getting
+  //   out of hand
   const handleDeleteRound = (id: string) => {
     krmApi.deleteRound(id)
     setRounds(getSortedRounds(k.league()))
@@ -42,6 +45,11 @@ export default function ManageContinue() {
     notification.success("Rounds downloaded")
   }
 
+  const handleCopyToClipboard = (id: string) => {
+    const data = krmApi.getRound(id)
+    navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+  }
+
   return (
     <>
       <ModalConfirmAction
@@ -54,7 +62,12 @@ export default function ManageContinue() {
       <Button onClick={[setDownload, true]}>
         Download
       </Button>
-      <ManageContinueList rounds={rounds()} onDeleteRound={handleDeleteRound} onUploadRound={handleUploadRound} />
+      <ManageContinueList
+        rounds={rounds()}
+        onDeleteRound={handleDeleteRound}
+        onUploadRound={handleUploadRound}
+        onCopyToClipboard={handleCopyToClipboard}
+      />
     </>
   )
 }

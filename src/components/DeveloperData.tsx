@@ -17,6 +17,9 @@ export default function DeveloperData() {
           overflow: "scroll",
         }}>
           <CardContent sx={{ display: "grid", placeItems: "center" }}>
+            <Button onClick={() => navigator.clipboard.writeText(JSON.stringify(data(), null, 2))}>
+              Copy to clipboard
+            </Button>
             <json-viewer style={{ width: "100%" }}>
               {JSON.stringify(data(), null, 2)}
             </json-viewer>
