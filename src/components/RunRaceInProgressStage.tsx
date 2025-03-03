@@ -139,7 +139,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       </Stack>
       <div style={{ display: "none" }}>
         <div ref={ref}>
-          <RaceListPrintable knockouts={props.round.status === "knockout"} races={orderedRaces()} title={`Race List - ${props.round.league} ${props.round.status}`} />
+          <RaceListPrintable knockouts={props.round.status === "knockout"} races={orderedRaces()} title={`Race List - ${props.round.league} ${props.stage}`} />
         </div>
       </div>
     </div>
