@@ -2,6 +2,12 @@ import { Context } from '@netlify/functions'
 import * as cheerio from 'cheerio'
 import axios from 'axios'
 
+const selectors = {
+  "mixed": "Mixed",
+  "ladies": "Ladies",
+  "board": "Snowboard"
+}
+
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url)
   const league = url.searchParams.get('league')
@@ -31,36 +37,35 @@ async function getLeagueData(league: string) {
   const { data } = await axios.get(`https://www.kingsski.club/${league}`)
   const $ = cheerio.load(data)
   const leagueData = {}
-  $("table").each((d, table) => {
-    // TODO get nearest table to headings
-    const division = d == 0
-      ? "mixed"
-      : d == 1
-        ? "ladies"
-        : "board"
-    const headers = [];
-    $(table).find('th').each((i, header) => {
-      headers.push($(header).text())
-    })
 
-    $(table).find('tbody tr').each((i, row) => {
-      const data = []
-      $(row).find('td').each((j, cell) => {
-        data.push($(cell).text());
-      });
-      const { club, team, results, total } = getTeamInfo(headers, data)
-      if (!leagueData[club]) {
-        leagueData[club] = { teams: {} }
-      }
-      const { teams } = leagueData[club]
-      if (!teams[division]) {
-        teams[division] = {}
-      }
-      teams[division][team] = {
-        results,
-        total,
-      }
-    })
+  Object.entries(selectors).forEach(([division, selector]) => {
+    $('h1:contains(' + selector + ')')
+      .closest(".content")
+      .find("table").each((d, table) => {
+        const headers = [];
+        $(table).find('th').each((i, header) => {
+          headers.push($(header).text())
+        })
+
+        $(table).find('tbody tr').each((i, row) => {
+          const data = []
+          $(row).find('td').each((j, cell) => {
+            data.push($(cell).text());
+          });
+          const { club, team, results, total } = getTeamInfo(headers, data)
+          if (!leagueData[club]) {
+            leagueData[club] = { teams: {} }
+          }
+          const { teams } = leagueData[club]
+          if (!teams[division]) {
+            teams[division] = {}
+          }
+          teams[division][team] = {
+            results,
+            total,
+          }
+        })
+      })
   })
   return leagueData
 }
