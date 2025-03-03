@@ -158,7 +158,6 @@ function ManageNewInternal() {
   }
 
   const handlePrev = () => {
-    console.log(skipped())
     if (step() > 0) {
       let nextStep = step() - 1
       while (skipped().includes(nextStep) && nextStep > 0) {

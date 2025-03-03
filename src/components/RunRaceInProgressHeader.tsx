@@ -8,6 +8,7 @@ import krmApi from "../api/krm";
 import notification from "../hooks/notification";
 import { ErrorOutlineRounded } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
+import { usePrint } from "../hooks/print";
 
 const stages = {
   "stage1": "Stage 1",
@@ -121,6 +122,8 @@ export default function RunRaceInProgressHeader(props: {
     setProgressConfirmation(false)
   }
 
+  const [print, setPrint] = usePrint()
+
   return (
     <>
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
@@ -184,6 +187,14 @@ export default function RunRaceInProgressHeader(props: {
             >
               Are you sure? This will lock in the current results.
             </ModalConfirmAction>
+          </Show>
+          <Show when={["knockout", "stage1", "stage2"].includes(props.stage)}>
+            <Button
+              disabled={print()}
+              onClick={() => setPrint(true)}
+            >
+              Print
+            </Button>
           </Show>
           <Button
             onClick={[setActionsOpen, true]}

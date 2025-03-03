@@ -1,4 +1,4 @@
-import { Cancel, CancelOutlined, CheckCircle, CheckCircleOutline, CircleOutlined, CloseOutlined } from "@suid/icons-material";
+import { CancelOutlined, CheckCircle, CircleOutlined, CloseOutlined } from "@suid/icons-material";
 import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { Race } from "../kings";

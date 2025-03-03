@@ -7,6 +7,8 @@ import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 import notification from "../hooks/notification";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
+import RaceListPrintable from "./RaceListPrintable";
+import { usePrint } from "../hooks/print";
 
 // TODO move to a utility file
 const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean) => {
@@ -31,6 +33,7 @@ const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean
   }
   return or
 }
+
 type RunRaceInProgressStageProps = {
   round: Round;
   readonly?: boolean;
@@ -83,6 +86,24 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     return orderRaces(props.round.races[props.stage], props.splits, props.northern)
   })
 
+  const [print, setPrint] = usePrint()
+  let ref!: HTMLDivElement;
+  createEffect(() => {
+    if (print()) {
+      const mywindow = window.open('', 'PRINT', 'height=800,width=1000');
+      mywindow.document.write('<html><head>')
+      mywindow.document.write(`<title>Kings Results Manager</title>`)
+      mywindow.document.write('</head><body>')
+      mywindow.document.write(ref.innerHTML)
+      mywindow.document.write('</body></html>')
+      mywindow.document.close(); // necessary for IE >= 10
+      mywindow.focus(); // necessary for IE >= 10*/
+      mywindow.print();
+      mywindow.close();
+      setPrint(false)
+    }
+  })
+
   const showList = () => props.view === "list" || props.view === "both"
   const showMiniLeagues = () => props.view === "mini" || props.view === "both"
   const showBoth = () => props.view === "both"
@@ -116,6 +137,11 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           </Card>
         </Show>
       </Stack>
+      <div style={{ display: "none" }}>
+        <div ref={ref}>
+          <RaceListPrintable knockouts={props.round.status === "knockout"} races={orderedRaces()} title={`Race List - ${props.round.league} ${props.round.status}`} />
+        </div>
+      </div>
     </div>
   )
 }
