@@ -21,14 +21,14 @@
 - [x] Knockouts
 - [x] Results
 - [x] Light and dark mode
+- [x] Print race list ("light" mode equivalent, alternatively screenshot)
+- [x] Print race sheet ("light" mode equivalent, alternatively screenshot)
+- [x] Print knockout ("light" mode equivalent, alternatively screenshot)
 
 ## Must
 
-- [ ] Print race list ("light" mode equivalent, alternatively screenshot)
-- [ ] Print race sheet ("light" mode equivalent, alternatively screenshot)
-- [ ] Print knockout ("light" mode equivalent, alternatively screenshot)
-- [ ] Pre-start team shuffling
-- [ ] Draw Resolution
+- [ ] Manual pre-start team shuffling
+- [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race bys (team unavailable)
 - [ ] Race skips (teams unavailable)
 - [ ] Knockout draws (teams unavailable/race unrun)
