@@ -1,4 +1,0 @@
-/krm-ui/@vite* /@vite/:splat
-/krm-ui/src* /src/:splat
-/krm-ui/* /krm-ui/ 200
-/* /krm-ui 302

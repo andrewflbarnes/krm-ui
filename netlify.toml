@@ -13,3 +13,26 @@
   port = 5174 # The port that the Netlify Dev will be accessible on
   publish = "." # If you use a _redirect file, provide the path to your static content folder
   noOpen = true
+
+[[redirects]]
+  from ="/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+[[redirect]]
+  from = "/krm-ui/@vite*"
+  to = "@vite/:splat"
+
+[[redirect]]
+  from = "/krm-ui/src*"
+  to = "/src/:splat"
+
+[[redirect]]
+  from = "/krm-ui/*"
+  to = "/krm-ui/"
+  status = 200
+
+[[redirect]]
+  from = "/*"
+  to = "/krm-ui"
+  status = 302
