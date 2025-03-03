@@ -13,12 +13,16 @@ build_func() {
   fi
 
   echo "Building $f..."
-  pnpm install
+  (cd "$f" && pnpm install)
 }
 
 build_all() {
   for f in $(shopt -s nullglob; echo netlify/functions/*); do
-    build_func "$f"
+    if ! build_func "$f"
+    then
+      echo "Failed to build $f" >&2
+      return 1
+    fi
   done
 }
 
