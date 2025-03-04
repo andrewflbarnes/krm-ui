@@ -4,7 +4,7 @@ import { ErrorBoundary, Match, onCleanup, onMount, Suspense, Switch } from "soli
 import krmApi from "../api/krm"
 import { Round } from "../kings"
 import RunRaceInProgress from "../components/RunRaceInProgress"
-import RunRaceComplete from "../components/RunRaceComplete"
+import RunRaceAbandoned from "../components/RunRaceAbandoned"
 import { useKings } from "../kings"
 
 export default function RunRace() {
@@ -23,17 +23,16 @@ export default function RunRace() {
     staleTime: 1000 * 60 * 5,
   }))
 
-  const inProgress = () => query.data.status != "abandoned"
   return (
     <ErrorBoundary fallback={e => e}>
       <Suspense fallback="Loading...">
         <Switch>
           <Match when={query.isLoading}>Loading...</Match>
           <Match when={!query.isSuccess || !query.data}>Races not found :(</Match>
-          <Match when={!inProgress()}>
-            <RunRaceComplete round={query.data} />
+          <Match when={query.data.status === "abandoned"}>
+            <RunRaceAbandoned round={query.data} />
           </Match>
-          <Match when={inProgress()}>
+          <Match when={true}>
             <RunRaceInProgress round={query.data} />
           </Match>
         </Switch>
