@@ -1,4 +1,4 @@
-import { Typography } from "@suid/material";
+import { List, ListItem, Typography } from "@suid/material";
 import { For } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 
@@ -9,11 +9,11 @@ type ManageNewShuffleProps = {
 
 export default function ManageNewShuffle(props: ManageNewShuffleProps) {
   return (
-    <div style={{ display: "flex", "flex-direction": "row" }}>
+    <div style={{ display: "flex", "flex-direction": "row", gap: "1rem" }}>
       <For each={Object.entries(props.round.config)}>{([division, config]: [Division, RoundConfig]) => {
         const seeds = () => props.round.teams[division]
         return (
-          <div>
+          <Typography>
             <Typography variant="h2">
               {division}
             </Typography>
@@ -21,17 +21,19 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
               return (
                 <div>
                   {group.name}
-                  <For each={group.seeds}>{(seed) => {
-                    return (
-                      <div>
-                        {seeds()[seed.position - 1]}
-                      </div>
-                    )
-                  }}</For>
+                  <List>
+                    <For each={group.seeds}>{(seed) => {
+                      return (
+                        <ListItem>
+                          {seeds()[seed.position - 1]}
+                        </ListItem>
+                      )
+                    }}</For>
+                  </List>
                 </div>
               )
             }}</For>
-          </div>
+          </Typography>
         )
       }}</For>
     </div>

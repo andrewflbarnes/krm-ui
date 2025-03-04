@@ -3,6 +3,7 @@ import { createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "soli
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
+const ManageNewShuffle = lazy(() => import( "../components/ManageNewShuffle"))
 import { ClubSeeding, Division, LeagueData, Round, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
@@ -10,7 +11,6 @@ import { createStore } from "solid-js/store"
 import { orderSeeds } from "../kings/utils"
 import { useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
-import ManageNewShuffle from "../components/ManageNewShuffle"
 
 export default function ManageNew() {
   return (
