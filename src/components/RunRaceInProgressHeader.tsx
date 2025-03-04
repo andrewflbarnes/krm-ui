@@ -22,6 +22,7 @@ const views = {
   "list": "Race List",
   "mini": "Mini Leagues",
   "both": "Both",
+  "printable": "Printable",
 } as const
 export type View = keyof typeof views
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))

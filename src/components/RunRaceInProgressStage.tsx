@@ -42,7 +42,7 @@ type RunRaceInProgressStageProps = {
   collapse?: boolean;
   northern?: boolean;
   splits: number;
-  view: "mini" | "list" | "both";
+  view: "mini" | "list" | "both" | "printable";
 }
 
 export default function RunRaceInProgressStage(props: RunRaceInProgressStageProps) {
@@ -137,7 +137,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           </Card>
         </Show>
       </Stack>
-      <div style={{ display: "none" }}>
+      <Show when={props.view === "printable"}>
         <div ref={ref}>
           <RaceListPrintable
             knockouts={props.round.status === "knockout"}
@@ -145,7 +145,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
             subtitle={`${props.round.league} ${props.stage}`}
           />
         </div>
-      </div>
+      </Show>
     </div>
   )
 }
