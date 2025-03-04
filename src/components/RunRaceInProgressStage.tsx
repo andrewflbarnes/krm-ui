@@ -137,7 +137,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           </Card>
         </Show>
       </Stack>
-      <Show when={props.view === "printable"}>
+      <div style={{ display: props.view === "printable" ? "inherit" : "none" }}>
         <div ref={ref}>
           <RaceListPrintable
             knockouts={props.round.status === "knockout"}
@@ -145,7 +145,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
             subtitle={`${props.round.league} ${props.stage}`}
           />
         </div>
-      </Show>
+      </div>
     </div>
   )
 }
