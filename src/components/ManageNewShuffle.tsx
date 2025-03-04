@@ -5,6 +5,12 @@ import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 
 type ManageNewShuffleProps = {
   round: Round;
+  originalConfig: {
+    [d in Division]: RoundConfig;
+  };
+  originalTeams: {
+    [d in Division]: string[];
+  };
   onShuffle: (seeds: RoundSeeding) => void;
 }
 
@@ -23,7 +29,6 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
             return
           }
           const newSeeds = [...seeds()]
-          console.log(`Swap ${group} ${team} with ${toGroup} ${toTeam}`)
           const teamIdx = newSeeds.indexOf(team)
           const toTeamIdx = newSeeds.indexOf(toTeam)
           newSeeds[teamIdx] = toTeam
@@ -46,8 +51,14 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                       {group.name}
                       <List>
                         <For each={group.seeds}>{(seed) => {
+                          const team = () => seeds()[seed.position - 1]
+                          const moved = () => {
+                            const originalPosition = props.originalTeams[division].indexOf(team())
+                            const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position - 1) == originalPosition)).name
+                            return originalGroup !== group.name ? originalGroup : null
+                          }
                           return (
-                            <DndTeam division={division} group={group.name} team={seeds()[seed.position - 1]} />
+                            <DndTeam division={division} group={group.name} team={team()} moved={moved()} />
                           )
                         }}</For>
                       </List>
@@ -63,7 +74,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
   )
 }
 
-function DndTeam(props: { division: Division, group: string, team: string }) {
+function DndTeam(props: { division: Division, group: string, team: string, moved?: string }) {
   // TODO cleanup TS errors
   const id = () => `${props.division}-${props.group}-${props.team}`
   const draggable = createDraggable(id(), props)

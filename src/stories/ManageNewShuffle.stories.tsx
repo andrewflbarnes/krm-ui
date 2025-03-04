@@ -19,7 +19,7 @@ const meta = {
       props.onShuffle?.(seeds)
       setSeeds(seeds)
     }
-    return <ManageNewShuffle round={round()} onShuffle={handleShuffle} />
+    return <ManageNewShuffle originalTeams={props.round.teams} originalConfig={props.round.config} round={round()} onShuffle={handleShuffle} />
   },
   component: ManageNewShuffle,
   parameters: {
