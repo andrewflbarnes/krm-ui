@@ -3,13 +3,14 @@ import { createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "soli
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
-import { ClubSeeding, Division, LeagueData, RoundSeeding, useKings } from "../kings"
+import { ClubSeeding, Division, LeagueData, Round, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
 import { orderSeeds } from "../kings/utils"
 import { useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
+import ManageNewShuffle from "../components/ManageNewShuffle"
 
 export default function ManageNew() {
   return (
@@ -54,6 +55,7 @@ function ManageNewInternal() {
 
   const [seeding, setSeeding] = createSignal<RoundSeeding>();
   const navigate = useNavigate()
+  const [round, setRound] = createSignal<Round>()
 
   type Step = {
     title: string;
@@ -120,7 +122,16 @@ function ManageNewInternal() {
 
         const seeding = orderSeeds(k.leagueConfig(), numTeams)
         setSeeding(seeding)
+        const r = krmApi.createRound(k.league(), seeding)
+        setRound(r)
 
+        return [true,]
+      }
+    },
+    {
+      title: "Shuffle Teans",
+      content: () => <ManageNewShuffle round={round()} onShuffle={setSeeding} />,
+      validator: () => {
         return [true,]
       }
     },
