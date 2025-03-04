@@ -5,7 +5,7 @@ corepack enable
 pnpm install
 # shellcheck disable=SC2153
 branch=$BRANCH
-if [ "$branch" = "master" ]
+if [ "$branch" = "main" ]
 then
   branch=
 fi
