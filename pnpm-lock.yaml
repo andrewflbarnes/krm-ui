@@ -26,6 +26,9 @@ importers:
       '@tanstack/solid-query':
         specifier: ^5.60.6
         version: 5.60.6(solid-js@1.9.3)
+      '@thisbeyond/solid-dnd':
+        specifier: ^0.7.5
+        version: 0.7.5(solid-js@1.9.3)
       clerk-solidjs:
         specifier: ^2.0.10
         version: 2.0.10(@solidjs/router@0.15.1(solid-js@1.9.3))(@solidjs/start@1.1.0(@testing-library/jest-dom@6.5.0)(solid-js@1.9.3)(vinxi@0.5.3(@types/node@22.13.1)(db0@0.2.3)(ioredis@5.5.0)(jiti@2.4.2)(terser@5.38.2)(typescript@4.9.5))(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2)))(react-dom@19.0.0(react@19.0.0))(react@19.0.0)(solid-js@1.9.3)
@@ -1269,10 +1272,10 @@ packages:
       react-dom:
         optional: true
 
-  '@storybook/builder-vite@8.6.0-beta.7':
-    resolution: {integrity: sha512-2hLO42Jro/AQOSZbz7NFa45Rd/PLwG/VGdMaRgYMwwBx1mtXbrYTJqMqm3DDjeEo6gJ/ZDoj9TWeoJ7ItBVS8A==}
+  '@storybook/builder-vite@9.0.0-alpha.1':
+    resolution: {integrity: sha512-uIcc85jwjZNHJuUrWqs5ADB2ge+4mMTIblJf+6gvqYMMj53MyzDtpci7pkT2daKcO03n2VB6pcjW21T/LEqL3g==}
     peerDependencies:
-      storybook: ^8.6.0-beta.7
+      storybook: ^9.0.0-alpha.1
       vite: ^4.0.0 || ^5.0.0 || ^6.0.0
 
   '@storybook/core@8.6.0-beta.7':
@@ -1287,6 +1290,11 @@ packages:
     resolution: {integrity: sha512-6FMS3cr9KbjAFWoU25gTx8L3WhxicBUrCTsXWPzT5nROqU5cREghCFoDqAAx3K8m69tS64B8Z3Kng3sxMFI6XQ==}
     peerDependencies:
       storybook: ^8.6.0-beta.7
+
+  '@storybook/csf-plugin@9.0.0-alpha.1':
+    resolution: {integrity: sha512-ax1VSSbm/5k2XQWe15A4VItG5iUM85pQmRP2p4tlS76bDIOLCuHwzYKuGmb4ILOQFM3UQAH3obHFeOaKpcTuog==}
+    peerDependencies:
+      storybook: ^9.0.0-alpha.1
 
   '@storybook/csf@0.1.13':
     resolution: {integrity: sha512-7xOOwCLGB3ebM87eemep89MYRFTko+D8qE7EdAAq74lgdqRR5cOUtYWJLjO2dLtP94nqoOdHJo6MdLLKzg412Q==}
@@ -1407,6 +1415,12 @@ packages:
     engines: {node: '>=12', npm: '>=6'}
     peerDependencies:
       '@testing-library/dom': '>=7.21.4'
+
+  '@thisbeyond/solid-dnd@0.7.5':
+    resolution: {integrity: sha512-DfI5ff+yYGpK9M21LhYwIPlbP2msKxN2ARwuu6GF8tT1GgNVDTI8VCQvH4TJFoVApP9d44izmAcTh/iTCH2UUw==}
+    engines: {node: '>=18.0.0', pnpm: '>=8.6.0'}
+    peerDependencies:
+      solid-js: ^1.5
 
   '@types/aria-query@5.0.4':
     resolution: {integrity: sha512-rfT93uj5s0PRL7EzccGMs3brplhcrghnDoV26NqKhCAS1hVo+WdNsPvE/yb6ilfr5hi2MEk6d5EWJTKdxg8jVw==}
@@ -5645,9 +5659,9 @@ snapshots:
       react: 19.0.0
       react-dom: 19.0.0(react@19.0.0)
 
-  '@storybook/builder-vite@8.6.0-beta.7(storybook@8.6.0-beta.7)(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2))':
+  '@storybook/builder-vite@9.0.0-alpha.1(storybook@8.6.0-beta.7)(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2))':
     dependencies:
-      '@storybook/csf-plugin': 8.6.0-beta.7(storybook@8.6.0-beta.7)
+      '@storybook/csf-plugin': 9.0.0-alpha.1(storybook@8.6.0-beta.7)
       browser-assert: 1.2.1
       storybook: 8.6.0-beta.7
       ts-dedent: 2.2.0
@@ -5673,6 +5687,11 @@ snapshots:
       - utf-8-validate
 
   '@storybook/csf-plugin@8.6.0-beta.7(storybook@8.6.0-beta.7)':
+    dependencies:
+      storybook: 8.6.0-beta.7
+      unplugin: 1.16.1
+
+  '@storybook/csf-plugin@9.0.0-alpha.1(storybook@8.6.0-beta.7)':
     dependencies:
       storybook: 8.6.0-beta.7
       unplugin: 1.16.1
@@ -5866,6 +5885,10 @@ snapshots:
   '@testing-library/user-event@14.5.2(@testing-library/dom@10.4.0)':
     dependencies:
       '@testing-library/dom': 10.4.0
+
+  '@thisbeyond/solid-dnd@0.7.5(solid-js@1.9.3)':
+    dependencies:
+      solid-js: 1.9.3
 
   '@types/aria-query@5.0.4': {}
 
@@ -8704,7 +8727,7 @@ snapshots:
 
   storybook-solidjs-vite@1.0.0-beta.6(@testing-library/jest-dom@6.5.0)(solid-js@1.9.3)(storybook@8.6.0-beta.7)(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2)):
     dependencies:
-      '@storybook/builder-vite': 8.6.0-beta.7(storybook@8.6.0-beta.7)(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2))
+      '@storybook/builder-vite': 9.0.0-alpha.1(storybook@8.6.0-beta.7)(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2))
       magic-string: 0.30.17
       vite-plugin-solid: 2.11.1(@testing-library/jest-dom@6.5.0)(solid-js@1.9.3)(vite@5.4.12(@types/node@22.13.1)(terser@5.38.2))
     transitivePeerDependencies:

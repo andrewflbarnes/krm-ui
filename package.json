@@ -17,6 +17,7 @@
     "@suid/icons-material": "^0.8.1",
     "@suid/material": "^0.18.0",
     "@tanstack/solid-query": "^5.60.6",
+    "@thisbeyond/solid-dnd": "^0.7.5",
     "clerk-solidjs": "^2.0.10",
     "downloadjs": "^1.4.7",
     "solid-js": "^1.9.3",

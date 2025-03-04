@@ -1,4 +1,5 @@
 import { fn } from '@storybook/test';
+import { createMemo, createSignal } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import ManageNewShuffle from '../components/ManageNewShuffle';
 import { Round, RoundSeeding } from '../kings';
@@ -6,7 +7,20 @@ import { createRound } from '../kings/round-utils';
 
 const meta = {
   title: 'Kings/ManageNewShuffle',
-  render: props => <ManageNewShuffle {...props} />,
+  render: props => {
+    const [seeds, setSeeds] = createSignal<RoundSeeding>()
+    const round = createMemo<Round>(() => {
+      return {
+        ...props.round,
+        teams: seeds() || props.round.teams,
+      }
+    })
+    const handleShuffle = (seeds: RoundSeeding) => {
+      props.onShuffle?.(seeds)
+      setSeeds(seeds)
+    }
+    return <ManageNewShuffle round={round()} onShuffle={handleShuffle} />
+  },
   component: ManageNewShuffle,
   parameters: {
     layout: 'centered',
