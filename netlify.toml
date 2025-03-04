@@ -19,20 +19,20 @@
   to = "/.netlify/functions/:splat"
   status = 200
 
-[[redirect]]
+[[redirects]]
   from = "/krm-ui/@vite*"
   to = "@vite/:splat"
 
-[[redirect]]
+[[redirects]]
   from = "/krm-ui/src*"
   to = "/src/:splat"
 
-[[redirect]]
+[[redirects]]
   from = "/krm-ui/*"
   to = "/krm-ui/"
   status = 200
 
-[[redirect]]
+[[redirects]]
   from = "/*"
   to = "/krm-ui"
   status = 302
