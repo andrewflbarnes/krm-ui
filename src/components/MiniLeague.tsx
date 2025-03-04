@@ -1,4 +1,4 @@
-import { CancelOutlined, CheckCircle, CheckCircleOutline, Circle, CircleOutlined } from "@suid/icons-material";
+import { CancelOutlined, CheckCircle, CircleOutlined } from "@suid/icons-material";
 import { Menu, MenuItem, Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
@@ -124,13 +124,14 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   let topBorder = false
                   let botBorder = false
                   if (raceDetails) {
-                    const { team1, team2, teamMlIndices: [t1idx, t2idx] } = raceDetails
+                    const { team1, team2 } = raceDetails
+                    const t1idx = props.teams.indexOf(team1)
+                    const t2idx = props.teams.indexOf(team2)
                     const needsBorder = !!raceDetails && Math.abs(t1idx - t2idx) > 1
                     if (needsBorder) {
                       botBorder = true
                       topBorder = true
                     } else {
-
                       if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
                         botBorder = true
                       } else {

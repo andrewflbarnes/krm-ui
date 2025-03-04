@@ -23,6 +23,14 @@ const initRaces = (mlt: MiniLeagueTemplate) => mlt.races.map((r, ri) => ({
   teamMlIndices: r,
 }))
 
+// Identical to above but reverse the teams to ensure rendering isn't affected
+function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {
+  return initRaces(mlt).map(r => ({
+    ...r,
+    teamMlIndices: [r.teamMlIndices[1], r.teamMlIndices[0]],
+  }))
+}
+
 const MiniLeagueWithHandler = (props: {
   name: string;
   teams: string[];
@@ -76,6 +84,17 @@ export const Teams4: Story = {
     name: "Mini 4",
     teams: initTeams(m4),
     races: initRaces(m4),
+  },
+}
+
+/**
+  * Ensure that when teams are on other sides of the course, the rendering is correct
+  */
+export const TeamsInverse4: Story = {
+  args: {
+    name: "Mini 4",
+    teams: initTeams(m4),
+    races: initRacesInverse(m4),
   },
 }
 
