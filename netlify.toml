@@ -20,12 +20,19 @@
   status = 200
 
 [[redirects]]
-  from = "/krm-ui/@vite*"
-  to = "@vite/:splat"
+  from = "/krm-ui/@vite/*"
+  to = "/@vite/:splat"
+  status = 200
 
 [[redirects]]
-  from = "/krm-ui/src*"
-  to = "/src/:splat"
+  from = "/krm-ui/src/*"
+  to = "/krm-ui/src/:splat"
+  status = 200
+
+[[redirects]]
+  from = "/krm-ui/node_modules/*"
+  to = "/krm-ui/node_modules/:splat"
+  status = 200
 
 [[redirects]]
   from = "/krm-ui/*"
@@ -36,3 +43,4 @@
   from = "/*"
   to = "/krm-ui"
   status = 302
+  force = true
