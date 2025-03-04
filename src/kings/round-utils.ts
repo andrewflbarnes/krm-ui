@@ -1,8 +1,9 @@
+import { raceConfig } from "./config"
 import { parseResults } from "./result-utils"
-import { ClubSeeding, LeagueData } from "./types"
+import { ClubSeeding, divisions,  Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces } from "./types"
 import { Race } from "./types"
 
-export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding) {
+export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
   return Object.entries(parseResults(leagueConfig)).reduce((acc, [division, seeded]) => {
     acc[division] = seeded.filter(t => {
       let teamIndex = +t.name.replace(/.*?(\d*)$/, "$1") >>> 0
@@ -79,7 +80,7 @@ export function calcTeamResults(teams: string[], races: Race[], maxDepth: number
   // Also perform a one of to check if each team has finsihed all their
   // races.
   const unfinished = teams.filter(team => races.some(({ team1, team2, winner }) =>
-    ((team1 == team|| team2 == team) && winner > 0)))
+    ((team1 == team || team2 == team) && winner > 0)))
   Object.entries(prepos.data).forEach(([team, data]) => {
     data.finished = !unfinished.includes(team)
   })
@@ -162,5 +163,56 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
   return {
     pos,
     data: wins,
+  }
+}
+
+export function createRound(id: string, league: League, teams: RoundSeeding): Round {
+  const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
+    acc[division] = raceConfig[seeds.length]
+    return acc
+  }, {} as {
+    [division in Division]: RoundConfig;
+  })
+
+  const races = divisions.reduce((acc, division) => {
+    const divisionConf = config[division]
+    acc[division] = divisionConf.stage1.reduce((accd, { template, name: groupName, seeds }) => {
+      const races: Race[] = template.races.map((race, i) => ({
+        stage: "stage1",
+        group: groupName,
+        groupRace: i,
+        // both race indexes and seeds are 1-indexed
+        teamMlIndices: race,
+        team1: teams[division][seeds[race[0] - 1].position - 1],
+        team2: teams[division][seeds[race[1] - 1].position - 1],
+        division: division as Division,
+      }))
+      accd[groupName] = {
+        races,
+        teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+        complete: false,
+        conflict: false,
+      }
+      return accd
+    }, {} as StageRaces[Division])
+    return acc
+  }, {
+    mixed: {},
+    ladies: {},
+    board: {},
+  } as StageRaces)
+  // TODO details
+  return {
+    id,
+    league,
+    date: new Date(),
+    description: "Round 2",
+    venue: "Gloucester",
+    status: "stage1",
+    config,
+    races: {
+      stage1: races,
+    },
+    teams,
   }
 }

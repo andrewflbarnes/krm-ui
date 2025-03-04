@@ -1,5 +1,5 @@
 import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId } from "../kings"
-import { calcTeamResults } from "../kings/round-utils";
+import { calcTeamResults, createRound } from "../kings/round-utils";
 
 export type RoundInfo = Omit<Round, "races">
 
@@ -168,54 +168,7 @@ export default (function krmApiLocalStorage(): KrmApi {
       return JSON.parse(localStorage.getItem(getStorageKeyLeagueConfig(league)))
     },
     createRound(league: League, teams: RoundSeeding): Round {
-      const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
-        acc[division] = raceConfig[seeds.length]
-        return acc
-      }, {} as {
-        [division in Division]: RoundConfig;
-      })
-
-      const races = divisions.reduce((acc, division) => {
-        const divisionConf = config[division]
-        acc[division] = divisionConf.stage1.reduce((accd, { template, name: groupName, seeds }) => {
-          const races: Race[] = template.races.map((race, i) => ({
-            stage: "stage1",
-            group: groupName,
-            groupRace: i,
-            // both race indexes and seeds are 1-indexed
-            teamMlIndices: race,
-            team1: teams[division][seeds[race[0] - 1].position - 1],
-            team2: teams[division][seeds[race[1] - 1].position - 1],
-            division: division as Division,
-          }))
-          accd[groupName] = {
-            races,
-            teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
-            complete: false,
-            conflict: false,
-          }
-          return accd
-        }, {} as StageRaces[Division])
-        return acc
-      }, {
-        mixed: {},
-        ladies: {},
-        board: {},
-      } as StageRaces)
-      // TODO details
-      const round: Round = {
-        id: newStorageKeyRound(league),
-        league,
-        date: new Date(),
-        description: "Round 2",
-        venue: "Gloucester",
-        status: "stage1",
-        config,
-        races: {
-          stage1: races,
-        },
-        teams,
-      }
+      const round = createRound(newStorageKeyRound(league), league, teams)
       saveRound(round)
       return round
     },
