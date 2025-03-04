@@ -1,7 +1,7 @@
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import { createEffect, createSignal, untrack } from "solid-js";
 import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
-import MiniLeague from './MiniLeague';
+import MiniLeague from '../components/MiniLeague';
 
 const teams = [
   "Bath 1",

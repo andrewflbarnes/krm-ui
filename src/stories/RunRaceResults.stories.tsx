@@ -1,8 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs';
-
-import { fn } from '@storybook/test';
-
-import RunRaceResults from './RunRaceResults';
+import RunRaceResults from '../components/RunRaceResults';
 import { Round } from '../kings';
 
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/solid/writing-stories/introduction
