@@ -2,7 +2,7 @@ import { Button, createPalette, createTheme, Paper, ThemeProvider } from '@suid/
 import { createMemo, createSignal } from 'solid-js';
 import { Preview } from 'storybook-solidjs';
 
-const [mode, setMode] = createSignal<"light" | "dark">("dark");
+const [mode, setMode] = createSignal<"light" | "dark">("light");
 
 const palette = createMemo(() => {
   return createPalette({ mode: mode() });
