@@ -21,7 +21,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-const orderedRaces: Race[] = [
+export const orderedRaces: Race[] = [
   { group: "1st/2nd", team1: "Bath 1", team2: "Bristol 1", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 1, winner: 1 },
   { group: "3rd/4th", team1: "Bath 2", team2: "Bristol 2", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 1, winner: 2 },
   { group: "5th/6th", team1: "Bath 3", team2: "Bristol 3", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 1, winner: 1, team2Dsq: true },
@@ -31,7 +31,7 @@ const orderedRaces: Race[] = [
   { group: "13th/14th", team1: "Aberystwyth 3", team2: "Plymouth 3", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 1 },
   { group: "15th/16th", team1: "Aberystwyth 4", team2: "Plymouth 4", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 1 },
 ]
-const knockouts = [ ...orderedRaces ].reverse()
+export const knockouts = [ ...orderedRaces ].reverse()
 
 /**
   * Displays a list of races to run

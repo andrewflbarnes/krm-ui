@@ -90,16 +90,16 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   let ref!: HTMLDivElement;
   createEffect(() => {
     if (print()) {
-      const mywindow = window.open('', 'PRINT', 'height=800,width=1000');
-      mywindow.document.write('<html><head>')
-      mywindow.document.write(`<title>Kings Results Manager</title>`)
-      mywindow.document.write('</head><body>')
-      mywindow.document.write(ref.innerHTML)
-      mywindow.document.write('</body></html>')
-      mywindow.document.close(); // necessary for IE >= 10
-      mywindow.focus(); // necessary for IE >= 10*/
-      mywindow.print();
-      mywindow.close();
+      const printwindow = window.open('', 'PRINT', 'height=800,width=1000');
+      printwindow.document.write('<html><head>')
+      printwindow.document.write(`<title>Kings Results Manager</title>`)
+      printwindow.document.write('</head><body>')
+      printwindow.document.write(ref.innerHTML)
+      printwindow.document.write('</body></html>')
+      printwindow.document.close(); // necessary for IE >= 10
+      printwindow.focus(); // necessary for IE >= 10*/
+      printwindow.print();
+      printwindow.close();
       setPrint(false)
     }
   })
@@ -139,7 +139,11 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       </Stack>
       <div style={{ display: "none" }}>
         <div ref={ref}>
-          <RaceListPrintable knockouts={props.round.status === "knockout"} races={orderedRaces()} title={`Race List - ${props.round.league} ${props.stage}`} />
+          <RaceListPrintable
+            knockouts={props.round.status === "knockout"}
+            races={orderedRaces()}
+            subtitle={`${props.round.league} ${props.stage}`}
+          />
         </div>
       </div>
     </div>

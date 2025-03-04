@@ -1,10 +1,12 @@
 import { For, Show } from "solid-js";
 import { Race } from "../kings"
+import logo from "../ksc-logo.jpg"
 
 type RaceListPrintableProps = {
   races: Race[];
-  title: string;
-  knockouts: boolean;
+  title?: string;
+  subtitle?: string;
+  knockouts?: boolean;
 }
 export default function RaceListPrintable(props: RaceListPrintableProps) {
   return (
@@ -30,23 +32,33 @@ export default function RaceListPrintable(props: RaceListPrintableProps) {
   justify-content: center;
 }`
       }</style>
-      <div id="rlp">
-        <h1 style={{ "text-align": "center" }}>{props.title}</h1>
+      <div style={{ width: "38rem", margin: "auto" }} id="rlp">
+        <div style={{ width: "100%", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
+          <div style={{ display: "flex", "flex-direction": "column", "text-align": "left" }}>
+            <h1 style={{ margin: "0" }}>{props.title || "Race Order"}</h1>
+            <Show when={props.subtitle}>
+              <h2 style={{ margin: 0 }}>{props.subtitle}</h2>
+            </Show>
+          </div>
+          <div style={{ width: "15rem" }}>
+            <img style={{ "max-width": "100%", height: "auto" }} src={logo} />
+          </div>
+        </div>
         <div class="container">
           <table>
             <tbody>
               <For each={props.races}>{(r, i) => (
                 <tr>
                   <Show when={!props.knockouts}>
-                    <td style={{ "width": "5em" }}>{i() + 1}</td>
+                    <td style={{ "width": "3rem" }}>{i() + 1}</td>
                   </Show>
-                  <td style={{ "width": "5em" }}>{r.division[0].toUpperCase()}</td>
+                  <td style={{ "width": "3rem" }}>{r.division[0].toUpperCase()}</td>
                   <Show when={props.knockouts}>
-                    <td style={{ "width": "5em" }}>{r.group}</td>
+                    <td style={{ "width": "3rem" }}>{r.group}</td>
                   </Show>
-                  <td style={{ "width": "23em" }}>{r.team1}</td>
-                  <td style={{ "width": "2em" }}>v</td>
-                  <td style={{ "width": "23em" }}>{r.team1}</td>
+                  <td style={{ "width": "15rem" }}>{r.team1}</td>
+                  <td style={{ "width": "2rem" }}>v</td>
+                  <td style={{ "width": "15rem" }}>{r.team1}</td>
                 </tr>
               )}</For>
             </tbody>
