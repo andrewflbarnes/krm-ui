@@ -86,7 +86,7 @@ function DndTeam(props: { seed: string, division: Division, group: string, team:
   const droppable = createDroppable(id(), props)
   return (
     <div use:droppable>
-      <div use:draggable>
+      <div use:draggable style={{ "touch-action": "none" }}>
         <ListItem>
           <SwapCalls fontSize="small" />
           &nbsp;
