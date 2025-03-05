@@ -1,6 +1,7 @@
-import { List, ListItem, Typography } from "@suid/material";
+import { SwapCalls } from "@suid/icons-material";
+import { Chip, List, ListItem, ListItemText, ListSubheader, Typography } from "@suid/material";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler } from "@thisbeyond/solid-dnd";
-import { For } from "solid-js";
+import { For, mergeProps, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 
 type ManageNewShuffleProps = {
@@ -12,11 +13,13 @@ type ManageNewShuffleProps = {
     [d in Division]: string[];
   };
   onShuffle: (seeds: RoundSeeding) => void;
+  inGroupSwaps?: boolean;
 }
 
-export default function ManageNewShuffle(props: ManageNewShuffleProps) {
+export default function ManageNewShuffle(inprops: ManageNewShuffleProps) {
+  const props = mergeProps({ inGroupSwaps: true }, inprops)
   return (
-    <div style={{ display: "flex", "flex-direction": "row", gap: "1rem" }}>
+    <div style={{ display: "flex", "flex-direction": "row", gap: "1rem", "justify-content": "space-between" }}>
       <For each={Object.entries(props.round.config)}>{([division, config]: [Division, RoundConfig]) => {
         const seeds = () => props.round.teams[division]
         const dndHandler: DragEventHandler = ({ draggable, droppable }) => {
@@ -25,7 +28,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
           }
           const { group, team } = draggable.data
           const { group: toGroup, team: toTeam } = droppable.data
-          if (group === toGroup) {
+          if (!props.inGroupSwaps && group === toGroup) {
             return
           }
           const newSeeds = [...seeds()]
@@ -39,17 +42,20 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
           })
         }
         return (
-          <Typography>
-            <Typography variant="h2">
-              {division}
-            </Typography>
-            <DragDropProvider onDragEnd={dndHandler}>
-              <DragDropSensors>
-                <For each={config.stage1}>{(group) => {
-                  return (
-                    <div>
-                      {group.name}
-                      <List>
+          <div style={{ "min-width": "16em" }}>
+            <Typography>
+              <Typography variant="h2">
+                {division}
+              </Typography>
+              <DragDropProvider onDragEnd={dndHandler}>
+                <DragDropSensors>
+                  <For each={config.stage1}>{(group) => {
+                    return (
+                      <List
+                        dense
+                        aria-labelledby={`${division}-${group.name}`}
+                        subheader={<ListSubheader id={`${division}-${group.name}`}>Group {group.name}</ListSubheader>}
+                      >
                         <For each={group.seeds}>{(seed) => {
                           const team = () => seeds()[seed.position - 1]
                           const moved = () => {
@@ -62,12 +68,12 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                           )
                         }}</For>
                       </List>
-                    </div>
-                  )
-                }}</For>
-              </DragDropSensors>
-            </DragDropProvider>
-          </Typography>
+                    )
+                  }}</For>
+                </DragDropSensors>
+              </DragDropProvider>
+            </Typography>
+          </div>
         )
       }}</For>
     </div>
@@ -83,7 +89,14 @@ function DndTeam(props: { division: Division, group: string, team: string, moved
     <div use:droppable>
       <div use:draggable>
         <ListItem>
-          {props.team}
+          <SwapCalls fontSize="small" />
+          &nbsp;
+          &nbsp;
+          &nbsp;
+          <ListItemText primary={props.team} />
+          <Show when={props.moved}>
+            <Chip label={props.moved} color="warning" size="small" variant="outlined" />
+          </Show>
         </ListItem>
       </div>
     </div>
