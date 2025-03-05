@@ -24,10 +24,10 @@
 - [x] Print race list ("light" mode equivalent, alternatively screenshot)
 - [x] Print race sheet ("light" mode equivalent, alternatively screenshot)
 - [x] Print knockout ("light" mode equivalent, alternatively screenshot)
+- [x] Manual pre-start team shuffling
 
 ## Must
 
-- [ ] Manual pre-start team shuffling
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race bys (team unavailable)
 - [ ] Race skips (teams unavailable)

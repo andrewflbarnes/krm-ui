@@ -57,14 +57,13 @@ export default function ManageNewShuffle(inprops: ManageNewShuffleProps) {
                         subheader={<ListSubheader id={`${division}-${group.name}`}>Group {group.name}</ListSubheader>}
                       >
                         <For each={group.seeds}>{(seed) => {
-                          const team = () => seeds()[seed.position - 1]
-                          const moved = () => {
-                            const originalPosition = props.originalTeams[division].indexOf(team())
-                            const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position - 1) == originalPosition)).name
-                            return originalGroup !== group.name ? originalGroup : null
-                          }
+                          const team = seeds()[seed.position - 1]
+                          const originalPosition = props.originalTeams[division].indexOf(team)
+                          const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position - 1) == originalPosition)).name
+                          const moved = originalGroup !== group.name ? originalGroup : null
+                          const originalSeed = "" + (originalPosition + 1)
                           return (
-                            <DndTeam division={division} group={group.name} team={team()} moved={moved()} />
+                            <DndTeam seed={originalSeed} division={division} group={group.name} team={team} moved={moved} />
                           )
                         }}</For>
                       </List>
@@ -80,7 +79,7 @@ export default function ManageNewShuffle(inprops: ManageNewShuffleProps) {
   )
 }
 
-function DndTeam(props: { division: Division, group: string, team: string, moved?: string }) {
+function DndTeam(props: { seed: string, division: Division, group: string, team: string, moved?: string }) {
   // TODO cleanup TS errors
   const id = () => `${props.division}-${props.group}-${props.team}`
   const draggable = createDraggable(id(), props)
@@ -91,7 +90,7 @@ function DndTeam(props: { division: Division, group: string, team: string, moved
         <ListItem>
           <SwapCalls fontSize="small" />
           &nbsp;
-          &nbsp;
+          {props.seed}
           &nbsp;
           <ListItemText primary={props.team} />
           <Show when={props.moved}>
