@@ -1,6 +1,6 @@
 import { For, Show } from "solid-js";
 import { Race } from "../kings"
-import logo from "../ksc-logo.jpg"
+import logo from "../assets/ksc-logo.jpg"
 
 type RaceListPrintableProps = {
   races: Race[];

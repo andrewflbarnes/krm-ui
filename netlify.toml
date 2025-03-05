@@ -35,6 +35,12 @@
   status = 200
 
 [[redirects]]
+  from = "/favicon.ico"
+  to = "/krm-ui/favicon.ico"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/krm-ui/*"
   to = "/krm-ui/"
   status = 200
