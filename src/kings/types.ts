@@ -93,7 +93,8 @@ export type Round = {
   date: Date;
   description: string;
   venue: string;
-  teams: RoundSeeding;
+  teams: RoundSeeding; // These are ordered by actual seeding
+  distributionOrder: RoundSeeding; // These are ordered how teams were sorted into stage 1 groups (e.g. including any inter group swaps)
   config: {
     [division in Division]: RoundConfig;
   };

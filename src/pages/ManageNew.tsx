@@ -53,8 +53,8 @@ function ManageNewInternal() {
     division: string
   }[]>();
 
+  const [distributionOrder, setDistributionOrder] = createSignal<RoundSeeding>();
   const [seeding, setSeeding] = createSignal<RoundSeeding>();
-  const [originalSeeding, setOriginalSeeding] = createSignal<RoundSeeding>();
   const [originalConfig, setOriginalConfig] = createSignal<{
     [d in Division]: RoundConfig;
   }>()
@@ -127,8 +127,8 @@ function ManageNewInternal() {
         const seeding = orderSeeds(k.leagueConfig(), numTeams)
         const r = createRound("setup", k.league(), seeding)
         batch(() => {
+          setDistributionOrder(seeding)
           setSeeding(seeding)
-          setOriginalSeeding(seeding)
           setRound(r)
           setOriginalConfig(r.config)
         })
@@ -143,10 +143,10 @@ function ManageNewInternal() {
           const r = createRound("setup", k.league(), seeds)
           batch(() => {
             setRound(r)
-            setSeeding(seeds)
+            setDistributionOrder(seeds)
           })
         }
-        return <ManageNewShuffle originalTeams={originalSeeding()} originalConfig={originalConfig()} round={round()} onShuffle={handleShuffle} />
+        return <ManageNewShuffle seeding={seeding()} originalConfig={originalConfig()} round={round()} onShuffle={handleShuffle} />
       },
       validator: () => {
         return [true,]
@@ -198,7 +198,7 @@ function ManageNewInternal() {
   }
 
   const handleDone = () => {
-    const r = krmApi.createRound(k.league(), seeding())
+    const r = krmApi.createRound(k.league(), seeding(), distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()

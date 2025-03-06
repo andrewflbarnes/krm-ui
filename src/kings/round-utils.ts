@@ -166,7 +166,8 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
   }
 }
 
-export function createRound(id: string, league: League, teams: RoundSeeding): Round {
+export function createRound(id: string, league: League, teams: RoundSeeding, distributionOrder?: RoundSeeding): Round {
+  const teamOrder = distributionOrder || teams
   const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
     acc[division] = raceConfig[seeds.length]
     return acc
@@ -183,13 +184,13 @@ export function createRound(id: string, league: League, teams: RoundSeeding): Ro
         groupRace: i,
         // both race indexes and seeds are 1-indexed
         teamMlIndices: race,
-        team1: teams[division][seeds[race[0] - 1].position - 1],
-        team2: teams[division][seeds[race[1] - 1].position - 1],
+        team1: teamOrder[division][seeds[race[0] - 1].position - 1],
+        team2: teamOrder[division][seeds[race[1] - 1].position - 1],
         division: division as Division,
       }))
       accd[groupName] = {
         races,
-        teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+        teams: teamOrder[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
         complete: false,
         conflict: false,
       }
@@ -214,5 +215,6 @@ export function createRound(id: string, league: League, teams: RoundSeeding): Ro
       stage1: races,
     },
     teams,
+    distributionOrder: distributionOrder || teams,
   }
 }

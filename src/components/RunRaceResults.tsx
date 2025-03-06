@@ -5,7 +5,7 @@ import styles from "./RunRaceResults.module.css";
 
 // TODO move somewhere else
 function kingsPoints(division: string, rank: number) {
-  const start = division == "mixed" ? 30 : 10
+  const start = division == "mixed" ? 30 : division == "ladies" ? 15 : 10
   switch (rank) {
     case 1: return start
     case 2: return start - 2

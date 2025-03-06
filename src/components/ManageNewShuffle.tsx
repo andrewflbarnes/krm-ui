@@ -1,7 +1,7 @@
 import { SwapCalls } from "@suid/icons-material";
 import { Chip, Divider, List, ListItem, ListItemText, ListSubheader, Paper, Typography } from "@suid/material";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, transformStyle, useDragDropContext } from "@thisbeyond/solid-dnd";
-import { For, mergeProps, Show } from "solid-js";
+import { For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 
 type ManageNewShuffleProps = {
@@ -9,15 +9,14 @@ type ManageNewShuffleProps = {
   originalConfig: {
     [d in Division]: RoundConfig;
   };
-  originalTeams: {
+  seeding: {
     [d in Division]: string[];
   };
   onShuffle: (seeds: RoundSeeding) => void;
   inGroupSwaps?: boolean;
 }
 
-export default function ManageNewShuffle(inprops: ManageNewShuffleProps) {
-  const props = mergeProps({ inGroupSwaps: true }, inprops)
+export default function ManageNewShuffle(props: ManageNewShuffleProps) {
   return (
     <div style={{ display: "flex", "flex-direction": "row", gap: "1rem", "justify-content": "space-between" }}>
       <For each={Object.entries(props.round.config)}>{([division, config]: [Division, RoundConfig]) => {
@@ -58,7 +57,7 @@ export default function ManageNewShuffle(inprops: ManageNewShuffleProps) {
                   >
                     <For each={group.seeds}>{(seed) => {
                       const team = seeds()[seed.position - 1]
-                      const originalPosition = props.originalTeams[division].indexOf(team)
+                      const originalPosition = props.seeding[division].indexOf(team)
                       const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position - 1) == originalPosition)).name
                       const moved = originalGroup !== group.name ? originalGroup : null
                       const originalSeed = "" + (originalPosition + 1)

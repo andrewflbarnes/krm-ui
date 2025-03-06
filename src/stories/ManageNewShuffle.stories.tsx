@@ -19,7 +19,7 @@ const meta = {
       props.onShuffle?.(seeds)
       setSeeds(seeds)
     }
-    return <ManageNewShuffle originalTeams={props.round.teams} originalConfig={props.round.config} round={round()} onShuffle={handleShuffle} />
+    return <ManageNewShuffle inGroupSwaps={props.inGroupSwaps} seeding={props.seeding} originalConfig={props.originalConfig} round={round()} onShuffle={handleShuffle} />
   },
   component: ManageNewShuffle,
   parameters: {
@@ -47,5 +47,20 @@ export const Default: Story = {
   args: {
     round: round as Round,
     onShuffle: fn(),
+    seeding: round.teams,
+    originalConfig: round.config,
+  },
+};
+
+/**
+  * Allow swaps within groups
+  */
+export const InGroupSwaps: Story = {
+  args: {
+    round: round as Round,
+    onShuffle: fn(),
+    inGroupSwaps: true,
+    seeding: round.teams,
+    originalConfig: round.config,
   },
 };
