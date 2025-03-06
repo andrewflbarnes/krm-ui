@@ -80,13 +80,12 @@ export default function ManageNewShuffle(inprops: ManageNewShuffleProps) {
 }
 
 function DndTeam(props: { seed: string, division: Division, group: string, team: string, moved?: string }) {
-  // TODO cleanup TS errors
   const id = () => `${props.division}-${props.group}-${props.team}`
   const draggable = createDraggable(id(), props)
   const droppable = createDroppable(id(), props)
   return (
-    <div use:droppable>
-      <div use:draggable style={{ "touch-action": "none" }}>
+    <div use:droppable={!!droppable}>
+      <div use:draggable={!!draggable} style={{ "touch-action": "none" }}>
         <ListItem>
           <SwapCalls fontSize="small" />
           &nbsp;
