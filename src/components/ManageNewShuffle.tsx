@@ -1,6 +1,6 @@
 import { SwapCalls } from "@suid/icons-material";
 import { Chip, List, ListItem, ListItemText, ListSubheader, Typography } from "@suid/material";
-import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler } from "@thisbeyond/solid-dnd";
+import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, transformStyle } from "@thisbeyond/solid-dnd";
 import { For, mergeProps, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 
@@ -85,9 +85,11 @@ function DndTeam(props: { seed: string, division: Division, group: string, team:
   const droppable = createDroppable(id(), props)
   return (
     <div use:droppable={!!droppable}>
-      <div use:draggable={!!draggable} style={{ "touch-action": "none" }}>
+      <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform), "touch-action": "none" }}>
         <ListItem>
-          <SwapCalls fontSize="small" />
+          <div style={{ cursor: draggable.isActiveDraggable ? "grabbing": "grab", display: "flex", "align-items": "center" }}>
+            <SwapCalls fontSize="small" {...draggable.dragActivators} color="secondary" />
+          </div>
           &nbsp;
           {props.seed}
           &nbsp;
