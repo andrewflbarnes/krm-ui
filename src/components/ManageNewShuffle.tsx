@@ -105,7 +105,7 @@ function Team(props: {
         <SwapCalls fontSize="small" {...props.dragActivators} color="secondary" />
       </div>
       <Divider orientation="vertical" flexItem />
-      <Typography>
+      <Typography sx={{ "max-width": "1em", textAlign: "center" }}>
         {props.seed}
       </Typography>
       <Divider orientation="vertical" flexItem />
