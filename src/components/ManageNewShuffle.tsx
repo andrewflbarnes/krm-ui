@@ -62,7 +62,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                       const moved = originalGroup !== group.name ? originalGroup : null
                       const originalSeed = "" + (originalPosition + 1)
                       return (
-                        <DndTeam seed={originalSeed} division={division} group={group.name} team={team} moved={moved} inGroupSwaps={props.inGroupSwaps} />
+                        <DndTeam disabled={config.stage1.length < 2 && !props.inGroupSwaps} seed={originalSeed} division={division} group={group.name} team={team} moved={moved} inGroupSwaps={props.inGroupSwaps} />
                       )
                     }}</For>
                   </List>
@@ -76,7 +76,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
   )
 }
 
-function DndTeam(props: { seed: string, division: Division, group: string, team: string, moved?: string, inGroupSwaps: boolean }) {
+function DndTeam(props: { disabled?: boolean, seed: string, division: Division, group: string, team: string, moved?: string, inGroupSwaps: boolean }) {
   const id = () => `${props.division}-${props.group}-${props.team}`
   const draggable = createDraggable(id(), props)
   const droppable = createDroppable(id(), props)
@@ -93,13 +93,14 @@ function DndTeam(props: { seed: string, division: Division, group: string, team:
   return (
     <div use:droppable={!!droppable}>
       <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform), "touch-action": "none" }}>
-        <Team defocus={defocus()} seed={props.seed} team={props.team} moved={props.moved} dragActivators={draggable.dragActivators} />
+        <Team disabled={props.disabled} defocus={defocus()} seed={props.seed} team={props.team} moved={props.moved} dragActivators={draggable.dragActivators} />
       </div>
     </div>
   )
 }
 
 function Team(props: {
+  disabled?: boolean;
   defocus?: boolean;
   overlay?: boolean;
   seed: string;
@@ -109,10 +110,12 @@ function Team(props: {
 }) {
   return (
     <ListItem sx={{ display: "flex", gap: "1em", opacity: props.defocus ? 0.5 : 1 }}>
-      <div style={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", "align-items": "center" }}>
-        <SwapCalls fontSize="small" {...props.dragActivators} color="secondary" />
-      </div>
-      <Divider orientation="vertical" flexItem />
+      <Show when={!props.disabled}>
+        <div style={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", "align-items": "center" }}>
+          <SwapCalls fontSize="small" {...props.dragActivators} color="secondary" />
+        </div>
+        <Divider orientation="vertical" flexItem />
+      </Show>
       <Typography sx={{ maxWidth: "1em", textAlign: "center" }}>
         {props.seed}
       </Typography>
