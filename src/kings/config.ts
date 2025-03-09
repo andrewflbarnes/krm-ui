@@ -215,8 +215,8 @@ export const raceConfig: {
         name: "I",
         seeds: [
           { group: "A", position: 1 },
-          { group: "B", position: 2 },
-          { group: "A", position: 1 },
+          { group: "B", position: 1 },
+          { group: "A", position: 2 },
           { group: "B", position: 2 },
         ],
         template: miniLeagueTemplates.mini4,
@@ -228,7 +228,7 @@ export const raceConfig: {
           { group: "B", position: 3 },
           { group: "A", position: 4 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
     ],
     // TODO unnecessary knockouts?
