@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from 'storybook-solidjs';
 import { ComponentProps, createEffect, createSignal, untrack } from "solid-js";
 import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
 import MiniLeague from '../components/MiniLeague';
-import { fn } from '@storybook/test';
+import { expect, fn, userEvent, waitFor } from '@storybook/test';
 
 const teams = [
   "Bath 1",
@@ -42,6 +42,7 @@ const MiniLeagueWithHandler = (props: ComponentProps<typeof MiniLeague>) => {
     newRaces[result.groupRace] = result
     console.log("Received result change event: " + JSON.stringify(result))
     setRaces(newRaces)
+    props.onResultChange(result)
     //notification.info("Received result change event: " + JSON.stringify(result))
   }
   return <MiniLeague {...props} onResultChange={handleResultChange} races={races()} />
@@ -59,8 +60,28 @@ const meta = {
   args: {
     onResultChange: fn(),
   },
+  play: async ({ args, canvas, step }) => {
+    await step('Set winner of all races to the first team', async () => {
+      for (let i = 0; i < args.races.length; i++) {
+        await userEvent.click(canvas.getByTestId(`race-${args.races[i].group}-${i}-1`))
+      }
+    })
+    await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
+    await waitFor(() => expect(canvas.getByText(/2nd/)).toBeInTheDocument())
+    await waitFor(() => expect(canvas.getByText(/3rd/)).toBeInTheDocument())
+    if (args.teams.length > 3) {
+      await waitFor(() => expect(canvas.getByText(/4th/)).toBeInTheDocument())
+    }
+    if (args.teams.length > 4) {
+      await waitFor(() => expect(canvas.getByText(/5th/)).toBeInTheDocument())
+    }
+    if (args.teams.length > 5) {
+      await waitFor(() => expect(canvas.getByText(/6th/)).toBeInTheDocument())
+    }
+    await waitFor(() => expect(canvas.getByText("Complete")).toBeInTheDocument())
+    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledTimes(args.races.length))
+  }
 } satisfies Meta<typeof MiniLeague>;
-
 export default meta;
 
 type Story = StoryObj<typeof meta>;
@@ -112,7 +133,19 @@ export const TeamsReadonly4: Story = {
   args: {
     ...Teams4.args,
     name: "Mini 4 Readonly",
-    collapsed: true,
+    readonly: true,
+  },
+  play: async ({ args, canvas, step }) => {
+    step('Try to set winner of all races to the first team', async () => {
+      for (let i = 0; i < args.races.length; i++) {
+        await userEvent.click(canvas.getByTestId(`race-${args.races[i].group}-${i}-1`))
+      }
+    })
+    await waitFor(() => expect(canvas.queryByText(/1st/)).not.toBeInTheDocument())
+    await waitFor(() => expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument())
+    await waitFor(() => expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument())
+    await waitFor(() => expect(canvas.queryByText(/4th/)).not.toBeInTheDocument())
+    await waitFor(() => expect(args.onResultChange).not.toHaveBeenCalledTimes(args.races.length))
   },
 }
 
@@ -125,6 +158,13 @@ export const TeamsLive4: Story = {
     name: "Mini 4 Live",
     live: true,
   },
+  play: async ({ args, canvas, step }) => {
+    await step('Set first race winner', async () => {
+      await userEvent.click(canvas.getByTestId('race-Z-0-1'))
+    })
+    await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
+    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledOnce())
+  }
 }
 
 

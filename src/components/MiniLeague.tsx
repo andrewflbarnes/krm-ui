@@ -121,75 +121,78 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 </th>
                 <For each={collapsedRaces()}>{(races) => {
                   const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
-                  let topBorder = false
-                  let botBorder = false
-                  if (raceDetails) {
-                    const { team1, team2 } = raceDetails
-                    const t1idx = props.teams.indexOf(team1)
-                    const t2idx = props.teams.indexOf(team2)
-                    const needsBorder = !!raceDetails && Math.abs(t1idx - t2idx) > 1
-                    if (needsBorder) {
-                      botBorder = true
-                      topBorder = true
-                    } else {
-                      if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
-                        botBorder = true
-                      } else {
-                        topBorder = true
-                      }
-                    }
-                  }
-                  const ti = raceDetails?.team1 == team ? 1 : 2
-                  const dsq = raceDetails && (ti == 1 ? raceDetails.team1Dsq : raceDetails.team2Dsq)
-                  const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
                   return (
                     <Switch>
-                      <Match when={!!raceDetails}>
-                        <td
-                          onMouseEnter={() => setHighlight(raceDetails.groupRace)}
-                          onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
-                          style={{
-                            cursor: props.readonly ? "inherit" : "pointer",
-                            "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
-                            "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
-                            "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                            "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                            position: "relative",
-                            height: checkSize,
-                            width: checkSize,
-                            opacity: dim() ? dimOpacity : 1,
-                            transition: `opacity ${dim() ? dimIn : "0s"}`,
-                            "transition-delay": dim() ? dimDelay : "0s",
-                          }}
-                          onContextMenu={props.readonly ? null : [handleContext, [raceDetails, team]]}
-                          onClick={() => !props.readonly && props.onResultChange({ ...raceDetails, winner: ti })}
-                        >
-                          <div style={{
-                            display: "flex",
-                            "flex-direction": "row",
-                            "align-items": "center",
-                            "justify-content": "center",
-                          }}>
-                            <Switch>
-                              <Match when={raceDetails.winner === ti}>
-                                <CheckCircle color={dsq ? "error" : "success"} />
-                              </Match>
-                              <Match when={dsq}>
-                                <CancelOutlined color={"error"} />
-                              </Match>
-                              <Match when={true}>
-                                <CircleOutlined />
-                              </Match>
-                            </Switch>
-                          </div>
-                        </td>
-                      </Match>
+                      <Match when={!!raceDetails}>{(_) => {
+                        let topBorder = false
+                        let botBorder = false
+                        const { team1, team2 } = raceDetails
+                        const t1idx = props.teams.indexOf(team1)
+                        const t2idx = props.teams.indexOf(team2)
+                        if (raceDetails) {
+                          const needsBorder = Math.abs(t1idx - t2idx) > 1
+                          if (needsBorder) {
+                            botBorder = true
+                            topBorder = true
+                          } else {
+                            if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
+                              botBorder = true
+                            } else {
+                              topBorder = true
+                            }
+                          }
+                        }
+                        const ti = team1 == team ? 1 : 2
+                        const dsq = ti == 1 ? raceDetails.team1Dsq : raceDetails.team2Dsq
+                        const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
+                        const teamOrdinal = (ti == 1 && t1idx < t2idx) || (ti == 2 && t2idx < t1idx) ? 1 : 2
+                        return (
+                          <td
+                            data-testid={`race-${raceDetails.group}-${raceDetails.groupRace}-${teamOrdinal}`}
+                            onMouseEnter={() => setHighlight(raceDetails.groupRace)}
+                            onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
+                            style={{
+                              cursor: props.readonly ? "inherit" : "pointer",
+                              "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
+                              "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
+                              "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                              "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                              position: "relative",
+                              height: checkSize,
+                              width: checkSize,
+                              opacity: dim() ? dimOpacity : 1,
+                              transition: `opacity ${dim() ? dimIn : "0s"}`,
+                              "transition-delay": dim() ? dimDelay : "0s",
+                            }}
+                            onContextMenu={props.readonly ? null : [handleContext, [raceDetails, team]]}
+                            onClick={() => !props.readonly && props.onResultChange({ ...raceDetails, winner: ti })}
+                          >
+                            <div style={{
+                              display: "flex",
+                              "flex-direction": "row",
+                              "align-items": "center",
+                              "justify-content": "center",
+                            }}>
+                              <Switch>
+                                <Match when={raceDetails.winner === ti}>
+                                  <CheckCircle color={dsq ? "error" : "success"} />
+                                </Match>
+                                <Match when={dsq}>
+                                  <CancelOutlined color={"error"} />
+                                </Match>
+                                <Match when={true}>
+                                  <CircleOutlined />
+                                </Match>
+                              </Switch>
+                            </div>
+                          </td>
+                        )
+                      }}</Match>
                       <Match when={!raceDetails}>
                         <td style={{ background: borderColour }} />
                       </Match>
                     </Switch>
-                  )
-                }}</For>
+                )}}</For>
                 <td
                   style={{
                     height: checkSize,
