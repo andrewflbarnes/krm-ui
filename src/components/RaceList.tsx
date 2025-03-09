@@ -41,7 +41,11 @@ function RaceTableRow(props: {
   onRaceUpdate: (race: Race) => void;
   readonly?: boolean;
 }) {
-  const setWinner = (winner?: 1 | 2) => {
+  const setWinner = (winner: 1 | 2, e: MouseEvent) => {
+    e.stopPropagation()
+    if (props.readonly) {
+      return
+    }
     const updated = {
       ...props.race,
       winner,
@@ -50,6 +54,9 @@ function RaceTableRow(props: {
   }
   const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
+    if (props.readonly) {
+      return
+    }
     const t1Dsq = props.race.team1Dsq
     const t2Dsq = props.race.team2Dsq
     const updated = {
@@ -95,10 +102,10 @@ function RaceTableRow(props: {
       <td
         class={styles.td}
         style={{ cursor: props.readonly ? "inherit" : "pointer" }}
-        onClick={() => !props.readonly && setWinner(1)}
+        onClick={[setWinner, 1]}
       >
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
-          <div onClick={props.readonly ? null : [toggleDsq, 1]} style={{ display: "contents" }}>
+          <div onClick={[toggleDsq, 1]} style={{ display: "contents" }}>
             <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
               <CancelOutlined fontSize="small" color="error" />
             </Show>
@@ -114,7 +121,7 @@ function RaceTableRow(props: {
       <td
         class={styles.td}
         style={{ cursor: props.readonly ? "inherit" : "pointer" }}
-        onClick={() => !props.readonly && setWinner(2)}
+        onClick={[setWinner, 2]}
       >
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "end" }}>
           {props.race.team2}
@@ -122,7 +129,7 @@ function RaceTableRow(props: {
           <Show when={winner() == 2} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
             <CheckCircle fontSize="small" color="success" />
           </Show>
-          <div onClick={props.readonly ? null : [toggleDsq, 2]} style={{ display: "contents" }}>
+          <div onClick={[toggleDsq, 2]} style={{ display: "contents" }}>
             <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
               <CancelOutlined fontSize="small" color="error" />
             </Show>

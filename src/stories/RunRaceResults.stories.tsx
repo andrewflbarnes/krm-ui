@@ -7,18 +7,6 @@ const meta = {
   title: 'Kings/RunRaceResults',
   render: props => <RunRaceResults {...props} />,
   component: RunRaceResults,
-  parameters: {
-    // Optional parameter to center the component in the Canvas. More info: https://storybook.js.org/docs/configure/story-layout
-    layout: 'centered',
-  },
-  // This component will have an automatically generated Autodocs entry: https://storybook.js.org/docs/writing-docs/autodocs
-  tags: ['autodocs'],
-  // More on argTypes: https://storybook.js.org/docs/api/argtypes
-  argTypes: {
-  },
-  // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
-  args: {
-  },
 } satisfies Meta<typeof RunRaceResults>;
 
 export default meta;
@@ -70,9 +58,7 @@ export const Default: Story = {
   */
 export const CustomPointsAlgo: Story = {
   args: {
-    round: {
-      results,
-    } as Round,
+    ...Default.args,
     points: (_: string, rank: number) => {
       return (50 - rank) * 2
     }

@@ -1,7 +1,8 @@
 import type { Meta, StoryObj } from 'storybook-solidjs';
-import { createEffect, createSignal, untrack } from "solid-js";
+import { ComponentProps, createEffect, createSignal, untrack } from "solid-js";
 import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
 import MiniLeague from '../components/MiniLeague';
+import { fn } from '@storybook/test';
 
 const teams = [
   "Bath 1",
@@ -31,14 +32,7 @@ function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {
   }))
 }
 
-const MiniLeagueWithHandler = (props: {
-  name: string;
-  teams: string[];
-  races: Race[];
-  collapsed?: boolean;
-  live?: boolean;
-  readonly?: boolean;
-}) => {
+const MiniLeagueWithHandler = (props: ComponentProps<typeof MiniLeague>) => {
   const [races, setRaces] = createSignal<Race[]>(untrack(() => props.races))
   createEffect(() => {
     setRaces(props.races)
@@ -57,11 +51,13 @@ const meta = {
   title: 'Kings/MiniLeague',
   render: props => <MiniLeagueWithHandler {...props} />,
   component: MiniLeague,
-  tags: ['autodocs'],
   argTypes: {
     live: { control: 'boolean' },
     collapsed: { control: 'boolean' },
     readonly: { control: 'boolean' },
+  },
+  args: {
+    onResultChange: fn(),
   },
 } satisfies Meta<typeof MiniLeague>;
 
@@ -92,11 +88,45 @@ export const Teams4: Story = {
   */
 export const TeamsInverse4: Story = {
   args: {
-    name: "Mini 4",
+    name: "Mini 4 Inverse",
     teams: initTeams(m4),
     races: initRacesInverse(m4),
   },
 }
+
+/**
+  * Make races share columns where possible
+  */
+export const TeamsCollapse4: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Mini 4 Collapsed",
+    collapsed: true,
+  },
+}
+
+/**
+  * Readonly mini leagues can't be updated
+  */
+export const TeamsReadonly4: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Mini 4 Readonly",
+    collapsed: true,
+  },
+}
+
+/**
+  * Live mini leagues will show positions as soon as once race has occurred
+  */
+export const TeamsLive4: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Mini 4 Live",
+    live: true,
+  },
+}
+
 
 const m5 = miniLeagueTemplates.mini5
 export const Teams5: Story = {

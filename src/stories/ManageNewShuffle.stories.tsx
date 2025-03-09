@@ -22,14 +22,6 @@ const meta = {
     return <ManageNewShuffle inGroupSwaps={props.inGroupSwaps} seeding={props.seeding} originalConfig={props.originalConfig} round={round()} onShuffle={handleShuffle} />
   },
   component: ManageNewShuffle,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-  argTypes: {
-  },
-  args: {
-  },
 } satisfies Meta<typeof ManageNewShuffle>;
 
 export default meta;

@@ -12,6 +12,7 @@ const theme = createTheme({ palette: palette });
 
 const preview: Preview = {
   parameters: {
+    layout: 'centered',
     controls: {
       matchers: {
         color: /(background|color)$/i,
@@ -19,25 +20,30 @@ const preview: Preview = {
       },
     },
   },
-  // not working see https://github.com/storybookjs/storybook/issues/30058
-  // though this doesn't cover it not working at all :(
+  tags: [
+    "autodocs",
+  ],
+  // not working in non docs, maybe see https://github.com/storybookjs/storybook/issues/30058
   //globalTypes: {
   //  theme: {
-  //    name: 'Theme',
   //    description: 'Global theme for components',
-  //    defaultValue: 'light',
   //    toolbar: {
-  //      // The icon for the toolbar item
+  //      title: "Theme",
   //      icon: 'circlehollow',
-  //      // Array of options
   //      items: [
-  //        { value: 'light', icon: 'circlehollow', title: 'light' },
-  //        { value: 'dark', icon: 'circle', title: 'dark' },
+  //        "light",
+  //        "dark",
   //      ],
-  //      // Property that specifies if the name of the item will be displayed
-  //      showName: true,
+  //      //items: [
+  //      //  { value: 'light', icon: 'circlehollow', title: 'light' },
+  //      //  { value: 'dark', icon: 'circle', title: 'dark' },
+  //      //],
+  //      dynamicTitle: true,
   //    },
   //  },
+  //},
+  //initialGlobals: {
+  //  theme: "light",
   //},
   decorators: [
     (Story) => (
@@ -47,7 +53,7 @@ const preview: Preview = {
             <Button variant="contained" color="primary" onClick={() => setMode(mode() === "light" ? "dark" : "light")}>mode: {mode()}</Button>
           </div>
           <div style={{ margin: "auto" }}>
-            <Paper elevation={0}>
+            <Paper>
               <Story />
             </Paper>
           </div>

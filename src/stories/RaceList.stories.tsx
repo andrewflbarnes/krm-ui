@@ -5,16 +5,7 @@ import { knockouts, races } from './data';
 
 const meta = {
   title: 'Kings/RaceList',
-  render: props => <RaceList {...props} />,
   component: RaceList,
-  parameters: {
-    layout: 'centered',
-  },
-  tags: ['autodocs'],
-  argTypes: {
-  },
-  args: {
-  },
 } satisfies Meta<typeof RaceList>;
 
 export default meta;
@@ -35,8 +26,7 @@ export const Default: Story = {
   */
 export const Readonly: Story = {
   args: {
-    orderedRaces: races,
-    onRaceUpdate: fn(),
+    ...Default.args,
     readonly: true,
   },
 };
