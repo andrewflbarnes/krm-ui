@@ -88,7 +88,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         })
         accd[groupName] = {
           races,
-          teams: teams[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+          teams: seeds.map(({ group, position }) => lastStageDivisionRaces[group].results[position - 1][0]),
           complete: false,
           conflict: false,
         }

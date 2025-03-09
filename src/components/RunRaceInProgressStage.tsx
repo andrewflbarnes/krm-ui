@@ -121,13 +121,13 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showBoth() ? "space-around" : "center" }}>
             <Stack gap="2em">
               <For each={Object.entries(props.round.races[props.stage])}>{([div, divRaces]) => (
-                <For each={Object.entries(divRaces)}>{([name, { races }]) => (
+                <For each={Object.entries(divRaces)}>{([name, { races, teams }]) => (
                   <MiniLeague
                     live={props.live}
                     collapsed={props.collapse}
                     name={name + " " + div}
                     races={races}
-                    teams={props.round.teams[div as Division].filter(t => races.some(r => r.team1 === t || r.team2 === t))}
+                    teams={teams}
                     onResultChange={handleRaceUpdate}
                     readonly={props.readonly}
                   />
