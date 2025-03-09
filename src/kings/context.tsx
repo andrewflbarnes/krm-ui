@@ -76,11 +76,13 @@ export function useKings() {
       console.error("No config exists for requested league", league, Object.keys(kings))
       return
     }
-    actions.setLeague(league)
-    localStorageContext.saveSelectedLeague(league)
-    const lc = krmApi.getLeagueConfig(league)
-    actions.setLeagueConfig(lc)
-    setSearchParams({ league })
+    batch(() => {
+      actions.setLeague(league)
+      localStorageContext.saveSelectedLeague(league)
+      const lc = krmApi.getLeagueConfig(league)
+      actions.setLeagueConfig(lc)
+      setSearchParams({ league })
+    })
   }
   const setLeagueConfigEnhanced = (config: LeagueData) => {
     krmApi.saveLeagueConfig(state.league(), config)

@@ -36,12 +36,21 @@ function ManageNewInternal() {
   onCleanup(() => unlock())
 
   const [numTeams, setNumTeams] = createStore<ClubSeeding>(initConfig(k.leagueConfig()))
-  createEffect(() => {
-    setNumTeams(nt => ({
-      ...initConfig(k.leagueConfig()),
-      ...nt,
-    }))
-  })
+  createEffect((lastLeague) => {
+    const league = k.league()
+    if (lastLeague == league) {
+      setNumTeams(nt => ({
+        ...initConfig(k.leagueConfig()),
+        ...nt,
+      }))
+    } else {
+      batch(() => {
+        Object.keys(numTeams).forEach(club => setNumTeams(club, undefined))
+        setNumTeams(initConfig(k.leagueConfig()))
+      })
+    }
+    return league
+  }, k.league())
 
   const handleTeamNumsUpdate = (club: string, division: Division, count: number) => {
     setNumTeams(club, { [division]: count })
