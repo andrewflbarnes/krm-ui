@@ -62,7 +62,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                       const moved = originalGroup !== group.name ? originalGroup : null
                       const originalSeed = "" + (originalPosition + 1)
                       return (
-                        <DndTeam seed={originalSeed} division={division} group={group.name} team={team} moved={moved} />
+                        <DndTeam seed={originalSeed} division={division} group={group.name} team={team} moved={moved} inGroupSwaps={props.inGroupSwaps} />
                       )
                     }}</For>
                   </List>
@@ -76,22 +76,31 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
   )
 }
 
-function DndTeam(props: { seed: string, division: Division, group: string, team: string, moved?: string }) {
+function DndTeam(props: { seed: string, division: Division, group: string, team: string, moved?: string, inGroupSwaps: boolean }) {
   const id = () => `${props.division}-${props.group}-${props.team}`
   const draggable = createDraggable(id(), props)
   const droppable = createDroppable(id(), props)
   const [dnd] = useDragDropContext()
+  const defocus = () => {
+    if (!dnd.active.draggable) {
+      return false
+    }
+    if (dnd.active.draggable.data?.group != props.group) {
+      return false
+    }
+    return (!props.inGroupSwaps || dnd.active.draggable.data?.team == props.team)
+  }
   return (
     <div use:droppable={!!droppable}>
       <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform), "touch-action": "none" }}>
-        <Team dragging={dnd.active.draggable?.data?.group == props.group} seed={props.seed} team={props.team} moved={props.moved} dragActivators={draggable.dragActivators} />
+        <Team defocus={defocus()} seed={props.seed} team={props.team} moved={props.moved} dragActivators={draggable.dragActivators} />
       </div>
     </div>
   )
 }
 
 function Team(props: {
-  dragging?: boolean;
+  defocus?: boolean;
   overlay?: boolean;
   seed: string;
   team: string;
@@ -99,12 +108,12 @@ function Team(props: {
   dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>; // solid-dnd Listeners
 }) {
   return (
-    <ListItem sx={{ display: "flex", gap: "1em", opacity: props.dragging ? 0.5 : 1 }}>
+    <ListItem sx={{ display: "flex", gap: "1em", opacity: props.defocus ? 0.5 : 1 }}>
       <div style={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", "align-items": "center" }}>
         <SwapCalls fontSize="small" {...props.dragActivators} color="secondary" />
       </div>
       <Divider orientation="vertical" flexItem />
-      <Typography sx={{ "max-width": "1em", textAlign: "center" }}>
+      <Typography sx={{ maxWidth: "1em", textAlign: "center" }}>
         {props.seed}
       </Typography>
       <Divider orientation="vertical" flexItem />
