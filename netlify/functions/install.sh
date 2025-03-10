@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-build_func() {
+install() {
   local f=$1
   if ! [ -d "$f" ]
   then
@@ -12,18 +12,18 @@ build_func() {
     echo "No package.json found in $f, skipping" >&2
   fi
 
-  echo "Building $f..."
+  echo "Installing $f..."
   (cd "$f" && pnpm install)
 }
 
-build_all() {
+install_all() {
   for f in $(shopt -s nullglob; echo netlify/functions/*); do
-    if ! build_func "$f"
+    if ! install "$f"
     then
-      echo "Failed to build $f" >&2
+      echo "Failed to install deps for $f" >&2
       return 1
     fi
   done
 }
 
-build_all "$@"
+install_all "$@"

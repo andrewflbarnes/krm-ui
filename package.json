@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "vite build",
-    "postbuild": "./netlify/functions/build.sh",
+    "postinstall": "./netlify/functions/install.sh",
     "start": "vite",
     "serve": "cp serve.json dist/ && serve -l 5173 dist/",
     "storybook": "storybook dev -p 6006",
