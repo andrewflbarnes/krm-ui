@@ -138,18 +138,6 @@ export function resultsFromKnockout(numTeams: number): readonly ResultsConfig[] 
   return results
 }
 
-// TODO testing to validate the below i.e.
-// - r1: the total count of teams matches the count key
-// - r1: the mini league exists
-// - r1: each mini league has a unique team name
-// - r1: the mini league is for the same number of teams as appear in the seeds
-// - r1: there are no duplicate seeds across round 1
-// - r2: the total count of teams matches the count key
-// - r2: each mini league exists
-// - r2: each mini league has a unique team name
-// - r2: the mini league is for the same number of teams as appear in the seeds
-// - r2: there are no duplicate r1 references across round 2
-// - ko: there are no diplicate r2 references across knockouts
 export const raceConfig: {
   [k: number]: RoundConfig
 } = {
@@ -332,5 +320,80 @@ export const raceConfig: {
     //    { position: 4, rank: 8 },
     //  ])
     //],
+  },
+  9: {
+    stage1: [
+      {
+        name: "A",
+        seeds: wrapStage1Seeds([1, 6, 7]),
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "B",
+        seeds: wrapStage1Seeds([2, 5, 8]),
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "C",
+        seeds: wrapStage1Seeds([3, 4, 9]),
+        template: miniLeagueTemplates.mini3,
+      },
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 2 },
+          { group: "C", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "B", position: 1 },
+          { group: "C", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 3 },
+          { group: "B", position: 3 },
+          { group: "C", position: 3 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+    ],
+    knockout: [
+      {
+        name: "5th/6th",
+        seeds: [
+          { group: "I", position: 3 },
+          { group: "II", position: 3 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "3rd/4th",
+        seeds: [
+          { group: "I", position: 2 },
+          { group: "II", position: 2 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "1st/2nd",
+        seeds: [
+          { group: "I", position: 1 },
+          { group: "II", position: 1 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+    ],
+    results: resultsFromKnockout(6),
   },
 } as const
