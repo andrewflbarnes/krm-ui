@@ -31,5 +31,17 @@ jobs:
           pnpm install
       - name: Test
         run: pnpm test
+      - name: Update version
+        run: .github/update_version.sh
       - name: Build
         run: pnpm build
+      - name: Install netlify
+        run: npm install -g netlify-cli
+      - name: Deploy to Netlify
+        run: |
+          netlify deploy \
+            --dir dist \
+            --prod \
+            --functions netlify/functions \
+            --site "${{ secrets.NETLIFY_SITE_ID }}" \
+            --auth "${{ secrets.NETLIFY_API_TOKEN }}"
