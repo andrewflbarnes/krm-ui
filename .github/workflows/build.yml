@@ -34,6 +34,9 @@ jobs:
       - name: Update version
         run: .github/update_version.sh
       - name: Build
+        env:
+          NODE_ENV: production
+          VITE_CLERK_PUBLISHABLE_KEY: "${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}"
         run: pnpm build
       - name: Install netlify
         run: npm install -g netlify-cli
@@ -42,6 +45,7 @@ jobs:
           netlify deploy \
             --dir dist \
             --prod \
+            --context production \
             --functions netlify/functions \
             --site "${{ secrets.NETLIFY_SITE_ID }}" \
             --auth "${{ secrets.NETLIFY_API_TOKEN }}"
