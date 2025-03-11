@@ -31,6 +31,7 @@
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race bys (team unavailable)
 - [ ] Race skips (teams unavailable)
+- [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
 - [ ] Modify configuration presets for mini leagues
 - [ ] Visualise configuration presets for rounds

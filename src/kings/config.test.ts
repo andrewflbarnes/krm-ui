@@ -1,15 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { miniLeagueTemplates, raceConfig } from './config';
 
-// TODO testing to validate the below i.e.
-// - r1: the total count of teams matches the count key
-// - r1: each mini league has a unique team name
-// - r1: there are no duplicate seeds across round 1
-// - r2: the total count of teams matches the count key
-// - r2: each mini league has a unique team name
-// - r2: the mini league is for the same number of teams as appear in the seeds
-// - r2: there are no duplicate r1 references across round 2
-// - ko: there are no diplicate r2 references across knockouts
 describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (name, template) => {
   const numTeams = template.teams
 
@@ -33,6 +24,19 @@ describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (n
 
 describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsStr, config) => {
   const numTeams = parseInt(numTeamsStr) >>> 0
+  it(`number of seeded teams in stage 1 is ${numTeams}`, () => {
+    const seededTeams = config.stage1.flatMap(group => group.seeds)
+      .filter((seed, idx, arr) =>
+        arr.findIndex(s => s.position == seed.position && s.group == seed.group) == idx)
+    expect(seededTeams.length).toBe(numTeams)
+  })
+
+  it(`stage 1 mini leagues have distinct team names`, () => {
+    const groupNames = config.stage1.map(({ name }) => name)
+      .filter((name, idx, arr) => arr.indexOf(name) == idx)
+    expect(groupNames.length).toBe(config.stage1.length)
+  })
+
   for (let i = 1; i <= numTeams; i++) {
     it(`team ${i} seeded in stage 1`, () => {
       expect(config.stage1.some(group => group.seeds.some(s => s.position == i))).toBe(true)
@@ -59,8 +63,18 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
       })
     })
 
-    it(`stage 2 has ${numTeams} seeds`, () => {
-      expect(config.stage2.reduce((acc, group) => acc + group.seeds.length, 0)).toBe(numTeams)
+    // TODO not necessarily true?
+    it(`number of seeded teams in stage 2 is ${numTeams}`, () => {
+      const seededTeams = config.stage2.flatMap(group => group.seeds)
+        .filter((seed, idx, arr) =>
+          arr.findIndex(s => s.position == seed.position && s.group == seed.group) == idx)
+      expect(seededTeams.length).toBe(numTeams)
+    })
+
+    it(`stage 2 mini leagues have distinct team names`, () => {
+      const groupNames = config.stage2.map(({ name }) => name)
+        .filter((name, idx, arr) => arr.indexOf(name) == idx)
+      expect(groupNames.length).toBe(config.stage2.length)
     })
 
     config.stage1.forEach(group => {
@@ -78,6 +92,22 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
         })
       })
 
+      it(`knocckout mini leagues have distinct team names`, () => {
+        const groupNames = config.knockout.map(({ name }) => name)
+          .filter((name, idx, arr) => arr.indexOf(name) == idx)
+        expect(groupNames.length).toBe(config.knockout.length)
+      })
+
+      // Slighlty different from stage 1 and 2 as knockouts don't necessarily
+      // include all teams for the round
+      it(`knockout seeds are distinct`, () => {
+        const numSeededTeams = config.knockout.reduce((acc, group) => acc + group.seeds.length, 0)
+        const distinctSeededTeams = config.knockout.flatMap(group => group.seeds)
+          .filter((seed, idx, arr) =>
+            arr.findIndex(s => s.position == seed.position && s.group == seed.group) == idx)
+        expect(distinctSeededTeams.length).toBe(numSeededTeams)
+      })
+
       config.knockout.forEach(ko => {
         ko.seeds.forEach(({ group: groupName, position }) => {
           it(`knockout from group ${groupName} position ${position} is valid`, () => {
@@ -93,5 +123,11 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
     it(`result from group ${groupName} position ${position} is valid`, () => {
       expect(config[stage]?.some(group => group.name == groupName && group.seeds.length >= position)).toBe(true)
     })
+  })
+
+  it(`results are distinct`, () => {
+    const results = config.results.filter((result, idx, arr) =>
+      arr.findIndex(r => r.stage == result.stage && r.group == result.group && r.position == result.position) == idx)
+    expect(results.length).toBe(config.results.length)
   })
 })
