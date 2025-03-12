@@ -8,6 +8,7 @@
     "start": "vite",
     "test": "vitest",
     "serve": "cp serve.json dist/ && serve -l 5173 dist/",
+    "ngrok": "ngrok start krm",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build -o dist/krm-ui-storybook"
   },

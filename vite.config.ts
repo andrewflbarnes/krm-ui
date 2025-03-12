@@ -5,6 +5,9 @@ import solidPlugin from "vite-plugin-solid";
 export default defineConfig({
   base: "/krm-ui",
   plugins: [suidPlugin(), solidPlugin()],
+  server: {
+    allowedHosts: ["localhost", "learning-immortal-griffon.ngrok-free.app"]
+  },
   define: {
     __KRMUI_VERSION__: JSON.stringify(process.env.npm_package_version),
   },
