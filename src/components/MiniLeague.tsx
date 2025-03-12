@@ -71,6 +71,15 @@ export default function MiniLeague(props: MiniLeagueProps) {
             [f]: !r[f]
           })
         }}>dsq</MenuItem>
+        <MenuItem onClick={() => {
+          setAnchorEl(null)
+          const [r, t] = ctxRace()
+          props.onResultChange({
+            ...r,
+            winner: r.team1 == t ? 1 : 2,
+            indicators: "by"
+          })
+        }}>by</MenuItem>
       </Menu>
       <Typography>
         <table style={{ "border-spacing": "3px 0" }}>

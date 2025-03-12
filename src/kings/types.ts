@@ -13,12 +13,14 @@ export type Race = {
   readonly group: string;
   readonly groupRace: number;
   // The 1-indexed team indices from the minileage seeds
+  // TODO gross - just use team names instead of indices
   readonly teamMlIndices: readonly [number, number];
   readonly team1: string;
   readonly team2: string;
   winner?: 1 | 2;
   team1Dsq?: boolean;
   team2Dsq?: boolean;
+  indicators?: "by" | "skip"
 };
 
 export type Races = {
