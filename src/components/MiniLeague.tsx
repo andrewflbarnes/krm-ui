@@ -1,4 +1,4 @@
-import { CancelOutlined, CheckCircle, CircleOutlined } from "@suid/icons-material";
+import { CancelOutlined, CircleOutlined, NotInterested, TaskAlt } from "@suid/icons-material";
 import { Menu, MenuItem, Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
@@ -71,15 +71,27 @@ export default function MiniLeague(props: MiniLeagueProps) {
             [f]: !r[f]
           })
         }}>dsq</MenuItem>
-        <MenuItem onClick={() => {
-          setAnchorEl(null)
-          const [r, t] = ctxRace()
-          props.onResultChange({
-            ...r,
-            winner: r.team1 == t ? 1 : 2,
-            indicators: "by"
-          })
-        }}>by</MenuItem>
+        <Show when={ctxRace()?.[0]?.indicators != "by"}>
+          <MenuItem onClick={() => {
+            setAnchorEl(null)
+            const [r, t] = ctxRace()
+            props.onResultChange({
+              ...r,
+              winner: r.team1 == t ? 2 : 1,
+              indicators: "by"
+            })
+          }}>concede (by)</MenuItem>
+        </Show>
+        <Show when={ctxRace()?.[0]?.indicators == "by"}>
+          <MenuItem onClick={() => {
+            setAnchorEl(null)
+            const [r] = ctxRace()
+            props.onResultChange({
+              ...r,
+              indicators: undefined
+            })
+          }}>clear (by)</MenuItem>
+        </Show>
       </Menu>
       <Typography>
         <table style={{ "border-spacing": "3px 0" }}>
@@ -184,7 +196,10 @@ export default function MiniLeague(props: MiniLeagueProps) {
                             }}>
                               <Switch>
                                 <Match when={raceDetails.winner === ti}>
-                                  <CheckCircle color={dsq ? "error" : "success"} />
+                                  <TaskAlt color={dsq ? "error" : "success"} />
+                                </Match>
+                                <Match when={raceDetails.winner > 0 && raceDetails.indicators == "by"}>
+                                  <NotInterested color={"warning"} />
                                 </Match>
                                 <Match when={dsq}>
                                   <CancelOutlined color={"error"} />
@@ -201,7 +216,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                         <td style={{ background: borderColour }} />
                       </Match>
                     </Switch>
-                )}}</For>
+                  )
+                }}</For>
                 <td
                   style={{
                     height: checkSize,

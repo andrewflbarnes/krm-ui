@@ -1,4 +1,4 @@
-import { CancelOutlined, CheckCircle, CircleOutlined, CloseOutlined } from "@suid/icons-material";
+import { CancelOutlined, CircleOutlined, CloseOutlined, TaskAlt } from "@suid/icons-material";
 import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { Race } from "../kings";
@@ -111,7 +111,7 @@ function RaceTableRow(props: {
             </Show>
           </div>
           <Show when={winner() == 1} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
-            <CheckCircle fontSize="small" color="success" />
+            <TaskAlt fontSize="small" color="success" />
           </Show>
           &nbsp;
           {props.race.team1}
@@ -127,7 +127,7 @@ function RaceTableRow(props: {
           {props.race.team2}
           &nbsp;
           <Show when={winner() == 2} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
-            <CheckCircle fontSize="small" color="success" />
+            <TaskAlt fontSize="small" color="success" />
           </Show>
           <div onClick={[toggleDsq, 2]} style={{ display: "contents" }}>
             <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
