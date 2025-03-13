@@ -74,8 +74,8 @@ export default function KrmAppBar() {
                 <Link href="/manage/continue">
                   Race
                 </Link>
-                <Link href="/config">
-                  Config
+                <Link href="/teams">
+                  Teams
                 </Link>
                 <Link href="/tracker">
                   Tracker

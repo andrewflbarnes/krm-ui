@@ -10,7 +10,7 @@ import { dark } from "@clerk/themes";
 const Home = lazy(() => import("./pages/Home"));
 const Developer = lazy(() => import("./pages/Developer"));
 const RaceManager = lazy(() => import("./pages/Manage"));
-const ConfigManager = lazy(() => import("./pages/ConfigManager"));
+const TeamConfig = lazy(() => import("./pages/TeamConfig"));
 const Tracker = lazy(() => import("./pages/Tracker"));
 const Portal = lazy(() => import("./pages/Portal"));
 const Status404 = lazy(() => import("./pages/Status404"));
@@ -38,7 +38,7 @@ export default function App() {
           <Route path="/continue" component={RaceManagerContinue} info={{ breadcrumb: "Continue" }} />
           <Route path="/configure" component={RaceManagerConfigure} info={{ breadcrumb: "Config" }} />
         </Route>
-        <Route path="/config" component={ConfigManager} info={{ breadcrumb: "Config" }} />
+        <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
         <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
         <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
         <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>

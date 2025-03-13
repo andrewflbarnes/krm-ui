@@ -29,6 +29,7 @@
 
 ## Must
 
+- [ ] Reopen previous stage
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
@@ -46,5 +47,6 @@
 
 ## Could
 
+- [ ] Preserve valid future stage results when progressing following a re-open
 - [ ] Push results to Google Sheets
 - [ ] Push results to website
