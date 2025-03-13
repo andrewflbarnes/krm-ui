@@ -8,7 +8,11 @@ A (for now) completely client side runtime for running kings races.
 
 ```bash
 pnpm install
-pnpm start
+pnpm install -g netlify-cli
+cat << EOF > .env
+VITE_CLERK_PUBLISHABLE_KEY=...
+EOF
+netlify dev
 ```
 
 ## Build
@@ -18,15 +22,36 @@ To generate the static site
 pnpm build
 ```
 
-You can test serving it using the below which will include configuration to
-perform path rewrites allowing deep linking into the client side router.
+To test serving the build
 ```bash
-pnpm serve
+netlify serve
+```
+
+## Storyboook
+
+This project uses Storybook for component development and (some) documentation/tests.
+
+To run
+```bash
+pnpm storybook
+```
+
+## Testing
+
+This project has a focus on testing Kings related configuration by dynamically generating
+high coverage, fine grained checks deterinistically.
+
+This should allow new and updated configurations to be easily validated with a high
+degree of confidence.
+
+Locally, tests can be run with the below and automatically start in watch mode.
+```bash
+pnpm test
 ```
 
 ## TODOs/Backlog
 
-These list are intended to be terse but describe what complete looks like.
+These lists are intended to be terse but describe what complete looks like.
 Lists are in a rough order of priority.
 
 [Tech](./docs/TODO_TECH.md)  
