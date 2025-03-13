@@ -184,8 +184,8 @@ export function createRound(id: string, league: League, teams: RoundSeeding, dis
         groupRace: i,
         // both race indexes and seeds are 1-indexed
         teamMlIndices: race,
-        team1: teamOrder[division][seeds[race[0] - 1].position - 1],
-        team2: teamOrder[division][seeds[race[1] - 1].position - 1],
+        team1: teamOrder[division][seeds[race[0]].position],
+        team2: teamOrder[division][seeds[race[1]].position],
         division: division as Division,
       }))
       accd[groupName] = {

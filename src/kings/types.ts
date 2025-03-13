@@ -61,7 +61,7 @@ export type MiniLeagueConfig = {
   * {
   *   stage: "stage1",
   *   group: "A",
-  *   position: 2,
+  *   position: 1,
   *   rank: 8,
   * }
   *

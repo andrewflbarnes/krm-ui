@@ -10,8 +10,8 @@ describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (n
   })
 
   const numTeamRaces = name == "full3" ? 4 : numTeams - 1
-  for (let i = 1; i <= numTeams; i++) {
-    it(`team ${i} has ${numTeamRaces} races`, () => {
+  for (let i = 0; i < numTeams; i++) {
+    it(`team ${i + 1} has ${numTeamRaces} races`, () => {
       expect(template.races.filter(r => r[0] == i || r[1] == i).length).toBe(numTeamRaces)
     })
   }
@@ -37,8 +37,8 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
     expect(groupNames.length).toBe(config.stage1.length)
   })
 
-  for (let i = 1; i <= numTeams; i++) {
-    it(`team ${i} seeded in stage 1`, () => {
+  for (let i = 0; i < numTeams; i++) {
+    it(`team ${i + 1} seeded in stage 1`, () => {
       expect(config.stage1.some(group => group.seeds.some(s => s.position == i))).toBe(true)
     })
   }
@@ -78,8 +78,8 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
     })
 
     config.stage1.forEach(group => {
-      for (let i = 1; i <= group.seeds.length; i++) {
-        it(`group ${group.name} team ${i} seeded in stage2`, () => {
+      for (let i = 0; i < group.seeds.length; i++) {
+        it(`group ${group.name} team ${i + 1} seeded in stage2`, () => {
           expect(config.stage2.some(s2group => s2group.seeds.some(s => s.position == i && s.group == group.name))).toBe(true)
         })
       }

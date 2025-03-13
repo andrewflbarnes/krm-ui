@@ -47,6 +47,7 @@ export const Readonly: Story = {
     ...Default.args,
     readonly: true,
   },
+  play: undefined,
 };
 
 /**

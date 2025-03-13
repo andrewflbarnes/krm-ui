@@ -35,7 +35,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
       return []
     }
     const race = props.races[highlight()]
-    return [props.teams[race[0] - 1], props.teams[race[1] - 1]]
+    return [props.teams[race[0]], props.teams[race[1]]]
   })
 
 

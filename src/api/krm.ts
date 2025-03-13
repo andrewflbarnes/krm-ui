@@ -72,10 +72,10 @@ export default (function krmApiLocalStorage(): KrmApi {
         const lastStageDivisionRaces = round.races[status][division]
 
         const races: Race[] = template.races.map((race, i) => {
-          const seed1 = seeds[race[0] - 1]
-          const team1 = lastStageDivisionRaces[seed1.group].results[seed1.position - 1][0]
-          const seed2 = seeds[race[1] - 1]
-          const team2 = lastStageDivisionRaces[seed2.group].results[seed2.position - 1][0]
+          const seed1 = seeds[race[0]]
+          const team1 = lastStageDivisionRaces[seed1.group].results[seed1.position][0]
+          const seed2 = seeds[race[1]]
+          const team2 = lastStageDivisionRaces[seed2.group].results[seed2.position][0]
           return {
             stage: nextStatus,
             group: groupName,
@@ -88,7 +88,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         })
         accd[groupName] = {
           races,
-          teams: seeds.map(({ group, position }) => lastStageDivisionRaces[group].results[position - 1][0]),
+          teams: seeds.map(({ group, position }) => lastStageDivisionRaces[group].results[position][0]),
           complete: false,
           conflict: false,
         }
@@ -141,7 +141,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         } else if (rankResult.teams.length < 2) {
           rankResult.rankStr = "Joint " + rankResult.rankStr
         }
-        const team = round.races[stage]?.[division]?.[group]?.results?.[position - 1]?.[0]
+        const team = round.races[stage]?.[division]?.[group]?.results?.[position]?.[0]
         if (!team) {
           console.error(`No team found for ${division} ${stage} ${group} ${position}`)
         }

@@ -56,9 +56,9 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                     subheader={<ListSubheader id={`${division}-${group.name}`} sx={{ zIndex: 0 }}>Group {group.name}</ListSubheader>}
                   >
                     <For each={group.seeds}>{(seed) => {
-                      const team = seeds()[seed.position - 1]
+                      const team = seeds()[seed.position]
                       const originalPosition = props.seeding[division].indexOf(team)
-                      const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position - 1) == originalPosition)).name
+                      const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == originalPosition)).name
                       const moved = originalGroup !== group.name ? originalGroup : null
                       const originalSeed = "" + (originalPosition + 1)
                       return (

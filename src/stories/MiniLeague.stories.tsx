@@ -15,8 +15,8 @@ const teams = [
 const initTeams = (mlt: MiniLeagueTemplate) => teams.slice(0, mlt.teams)
 
 const initRaces = (mlt: MiniLeagueTemplate) => mlt.races.map((r, ri) => ({
-  team1: teams[r[0] - 1],
-  team2: teams[r[1] - 1],
+  team1: teams[r[0]],
+  team2: teams[r[1]],
   division: "mixed" as const,
   stage: "stage1" as const,
   group: "Z",
