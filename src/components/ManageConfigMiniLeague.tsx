@@ -1,9 +1,10 @@
 import { DownhillSkiing, Groups } from "@suid/icons-material";
 import { Chip, Typography } from "@suid/material";
-import { For } from "solid-js";
-import { MiniLeagueTemplate } from "../kings";
+import { createMemo } from "solid-js";
+import { MiniLeagueTemplate, Race } from "../kings";
 import ValidIcon from "../ui/ValidIcon";
 import styles from "./ManageConfigMiniLeague.module.css";
+import MiniLeague from "./MiniLeague";
 
 type Props = {
   name: string;
@@ -35,52 +36,66 @@ export default function ManageConfigMiniLeague(props: Props) {
   }
   const validTeams = () => props.template.races.every(r => r[0] < props.template.teams && r[1] < props.template.teams)
   const noSelfRaces = () => props.template.races.every(r => r[0] != r[1])
+  const teams = createMemo(() => Array.from({ length: props.template.teams }, (_, i) => `Team ${i + 1}`))
+  const races = (): Race[] => props.template.races.map((r, i) => ({
+    team1: teams()[r[0]],
+    team2: teams()[r[1]],
+    group: "A",
+    stage: "stage1",
+    division: "mixed",
+    groupRace: i,
+    teamMlIndices: r,
+  }))
   return (
     <div style={{ display: "flex", "flex-direction": "column", "justify-content": "center", "align-items": "center", gap: "1rem" }}>
-      <Typography variant="h2">
-        {props.name}
-      </Typography>
-      <div style={{ display: "flex", gap: "1em" }}>
-        <Chip label={`${props.template.teams} teams`} size="small" icon={<Groups />} color="primary" variant="outlined" />
-        <Chip label={`${props.template.races.length} races`} size="small" icon={<DownhillSkiing />} color="primary" variant="outlined" />
-      </div>
-      <Typography>
-        <div style={{ display: "flex", gap: "2em" }}>
-          <div>
-            <For each={props.template.races}>{(r) => (
-              <div>
-                Team {r[0] + 1} vs Team {r[1] + 1}
-              </div>
-            )}</For>
-          </div>
-          <div style={{
-            display: "flex",
-            "flex-direction": "column",
-            "align-items": "flex-start",
-          }}>
-            <div class={styles.info}>
-              <ValidIcon valid={validRaceCount()} />
-              &nbsp;Correct number of races
-            </div>
-            <div class={styles.info}>
-              <ValidIcon valid={allRaceAll()} />
-              &nbsp;All teams race each other
-            </div>
-            <div class={styles.info}>
-              <ValidIcon valid={evenSides()} />
-              &nbsp;Teams alternate sides
-            </div>
-            <div class={styles.info}>
-              <ValidIcon valid={validTeams()} />
-              &nbsp;Racing teams are valid (1 - {props.template.teams})
-            </div>
-            <div class={styles.info}>
-              <ValidIcon valid={noSelfRaces()} />
-              &nbsp;Teams don't race themselves
-            </div>
+      <div style={{ display: "flex", "align-items": "center", gap: "2em", width: "100%", "justify-content": "center" }}>
+        <div style={{ display: "flex", "flex-direction": "column", "align-items": "flex-end", width: "50%" }}>
+          <Typography variant="h2">
+            {props.name}
+          </Typography>
+          <div style={{ display: "flex", gap: "1em" }}>
+            <Chip label={`${props.template.teams} teams`} size="small" icon={<Groups />} color="primary" variant="outlined" />
+            <Chip label={`${props.template.races.length} races`} size="small" icon={<DownhillSkiing />} color="primary" variant="outlined" />
           </div>
         </div>
-      </Typography>
+        <div style={{ width: "50%" }}>
+          <Typography>
+            <div style={{
+              display: "flex",
+              "flex-direction": "column",
+              "align-items": "flex-start",
+            }}>
+              <div class={styles.info}>
+                <ValidIcon valid={validRaceCount()} />
+                &nbsp;Correct number of races
+              </div>
+              <div class={styles.info}>
+                <ValidIcon valid={allRaceAll()} />
+                &nbsp;All teams race each other
+              </div>
+              <div class={styles.info}>
+                <ValidIcon valid={evenSides()} />
+                &nbsp;Teams alternate sides
+              </div>
+              <div class={styles.info}>
+                <ValidIcon valid={validTeams()} />
+                &nbsp;Racing teams are valid (1 - {props.template.teams})
+              </div>
+              <div class={styles.info}>
+                <ValidIcon valid={noSelfRaces()} />
+                &nbsp;Teams don't race themselves
+              </div>
+            </div>
+          </Typography>
+        </div>
+      </div>
+      <MiniLeague
+        races={races()}
+        teams={teams()}
+        name={props.name}
+        readonly
+        onResultChange={() => { }}
+      />
     </div>
   )
 }
