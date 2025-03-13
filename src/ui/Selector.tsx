@@ -37,7 +37,7 @@ export default function Selector<T>(props: SelectorProps<T>) {
       <Switch>
         <Match when={props.type == "input" || !props.type}>
           <FormControl fullWidth>
-            <InputLabel id="demo-simple-select-label">{props.title}</InputLabel>
+            <InputLabel id={`${id}-select-label`}>{props.title}</InputLabel>
             <Select
               size="small"
               labelId={`${id}-select-label`}
