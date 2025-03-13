@@ -25,11 +25,11 @@
 - [x] Print race sheet ("light" mode equivalent, alternatively screenshot)
 - [x] Print knockout ("light" mode equivalent, alternatively screenshot)
 - [x] Manual pre-start team shuffling
+- [x] Race bys (team unavailable)
 
 ## Must
 
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
-- [ ] Race bys (team unavailable)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
