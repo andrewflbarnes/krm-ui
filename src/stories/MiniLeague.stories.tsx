@@ -28,7 +28,8 @@ const initRaces = (mlt: MiniLeagueTemplate) => mlt.races.map((r, ri) => ({
 function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {
   return initRaces(mlt).map(r => ({
     ...r,
-    teamMlIndices: [r.teamMlIndices[1], r.teamMlIndices[0]],
+    team1: r.team2,
+    team2: r.team1,
   }))
 }
 

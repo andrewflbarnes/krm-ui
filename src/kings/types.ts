@@ -8,14 +8,21 @@ export type League = typeof leagues[number];
 export type RaceStage = "stage1" | "stage2" | "knockout";
 
 export type Race = {
+  /** The division this race is in */
   readonly division: Division;
+  /** The stage this races is in */
   readonly stage: RaceStage;
+  /** The minileague group this race is in */
   readonly group: string;
+  /** The number of the race in the minileague group */
   readonly groupRace: number;
-  // The 1-indexed team indices from the minileage seeds
-  // TODO gross - just use team names instead of indices
+  /** The team indices from the minileage config - this is redundant
+    * information since team1 and team2 preserve this order
+    */
   readonly teamMlIndices: readonly [number, number];
+  /** The first team in the race e.g. left/red course */
   readonly team1: string;
+  /** The second team in the race e.g. right/blue course */
   readonly team2: string;
   winner?: 1 | 2;
   team1Dsq?: boolean;
@@ -23,34 +30,46 @@ export type Race = {
   indicators?: "by" | "skip"
 };
 
-export type Races = {
-  [division in Division]: {
-    [group: string]: Race[]
-  }
-}
-
 export type GroupRaces = {
+  /** The teams in this group */
   teams: string[];
+  /** The races in this group */
   races: Race[];
+  /** Whether all races are finished */
   complete: boolean;
+  /** Whether there is a draw or other conflict if all races are complete */
   conflict: boolean;
+  /** The rankings if races are complete - draws have multiple teams in one array */
   results?: string[][];
 }
 
+/** All races for a given stage -> division -> group */
 export type StageRaces = {
   [division in Division]: {
     [group: string]: GroupRaces;
   }
 }
 
+/** A template of races for a minileague with a specific number of teams */
 export type MiniLeagueTemplate = {
+  /** The number of teams in the minileague */
   readonly teams: number;
+  /** The races in this minileague by team index. Order determines course side */
   readonly races: readonly (readonly [number, number])[];
 }
 
+/** A concrete minileague configuration for a specific group and seeds */
 export type MiniLeagueConfig = {
+  /** The name of the minileague */
   readonly name: string;
-  readonly seeds: readonly { readonly group: string, readonly position: number }[];
+  /** The seeds from the previous round (or initial seeding) */
+  readonly seeds: readonly {
+    /** The group from the previous round to seed from */
+    readonly group: string,
+    /** The position in the group to seed from */
+    readonly position: number,
+  }[];
+  /** The template of races for this minileague */
   readonly template: MiniLeagueTemplate;
 }
 
@@ -67,63 +86,100 @@ export type MiniLeagueConfig = {
   *
   */
 export type ResultsConfig = {
+  /** The stage to get the team from */
   stage: RaceStage;
+  /** The group to get the team from */
   group: string;
+  /** The position in the group results to get the team from */
   position: number;
+  /** The 1 indexed rank of the team e.g. 1 => 1st */
   rank: number;
 }
 
+/** Concrete configuration for a round of races */
 export type RoundConfig = {
+  /** Config for stage 1 races */
   readonly stage1: readonly MiniLeagueConfig[];
+  /** Config for stage 2 races */
   readonly stage2?: readonly MiniLeagueConfig[];
+  /** Config for knockout races */
   readonly knockout?: readonly MiniLeagueConfig[];
+  /** Config for results */
   readonly results: readonly ResultsConfig[];
 }
 
 export type RoundStatus = RaceStage | "complete" | "abandoned";
 
+/** A result for a completed round */
 export type RoundResult = {
+  /** The rank of the team(s) e.g. 1 => 1st */
   rank: number;
+  /** The rank of the team(s) as a string e.g. 1st */
   rankStr: string;
+  /** The team(s) at this rank */
   teams: string[];
 }
 
+/** Full configuration for a round including races and metadata */
 export type Round = {
+  /** The unique ID of the round */
   id: string;
+  /** The league this round is part of */
   league: League;
+  /** The current status of the round */
   status: RoundStatus;
+  /** The date the round took place */
   date: Date;
+  /** Short description of the round */
   description: string;
+  /** The location of the round */
   venue: string;
-  teams: RoundSeeding; // These are ordered by actual seeding
-  distributionOrder: RoundSeeding; // These are ordered how teams were sorted into stage 1 groups (e.g. including any inter group swaps)
+  /** The teams in the round, ordered by seeding */
+  teams: RoundSeeding;
+  /** The teams in the round, ordered by distribution into minileagues
+   *  which may differ if there are inter group swaps
+   */
+  distributionOrder: RoundSeeding;
+  /** Config for each division in the round */
   config: {
     [division in Division]: RoundConfig;
   };
+  /** Races, and their results, for each stage in the round */
   races: {
     stage1: StageRaces;
     stage2?: StageRaces;
     knockout?: StageRaces;
   };
+  /** Overall results for each division in the round */
   results?: {
     [division in Division]: RoundResult[]
   }
 }
 
+/** Results for a given team in a season */
 export type Result = {
+  /** The club the team is part of */
   club: string;
+  /** The name of the team */
   name: string;
+  /** The points scored in round 1 */
   r1?: number;
+  /** The points scored in round 2 */
   r2?: number;
+  /** The points scored in round 3 */
   r3?: number;
+  /** The points scored in round 4 */
   r4?: number;
+  /** The total points scored in the season */
   total?: number;
 }
 
+/** All results for divisions in a season */
 export type DivisionResults = {
   [division: string]: Result[]
 }
 
+/** All results for a club in a season by division */
 export type LeagueData = {
   [club: string]: {
     teams: {
@@ -141,8 +197,9 @@ export type RoundSeeding = {
   [k in Division]: string[]
 }
 
+/** The number of seeded teams clubs have by division */
 export type ClubSeeding = {
   [club: string]: {
-    [k in Division[number]]: number
+    [k in Division]: number
   }
 }

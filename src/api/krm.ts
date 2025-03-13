@@ -68,7 +68,6 @@ export default (function krmApiLocalStorage(): KrmApi {
     const nextRaces = divisions.reduce((acc, division) => {
       const divisionConf = config[division]
       acc[division] = divisionConf[nextStatus]?.reduce((accd, { template, name: groupName, seeds }) => {
-        // both race indexes and seeds are 1-indexed
         const lastStageDivisionRaces = round.races[status][division]
 
         const races: Race[] = template.races.map((race, i) => {

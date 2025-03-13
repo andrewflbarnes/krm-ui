@@ -182,7 +182,6 @@ export function createRound(id: string, league: League, teams: RoundSeeding, dis
         stage: "stage1",
         group: groupName,
         groupRace: i,
-        // both race indexes and seeds are 1-indexed
         teamMlIndices: race,
         team1: teamOrder[division][seeds[race[0]].position],
         team2: teamOrder[division][seeds[race[1]].position],
