@@ -5,20 +5,21 @@ export default function RaceResultIcon(props: {
   won: boolean;
   conceded?: boolean;
   dsq?: boolean
+  fontSize?: "inherit" | "small" | "medium" | "large";
 }) {
   return (
     <Switch>
       <Match when={props.won}>
-        <TaskAlt color={props.dsq ? "error" : "success"} />
+        <TaskAlt color={props.dsq ? "error" : "success"} fontSize={props.fontSize} />
       </Match>
       <Match when={props.conceded}>
-        <NotInterested color={"warning"} />
+        <NotInterested color={"warning"} fontSize={props.fontSize} />
       </Match>
       <Match when={props.dsq}>
-        <CancelOutlined color={"error"} />
+        <CancelOutlined color={"error"} fontSize={props.fontSize} />
       </Match>
       <Match when={true}>
-        <CircleOutlined />
+        <CircleOutlined fontSize={props.fontSize} />
       </Match>
     </Switch>
   )

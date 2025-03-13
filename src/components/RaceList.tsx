@@ -3,6 +3,7 @@ import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@
 import { For, Show } from "solid-js";
 import { Race } from "../kings";
 import MoreMenu from "../ui/MoreMenu";
+import RaceResultIcon from "../ui/RaceResultIcon";
 import styles from "./RaceList.module.css";
 
 type RaceListProps = {
@@ -43,7 +44,7 @@ function RaceTableRow(props: {
 }) {
   const setWinner = (winner: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
-    if (props.readonly) {
+    if (props.readonly || props.race.winner) {
       return
     }
     const updated = {
@@ -52,9 +53,10 @@ function RaceTableRow(props: {
     }
     props.onRaceUpdate(updated)
   }
+  const canDsq = () => !props.readonly && props.race.indicators != "by"
   const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
-    if (props.readonly) {
+    if (!canDsq()) {
       return
     }
     const t1Dsq = props.race.team1Dsq
@@ -72,11 +74,26 @@ function RaceTableRow(props: {
   // Performance degradations with solid + suid once we start to get to around
   // 20+ rows so we use native elements instead.
   return (
-    <tr style={{ display: "table-row" }}>
+    <tr style={{
+      display: "table-row",
+      ...(props.race.winner && !props.readonly ? {
+        "background-color": "rgba(0, 255, 0, 0.1)",
+      } : {})
+    }}>
       <td class={styles.td} style={{ width: "8em" }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
           <div style={{ visibility: props.readonly ? "hidden" : "visible" }} >
             <MoreMenu id={`${props.race.stage}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
+              const handleConcede = (team: 1 | 2, e: MouseEvent) => {
+                e.stopPropagation()
+                props.onRaceUpdate({
+                  ...props.race,
+                  winner: team == 1 ? 2 : 1,
+                  indicators: "by",
+                  team1Dsq: undefined,
+                  team2Dsq: undefined
+                })
+              }
               const handleReset = () => {
                 handleClose()
                 props.onRaceUpdate({
@@ -86,8 +103,24 @@ function RaceTableRow(props: {
                   team2Dsq: undefined
                 })
               }
+              const clearConcede = () => {
+                handleClose()
+                props.onRaceUpdate({
+                  ...props.race,
+                  indicators: undefined,
+                })
+              }
               return (
-                <MenuItem onClick={handleReset}>Reset</MenuItem>
+                <>
+                  <MenuItem onClick={handleReset}>Reset</MenuItem>
+                  <Show when={props.race.indicators == "by"}>
+                    <MenuItem onClick={clearConcede}>clear by</MenuItem>
+                  </Show>
+                  <Show when={props.race.indicators != "by"}>
+                    <MenuItem onClick={[handleConcede, 1]}>{props.race.team1} concede (by)</MenuItem>
+                    <MenuItem onClick={[handleConcede, 2]}>{props.race.team2} concede (by)</MenuItem>
+                  </Show>
+                </>
               )
             }}</MoreMenu>
           </div>
@@ -106,13 +139,11 @@ function RaceTableRow(props: {
       >
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
           <div onClick={[toggleDsq, 1]} style={{ display: "contents" }}>
-            <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
+            <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color={canDsq() ? "inherit" : "disabled"} />}>
               <CancelOutlined fontSize="small" color="error" />
             </Show>
           </div>
-          <Show when={winner() == 1} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
-            <TaskAlt fontSize="small" color="success" />
-          </Show>
+          <RaceResultIcon won={winner() == 1} conceded={winner() != 1 && props.race.indicators == "by"} fontSize="small" />
           &nbsp;
           {props.race.team1}
         </div>
@@ -126,20 +157,23 @@ function RaceTableRow(props: {
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "end" }}>
           {props.race.team2}
           &nbsp;
-          <Show when={winner() == 2} fallback={<CircleOutlined fontSize="small" color="inherit" />}>
-            <TaskAlt fontSize="small" color="success" />
-          </Show>
+          <RaceResultIcon won={winner() == 2} conceded={winner() != 2 && props.race.indicators == "by"} fontSize="small" />
           <div onClick={[toggleDsq, 2]} style={{ display: "contents" }}>
-            <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color="inherit" />}>
+            <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color={canDsq() ? "inherit" : "disabled"} />}>
               <CancelOutlined fontSize="small" color="error" />
             </Show>
           </div>
         </div>
       </td>
-      <td class={styles.td} style={{ width: "10em", border: 0 }}>
+      <td class={styles.td} style={{ width: "3em", border: 0 }}>
         <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
-          <Typography style={{ visibility: winner() ? null : "hidden" }} variant="caption" color="success.main">Complete</Typography>
-          <Typography style={{ visibility: team1Dsq() || team2Dsq() ? null : "hidden" }} variant="caption" color="error">DSQ</Typography>
+          <Typography
+            style={{ visibility: props.race.indicators || team1Dsq() || team2Dsq() ? null : "hidden" }}
+            variant="caption"
+            color={props.race.indicators ? "warning.main" : "error"}
+          >
+            {props.race.indicators?.toUpperCase() || "DSQ"}
+          </Typography>
         </div>
       </td>
     </tr>

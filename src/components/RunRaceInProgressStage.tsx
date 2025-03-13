@@ -42,7 +42,7 @@ type RunRaceInProgressStageProps = {
   collapse?: boolean;
   northern?: boolean;
   splits: number;
-  view: "mini" | "list" | "both" | "printable";
+  view: "mini" | "list" | "side-by-side" | "printable";
 }
 
 export default function RunRaceInProgressStage(props: RunRaceInProgressStageProps) {
@@ -104,21 +104,21 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     }
   })
 
-  const showList = () => props.view === "list" || props.view === "both"
-  const showMiniLeagues = () => props.view === "mini" || props.view === "both"
-  const showBoth = () => props.view === "both"
+  const showList = () => props.view === "list" || props.view === "side-by-side"
+  const showMiniLeagues = () => props.view === "mini" || props.view === "side-by-side"
+  const showSideBySide = () => props.view === "side-by-side"
   return (
     <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
       <Stack direction="row" gap="1em" style={{ "justify-content": "center" }}>
         <Show when={showList()}>
-          <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showBoth() ? "space-around" : "center" }}>
+          <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
             <Stack>
               <RaceList knockout={props.stage == "knockout"} orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={props.readonly} />
             </Stack>
           </Card>
         </Show>
         <Show when={showMiniLeagues()}>
-          <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showBoth() ? "space-around" : "center" }}>
+          <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
             <Stack gap="2em">
               <For each={Object.entries(props.round.races[props.stage])}>{([div, divRaces]) => (
                 <For each={Object.entries(divRaces)}>{([name, { races, teams }]) => (

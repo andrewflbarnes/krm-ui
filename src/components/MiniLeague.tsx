@@ -1,8 +1,8 @@
-import { CancelOutlined, CircleOutlined, NotInterested, TaskAlt } from "@suid/icons-material";
 import { Menu, MenuItem, Typography } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
 import { calcTeamResults, collapseRaces } from "../kings/utils";
+import RaceResultIcon from "../ui/RaceResultIcon";
 
 // TODO use theme colors
 const borderColour = "dimgray"
@@ -42,8 +42,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
   const teamPositions = createMemo(() => calcTeamResults(props.teams, props.races))
 
   const [anchorEl, setAnchorEl] = createSignal<HTMLTableColElement | null>(null)
-  const [ctxRace, setCtxRace] = createSignal<[Race, string]>()
-  const handleContext = (ctx: [Race, string], e: MouseEvent) => {
+  const [ctxRace, setCtxRace] = createSignal<{ race: Race, team: string }>()
+  const handleContext = (ctx: { race: Race, team: string }, e: MouseEvent) => {
     e.preventDefault()
     setAnchorEl(e.currentTarget as HTMLTableColElement)
     setCtxRace(ctx)
@@ -53,46 +53,13 @@ export default function MiniLeague(props: MiniLeagueProps) {
   // TODO split up the below into separate components maybe
   return (
     <>
-      <Menu
-        //id="league-selector-menu"
-        anchorEl={anchorEl()}
-        open={!!anchorEl()}
+      <ContextMenu
+        anchor={anchorEl()}
         onClose={() => setAnchorEl(null)}
-      //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
-      >
-        <MenuItem onClick={() => {
-          setAnchorEl(null)
-          const [r, t] = ctxRace()
-          const f: keyof Pick<Race, "team1Dsq" | "team2Dsq"> = r.team1 == t
-            ? "team1Dsq"
-            : "team2Dsq"
-          props.onResultChange({
-            ...r,
-            [f]: !r[f]
-          })
-        }}>dsq</MenuItem>
-        <Show when={ctxRace()?.[0]?.indicators != "by"}>
-          <MenuItem onClick={() => {
-            setAnchorEl(null)
-            const [r, t] = ctxRace()
-            props.onResultChange({
-              ...r,
-              winner: r.team1 == t ? 2 : 1,
-              indicators: "by"
-            })
-          }}>concede (by)</MenuItem>
-        </Show>
-        <Show when={ctxRace()?.[0]?.indicators == "by"}>
-          <MenuItem onClick={() => {
-            setAnchorEl(null)
-            const [r] = ctxRace()
-            props.onResultChange({
-              ...r,
-              indicators: undefined
-            })
-          }}>clear (by)</MenuItem>
-        </Show>
-      </Menu>
+        race={ctxRace()?.race}
+        team={ctxRace()?.team}
+        onResultChange={props.onResultChange}
+      />
       <Typography>
         <table style={{ "border-spacing": "3px 0" }}>
           <thead>
@@ -185,8 +152,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                               transition: `opacity ${dim() ? dimIn : "0s"}`,
                               "transition-delay": dim() ? dimDelay : "0s",
                             }}
-                            onContextMenu={props.readonly ? null : [handleContext, [raceDetails, team]]}
-                            onClick={() => !props.readonly && props.onResultChange({ ...raceDetails, winner: ti })}
+                            onContextMenu={props.readonly ? null : [handleContext, { race: raceDetails, team }]}
+                            onClick={() => !props.readonly && !raceDetails.winner && props.onResultChange({ ...raceDetails, winner: ti })}
                           >
                             <div style={{
                               display: "flex",
@@ -194,20 +161,11 @@ export default function MiniLeague(props: MiniLeagueProps) {
                               "align-items": "center",
                               "justify-content": "center",
                             }}>
-                              <Switch>
-                                <Match when={raceDetails.winner === ti}>
-                                  <TaskAlt color={dsq ? "error" : "success"} />
-                                </Match>
-                                <Match when={raceDetails.winner > 0 && raceDetails.indicators == "by"}>
-                                  <NotInterested color={"warning"} />
-                                </Match>
-                                <Match when={dsq}>
-                                  <CancelOutlined color={"error"} />
-                                </Match>
-                                <Match when={true}>
-                                  <CircleOutlined />
-                                </Match>
-                              </Switch>
+                              <RaceResultIcon
+                                won={raceDetails.winner == ti}
+                                dsq={dsq}
+                                conceded={raceDetails.winner != ti && raceDetails.indicators == "by"}
+                              />
                             </div>
                           </td>
                         )
@@ -239,5 +197,77 @@ export default function MiniLeague(props: MiniLeagueProps) {
         </table>
       </Typography>
     </>
+  )
+}
+
+function ContextMenu(props: {
+  anchor: HTMLTableColElement;
+  race: Race;
+  team: string;
+  onClose: () => void;
+  onResultChange: (r: Race) => void;
+}) {
+  return (
+    <Show when={props.race}>{(race) => {
+      const dsqField = createMemo<keyof Pick<Race, "team1Dsq" | "team2Dsq">>(() => race().team1 == props.team
+        ? "team1Dsq"
+        : "team2Dsq")
+      return (
+        <Menu
+          //id="league-selector-menu"
+          anchorEl={props.anchor}
+          open={!!props.anchor}
+          onClose={props.onClose}
+        //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
+        >
+          <MenuItem onClick={() => {
+            props.onClose()
+            const update: Race = {
+              ...race(),
+            }
+            update.winner = update.team1 == props.team ? 1 : 2
+            props.onResultChange(update)
+          }}>winner</MenuItem>
+          <Show when={race().indicators != "by"}>
+            <MenuItem onClick={() => {
+              props.onClose()
+              const update = {
+                ...race(),
+              }
+              update[dsqField()] = !update[dsqField()]
+              props.onResultChange(update)
+            }}>{race()[dsqField()] && "clear "}dsq</MenuItem>
+          </Show>
+          <Show when={!race().team1Dsq && !race().team2Dsq}>
+            <MenuItem onClick={() => {
+              props.onClose()
+              const update: Race = {
+                ...race(),
+                team1Dsq: false,
+                team2Dsq: false,
+              }
+              if (update.indicators == "by") {
+                update.indicators = undefined
+              } else {
+                update.winner = update.team1 == props.team ? 2 : 1
+                update.indicators = "by"
+              }
+              props.onResultChange(update)
+            }}>{race().indicators == "by" ? "clear by" : "concede (by)"}</MenuItem>
+          </Show>
+          <MenuItem onClick={() => {
+            props.onClose()
+            const update: Race = {
+              ...race(),
+              team1Dsq: false,
+              team2Dsq: false,
+              winner: undefined,
+              indicators: undefined,
+            }
+            props.onResultChange(update)
+          }}>reset</MenuItem>
+        </Menu>
+      )
+    }}</Show>
   )
 }

@@ -2,10 +2,28 @@ import type { Meta, StoryObj } from 'storybook-solidjs';
 import RaceList from '../components/RaceList';
 import { fn } from '@storybook/test';
 import { knockouts, races } from './data';
+import { ComponentProps, createEffect, createSignal, untrack } from 'solid-js';
+import { Race } from '../kings';
+
+const RaceListWithHandler = (props: ComponentProps<typeof RaceList>) => {
+  const [races, setRaces] = createSignal<Race[]>(untrack(() => props.orderedRaces))
+  createEffect(() => {
+    setRaces(props.orderedRaces)
+  })
+  const handleResultChange = (result: Race) => {
+    const newRaces = [...races()]
+    newRaces[result.groupRace] = result
+    console.log("Received result change event: " + JSON.stringify(result))
+    setRaces(newRaces)
+    props.onRaceUpdate(result)
+  }
+  return <RaceList {...props} onRaceUpdate={handleResultChange} orderedRaces={races()} />
+}
 
 const meta = {
   title: 'Kings/RaceList',
   component: RaceList,
+  render: (props) => <RaceListWithHandler {...props} />,
 } satisfies Meta<typeof RaceList>;
 
 export default meta;

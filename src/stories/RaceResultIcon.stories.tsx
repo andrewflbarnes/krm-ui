@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from 'storybook-solidjs';
 import RaceResultIcon from '../ui/RaceResultIcon';
 
 const meta = {
-  title: 'Kings/ui/RaceResultIcon',
+  title: 'ui/RaceResultIcon',
   component: RaceResultIcon,
   args: {
     won: false,

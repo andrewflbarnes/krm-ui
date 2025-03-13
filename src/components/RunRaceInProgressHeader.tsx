@@ -21,7 +21,7 @@ export type Stage = keyof typeof stages
 const views = {
   "list": "Race List",
   "mini": "Mini Leagues",
-  "both": "Both",
+  "side-by-side": "Side by side",
   "printable": "Printable",
 } as const
 export type View = keyof typeof views
