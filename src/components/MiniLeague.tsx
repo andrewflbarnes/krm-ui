@@ -214,13 +214,18 @@ function ContextMenu(props: {
         : "team2Dsq")
       return (
         <Menu
+          container={props.anchor}
           //id="league-selector-menu"
           anchorEl={props.anchor}
           open={!!props.anchor}
-          onClose={props.onClose}
+          onClose={(e) => {
+            e.stopPropagation?.()
+            props.onClose()
+          }}
         //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
         >
-          <MenuItem onClick={() => {
+          <MenuItem onClick={(e) => {
+            e.stopPropagation()
             props.onClose()
             const update: Race = {
               ...race(),
@@ -229,7 +234,8 @@ function ContextMenu(props: {
             props.onResultChange(update)
           }}>winner</MenuItem>
           <Show when={race().indicators != "by"}>
-            <MenuItem onClick={() => {
+            <MenuItem onClick={(e) => {
+              e.stopPropagation()
               props.onClose()
               const update = {
                 ...race(),
@@ -239,7 +245,8 @@ function ContextMenu(props: {
             }}>{race()[dsqField()] && "clear "}dsq</MenuItem>
           </Show>
           <Show when={!race().team1Dsq && !race().team2Dsq}>
-            <MenuItem onClick={() => {
+            <MenuItem onClick={(e) => {
+              e.stopPropagation()
               props.onClose()
               const update: Race = {
                 ...race(),
@@ -255,7 +262,8 @@ function ContextMenu(props: {
               props.onResultChange(update)
             }}>{race().indicators == "by" ? "clear by" : "concede (by)"}</MenuItem>
           </Show>
-          <MenuItem onClick={() => {
+          <MenuItem onClick={(e) => {
+            e.stopPropagation()
             props.onClose()
             const update: Race = {
               ...race(),
