@@ -3,7 +3,7 @@ import { Chip, Typography } from "@suid/material";
 import { createMemo, For, ParentProps } from "solid-js";
 import { MiniLeagueTemplate, Race } from "../kings";
 import ValidIcon from "../ui/ValidIcon";
-import styles from "./ManageConfigMiniLeague.module.css";
+import ValidityCheck from "../ui/ValidityCheck";
 import MiniLeague from "./MiniLeague";
 
 type Props = {
@@ -58,30 +58,27 @@ export default function ManageConfigMiniLeague(props: Props) {
             <Chip label={`${props.template.races.length} races`} size="small" icon={<DownhillSkiing />} color="primary" variant="outlined" />
           </div>
         </div>
-        <div style={{ width: "50%" }}>
-          <Typography>
-            <div style={{
-              display: "flex",
-              "flex-direction": "column",
-              "align-items": "flex-start",
-            }}>
-              <ValidityCheck valid={validRaceCount()}>
-                Correct number of races
-              </ValidityCheck>
-              <ValidityCheck valid={allRaceAll()}>
-                All teams race each other
-              </ValidityCheck>
-              <ValidityCheck valid={evenSides()}>
-                Teams alternate sides
-              </ValidityCheck>
-              <ValidityCheck valid={validTeams()}>
-                Racing teams are valid (1 - {props.template.teams})
-              </ValidityCheck>
-              <ValidityCheck valid={noSelfRaces()}>
-                Teams don't race themselves
-              </ValidityCheck>
-            </div>
-          </Typography>
+        <div style={{
+          display: "flex",
+          "flex-direction": "column",
+          "align-items": "flex-start",
+          width: "50%",
+        }}>
+          <ValidityCheck valid={validRaceCount()}>
+            Correct number of races
+          </ValidityCheck>
+          <ValidityCheck valid={allRaceAll()}>
+            All teams race each other
+          </ValidityCheck>
+          <ValidityCheck valid={evenSides()}>
+            Teams alternate sides
+          </ValidityCheck>
+          <ValidityCheck valid={validTeams()}>
+            Racing teams are valid (1 - {props.template.teams})
+          </ValidityCheck>
+          <ValidityCheck valid={noSelfRaces()}>
+            Teams don't race themselves
+          </ValidityCheck>
         </div>
       </div>
       <MiniLeague
@@ -101,21 +98,5 @@ export default function ManageConfigMiniLeague(props: Props) {
         </Typography>
       </div>
     </div>
-  )
-}
-
-function ValidityCheck(props: ParentProps<{
-  valid: boolean;
-}>) {
-  return (
-    <div style={{
-      display: "flex",
-      "align-items": "flex-start",
-      "justify-content": "center",
-    }}>
-      <ValidIcon valid={props.valid} />
-      &nbsp;
-      {props.children}
-    </div >
   )
 }
