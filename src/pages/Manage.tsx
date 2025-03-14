@@ -11,7 +11,7 @@ export default function Manage(props: ParentProps) {
       gap: "8px",
       height: "100%",
     }}>
-      <Paper sx={{ width: "10%", height: "fit-content" }} elevation={4} >
+      <Paper sx={{ width: "fit-content", height: "fit-content" }} elevation={4} >
         <List>
           <NavigationListItem path="new">New</NavigationListItem>
           <NavigationListItem path="continue">Continue</NavigationListItem>
