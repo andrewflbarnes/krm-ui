@@ -1,8 +1,7 @@
 import { DownhillSkiing, Groups } from "@suid/icons-material";
 import { Chip, Typography } from "@suid/material";
-import { createMemo, For, ParentProps } from "solid-js";
+import { createMemo, For } from "solid-js";
 import { MiniLeagueTemplate, Race } from "../kings";
-import ValidIcon from "../ui/ValidIcon";
 import ValidityCheck from "../ui/ValidityCheck";
 import MiniLeague from "./MiniLeague";
 

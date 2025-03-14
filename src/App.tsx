@@ -14,9 +14,10 @@ const TeamConfig = lazy(() => import("./pages/TeamConfig"));
 const Tracker = lazy(() => import("./pages/Tracker"));
 const Portal = lazy(() => import("./pages/Portal"));
 const Status404 = lazy(() => import("./pages/Status404"));
-const RaceManagerConfigure = lazy(() => import("./pages/ManageConfigure"));
 const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
 const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
+const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
+const ManageRound = lazy(() => import("./pages/ManageRound"));
 const RunRace = lazy(() => import("./pages/RunRace"));
 import { Toaster } from "solid-toast";
 
@@ -36,7 +37,8 @@ export default function App() {
           <Route path="/" />
           <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
           <Route path="/continue" component={RaceManagerContinue} info={{ breadcrumb: "Continue" }} />
-          <Route path="/configure" component={RaceManagerConfigure} info={{ breadcrumb: "Config" }} />
+          <Route path="/minileague/:ml" component={ManageMiniLeague} info={{ breadcrumb: "ML" }} />
+          <Route path="/round/:round" component={ManageRound} info={{ breadcrumb: "Round" }} />
         </Route>
         <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
         <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
