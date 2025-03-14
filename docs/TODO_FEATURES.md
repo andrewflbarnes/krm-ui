@@ -26,6 +26,7 @@
 - [x] Print knockout ("light" mode equivalent, alternatively screenshot)
 - [x] Manual pre-start team shuffling
 - [x] Race bys (team unavailable)
+- [x] Visualise configuration presets for mini leagues
 
 ## Must
 
