@@ -1,4 +1,4 @@
-import { Typography } from "@suid/material";
+import { Box, Divider, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { asKnockoutId, divisions, MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
 import MiniLeague from "./MiniLeague";
@@ -46,11 +46,19 @@ export default function ManageConfigRound(props: {
   }
 
   return (
-    <div style={{ display: "flex", "flex-direction": "column", "align-content": "center", gap: "2em" }}>
+    <div style={{ display: "flex", "flex-direction": "column", "align-content": "center", gap: "2em", padding: "2em" }}>
       <Typography variant="h2" textAlign="center">
         {props.title}
       </Typography>
-      <div style={{ display: "flex", "justify-content": "center" }}>
+      <Divider variant="fullWidth" />
+      <Box
+        sx={{
+          flexDirection: { xs: "column", lg: "row" },
+          alignItems: { xs: "center", lg: "flex-start" },
+          gap: { xs: "2em", lg: "0" },
+        }}
+        style={{ display: "flex", "justify-content": "center" }}
+      >
         <PreviewStage title="Stage 1" config={props.config.stage1} seeds />
         <Show when={props.config.stage2}>{(stage2) => {
           return (
@@ -62,7 +70,8 @@ export default function ManageConfigRound(props: {
             <PreviewStage title="Knockouts" config={ko()} knockout />
           )
         }}</Show>
-      </div>
+      </Box>
+      <Divider variant="fullWidth" />
       <div style={{ display: "flex", "flex-direction": "column", "align-content": "center" }}>
         <Typography variant="h3" textAlign="center">
           Results
@@ -83,7 +92,7 @@ function PreviewStage(props: {
 }) {
   return (
     <div>
-      <Typography variant="h3">
+      <Typography variant="h3" style={{ "text-align": "center" }}>
         {props.title}
       </Typography>
       <div>

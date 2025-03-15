@@ -1,4 +1,4 @@
-import { Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { Box, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For } from "solid-js";
 import { RoundResult } from "../kings";
 import styles from "./RunRaceResults.module.css";
@@ -23,7 +23,7 @@ export default function RunRaceResults(props: {
 
   return (
     <Typography>
-      <div style={{ display: "flex", "flex-direction": "row", padding: "3" }}>
+      <Box sx={{ flexDirection: { xs: "column", lg: "row" } }} style={{ display: "flex", padding: "3" }}>
         <For each={Object.entries(props.results)}>{([division, results]) => (
           <div style={{ "margin-right": "2em" }}>
             <h2 style={{ "text-align": "center" }}>{division.capitalize()}</h2>
@@ -44,7 +44,7 @@ export default function RunRaceResults(props: {
             </TableContainer>
           </div>
         )}</For>
-      </div>
+      </Box>
     </Typography>
   )
 }
