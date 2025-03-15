@@ -1,5 +1,6 @@
+import { A } from "@solidjs/router"
 import { Add } from "@suid/icons-material"
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment } from "@suid/material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment, Typography } from "@suid/material"
 import { batch, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
 import { ClubSeeding, Division, divisions, useKings } from "../kings"
@@ -13,9 +14,23 @@ type ComponentProps = {
 export default function ManageNewSelect(props: ComponentProps) {
   const [k] = useKings()
   return (
-    <Show when={k.leagueConfig()} fallback={"TODO no race config for selected league"}>
+    <Show when={k.leagueConfig()} fallback={<CallToLoadConfig />}>
       <TeamSelector config={props.config} onUpdate={props.onUpdate} />
     </Show>
+  )
+}
+
+function CallToLoadConfig() {
+  return (
+    <div>
+      Please
+      &nbsp;
+      <A href="/teams" style={{ "text-decoration": "none" }}>
+        <Typography color="primary" style={{ display: "inline" }}>
+          load the league configuration first
+        </Typography>
+      </A>
+    </div>
   )
 }
 
