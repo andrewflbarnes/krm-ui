@@ -100,9 +100,12 @@ export default function KrmAppBar() {
                   <SignedOut>
                     <SignInButton style={{ color: "inherit", cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
                       <div>
-                        <Typography sx={{
-                          display: { xs: "none", sm: "flex" },
-                        }} >
+                        <Typography
+                          sx={{
+                            display: { xs: "none", sm: "flex" },
+                          }}
+                          noWrap
+                        >
                           Sign In
                         </Typography>
                         <AccountCircle sx={{

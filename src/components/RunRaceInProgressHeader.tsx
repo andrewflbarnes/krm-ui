@@ -27,6 +27,8 @@ const views = {
 export type View = keyof typeof views
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 
+const keepValidStages = (s: string, round: Round) => s == round.status || Object.values(round.config).some(c => c[s])
+
 export default function RunRaceInProgressHeader(props: {
   round: Round;
   northern: boolean;
@@ -49,7 +51,9 @@ export default function RunRaceInProgressHeader(props: {
     const idx = Object.keys(stages).indexOf(props.round.status)
     return (idx > -1 ? idx : Object.keys(stages).length) + 1
   }
-  const stageOptions = () => Object.entries(stages).slice(0, stageFilter()).map(([value, label]) => ({ value, label }))
+  const stageOptions = () => Object.entries(stages).slice(0, stageFilter())
+    .filter(([s]) => keepValidStages(s, props.round))
+    .map(([value, label]) => ({ value, label }))
 
   const errors = createMemo(() => {
     return Object.entries(props.round.races[props.stage] || {}).reduce((acc, [div, divRaces]) => {
@@ -78,16 +82,15 @@ export default function RunRaceInProgressHeader(props: {
     return Object.values(races).every(g => Object.values(g).every(r => r.complete))
   }
   const proceedText = () => {
-    switch (props.round.status) {
-      case "stage1":
-        return "Start Stage 2"
-      case "stage2":
-        return "Start Knockouts"
-      case "knockout":
-        return "Finish"
-      default:
-        return `This shouldn't be showing (${props.round.status})!`
+    const possibleStages = Object.entries(stages).filter(([s]) => keepValidStages(s, props.round))
+    const currentStageIndex = possibleStages.findIndex(([s]) => s == props.round.status)
+    if (currentStageIndex == possibleStages.length - 1) {
+      return "Finish"
     }
+    if (currentStageIndex == -1) {
+      return `This shouldn't be showing (${props.round.status})!`
+    }
+    return `Start ${possibleStages[currentStageIndex + 1][1]}`
   }
 
   const queryClient = useQueryClient()

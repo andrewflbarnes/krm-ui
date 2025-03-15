@@ -39,12 +39,18 @@ export default (function krmApiLocalStorage(): KrmApi {
   }
 
   function progressRoundStage(round: Round, status: "stage1" | "stage2", nextStatus: "stage2" | "knockout") {
-    // TODO knockouts may only rely on stage 1
     const races: StageRaces = round.races[status]
     if (!races) {
       const err = `No races exist for stage ${status} - cannot progress`
       console.error(err, round.races)
       throw new Error(err)
+    }
+
+    if (!Object.values(round.config).some(division => division[nextStatus])) {
+      if (nextStatus === "stage2") {
+        return progressRoundStage(round, status, "knockout")
+      }
+      return completeRound(round)
     }
 
     const ready = Object.values(races)
@@ -101,9 +107,10 @@ export default (function krmApiLocalStorage(): KrmApi {
     } as StageRaces)
 
     round.races[nextStatus] = nextRaces
+    return nextStatus
   }
 
-  function completeRound(round: Round) {
+  function completeRound(round: Round): "complete" {
     const { status } = round
     // Prior stage races must be complete or not exist (e.g. all divisions < 7 teams)
     const races = round.races[status]
@@ -157,6 +164,7 @@ export default (function krmApiLocalStorage(): KrmApi {
     })
 
     round.results = results
+    return "complete"
   }
 
   return {
@@ -234,15 +242,11 @@ export default (function krmApiLocalStorage(): KrmApi {
       const nextStatus = (function(): "stage2" | "knockout" | "complete" {
         switch (status) {
           case "stage1":
-            // TODO if config has no stage 2 races go straight to knockouts
-            progressRoundStage(round, status, "stage2")
-            return "stage2"
+            return progressRoundStage(round, status, "stage2")
           case "stage2":
-            progressRoundStage(round, status, "knockout")
-            return "knockout"
+            return progressRoundStage(round, status, "knockout")
           case "knockout":
-            completeRound(round)
-            return "complete"
+            return completeRound(round)
           default:
             console.error(`Cannot progress round with status ${status}`)
             throw new Error(`Cannot progress round with status ${status}`)

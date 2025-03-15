@@ -69,7 +69,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           />
         }</Match>
         <Match when={stage() == "complete"}>
-          <Card style={{ display: "flex", "justify-content": "center", padding: "3em", width: "fit-content", margin: "0 auto" }}>
+          <Card style={{ display: "flex", "justify-content": "center", padding: "0 2em 2em 2em", width: "fit-content", margin: "0 auto" }}>
             <RunRaceResults results={props.round.results} />
           </Card>
         </Match>

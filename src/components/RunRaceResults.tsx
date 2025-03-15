@@ -23,9 +23,9 @@ export default function RunRaceResults(props: {
 
   return (
     <Typography>
-      <Box sx={{ flexDirection: { xs: "column", lg: "row" } }} style={{ display: "flex", padding: "3" }}>
+      <Box sx={{ flexDirection: { xs: "column", md: "row" } }} style={{ display: "flex", padding: "3", gap: "2em" }}>
         <For each={Object.entries(props.results)}>{([division, results]) => (
-          <div style={{ "margin-right": "2em" }}>
+          <div>
             <h2 style={{ "text-align": "center" }}>{division.capitalize()}</h2>
             <TableContainer component={Paper}>
               <Table aria-label="simple table dense" size="small">
