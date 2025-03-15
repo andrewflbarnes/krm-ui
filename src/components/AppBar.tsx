@@ -1,4 +1,5 @@
 import { A, useLocation } from "@solidjs/router";
+import { AccountCircle } from "@suid/icons-material";
 import {
   AppBar,
   Box,
@@ -36,25 +37,34 @@ export default function KrmAppBar() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="relative">
           <Toolbar>
-            <nav style={{
-              display: "grid",
-              "grid-template-columns": "1fr 1fr 1fr",
-              width: "100%",
-            }}>
-              <Box sx={{ flexBasis: 0, flexGrow: 1, gap: "1em", display: "flex", flex: "row", alignItems: "center" }}>
+            <Box
+              as={"nav"}
+              style={{
+                display: "grid",
+                width: "100%",
+              }}
+              sx={{
+                gridTemplateColumns: {
+                  xs: "1fr 1fr",
+                  md: "1fr 1fr 1fr",
+                }
+              }}
+            >
+              <Box sx={{ gap: "1em", display: "flex", alignItems: "center" }}>
                 <Link href="/">
                   <strong>[ K ]</strong>
                 </Link>
                 <LeagueSelector />
               </Box>
-              <Box sx={{ alignItems: "center", display: "flex" }}>
+              <Box sx={{
+                alignItems: "center",
+                display: { xs: "none", md: "flex" },
+              }}>
                 <KrmBreadcrumbs />
               </Box>
               <Box sx={{
                 display: "flex",
                 flexDirection: "row",
-                flexBasis: 0,
-                flexGrow: 1,
                 gap: "1rem",
                 justifyContent: "flex-end",
                 alignItems: "center",
@@ -65,26 +75,45 @@ export default function KrmAppBar() {
                 <Link href="/teams">
                   Teams
                 </Link>
-                <Link href="/tracker">
-                  Tracker
-                </Link>
-                <Link href="/portal">
-                  Portal
-                </Link>
+                <Box
+                  sx={{
+                    display: { xs: "none", sm: "inline" },
+                  }}
+                >
+                  <Link href="/tracker">
+                    Tracker
+                  </Link>
+                </Box>
+                <Box
+                  sx={{
+                    display: { xs: "none", sm: "inline" },
+                  }}
+                >
+                  <Link href="/portal">
+                    Portal
+                  </Link>
+                </Box>
                 <ClerkLoaded>
                   <SignedIn>
                     <UserButton />
                   </SignedIn>
                   <SignedOut>
                     <SignInButton style={{ color: "inherit", cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
-                      <Typography >
-                        Sign In
-                      </Typography>
+                      <div>
+                        <Typography sx={{
+                          display: { xs: "none", sm: "flex" },
+                        }} >
+                          Sign In
+                        </Typography>
+                        <AccountCircle sx={{
+                          display: { xs: "block", sm: "none" },
+                        }} />
+                      </div>
                     </SignInButton>
                   </SignedOut>
                 </ClerkLoaded>
               </Box>
-            </nav>
+            </Box>
           </Toolbar>
         </AppBar>
       </Box>
