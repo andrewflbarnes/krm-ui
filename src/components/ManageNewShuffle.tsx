@@ -1,5 +1,5 @@
 import { SwapCalls } from "@suid/icons-material";
-import { Chip, Divider, List, ListItem, ListItemText, ListSubheader, Paper, Typography } from "@suid/material";
+import { Box, Chip, Divider, List, ListItem, ListItemText, ListSubheader, Paper, Typography } from "@suid/material";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, transformStyle, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
@@ -17,8 +17,17 @@ type ManageNewShuffleProps = {
 }
 
 export default function ManageNewShuffle(props: ManageNewShuffleProps) {
+  const gtr = () => Object.keys(props.round.config).map(() => "1fr").join(" ")
   return (
-    <div style={{ display: "flex", "flex-direction": "row", gap: "1rem", "justify-content": "space-between" }}>
+    <Box
+      style={{ "grid-template-columns": gtr(), gap: "1rem", "justify-content": "space-between", "flex-direction": "column" }}
+      sx={{
+        display: {
+          xs: "flex",
+          md: "grid",
+        },
+      }}
+    >
       <For each={Object.entries(props.round.config)}>{([division, config]: [Division, RoundConfig]) => {
         const seeds = () => props.round.teams[division]
         const dndHandler: DragEventHandler = ({ draggable, droppable }) => {
@@ -41,38 +50,40 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
           })
         }
         return (
-          <div style={{ "min-width": "16em" }}>
-            <Typography variant="h4">
-              {division.capitalize()}
-            </Typography>
-            <DragDropProvider onDragEnd={dndHandler}>
-              <DragDropSensors />
-              <DragOverlayTeam />
-              <For each={config.stage1}>{(group) => {
-                return (
-                  <List
-                    dense
-                    aria-labelledby={`${division}-${group.name}`}
-                    subheader={<ListSubheader id={`${division}-${group.name}`} sx={{ zIndex: 0 }}>Group {group.name}</ListSubheader>}
-                  >
-                    <For each={group.seeds}>{(seed) => {
-                      const team = seeds()[seed.position]
-                      const originalPosition = props.seeding[division].indexOf(team)
-                      const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == originalPosition)).name
-                      const moved = originalGroup !== group.name ? originalGroup : null
-                      const originalSeed = "" + (originalPosition + 1)
-                      return (
-                        <DndTeam disabled={config.stage1.length < 2 && !props.inGroupSwaps} seed={originalSeed} division={division} group={group.name} team={team} moved={moved} inGroupSwaps={props.inGroupSwaps} />
-                      )
-                    }}</For>
-                  </List>
-                )
-              }}</For>
-            </DragDropProvider>
+          <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
+            <div>
+              <Typography variant="h4" textAlign="center">
+                {division.capitalize()}
+              </Typography>
+              <DragDropProvider onDragEnd={dndHandler}>
+                <DragDropSensors />
+                <DragOverlayTeam />
+                <For each={config.stage1}>{(group) => {
+                  return (
+                    <List
+                      dense
+                      aria-labelledby={`${division}-${group.name}`}
+                      subheader={<ListSubheader disableSticky id={`${division}-${group.name}`}>Group {group.name}</ListSubheader>}
+                    >
+                      <For each={group.seeds}>{(seed) => {
+                        const team = seeds()[seed.position]
+                        const originalPosition = props.seeding[division].indexOf(team)
+                        const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == originalPosition)).name
+                        const moved = originalGroup !== group.name ? originalGroup : null
+                        const originalSeed = "" + (originalPosition + 1)
+                        return (
+                          <DndTeam disabled={config.stage1.length < 2 && !props.inGroupSwaps} seed={originalSeed} division={division} group={group.name} team={team} moved={moved} inGroupSwaps={props.inGroupSwaps} />
+                        )
+                      }}</For>
+                    </List>
+                  )
+                }}</For>
+              </DragDropProvider>
+            </div>
           </div>
         )
       }}</For>
-    </div>
+    </Box>
   )
 }
 
