@@ -10,7 +10,6 @@
 - [x] Team selection and seeding
 - [x] Race list 1
 - [x] Race sheet 1
-- [x] Visualise configuration presets for mini leagues
 - [x] Mini leagues show wins
 - [x] Mini leagues show positions
 - [x] DSQ tracking

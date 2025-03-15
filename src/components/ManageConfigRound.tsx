@@ -67,7 +67,7 @@ export default function ManageConfigRound(props: {
         <Typography variant="h3" textAlign="center">
           Results
         </Typography>
-        <div>
+        <div style={{ margin: "0 auto" }}>
           <RunRaceResults results={mockResults()} />
         </div>
       </div>

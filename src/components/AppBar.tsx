@@ -36,22 +36,10 @@ export default function KrmAppBar() {
       <Box sx={{ flexGrow: 1 }}>
         <AppBar position="relative">
           <Toolbar>
-            {/**
-            <IconButton
-              size="large"
-              edge="start"
-              color="inherit"
-              aria-label="menu"
-              sx={{ mr: 2 }}
-            >
-              <MenuIcon />
-            </IconButton>
-            */}
             <nav style={{
-              display: "flex",
-              "flex-grow": 1,
-              "flex-direction": "row",
-              "justify-content": "center"
+              display: "grid",
+              "grid-template-columns": "1fr 1fr 1fr",
+              width: "100%",
             }}>
               <Box sx={{ flexBasis: 0, flexGrow: 1, gap: "1em", display: "flex", flex: "row", alignItems: "center" }}>
                 <Link href="/">
