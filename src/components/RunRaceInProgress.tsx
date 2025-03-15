@@ -4,6 +4,7 @@ import RunRaceInProgressStage from "./RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RunRaceInProgressHeader, { type Stage, type View } from "./RunRaceInProgressHeader";
 import RunRaceResults from "./RunRaceResults";
+import { Card } from "@suid/material";
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -14,7 +15,7 @@ export default function RunRaceInProgress(props: { round: Round }) {
 }
 
 function isStage(s: string): "knockout" | "stage1" | "stage2" | null {
-  return s == "stage1" || s == "stage2"|| s == "knockout" ? s : null
+  return s == "stage1" || s == "stage2" || s == "knockout" ? s : null
 }
 
 function RunRaceInProgressInternal(props: { round: Round }) {
@@ -49,11 +50,6 @@ function RunRaceInProgressInternal(props: { round: Round }) {
       />
 
       <Switch>
-      {/*
-        <Match when={isKnockout(stage())}>
-          <div>Knockouts are not yet implemented :(</div>
-        </Match>
-        */}
         {
           /* keyed match as the child contains an error boundary and we want to
            * force a re-render when the stage changes as in this case it can
@@ -73,7 +69,9 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           />
         }</Match>
         <Match when={stage() == "complete"}>
-          <RunRaceResults results={props.round.results} />
+          <Card style={{ display: "flex", "justify-content": "center", padding: "3em", width: "fit-content", margin: "0 auto" }}>
+            <RunRaceResults results={props.round.results} />
+          </Card>
         </Match>
         <Match when={true}>
           <div>Unknown stage: {stage()}</div>
