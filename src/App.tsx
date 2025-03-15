@@ -20,6 +20,7 @@ const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
 const ManageRound = lazy(() => import("./pages/ManageRound"));
 const RunRace = lazy(() => import("./pages/RunRace"));
 import { Toaster } from "solid-toast";
+import "./utils/stringutils";
 
 const queryClient = new QueryClient()
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY

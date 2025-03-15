@@ -1,6 +1,6 @@
 import { Card, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For } from "solid-js";
-import { Round } from "../kings";
+import { RoundResult } from "../kings";
 import styles from "./RunRaceResults.module.css";
 
 // TODO move somewhere else
@@ -15,7 +15,7 @@ function kingsPoints(division: string, rank: number) {
 }
 
 export default function RunRaceResults(props: {
-  round: Round;
+  results: Record<string, RoundResult[]>;
   points?: ((division: string, rank: number) => number);
 }) {
 
@@ -25,9 +25,9 @@ export default function RunRaceResults(props: {
     <Typography>
       <div style={{ display: "flex", "justify-content": "center" }}>
         <Card sx={{ p: 3 }} style={{ display: "flex", "flex-direction": "row" }}>
-          <For each={Object.entries(props.round.results)}>{([division, results]) => (
+          <For each={Object.entries(props.results)}>{([division, results]) => (
             <div style={{ "margin-right": "2em" }}>
-              <h2>{division}</h2>
+              <h2>{division.capitalize()}</h2>
               <TableContainer component={Paper}>
                 <Table aria-label="simple table dense" size="small">
                   <TableBody>

@@ -5,7 +5,6 @@ import { Round } from '../kings';
 // More on how to set up stories at: https://storybook.js.org/docs/7.0/solid/writing-stories/introduction
 const meta = {
   title: 'Kings/RunRaceResults',
-  render: props => <RunRaceResults {...props} />,
   component: RunRaceResults,
 } satisfies Meta<typeof RunRaceResults>;
 
@@ -47,9 +46,7 @@ const results: Round["results"] = {
   */
 export const Default: Story = {
   args: {
-    round: {
-      results,
-    } as Round
+    results,
   },
 };
 

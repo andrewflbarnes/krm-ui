@@ -1,6 +1,7 @@
 import { Button, createPalette, createTheme, Paper, ThemeProvider } from '@suid/material';
 import { createMemo, createSignal } from 'solid-js';
 import { Preview } from 'storybook-solidjs';
+import "../src/utils/stringutils"
 
 const [mode, setMode] = createSignal<"light" | "dark">("light");
 

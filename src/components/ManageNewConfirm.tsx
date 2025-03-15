@@ -9,7 +9,8 @@ export default function ManageNewConfirm(props: { seeds: RoundSeeding }) {
         return (
           <div>
             <Typography variant="h6">
-              {division}&nbsp;
+              {division.capitalize()}
+              &nbsp;
               <Typography variant="caption" color="textSecondary" marginLeft="auto">
                 ({teams.length} teams)
               </Typography>

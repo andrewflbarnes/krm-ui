@@ -27,6 +27,7 @@
 - [x] Manual pre-start team shuffling
 - [x] Race bys (team unavailable)
 - [x] Visualise configuration presets for mini leagues
+- [x] Visualise configuration presets for rounds
 
 ## Must
 
@@ -36,7 +37,6 @@
 - [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
 - [ ] Modify configuration presets for mini leagues
-- [ ] Visualise configuration presets for rounds
 - [ ] Modify configuration presets for rounds
 - [ ] Ability to run individual board races
 

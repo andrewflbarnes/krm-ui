@@ -73,7 +73,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
           />
         }</Match>
         <Match when={stage() == "complete"}>
-          <RunRaceResults round={props.round} />
+          <RunRaceResults results={props.round.results} />
         </Match>
         <Match when={true}>
           <div>Unknown stage: {stage()}</div>

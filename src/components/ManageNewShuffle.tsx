@@ -42,8 +42,8 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
         }
         return (
           <div style={{ "min-width": "16em" }}>
-            <Typography variant="h2">
-              {division}
+            <Typography variant="h4">
+              {division.capitalize()}
             </Typography>
             <DragDropProvider onDragEnd={dndHandler}>
               <DragDropSensors />
