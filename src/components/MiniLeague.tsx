@@ -67,7 +67,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
             <tr>
               <td colspan={collapsedRaces().length + 2}>
                 <Typography variant="h4">
-                  Group {props.name}
+                  {props.name}
                 </Typography>
               </td>
               <td colspan={1}>

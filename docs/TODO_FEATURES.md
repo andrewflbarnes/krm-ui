@@ -45,6 +45,7 @@
 - [ ] DSQ reasons
 - [ ] Import data from file
 - [ ] Import data via link (base64)
+- [ ] Generate results HTML
 
 ## Could
 

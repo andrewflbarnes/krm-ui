@@ -104,7 +104,7 @@ function PreviewStage(props: {
           return (
             <div>
               <Show when={props.knockout} fallback={
-                <MiniLeague name={group.name} races={races} teams={groupTeams} preview onResultChange={() => { }} />
+                <MiniLeague name={"Group " + group.name} races={races} teams={groupTeams} preview onResultChange={() => { }} />
               }>
                 <For each={races}>{(r) => (
                   <Typography>

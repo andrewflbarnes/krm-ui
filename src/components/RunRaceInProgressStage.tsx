@@ -129,7 +129,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
                   <MiniLeague
                     live={live()}
                     collapsed={collapse()}
-                    name={name + " " + div}
+                    name={div.capitalize() + " " + name}
                     races={races}
                     teams={teams}
                     onResultChange={handleRaceUpdate}
