@@ -30,7 +30,7 @@ function RunRaceInProgressInternal(props: { round: Round }) {
     setStage(roundStage)
   }))
 
-  const readonly = () => props.round.status == stage()
+  const readonly = () => props.round.status !== stage()
 
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
