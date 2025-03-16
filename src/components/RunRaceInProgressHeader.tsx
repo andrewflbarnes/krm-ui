@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
-import { GroupRaces, Round } from "../kings";
+import { GroupRaces, RaceStage, Round } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
 import krmApi from "../api/krm";
@@ -118,15 +118,6 @@ export default function RunRaceInProgressHeader(props: {
     }
   }))
 
-  const [reopenConfirmation, setReopenConfirmation] = createSignal(false)
-  const handleConfirmReopen = () => {
-    setReopenConfirmation(true)
-  }
-  const handleReopen = () => {
-    alert("TODO!")
-    setReopenConfirmation(false)
-  }
-
   const [progressConfirmation, setProgressConfirmation] = createSignal(false)
   const handleConfirmProgress = () => {
     setProgressConfirmation(true)
@@ -137,6 +128,42 @@ export default function RunRaceInProgressHeader(props: {
     })
     setProgressConfirmation(false)
   }
+
+  const reopenStage = createMutation(() => ({
+    mutationKey: ["reopenStage"],
+    mutationFn: async (data: { id: string, stage: RaceStage}) => new Promise((res) => {
+      krmApi.reopenStage(data.id, data.stage);
+      res({});
+    }),
+    onSuccess: () => {
+      notification.success("Reopend stage at " + stages[props.stage])
+      queryClient.invalidateQueries({
+        queryKey: [props.round.id],
+      })
+    }
+  }))
+
+  const [reopenConfirmation, setReopenConfirmation] = createSignal(false)
+  const handleConfirmReopen = () => {
+    setReopenConfirmation(true)
+  }
+  const handleReopen = () => {
+    if (props.stage == "complete") {
+      notification.error("Cannot reopen round at completion - YOU SHOULD NEVER SEE THIS!")
+      return
+    }
+    reopenStage.mutate({
+      id: props.round.id,
+      stage: props.stage,
+    })
+    setReopenConfirmation(false)
+  }
+
+  createEffect(on(() => reopenStage.isPending, (pend) => {
+    if (!pend && reopenStage.error) {
+      notification.error(`Failed to reopen stage: ${progressRound.error.message}`)
+    }
+  }))
 
   const [print, setPrint] = usePrint()
 

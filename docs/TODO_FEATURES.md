@@ -28,7 +28,7 @@
 - [x] Visualise configuration presets for mini leagues
 - [x] Visualise configuration presets for rounds
 - [x] Don't show race stages which have no config
-- [ ] Reopen previous stage
+- [x] Reopen stages
 
 ## Must
 

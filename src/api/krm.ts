@@ -1,4 +1,4 @@
-import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId } from "../kings"
+import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage } from "../kings"
 import { calcTeamResults, createRound } from "../kings/round-utils";
 
 export type RoundInfo = Omit<Round, "races">
@@ -14,6 +14,7 @@ export type KrmApi = {
   deleteRound(id: string): void;
   updateRace(id: string, race: Race): void;
   progressRound(id: string): void;
+  reopenStage(id: string, stage: RaceStage): void;
 }
 
 export default (function krmApiLocalStorage(): KrmApi {
@@ -108,6 +109,19 @@ export default (function krmApiLocalStorage(): KrmApi {
 
     round.races[nextStatus] = nextRaces
     return nextStatus
+  }
+
+  function reopenRoundAtStage(round: Round, stage: RaceStage) {
+    round.results = undefined
+    switch (stage) {
+      case "stage1":
+      case "stage2":
+        round.races.knockout = undefined
+    }
+    if (stage === "stage1") {
+      round.races.stage2 = undefined
+    }
+    round.status = stage
   }
 
   function completeRound(round: Round): "complete" {
@@ -257,5 +271,12 @@ export default (function krmApiLocalStorage(): KrmApi {
 
       saveRound(round)
     },
+    reopenStage(id: string, stage: RaceStage) {
+      // TODO validate round we are reopening to is valid (e.g. we can't reopen
+      // to stage 2 if stage 1 is incomplete or no stage 2 config)
+      const round: Round = this.getRound(id)
+      reopenRoundAtStage(round, stage)
+      saveRound(round)
+    }
   }
 })()
