@@ -1,7 +1,7 @@
 import { Card, Stack } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, For, createEffect, createMemo, on } from "solid-js";
-import { Division, Race, Round, StageRaces } from "../kings";
+import { Race, Round, StageRaces } from "../kings";
 import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
@@ -9,6 +9,7 @@ import notification from "../hooks/notification";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RaceListPrintable from "./RaceListPrintable";
 import { usePrint } from "../hooks/print";
+import { useRaceOptions } from "../hooks/results";
 
 // TODO move to a utility file
 const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean) => {
@@ -38,11 +39,6 @@ type RunRaceInProgressStageProps = {
   round: Round;
   readonly?: boolean;
   stage: "stage1" | "stage2" | "knockout";
-  live?: boolean;
-  collapse?: boolean;
-  northern?: boolean;
-  splits: number;
-  view: "mini" | "list" | "side-by-side" | "printable";
 }
 
 export default function RunRaceInProgressStage(props: RunRaceInProgressStageProps) {
@@ -55,6 +51,14 @@ export default function RunRaceInProgressStage(props: RunRaceInProgressStageProp
 
 function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const queryClient = useQueryClient()
+  const {
+    collapse,
+    live,
+    northern,
+    view,
+  } = useRaceOptions()
+  // TODO actually make splits functional
+  const splits = () => 3
 
   const mut = createMutation(() => ({
     mutationKey: [props.round.id],
@@ -83,7 +87,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   }
 
   const orderedRaces = createMemo(() => {
-    return orderRaces(props.round.races[props.stage], props.splits, props.northern)
+    return orderRaces(props.round.races[props.stage], splits(), northern())
   })
 
   const [print, setPrint] = usePrint()
@@ -104,9 +108,9 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     }
   })
 
-  const showList = () => props.view === "list" || props.view === "side-by-side"
-  const showMiniLeagues = () => props.view === "mini" || props.view === "side-by-side"
-  const showSideBySide = () => props.view === "side-by-side"
+  const showList = () => view() === "list" || view() === "side-by-side"
+  const showMiniLeagues = () => view() === "mini" || view() === "side-by-side"
+  const showSideBySide = () => view() === "side-by-side"
   return (
     <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
       <Stack direction="row" gap="1em" style={{ "justify-content": "center" }}>
@@ -123,8 +127,8 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
               <For each={Object.entries(props.round.races[props.stage])}>{([div, divRaces]) => (
                 <For each={Object.entries(divRaces)}>{([name, { races, teams }]) => (
                   <MiniLeague
-                    live={props.live}
-                    collapsed={props.collapse}
+                    live={live()}
+                    collapsed={collapse()}
                     name={name + " " + div}
                     races={races}
                     teams={teams}
@@ -137,7 +141,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           </Card>
         </Show>
       </Stack>
-      <div style={{ display: props.view === "printable" ? "inherit" : "none" }}>
+      <div style={{ display: view() === "printable" ? "inherit" : "none" }}>
         <div ref={ref}>
           <RaceListPrintable
             knockouts={props.round.status === "knockout"}

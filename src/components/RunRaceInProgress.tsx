@@ -1,10 +1,11 @@
-import { createComputed, createSignal, Match, on, Switch } from "solid-js";
+import { createComputed, Match, on, Switch } from "solid-js";
 import { Round } from "../kings";
 import RunRaceInProgressStage from "./RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
-import RunRaceInProgressHeader, { type Stage, type View } from "./RunRaceInProgressHeader";
+import RunRaceInProgressHeader from "./RunRaceInProgressHeader";
 import RunRaceResults from "./RunRaceResults";
 import { Card } from "@suid/material";
+import { useRaceOptions } from "../hooks/results";
 
 export default function RunRaceInProgress(props: { round: Round }) {
   return (
@@ -19,35 +20,21 @@ function isStage(s: string): "knockout" | "stage1" | "stage2" | null {
 }
 
 function RunRaceInProgressInternal(props: { round: Round }) {
-  const [stage, setStage] = createSignal<Stage>("knockout")
+  const {
+    stage,
+    setStage,
+  } = useRaceOptions()
+
   createComputed(on(() => props.round.status, () => {
     const roundStage = props.round.status !== "abandoned" ? props.round.status : stage()
     setStage(roundStage)
   }))
 
-  const [view, setView] = createSignal<View>("list")
-
-  const readonly = () => props.round.status != stage()
-  const [live, setLive] = createSignal(false)
-  const [collapse, setCollapse] = createSignal(false)
-  const [northern, setNorthern] = createSignal(false)
-  const splits = () => 3
+  const readonly = () => props.round.status == stage()
 
   return (
     <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
-      <RunRaceInProgressHeader
-        round={props.round}
-        northern={northern()}
-        onNorthernChange={() => setNorthern(v => !v)}
-        collapse={collapse()}
-        onCollapseChange={() => setCollapse(v => !v)}
-        live={live()}
-        onLiveChange={() => setLive(v => !v)}
-        view={view()}
-        onViewChange={setView}
-        stage={stage()}
-        onStageChange={setStage}
-      />
+      <RunRaceInProgressHeader round={props.round} />
 
       <Switch>
         {
@@ -59,13 +46,8 @@ function RunRaceInProgressInternal(props: { round: Round }) {
         <Match when={isStage(stage())} keyed>{s =>
           <RunRaceInProgressStage
             round={props.round}
-            readonly={readonly()}
             stage={s}
-            live={live()}
-            collapse={collapse()}
-            northern={northern()}
-            splits={splits()}
-            view={view()}
+            readonly={readonly()}
           />
         }</Match>
         <Match when={stage() == "complete"}>

@@ -9,40 +9,27 @@ import notification from "../hooks/notification";
 import { ErrorOutlineRounded } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { usePrint } from "../hooks/print";
+import { Stage, stages, useRaceOptions, View, views } from "../hooks/results";
 
-const stages = {
-  "stage1": "Stage 1",
-  "stage2": "Stage 2",
-  "knockout": "Knockouts",
-  "complete": "Results",
-} as const
-export type Stage = keyof typeof stages
-
-const views = {
-  "list": "Race List",
-  "mini": "Mini Leagues",
-  "side-by-side": "Side by side",
-  "printable": "Printable",
-} as const
-export type View = keyof typeof views
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 
 const keepValidStages = (s: string, round: Round) => s == round.status || Object.values(round.config).some(c => c[s])
 
 export default function RunRaceInProgressHeader(props: {
   round: Round;
-  northern: boolean;
-  onNorthernChange: () => void;
-  collapse: boolean;
-  onCollapseChange: () => void;
-  live: boolean;
-  onLiveChange: () => void;
-  view: View;
-  onViewChange: (v: View) => void;
-  stage: Stage;
-  onStageChange: (s: Stage) => void;
-
 }) {
+  const {
+    live,
+    switchLive,
+    collapse,
+    switchCollapse,
+    northern,
+    switchNorthern,
+    view,
+    setView,
+    stage,
+    setStage,
+  } = useRaceOptions()
   const [actionsOpen, setActionsOpen] = createSignal(false)
   const handleClose = () => {
     setActionsOpen(false)
@@ -56,7 +43,7 @@ export default function RunRaceInProgressHeader(props: {
     .map(([value, label]) => ({ value, label }))
 
   const errors = createMemo(() => {
-    return Object.entries(props.round.races[props.stage] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
+    return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {
           const draws = dr.results?.filter(r => r.length > 1) || []
@@ -82,7 +69,7 @@ export default function RunRaceInProgressHeader(props: {
     return Object.values(races).every(g => Object.values(g).every(r => r.complete))
   }
 
-  const canReopen = () => props.stage != props.round.status
+  const canReopen = () => stage() != props.round.status
 
   const proceedText = () => {
     const possibleStages = Object.entries(stages).filter(([s]) => keepValidStages(s, props.round))
@@ -131,12 +118,12 @@ export default function RunRaceInProgressHeader(props: {
 
   const reopenStage = createMutation(() => ({
     mutationKey: ["reopenStage"],
-    mutationFn: async (data: { id: string, stage: RaceStage}) => new Promise((res) => {
+    mutationFn: async (data: { id: string, stage: RaceStage }) => new Promise((res) => {
       krmApi.reopenStage(data.id, data.stage);
       res({});
     }),
     onSuccess: () => {
-      notification.success("Reopend stage at " + stages[props.stage])
+      notification.success("Reopend stage at " + stages[stage()])
       queryClient.invalidateQueries({
         queryKey: [props.round.id],
       })
@@ -148,13 +135,14 @@ export default function RunRaceInProgressHeader(props: {
     setReopenConfirmation(true)
   }
   const handleReopen = () => {
-    if (props.stage == "complete") {
+    const s = stage()
+    if (s == "complete") {
       notification.error("Cannot reopen round at completion - YOU SHOULD NEVER SEE THIS!")
       return
     }
     reopenStage.mutate({
       id: props.round.id,
-      stage: props.stage,
+      stage: s,
     })
     setReopenConfirmation(false)
   }
@@ -174,15 +162,15 @@ export default function RunRaceInProgressHeader(props: {
           <CardContent>
             <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
               <FormControlLabel
-                control={<InputSwitch checked={props.northern} onChange={props.onNorthernChange} />}
+                control={<InputSwitch checked={northern()} onChange={switchNorthern} />}
                 label="Race list: northern style"
               />
               <FormControlLabel
-                control={<InputSwitch checked={props.collapse} onChange={props.onCollapseChange} />}
+                control={<InputSwitch checked={collapse()} onChange={switchCollapse} />}
                 label="Minileague: collapse"
               />
               <FormControlLabel
-                control={<InputSwitch checked={props.live} onChange={props.onLiveChange} />}
+                control={<InputSwitch checked={live()} onChange={switchLive} />}
                 label="Minileague: live resuts"
               />
             </div>
@@ -193,74 +181,75 @@ export default function RunRaceInProgressHeader(props: {
         <Selector
           containerProps={{ style: { "min-width": "10em" } }}
           title="Stage"
-          current={stages[props.stage]}
-          onClose={(v: Stage) => props.onStageChange(v ?? props.stage)}
+          current={stages[stage()]}
+          onClose={(v: Stage) => setStage(current => v ?? current)}
           options={stageOptions()}
         />
-        <Selector
-          containerProps={{ style: { "min-width": "10em" } }}
-          title="View"
-          disabled={props.stage == "complete"}
-          current={props.stage == "complete" ? "-" : views[props.view]}
-          onClose={(v: View) => props.onViewChange(v ?? props.view)}
-          options={options}
-        />
+        <Show when={stage() != "complete"}>
+          <Selector
+            containerProps={{ style: { "min-width": "10em" } }}
+            title="View"
+            current={views[view()]}
+            onClose={(v: View) => setView(current => v ?? current)}
+            options={options}
+          />
+        </Show>
         <div style={{ "margin-left": "auto", display: "flex", gap: "1em" }}>
-          <Show when={errors().length}>
-            <PopoverButton
-              title="Errors"
-              messages={errors()}
-              color="error"
-              startIcon={<ErrorOutlineRounded />}
-            />
-          </Show>
-          <Show when={canReopen()}>
-            <Button
-              onClick={handleConfirmReopen}
-            >
-              Reopen
-            </Button>
-            <ModalConfirmAction
-              open={reopenConfirmation()}
-              confirmLabel="Yes"
-              onConfirm={handleReopen}
-              discardLabel="No"
-              onDiscard={() => setReopenConfirmation(false)}
-              confirmText="reopen"
-            >
-              Are you sure? This will clear all results after this stage.
-            </ModalConfirmAction>
-          </Show>
-          <Show when={proceed()}>
-            <Button
-              color="success"
-              onClick={handleConfirmProgress}
-            >
-              {proceedText()}
-            </Button>
-            <ModalConfirmAction
-              open={progressConfirmation()}
-              confirmLabel="Yes"
-              onConfirm={handleProgress}
-              discardLabel="No"
-              onDiscard={() => setProgressConfirmation(false)}
-            >
-              Are you sure? This will lock in the current results.
-            </ModalConfirmAction>
-          </Show>
-          <Show when={["knockout", "stage1", "stage2"].includes(props.stage)}>
+          <Show when={stage() != "complete"}>
+            <Show when={errors().length}>
+              <PopoverButton
+                title="Errors"
+                messages={errors()}
+                color="error"
+                startIcon={<ErrorOutlineRounded />}
+              />
+            </Show>
+            <Show when={canReopen()}>
+              <Button
+                onClick={handleConfirmReopen}
+              >
+                Reopen
+              </Button>
+              <ModalConfirmAction
+                open={reopenConfirmation()}
+                confirmLabel="Yes"
+                onConfirm={handleReopen}
+                discardLabel="No"
+                onDiscard={() => setReopenConfirmation(false)}
+                confirmText="reopen"
+              >
+                Are you sure? This will clear all results after this stage.
+              </ModalConfirmAction>
+            </Show>
+            <Show when={proceed()}>
+              <Button
+                color="success"
+                onClick={handleConfirmProgress}
+              >
+                {proceedText()}
+              </Button>
+              <ModalConfirmAction
+                open={progressConfirmation()}
+                confirmLabel="Yes"
+                onConfirm={handleProgress}
+                discardLabel="No"
+                onDiscard={() => setProgressConfirmation(false)}
+              >
+                Are you sure? This will lock in the current results.
+              </ModalConfirmAction>
+            </Show>
             <Button
               disabled={print()}
               onClick={() => setPrint(true)}
             >
               Print
             </Button>
+            <Button
+              onClick={[setActionsOpen, true]}
+            >
+              Options
+            </Button>
           </Show>
-          <Button
-            onClick={[setActionsOpen, true]}
-          >
-            Options
-          </Button>
         </div>
       </div>
     </>
