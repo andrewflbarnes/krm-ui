@@ -17,7 +17,7 @@ export default function RaceList(props: RaceListProps) {
   return (
     <Typography>
       <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
+        <Table aria-label="simple table dense" size="small">
           <TableBody>
             <For each={props.orderedRaces}>{(race, raceNum) =>
               <RaceTableRow

@@ -168,6 +168,17 @@ export const TeamsLive4: Story = {
   }
 }
 
+/**
+  * Previews don't show results or other similar data
+  */
+export const Preview: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Mini 4 Preview",
+    preview: true,
+  },
+  play: () => {},
+}
 
 const m5 = miniLeagueTemplates.mini5
 export const Teams5: Story = {

@@ -47,7 +47,7 @@ export default function ManageConfigRound(props: {
 
   return (
     <div style={{ display: "flex", "flex-direction": "column", "align-content": "center", gap: "2em", padding: "2em" }}>
-      <Typography variant="h2" textAlign="center">
+      <Typography variant="h2" textAlign="center" whiteSpace="nowrap">
         {props.title}
       </Typography>
       <Divider variant="fullWidth" />
@@ -91,7 +91,7 @@ function PreviewStage(props: {
   knockout?: boolean;
 }) {
   return (
-    <div>
+    <div style={{ margin: "0 auto" }}>
       <Typography variant="h3" style={{ "text-align": "center" }}>
         {props.title}
       </Typography>
@@ -104,7 +104,7 @@ function PreviewStage(props: {
           return (
             <div>
               <Show when={props.knockout} fallback={
-                <MiniLeague name={group.name} races={races} teams={groupTeams} onResultChange={() => { }} />
+                <MiniLeague name={group.name} races={races} teams={groupTeams} preview onResultChange={() => { }} />
               }>
                 <For each={races}>{(r) => (
                   <Typography>

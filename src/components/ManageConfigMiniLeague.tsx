@@ -88,7 +88,7 @@ export default function ManageConfigMiniLeague(props: Props) {
             <Chip label={`${props.template.races.length} races`} size="small" icon={<DownhillSkiing />} color="primary" variant="outlined" />
           </div>
         </Box>
-        <div style={{ display: "flex", "flex-direction": "column", "align-items": "flex-start" }}>
+        <div style={{ display: "flex", "flex-direction": "column", "align-items": "flex-start", "white-space": "nowrap", margin: "0 auto" }}>
           <ValidityCheck valid={validRaceCount()}>
             Correct number of races
           </ValidityCheck>
@@ -106,13 +106,16 @@ export default function ManageConfigMiniLeague(props: Props) {
           </ValidityCheck>
         </div>
       </Box>
-      <MiniLeague
-        races={races()}
-        teams={teams()}
-        name={props.name}
-        readonly
-        onResultChange={() => { }}
-      />
+      <div style={{ margin: "0 auto" }}>
+        <MiniLeague
+          races={races()}
+          teams={teams()}
+          name={props.name}
+          readonly
+          preview
+          onResultChange={() => { }}
+        />
+      </div>
       <div style={{ display: "flex", gap: "2em" }}>
         <Typography>
           <For each={props.template.races}>{(r) => (

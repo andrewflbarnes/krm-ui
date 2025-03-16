@@ -21,6 +21,7 @@ type MiniLeagueProps = {
   races: Race[];
   collapsed?: boolean;
   live?: boolean;
+  preview?: boolean;
   onResultChange: (race: Race) => void;
   readonly?: boolean;
 }
@@ -77,27 +78,6 @@ export default function MiniLeague(props: MiniLeagueProps) {
             </tr>
           </thead>
           <For each={props.teams}>{(team) => {
-            const wins = () => teamPositions().data[team]?.wins
-            const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
-            const posStr = () => {
-              const p = pos()
-              if (teamPositions().pos[p].length == props.teams.length) {
-                if (!props.races.some(r => r.winner)) {
-                  return ""
-                }
-              }
-              const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
-              switch (p) {
-                case 0:
-                  return `${joint}1st 🥇`
-                case 1:
-                  return `${joint}2nd 🥈`
-                case 2:
-                  return `${joint}3rd 🥉`
-                default:
-                  return `${joint}${p + 1}th`
-              }
-            }
             return (
               <tr>
                 <th style={{ "text-align": "left", position: "relative", height: "2em", "white-space": "nowrap" }} scope="row">
@@ -180,21 +160,48 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     </Switch>
                   )
                 }}</For>
-                <td
-                  style={{
-                    height: checkSize,
-                    width: checkSize,
-                  }}
-                >
-                  <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                    {wins()}
-                  </div>
-                </td>
-                <td style={{ width: "7em" }}>
-                  <Show when={finished() || props.live}>
-                    {posStr()}
-                  </Show>
-                </td>
+                <Show when={!props.preview}>{(_) => {
+                  const wins = () => teamPositions().data[team]?.wins
+                  const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
+                  const posStr = () => {
+                    const p = pos()
+                    if (teamPositions().pos[p].length == props.teams.length) {
+                      if (!props.races.some(r => r.winner)) {
+                        return ""
+                      }
+                    }
+                    const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
+                    switch (p) {
+                      case 0:
+                        return `${joint}1st 🥇`
+                      case 1:
+                        return `${joint}2nd 🥈`
+                      case 2:
+                        return `${joint}3rd 🥉`
+                      default:
+                        return `${joint}${p + 1}th`
+                    }
+                  }
+                  return (
+                    <>
+                      <td
+                        style={{
+                          height: checkSize,
+                          width: checkSize,
+                        }}
+                      >
+                        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
+                          {wins()}
+                        </div>
+                      </td>
+                      <td style={{ width: "4em", "white-space": "nowrap", "text-align": "right" }}>
+                        <Show when={finished() || props.live}>
+                          {posStr()}
+                        </Show>
+                      </td>
+                    </>
+                  )
+                }}</Show>
               </tr>
             )
           }}</For>
