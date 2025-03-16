@@ -201,7 +201,6 @@ export function createRound(id: string, league: League, teams: RoundSeeding, dis
     ladies: {},
     board: {},
   } as StageRaces)
-  // TODO details
   return {
     id,
     league,

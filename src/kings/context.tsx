@@ -48,7 +48,6 @@ export function KingsProvider(props: ParentProps) {
   const qps = new URLSearchParams(window.location.search)
   const l = qps.get("league")?.toLowerCase() as League | undefined
   const ctx = makeContext(l)
-  // TODO rather than defaulting show error message to user
   const ctxLeague = ctx[0].league()
   if (ctxLeague != l) {
     const qpstr = qps.toString()
@@ -67,12 +66,10 @@ export function useKings() {
   const [, setSearchParams] = useSearchParams()
   const setLeagueEnhanced = (league: League) => {
     if (state.lock()) {
-      // TODO notify user/throw error
       console.error("Attempt to change league but lock in place", state.league(), league)
       return
     }
     if (!kings[league]) {
-      // TODO notify user/throw error
       console.error("No config exists for requested league", league, Object.keys(kings))
       return
     }

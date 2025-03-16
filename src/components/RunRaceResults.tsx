@@ -3,7 +3,6 @@ import { For } from "solid-js";
 import { RoundResult } from "../kings";
 import styles from "./RunRaceResults.module.css";
 
-// TODO move somewhere else
 function kingsPoints(division: string, rank: number) {
   const start = division == "mixed" ? 30 : division == "ladies" ? 15 : 10
   switch (rank) {

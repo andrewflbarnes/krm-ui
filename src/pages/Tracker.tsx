@@ -26,7 +26,6 @@ export default function Tracker() {
     if (!leagueData) {
       throw immediateError("No data found")
     }
-    // TODO move this to a memo or similar
     return parseResults(leagueData)
   }
 

@@ -5,7 +5,7 @@ export default function RunRaceAbandoned(props: { round: Round }) {
   return (
     <>
       <Typography>
-        TODO Races were abandoned for this {props.round.league} round.
+        Races were abandoned for this {props.round.league} round.
       </Typography>
       <Typography>
         Date: {props.round.date.toLocaleDateString()}

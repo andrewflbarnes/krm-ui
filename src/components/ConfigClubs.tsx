@@ -29,7 +29,7 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
   const handleConfirmed = () => {
     setEdit(undefined)
     setConfirm(false)
-    alert("TODO save")
+    alert("Unimplemented save :(")
   }
   // discard confirmation modal
   const [discard, setDiscard] = createSignal(false)
@@ -81,7 +81,6 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
       <Modal onClose={handleDiscardClickaway} open={!!edit()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
         <ConfigEditTeam edit={edit()} onDiscard={handleDiscard} onConfirm={handleConfirm} />
       </Modal>
-      {/* TODO consolidate? */}
       <ModalConfirmAction open={confirm()} onDiscard={handleUnconfirmed} onConfirm={handleConfirmed}>
         Are you sure?
       </ModalConfirmAction>

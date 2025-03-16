@@ -20,7 +20,6 @@ function orderResults(a: Result, b: Result): number {
       return bLast[i] - aLast[i]
     }
   }
-  // TODO previous year seeding
   return -1
 }
 

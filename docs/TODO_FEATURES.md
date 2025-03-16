@@ -32,23 +32,33 @@
 
 ## Must
 
+- [ ] Modify configuration presets for mini leagues
+- [ ] Modify configuration presets for rounds
+- [ ] Set round metadata on creation (description, venue, round number, etc.)
+- [ ] Custom URLs for pulling config
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
-- [ ] Modify configuration presets for mini leagues
-- [ ] Modify configuration presets for rounds
 - [ ] Ability to run individual board races
+- [ ] Support abandoning races
+- [ ] Support modifying league data
 
 ## Should
 
 - [ ] DSQ reasons
+- [ ] Support optional knockouts
+- [ ] Generate results HTML
+- [ ] Support custom splits (instead of an alogrithmic split 3 ways)
+- [ ] Track seeding by year from tracker/scraping
+- [ ] Add validity checks to ManageConfigRound
 - [ ] Import data from file
 - [ ] Import data via link (base64)
-- [ ] Generate results HTML
 
 ## Could
 
+- [ ] Use theme colors for minileague highlighting
 - [ ] Preserve valid future stage results when progressing following a re-open
 - [ ] Push results to Google Sheets
 - [ ] Push results to website
+- [ ] Consolidate the confirm/discard modals in ConfigClub

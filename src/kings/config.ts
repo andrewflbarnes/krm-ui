@@ -25,9 +25,6 @@ const config = {
 const typedConfig: Record<League, LeagueConfig> = config
 export default typedConfig
 
-// TODO testing to validate the below i.e.
-// - the count of teams matches the count of unique teams in races
-// - each unique team races each other
 // Naming convention is <type><number of teams>
 // - type: mini - a normal mini league
 // - type: full - a mini league which contains every team from that round
@@ -149,7 +146,6 @@ export const raceConfig: {
         template: miniLeagueTemplates.full3,
       },
     ],
-    // TODO unnecessary knockouts?
     results: wrapSingleGroupResults(3),
   },
   4: {
@@ -160,7 +156,6 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ],
-    // TODO unnecessary knockouts?
     results: wrapSingleGroupResults(4),
   },
   5: {
@@ -171,7 +166,6 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini5,
       },
     ],
-    // TODO unnecessary knockouts?
     results: wrapSingleGroupResults(5),
   },
   6: {
@@ -182,7 +176,6 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini6,
       },
     ],
-    // TODO unnecessary knockouts?
     results: wrapSingleGroupResults(6),
   },
   7: {
@@ -219,7 +212,6 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ],
-    // TODO unnecessary knockouts?
     results: [
       ...resultsForGroup("stage2", "I", [
         { position: 0, rank: 1 },
@@ -304,8 +296,7 @@ export const raceConfig: {
         template: miniLeagueTemplates.knockout,
       },
     ],
-    // TODO unnecessary knockouts?
-    results: resultsFromKnockout(8),
+    //optional knockouts example
     //results: [
     //  ...resultsForGroup("stage2", "I", [
     //    { position: 1, rank: 1 },

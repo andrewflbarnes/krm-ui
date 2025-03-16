@@ -11,7 +11,6 @@ import RaceListPrintable from "./RaceListPrintable";
 import { usePrint } from "../hooks/print";
 import { useRaceOptions } from "../hooks/results";
 
-// TODO move to a utility file
 const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean) => {
   const topSplits = northern ? splits : 1;
   const inSplits = northern ? 1 : splits;
@@ -57,7 +56,6 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     northern,
     view,
   } = useRaceOptions()
-  // TODO actually make splits functional
   const splits = () => 3
 
   const mut = createMutation(() => ({

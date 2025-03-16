@@ -23,7 +23,6 @@ export default function ConfigActions() {
       })
   }
 
-  // TODO store and use the custom tracker URL(s)
   const dummyTracker = "https://example.com"
   const [mutTracker, setMutTracker] = createSignal(dummyTracker)
   const [updatingTracker, setUpdatingTracker] = createSignal(false)
@@ -33,7 +32,7 @@ export default function ConfigActions() {
     setUpdatingTracker(false)
   }
   const updateTracker = () => {
-    alert("TODO update to " + mutTracker())
+    alert("Unimplemented update to " + mutTracker())
     notification.success("Tracker URL updated")
     setMutTracker(dummyTracker)
     setConfirmingUpdateTracker(false)

@@ -3,8 +3,6 @@ import { calcTeamResults, createRound } from "../kings/round-utils";
 
 export type RoundInfo = Omit<Round, "races">
 
-// TODO transition to async so we can support indexedDB and an eventual API
-// TODO transition to tanstack query
 export type KrmApi = {
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
@@ -272,8 +270,6 @@ export default (function krmApiLocalStorage(): KrmApi {
       saveRound(round)
     },
     reopenStage(id: string, stage: RaceStage) {
-      // TODO validate round we are reopening to is valid (e.g. we can't reopen
-      // to stage 2 if stage 1 is incomplete or no stage 2 config)
       const round: Round = this.getRound(id)
       reopenRoundAtStage(round, stage)
       saveRound(round)

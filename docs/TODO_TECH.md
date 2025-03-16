@@ -11,14 +11,21 @@
 
 ## Must
 
-- [ ] Place some sensible error boundaries in, at least at a page level
+- [ ] Transition all "api" interactions to tanstack query and async
+- [ ] Verify stage 2 should always have same number of teams as stage 1
+- [ ] Validation checks when re-opening a stage
 - [ ] Service worker for offline use
 - [ ] Responsive layout
+- [ ] Place some sensible error boundaries in, at least at a page level
 
 ## Should
 
+- [ ] For unknown leagues display an error message/page
+- [ ] Rationalise utility functions like orderRaces, kingsPoints
 - [ ] Deploy to kingsski.club
 - [ ] Online data sync
 - [ ] Consistent, sensible boundaries of responsiblity between context and api
+- [ ] Throw error if attempting to change league when lock in place in setLeagueEnhanced
+- [ ] Throw error if attempting to change to an invalid league in setLeagueEnhanced
 
 [vite-build-bug]: https://github.com/solidjs/vite-plugin-solid/issues/164

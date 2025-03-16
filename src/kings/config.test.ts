@@ -63,7 +63,6 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
       })
     })
 
-    // TODO not necessarily true?
     it(`number of seeded teams in stage 2 is ${numTeams}`, () => {
       const seededTeams = config.stage2.flatMap(group => group.seeds)
         .filter((seed, idx, arr) =>
@@ -111,7 +110,6 @@ describe.each(Object.entries(raceConfig))('race config for %d teams', (numTeamsS
       config.knockout.forEach(ko => {
         ko.seeds.forEach(({ group: groupName, position }) => {
           it(`knockout from group ${groupName} position ${position} is valid`, () => {
-            // TODO knockouts could come from stage 1?
             expect(config.stage2.some(group => group.name == groupName && group.seeds.length >= position)).toBe(true)
           })
         })

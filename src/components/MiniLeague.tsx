@@ -4,7 +4,6 @@ import { Race } from "../kings";
 import { calcTeamResults, collapseRaces } from "../kings/utils";
 import RaceResultIcon from "../ui/RaceResultIcon";
 
-// TODO use theme colors
 const borderColour = "dimgray"
 const highlightColour = "lightgreen"
 const borderStyle = "2px solid"
@@ -51,7 +50,6 @@ export default function MiniLeague(props: MiniLeagueProps) {
   }
   const finished = () => props.races.every(({ winner }) => !!winner)
 
-  // TODO split up the below into separate components maybe
   return (
     <>
       <ContextMenu
