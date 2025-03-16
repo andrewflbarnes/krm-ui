@@ -261,7 +261,7 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ],
-    // FIXME EXAMPLE ONLY!!! THESE KNOCKOUTS ARE UNNECESSARY
+    // EXAMPLE ONLY!!! THESE KNOCKOUTS ARE UNNECESSARY
     knockout: [
       {
         name: "7th/8th",
@@ -296,7 +296,6 @@ export const raceConfig: {
         template: miniLeagueTemplates.knockout,
       },
     ],
-    //optional knockouts example
     //results: [
     //  ...resultsForGroup("stage2", "I", [
     //    { position: 1, rank: 1 },

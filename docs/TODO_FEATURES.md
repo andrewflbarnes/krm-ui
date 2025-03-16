@@ -32,6 +32,7 @@
 
 ## Must
 
+- [ ] Add all configs up to 32 teams (:
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Set round metadata on creation (description, venue, round number, etc.)

@@ -228,7 +228,6 @@ export default (function krmApiLocalStorage(): KrmApi {
       const groupRaces = groupData?.races
       if (!groupRaces || !groupRaces[groupRace]) {
         console.error(`No race exists for ${stage} ${division} ${group} ${groupRace}`, round.races)
-        // FIXME the below doesn't result in any feedback to the user on the UI
         throw new Error(`No race exists for ${stage} ${division} ${group} ${groupRace}`)
       }
       groupRaces[groupRace] = race
