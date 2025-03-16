@@ -1,5 +1,5 @@
 import { DownhillSkiing, Groups } from "@suid/icons-material";
-import { Chip, Typography } from "@suid/material";
+import { Box, Chip, Typography } from "@suid/material";
 import { createMemo, For } from "solid-js";
 import { MiniLeagueTemplate, Race } from "../kings";
 import ValidityCheck from "../ui/ValidityCheck";
@@ -46,9 +46,40 @@ export default function ManageConfigMiniLeague(props: Props) {
     teamMlIndices: r,
   }))
   return (
-    <div style={{ display: "flex", "flex-direction": "column", "justify-content": "center", "align-items": "center", gap: "1rem" }}>
-      <div style={{ display: "flex", "align-items": "center", gap: "2em", width: "100%", "justify-content": "center" }}>
-        <div style={{ display: "flex", "flex-direction": "column", "align-items": "flex-end", width: "50%" }}>
+    <div style={{
+      display: "flex",
+      "flex-direction": "column",
+      "justify-content": "center",
+      "align-items": "center",
+      gap: "1rem",
+    }}>
+      <Box
+        style={{
+          display: "flex",
+          "align-items": "center",
+          gap: "2em",
+          width: "100%",
+          "justify-content": "center"
+        }}
+        sx={{
+          flexDirection: {
+            xs: "column",
+            md: "row",
+          },
+        }}
+      >
+        <Box
+          style={{
+            display: "flex",
+            "flex-direction": "column",
+          }}
+          sx={{
+            alignItems: {
+              xs: "center",
+              md: "flex-end",
+            }
+          }}
+        >
           <Typography variant="h2">
             {props.name}
           </Typography>
@@ -56,13 +87,8 @@ export default function ManageConfigMiniLeague(props: Props) {
             <Chip label={`${props.template.teams} teams`} size="small" icon={<Groups />} color="primary" variant="outlined" />
             <Chip label={`${props.template.races.length} races`} size="small" icon={<DownhillSkiing />} color="primary" variant="outlined" />
           </div>
-        </div>
-        <div style={{
-          display: "flex",
-          "flex-direction": "column",
-          "align-items": "flex-start",
-          width: "50%",
-        }}>
+        </Box>
+        <div style={{ display: "flex", "flex-direction": "column", "align-items": "flex-start" }}>
           <ValidityCheck valid={validRaceCount()}>
             Correct number of races
           </ValidityCheck>
@@ -79,7 +105,7 @@ export default function ManageConfigMiniLeague(props: Props) {
             Teams don't race themselves
           </ValidityCheck>
         </div>
-      </div>
+      </Box>
       <MiniLeague
         races={races()}
         teams={teams()}

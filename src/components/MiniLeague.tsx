@@ -100,7 +100,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
             }
             return (
               <tr>
-                <th style={{ "text-align": "left", position: "relative", height: "2em", width: "10em" }} scope="row">
+                <th style={{ "text-align": "left", position: "relative", height: "2em", "white-space": "nowrap" }} scope="row">
                   <div
                     style={{
                       opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
