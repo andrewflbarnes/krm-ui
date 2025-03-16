@@ -28,10 +28,10 @@
 - [x] Visualise configuration presets for mini leagues
 - [x] Visualise configuration presets for rounds
 - [x] Don't show race stages which have no config
+- [ ] Reopen previous stage
 
 ## Must
 
-- [ ] Reopen previous stage
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)

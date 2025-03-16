@@ -1,5 +1,5 @@
-import { Button, Card, CardActions, CardContent, Modal, Typography } from "@suid/material";
-import { ParentProps } from "solid-js";
+import { Button, Card, CardActions, CardContent, Modal, TextField, Typography } from "@suid/material";
+import { createSignal, ParentProps, Show } from "solid-js";
 
 type ModalConfirmActionProps = {
   open: boolean;
@@ -7,12 +7,15 @@ type ModalConfirmActionProps = {
   onConfirm: () => void;
   confirmVariant?: "text" | "outlined" | "contained";
   confirmColor?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
+  confirmText?: string;
   discardLabel?: string;
   onDiscard: () => void;
   discardVariant?: "text" | "outlined" | "contained";
   discardColor?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
 }
 export default function ModalConfirmAction(props: ParentProps<ModalConfirmActionProps>) {
+  const [confirmText, setConfirmText] = createSignal()
+  const canConfirm = () => !props.confirmText || confirmText() == props.confirmText
   return (
     <Modal
       open={props.open}
@@ -23,12 +26,25 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
           <Typography>
             {props.children}
           </Typography>
+          <Show when={props.confirmText}>
+            <br />
+            <Typography>
+              Type {props.confirmText} to confirm:
+            </Typography>
+            <TextField
+              size="small"
+              color="error"
+              value={confirmText()}
+              onChange={(_, v) => setConfirmText(v)}
+            />
+          </Show>
         </CardContent>
         <CardActions>
           <Button
             onClick={props.onConfirm}
             variant={props.confirmVariant || "text"}
             color={props.confirmColor || "primary"}
+            disabled={!canConfirm()}
           >
             {props.confirmLabel || "Yes"}
           </Button>

@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
-import { Round } from "../kings";
+import { GroupRaces, Round } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
 import krmApi from "../api/krm";
@@ -56,7 +56,7 @@ export default function RunRaceInProgressHeader(props: {
     .map(([value, label]) => ({ value, label }))
 
   const errors = createMemo(() => {
-    return Object.entries(props.round.races[props.stage] || {}).reduce((acc, [div, divRaces]) => {
+    return Object.entries(props.round.races[props.stage] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {
           const draws = dr.results?.filter(r => r.length > 1) || []
@@ -81,6 +81,9 @@ export default function RunRaceInProgressHeader(props: {
 
     return Object.values(races).every(g => Object.values(g).every(r => r.complete))
   }
+
+  const canReopen = () => props.stage != props.round.status
+
   const proceedText = () => {
     const possibleStages = Object.entries(stages).filter(([s]) => keepValidStages(s, props.round))
     const currentStageIndex = possibleStages.findIndex(([s]) => s == props.round.status)
@@ -114,6 +117,15 @@ export default function RunRaceInProgressHeader(props: {
       notification.error(`Failed to progress round: ${progressRound.error.message}`)
     }
   }))
+
+  const [reopenConfirmation, setReopenConfirmation] = createSignal(false)
+  const handleConfirmReopen = () => {
+    setReopenConfirmation(true)
+  }
+  const handleReopen = () => {
+    alert("TODO!")
+    setReopenConfirmation(false)
+  }
 
   const [progressConfirmation, setProgressConfirmation] = createSignal(false)
   const handleConfirmProgress = () => {
@@ -174,6 +186,24 @@ export default function RunRaceInProgressHeader(props: {
               color="error"
               startIcon={<ErrorOutlineRounded />}
             />
+          </Show>
+          <Show when={canReopen()}>
+            <Button
+              color="success"
+              onClick={handleConfirmReopen}
+            >
+              Reopen
+            </Button>
+            <ModalConfirmAction
+              open={reopenConfirmation()}
+              confirmLabel="Yes"
+              onConfirm={handleReopen}
+              discardLabel="No"
+              onDiscard={() => setReopenConfirmation(false)}
+              confirmText="reopen"
+            >
+              Are you sure? This will clear all results after this stage.
+            </ModalConfirmAction>
           </Show>
           <Show when={proceed()}>
             <Button
