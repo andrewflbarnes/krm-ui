@@ -15,7 +15,7 @@ type ModalConfirmActionProps = {
 }
 export default function ModalConfirmAction(props: ParentProps<ModalConfirmActionProps>) {
   const [confirmText, setConfirmText] = createSignal()
-  const canConfirm = () => !props.confirmText || confirmText() == props.confirmText
+  const canConfirm = () => !props.confirmText || confirmText() == props.confirmText || confirmText() == `"${props.confirmText}"`
   return (
     <Modal
       open={props.open}
@@ -29,7 +29,7 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
           <Show when={props.confirmText}>
             <br />
             <Typography>
-              Type {props.confirmText} to confirm:
+              Type "{props.confirmText}" to confirm:
             </Typography>
             <TextField
               size="small"
@@ -37,6 +37,11 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
               value={confirmText()}
               onChange={(_, v) => setConfirmText(v)}
             />
+            <Show when={confirmText() == `"${props.confirmText}"`}>
+              <Typography mt="1em">
+                Not with the actual quotes you muppet - I shall accept nevertheless...
+              </Typography>
+            </Show>
           </Show>
         </CardContent>
         <CardActions>

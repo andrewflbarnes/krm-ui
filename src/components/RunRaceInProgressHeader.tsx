@@ -189,7 +189,6 @@ export default function RunRaceInProgressHeader(props: {
           </Show>
           <Show when={canReopen()}>
             <Button
-              color="success"
               onClick={handleConfirmReopen}
             >
               Reopen
