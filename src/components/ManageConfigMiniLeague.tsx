@@ -120,7 +120,7 @@ export default function ManageConfigMiniLeague(props: Props) {
           teams={teams()}
           name={"Group " + props.name}
           readonly
-          preview
+          noResults
           onResultChange={() => { }}
         />
       </div>

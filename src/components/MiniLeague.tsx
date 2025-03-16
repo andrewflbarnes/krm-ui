@@ -21,7 +21,7 @@ type MiniLeagueProps = {
   races: Race[];
   collapsed?: boolean;
   live?: boolean;
-  preview?: boolean;
+  noResults?: boolean;
   onResultChange: (race: Race) => void;
   readonly?: boolean;
 }
@@ -70,11 +70,13 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   {props.name}
                 </Typography>
               </td>
-              <td colspan={1}>
-                <Show when={props.races.every(({ winner }) => !!winner)}>
-                  <Typography variant="caption" color="success.main">Complete</Typography>
-                </Show>
-              </td>
+              <Show when={!props.noResults}>
+                <td colspan={1}>
+                  <Show when={props.races.every(({ winner }) => !!winner)}>
+                    <Typography variant="caption" color="success.main">Complete</Typography>
+                  </Show>
+                </td>
+              </Show>
             </tr>
           </thead>
           <For each={props.teams}>{(team) => {
@@ -160,10 +162,10 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     </Switch>
                   )
                 }}</For>
-                <Show when={!props.preview}>{(_) => {
+                <Show when={!props.noResults}>{(_) => {
                   const wins = () => teamPositions().data[team]?.wins
                   const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
-                  const posStr = () => {
+                  const posInfo = () => {
                     const p = pos()
                     if (teamPositions().pos[p].length == props.teams.length) {
                       if (!props.races.some(r => r.winner)) {
@@ -173,13 +175,13 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
                     switch (p) {
                       case 0:
-                        return `${joint}1st 🥇`
+                        return [`${joint}1st`, "🥇"]
                       case 1:
-                        return `${joint}2nd 🥈`
+                        return [`${joint}2nd`, "🥈"]
                       case 2:
-                        return `${joint}3rd 🥉`
+                        return [`${joint}3rd`, "🥉"]
                       default:
-                        return `${joint}${p + 1}th`
+                        return [`${joint}${p + 1}th`, ""]
                     }
                   }
                   return (
@@ -194,10 +196,17 @@ export default function MiniLeague(props: MiniLeagueProps) {
                           {wins()}
                         </div>
                       </td>
-                      <td style={{ width: "4em", "white-space": "nowrap", "text-align": "right" }}>
-                        <Show when={finished() || props.live}>
-                          {posStr()}
-                        </Show>
+                      <td style={{ width: "3em" }}>
+                        <div style={{ "white-space": "nowrap", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
+                          <Show when={finished() || props.live}>
+                            <div>
+                              {posInfo()[0]}
+                            </div>
+                            <div>
+                              {posInfo()[1]}
+                            </div>
+                          </Show>
+                        </div>
                       </td>
                     </>
                   )

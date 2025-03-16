@@ -169,15 +169,14 @@ export const TeamsLive4: Story = {
 }
 
 /**
-  * Previews don't show results or other similar data
+  * Disable results info on RHS
   */
-export const Preview: Story = {
+export const NoResults: Story = {
   args: {
     ...Teams4.args,
-    name: "Mini 4 Preview",
-    preview: true,
+    name: "Mini 4 No Results",
+    noResults: true,
   },
-  play: () => {},
 }
 
 const m5 = miniLeagueTemplates.mini5
