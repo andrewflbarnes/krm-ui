@@ -88,7 +88,15 @@ export default function ManageConfigMiniLeague(props: Props) {
             <Chip label={`${props.template.races.length} races`} size="small" icon={<DownhillSkiing />} color="primary" variant="outlined" />
           </div>
         </Box>
-        <div style={{ display: "flex", "flex-direction": "column", "align-items": "flex-start", "white-space": "nowrap", margin: "0 auto" }}>
+        <Box
+          style={{ display: "flex", "flex-direction": "column", "align-items": "flex-start", "white-space": "nowrap" }}
+          sx={{
+            margin: {
+              xs: "0 auto",
+              md: 0,
+            }
+          }}
+        >
           <ValidityCheck valid={validRaceCount()}>
             Correct number of races
           </ValidityCheck>
@@ -104,7 +112,7 @@ export default function ManageConfigMiniLeague(props: Props) {
           <ValidityCheck valid={noSelfRaces()}>
             Teams don't race themselves
           </ValidityCheck>
-        </div>
+        </Box>
       </Box>
       <div style={{ margin: "0 auto" }}>
         <MiniLeague
