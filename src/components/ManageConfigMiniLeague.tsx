@@ -118,13 +118,16 @@ export default function ManageConfigMiniLeague(props: Props) {
         <MiniLeague
           races={races()}
           teams={teams()}
-          name={"Group " + props.name}
+          name={""}
           readonly
           noResults
           onResultChange={() => { }}
         />
       </div>
-      <div style={{ display: "flex", gap: "2em" }}>
+      <div style={{ display: "flex", gap: "2em", "flex-direction": "column" }}>
+        <Typography variant="h3">
+          Races
+        </Typography>
         <Typography>
           <For each={props.template.races}>{(r) => (
             <div>
