@@ -1,16 +1,17 @@
 import { useNavigate, useParams } from "@solidjs/router"
 import { createQuery } from "@tanstack/solid-query"
 import { createSignal } from "solid-js"
-import { Round } from "../kings"
+import { Round, Stage } from "../kings"
 import krmApi from "../api/krm"
 
-export const stages = {
+export const stages: {
+  [s in Stage]: string
+} = {
   "stage1": "Stage 1",
   "stage2": "Stage 2",
   "knockout": "Knockouts",
   "complete": "Results",
 } as const
-export type Stage = keyof typeof stages
 
 export const views = {
   "list": "Race List",
