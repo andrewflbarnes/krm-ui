@@ -16,6 +16,7 @@ const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
 const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRaceAbandoned = lazy(() => import("./pages/RunRaceAbandoned"));
 const RunRaceInProgress = lazy(() => import("./pages/RunRaceInProgress"));
+const RunRaceRedirect = lazy(() => import("./pages/RunRaceRedirect"));
 const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
 const ManageRound = lazy(() => import("./pages/ManageRound"));
 const RunRace = lazy(() => import("./pages/RunRace"));
@@ -48,6 +49,7 @@ export default function App() {
           <Route path="/:devview?" />
         </Route>
         <Route path="/:raceid" component={RunRace} info={{ breadcrumb: "Race" }}>
+          <Route path="/" component={RunRaceRedirect} />
           <Route path="/abandoned" component={RunRaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
           <Route path="/:stage" component={RunRaceInProgress} info={{ breadcrumb: "Stage" }} />
         </Route>
