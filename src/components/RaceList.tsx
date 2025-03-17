@@ -99,6 +99,7 @@ function RaceTableRow(props: {
                 props.onRaceUpdate({
                   ...props.race,
                   winner: undefined,
+                  indicators: undefined,
                   team1Dsq: undefined,
                   team2Dsq: undefined
                 })
