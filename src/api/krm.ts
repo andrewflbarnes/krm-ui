@@ -1,8 +1,8 @@
-import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage } from "../kings"
+import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage, Stage } from "../kings"
 import { calcTeamResults, createRound } from "../kings/round-utils";
 
 export type RoundInfo = Omit<Round, "races">
-
+export type ProgressionStage = Exclude<Stage, "stage1">;
 export type KrmApi = {
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
@@ -11,7 +11,7 @@ export type KrmApi = {
   getRound(id: string): Round;
   deleteRound(id: string): void;
   updateRace(id: string, race: Race): void;
-  progressRound(id: string): RaceStage;
+  progressRound(id: string): ProgressionStage;
   reopenStage(id: string, stage: RaceStage): void;
 }
 
@@ -247,10 +247,10 @@ export default (function krmApiLocalStorage(): KrmApi {
 
       saveRound(round)
     },
-    progressRound(id: string) {
+    progressRound(id: string): ProgressionStage {
       const round: Round = this.getRound(id)
       const { status } = round
-      const nextStatus = (function(): "stage2" | "knockout" | "complete" {
+      const nextStatus = (function(): ProgressionStage {
         switch (status) {
           case "stage1":
             return progressRoundStage(round, status, "stage2")

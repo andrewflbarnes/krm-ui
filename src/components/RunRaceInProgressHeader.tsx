@@ -1,7 +1,7 @@
 import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
-import { GroupRaces, RaceStage, Round } from "../kings";
+import { GroupRaces, RaceStage, Round, Stage } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
 import krmApi from "../api/krm";
@@ -9,7 +9,7 @@ import notification from "../hooks/notification";
 import { ErrorOutlineRounded } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { usePrint } from "../hooks/print";
-import { Stage, stages, useRaceOptions, View, views } from "../hooks/results";
+import { stages, useRaceOptions, View, views } from "../hooks/results";
 import { isStage } from "../kings/utils";
 
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))

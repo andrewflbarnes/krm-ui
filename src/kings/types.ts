@@ -6,6 +6,7 @@ export type Division = typeof divisions[number];
 export type League = typeof leagues[number];
 
 export type RaceStage = "stage1" | "stage2" | "knockout";
+export type Stage = RaceStage | "complete";
 
 export type Race = {
   /** The division this race is in */
@@ -179,7 +180,7 @@ export type DivisionResults = {
   [division: string]: Result[]
 }
 
-/** All results for a club in a season by division */
+/** All results in a season by club, then division, then team */
 export type LeagueData = {
   [club: string]: {
     teams: {
@@ -193,6 +194,7 @@ export type LeagueData = {
   }
 }
 
+/** The competing teams for a round by division, then seed order */
 export type RoundSeeding = {
   [k in Division]: string[]
 }
