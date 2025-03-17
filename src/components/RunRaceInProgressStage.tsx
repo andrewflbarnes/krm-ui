@@ -113,15 +113,15 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
       <Stack direction="row" gap="1em" style={{ "justify-content": "center" }}>
         <Show when={showList()}>
-          <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
-            <Stack>
+          <Card sx={{ p: 3 }} style={{ "overflow-x": "auto", height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
+            <Stack width="100%">
               <RaceList knockout={props.stage == "knockout"} orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={props.readonly} />
             </Stack>
           </Card>
         </Show>
         <Show when={showMiniLeagues()}>
-          <Card sx={{ p: 3 }} style={{ height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
-            <Stack gap="2em">
+          <Card sx={{ p: 3 }} style={{ "overflow-x": "auto", height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
+            <Stack gap="2em" width="100%">
               <For each={Object.entries(props.round.races[props.stage])}>{([div, divRaces]) => (
                 <For each={Object.entries(divRaces)}>{([name, { races, teams }]) => (
                   <MiniLeague
