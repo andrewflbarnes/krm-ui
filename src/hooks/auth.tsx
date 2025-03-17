@@ -1,4 +1,4 @@
-import { ClerkProvider, useAuth as useClerkAuth, useClerk, useUser } from "clerk-solidjs"
+import { ClerkProvider, useAuth as useClerkAuth, useUser } from "clerk-solidjs"
 import { signInWithCustomToken, signOut, User } from "firebase/auth"
 import { Accessor, createComputed, createContext, createMemo, createSignal, ParentProps, useContext } from "solid-js"
 import { auth, db } from "../firebase"

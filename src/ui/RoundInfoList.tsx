@@ -14,7 +14,7 @@ type RoundInfoListProps = {
   handleConfirmDelete: (id: string) => void;
   handleConfirmExport: (id: string) => void;
   handleUploadRound: (id: string) => void;
-  onCopyToClipboard : (id: string) => void;
+  onCopyToClipboard: (id: string) => void;
   handleInfo: (roundInfo: RoundInfo) => void;
   rounds: RoundInfo[];
   canUpload?: boolean;
@@ -22,20 +22,23 @@ type RoundInfoListProps = {
 }
 
 export default function RoundInfoList(props: RoundInfoListProps) {
-  const rounds = createMemo(() => props.rounds.reduce((acc, round) => {
-    if (round.owner == "local") {
-      acc[1].rounds.push(round)
-    } else if (round.owner == props.userId) {
-      acc[0].rounds.push(round)
-    } else {
-      acc[2].rounds.push(round)
-    }
-    return acc
-  }, [
-    { whose: "Your tracked", rounds: [] },
-    { whose: "Your untracked", rounds: [] },
-    { whose: "Others'", rounds: [] },
-  ]))
+  const rounds = createMemo(() => {
+    const userId = props.userId
+    return props.rounds.reduce((acc, round) => {
+      if (round.owner == "local") {
+        acc[0].rounds.push(round)
+      } else if (round.owner == userId) {
+        acc[1].rounds.push(round)
+      } else {
+        acc[2].rounds.push(round)
+      }
+      return acc
+    }, [
+      { whose: "Your untracked", rounds: [] },
+      { whose: "Your tracked", rounds: [] },
+      { whose: "Others'", rounds: [] },
+    ])
+  })
 
   const firstAppearance = () => rounds().findIndex(({ rounds }) => rounds.length > 0)
   const firstWhose = () => rounds()[firstAppearance()]?.whose || ""
@@ -129,7 +132,7 @@ function RoundInfoRow(props: {
               </>
             )
           }}</MoreMenu>
-          <Link href={`/${props.round.id}`}>
+          <Link href={`/${props.round.id}/${props.round.status}`}>
             <IconButton>
               <Show when={inProgress()}
                 fallback={<Assignment />}

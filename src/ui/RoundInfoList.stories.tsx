@@ -32,16 +32,18 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
+const examplepTeams = {
+  mixed: ["Bath 1", "Bristol 1", "Cardiff 1", "Exeter 1", "Plymouth 1", "Swansea 1"],
+  ladies: ["Plymouth 1", "Swansea 1"],
+  board: ["Aberystwyth 1", "Bath 1", "Bristol 1", "Cardiff 1", "Exeter 1", "Plymouth 1", "Swansea 1"],
+}
 const exampleRound: RoundInfo = {
   id: "round-id-12345",
   status: "complete",
   venue: "Gloucester",
   description: "This is a local round with a lengthy description for the round",
-  teams: {
-    mixed: ["Bath 1", "Bristol 1", "Cardiff 1", "Exeter 1", "Plymouth 1", "Swansea 1"],
-    ladies: ["Plymouth 1", "Swansea 1"],
-    board: ["Aberystwyth 1", "Bath 1", "Bristol 1", "Cardiff 1", "Exeter 1", "Plymouth 1", "Swansea 1"],
-  },
+  teams: examplepTeams,
+  distributionOrder: examplepTeams,
   owner: "local",
   league: "western",
   date: new Date(),

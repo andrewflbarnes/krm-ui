@@ -1,12 +1,12 @@
-import { Button, Card, CardContent, FormControlLabel, IconButton, Modal, Switch as InputSwitch } from "@suid/material";
+import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
 import { createMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { GroupRaces, RaceStage, Round, Stage } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
-import krmApi from "../api/krm";
+import krmApi, { ProgressionStage } from "../api/krm";
 import notification from "../hooks/notification";
-import { ErrorOutlineRounded, Upload } from "@suid/icons-material";
+import { ErrorOutlineRounded } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { usePrint } from "../hooks/print";
 import { stages, useRaceOptions, View, views } from "../hooks/results";
@@ -58,7 +58,7 @@ export default function RunRaceInProgressHeader(props: {
     }, [])
   })
 
-  const { userId, authenticated } = useAuth()
+  const { userId } = useAuth()
   const owned = () => props.round.owner == "local" || props.round.owner == userId()
 
   const proceed = () => {
@@ -132,11 +132,6 @@ export default function RunRaceInProgressHeader(props: {
                   startIcon={<ErrorOutlineRounded />}
                 />
               </Show>
-              <Show when={owned()}>
-                <IconButton disabled={!authenticated()}>
-                  <Upload />
-                </IconButton>
-              </Show>
               <Show when={canReopen()}>
                 <ReopenButton id={props.round.id} stage={s} />
               </Show>
@@ -182,7 +177,7 @@ function ProgressButton(props: {
 
   const progressRound = createMutation(() => ({
     mutationKey: ["progressRound"],
-    mutationFn: async (data: { id: string }) => new Promise<RaceStage>((res) => {
+    mutationFn: async (data: { id: string }) => new Promise<ProgressionStage>((res) => {
       const nextStatus = krmApi.progressRound(data.id);
       res(nextStatus);
     }),
