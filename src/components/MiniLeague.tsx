@@ -86,6 +86,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
                       transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimIn,
                       "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
+                      "padding-right": "1em",
                     }}
                   >
                     {team}
