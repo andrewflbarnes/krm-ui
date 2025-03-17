@@ -131,10 +131,10 @@ function Team(props: {
         {props.seed}
       </Typography>
       <Divider orientation="vertical" flexItem />
-      <ListItemText primary={props.team} />
-      <Show when={props.moved}>
+      <ListItemText primary={props.team} sx={{ whiteSpace: "nowrap" }} />
+      <div style={{ visibility: props.moved ? "visible" : "hidden" }}>
         <Chip label={props.moved} color="warning" size="small" variant="outlined" />
-      </Show>
+      </div>
     </ListItem>
   )
 }
