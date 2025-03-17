@@ -124,10 +124,10 @@ function RaceTableRow(props: {
               )
             }}</MoreMenu>
           </div>
-          <div style={{ display: "inline-block", flex: "1 0 0" }}>
+          <div style={{ display: "inline-block", flex: "1 0 0", "min-width": "1em" }}>
             {props.raceStr || (props.raceNum + 1)}
           </div>
-          <div style={{ display: "inline-block" }}>
+          <div style={{ display: "inline-block", "min-width": "1em" }}>
             {props.race.division[0].toUpperCase()}
           </div>
         </div>
