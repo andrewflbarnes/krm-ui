@@ -11,7 +11,7 @@ export type KrmApi = {
   getRound(id: string): Round;
   deleteRound(id: string): void;
   updateRace(id: string, race: Race): void;
-  progressRound(id: string): void;
+  progressRound(id: string): RaceStage;
   reopenStage(id: string, stage: RaceStage): void;
 }
 
@@ -267,6 +267,8 @@ export default (function krmApiLocalStorage(): KrmApi {
       round.status = nextStatus
 
       saveRound(round)
+
+      return nextStatus
     },
     reopenStage(id: string, stage: RaceStage) {
       const round: Round = this.getRound(id)

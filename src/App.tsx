@@ -16,6 +16,8 @@ const Portal = lazy(() => import("./pages/Portal"));
 const Status404 = lazy(() => import("./pages/Status404"));
 const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
 const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
+const RunRaceAbandoned = lazy(() => import("./pages/RunRaceAbandoned"));
+const RunRaceInProgress = lazy(() => import("./pages/RunRaceInProgress"));
 const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
 const ManageRound = lazy(() => import("./pages/ManageRound"));
 const RunRace = lazy(() => import("./pages/RunRace"));
@@ -47,7 +49,10 @@ export default function App() {
         <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
           <Route path="/:devview?" />
         </Route>
-        <Route path="/:raceid" component={RunRace} info={{ breadcrumb: "Race" }} />
+        <Route path="/:raceid" component={RunRace} info={{ breadcrumb: "Race" }}>
+          <Route path="/abandoned" component={RunRaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
+          <Route path="/:stage" component={RunRaceInProgress} info={{ breadcrumb: "Stage" }} />
+        </Route>
         <Route path="*404" component={Status404} info={{ breadcrumb: "OOPS!" }} />
       </Router>
     </div >

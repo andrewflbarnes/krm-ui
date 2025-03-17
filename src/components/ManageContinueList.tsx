@@ -81,7 +81,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
                           </>
                         )
                       }}</MoreMenu>
-                      <Link href={`/${round.id}`}>
+                      <Link href={`/${round.id}/${round.status}`}>
                         <IconButton>
                           <Show when={inProgress()}
                             fallback={<Assignment />}

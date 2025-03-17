@@ -1,4 +1,8 @@
+import { useNavigate, useParams } from "@solidjs/router"
+import { createQuery } from "@tanstack/solid-query"
 import { createSignal } from "solid-js"
+import { Round } from "../kings"
+import krmApi from "../api/krm"
 
 export const stages = {
   "stage1": "Stage 1",
@@ -16,7 +20,6 @@ export const views = {
 } as const
 export type View = keyof typeof views
 
-const [stage, setStage] = createSignal<Stage>("knockout")
 const [view, setView] = createSignal<View>("list")
 const [live, setLive] = createSignal(false)
 const switchLive = () => setLive(v => !v)
@@ -24,11 +27,30 @@ const [collapse, setCollapse] = createSignal(false)
 const switchCollapse = () => setCollapse(v => !v)
 const [northern, setNorthern] = createSignal(false)
 const switchNorthern = () => setNorthern(v => !v)
+const [round, setRound] = createSignal<Round>()
 
 export const useRaceOptions = () => {
+  const navigate = useNavigate()
+  const params = useParams<{ raceid: string, stage?: string }>()
+  const updateStage = (s: Stage) => {
+    if (s && s != params.stage) {
+      navigate(`/${params.raceid}/${s}`)
+    }
+  }
+  const useRound = () => createQuery<Round>(() => ({
+    queryKey: [params.raceid],
+    queryFn: async () => new Promise((res) => {
+      res(krmApi.getRound(params.raceid))
+    }),
+    staleTime: 1000 * 60 * 5,
+  }))
   return {
-    stage,
-    setStage,
+    useRound,
+    raceid: () => params.raceid,
+    stage: () => params.stage,
+    round,
+    setRound,
+    setStage: updateStage,
     view,
     setView,
     live,

@@ -1,7 +1,11 @@
 import { raceConfig } from "./config"
 import { parseResults } from "./result-utils"
-import { ClubSeeding, divisions,  Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces } from "./types"
+import { ClubSeeding, divisions,  Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, RaceStage } from "./types"
 import { Race } from "./types"
+
+export function isStage(s: string): RaceStage | null {
+  return s == "stage1" || s == "stage2" || s == "knockout" ? s : null
+}
 
 export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
   return Object.entries(parseResults(leagueConfig)).reduce((acc, [division, seeded]) => {
