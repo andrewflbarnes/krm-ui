@@ -296,6 +296,7 @@ export const raceConfig: {
         template: miniLeagueTemplates.knockout,
       },
     ],
+    results: resultsFromKnockout(8),
     //results: [
     //  ...resultsForGroup("stage2", "I", [
     //    { position: 1, rank: 1 },
