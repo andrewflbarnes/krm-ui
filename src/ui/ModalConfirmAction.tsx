@@ -1,5 +1,5 @@
 import { Button, Card, CardActions, CardContent, Modal, TextField, Typography } from "@suid/material";
-import { createSignal, ParentProps, Show } from "solid-js";
+import { createSignal, onMount, ParentProps, Show } from "solid-js";
 
 type ModalConfirmActionProps = {
   open: boolean;
@@ -14,7 +14,7 @@ type ModalConfirmActionProps = {
   discardColor?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
 }
 export default function ModalConfirmAction(props: ParentProps<ModalConfirmActionProps>) {
-  const [confirmText, setConfirmText] = createSignal()
+  const [confirmText, setConfirmText] = createSignal("")
   const canConfirm = () => !props.confirmText || confirmText() == props.confirmText || confirmText() == `"${props.confirmText}"`
   return (
     <Modal
@@ -27,21 +27,7 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
             {props.children}
           </Typography>
           <Show when={props.confirmText}>
-            <br />
-            <Typography>
-              Type "{props.confirmText}" to confirm:
-            </Typography>
-            <TextField
-              size="small"
-              color="error"
-              value={confirmText()}
-              onChange={(_, v) => setConfirmText(v)}
-            />
-            <Show when={confirmText() == `"${props.confirmText}"`}>
-              <Typography mt="1em">
-                Not with the actual quotes you muppet - I shall accept nevertheless...
-              </Typography>
-            </Show>
+            <ConfirmSection text={props.confirmText} current={confirmText()} onUpdate={setConfirmText} />
           </Show>
         </CardContent>
         <CardActions>
@@ -63,5 +49,35 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
         </CardActions>
       </Card>
     </Modal>
+  )
+}
+
+function ConfirmSection(props: {
+  text: string;
+  onUpdate: (v: string) => void;
+  current: string;
+}) {
+  let ref!: HTMLInputElement
+  onMount(() => ref.focus())
+  return (
+    <>
+      <br />
+      <Typography>
+        Type "{props.text}" to confirm:
+      </Typography>
+      <TextField
+        inputRef={r => ref = r}
+        autoFocus
+        size="small"
+        color="error"
+        value={props.current}
+        onChange={(_, v) => props.onUpdate(v)}
+      />
+      <Show when={props.current == `"${props.text}"`}>
+        <Typography mt="1em">
+          Not with the actual quotes you muppet - I shall accept nevertheless...
+        </Typography>
+      </Show>
+    </>
   )
 }
