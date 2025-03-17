@@ -1,10 +1,11 @@
 import { A } from "@solidjs/router"
-import { Add } from "@suid/icons-material"
+import { Add, ErrorOutlineRounded } from "@suid/icons-material"
 import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment, Typography } from "@suid/material"
-import { batch, For, Show } from "solid-js"
+import { batch, createEffect, createMemo, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
-import { ClubSeeding, Division, divisions, useKings } from "../kings"
+import { ClubSeeding, Division, divisions, raceConfig, useKings } from "../kings"
 import NumberField from "../ui/NumberField"
+import PopoverButton from "../ui/PopoverButton"
 
 type ComponentProps = {
   config: ClubSeeding;
@@ -39,7 +40,7 @@ function TeamSelector(props: ComponentProps) {
     props.onUpdate(club, division, num)
   }
 
-  const total = () => Object.values(props.config).reduce((acc, club) => {
+  const total = createMemo(() => Object.values(props.config).reduce((acc, club) => {
     acc.mixed += club.mixed
     acc.ladies += club.ladies
     acc.board += club.board
@@ -48,7 +49,7 @@ function TeamSelector(props: ComponentProps) {
     mixed: 0,
     ladies: 0,
     board: 0,
-  })
+  }))
 
   const [newTeam, setNewTeam] = createSignal("")
   const addTeam = () => batch(() => {
@@ -56,6 +57,21 @@ function TeamSelector(props: ComponentProps) {
     updateTeams(newTeam(), "ladies", 0)
     updateTeams(newTeam(), "board", 0)
     setNewTeam("")
+  })
+
+  const [errors, setErrors] = createSignal<string[]>([])
+  createEffect(() => {
+    const errors = []
+    if (!raceConfig[total().mixed]) {
+      errors.push(`Mixed: no configuration for ${total().mixed} teams`)
+    }
+    if (!raceConfig[total().ladies]) {
+      errors.push(`Ladies: no configuration for ${total().ladies} teams`)
+    }
+    if (!raceConfig[total().board]) {
+      errors.push(`Board: no configuration for ${total().board} teams`)
+    }
+    setErrors(errors)
   })
 
   return (
@@ -122,6 +138,14 @@ function TeamSelector(props: ComponentProps) {
           </TableBody>
         </Table>
       </TableContainer>
+      <Show when={errors().length}>
+        <PopoverButton
+          title="Errors"
+          messages={errors()}
+          color="error"
+          startIcon={<ErrorOutlineRounded />}
+        />
+      </Show>
     </>
   )
 }

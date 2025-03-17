@@ -4,7 +4,7 @@ const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
 const ManageNewShuffle = lazy(() => import("../components/ManageNewShuffle"))
-import { ClubSeeding, Division, LeagueData, Round, RoundConfig, RoundSeeding, useKings } from "../kings"
+import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
@@ -94,12 +94,12 @@ function ManageNewInternal() {
           ladies: 0,
           board: 0,
         })
-        const lowDivisions = Object.entries(divisionCounts)
+        const noConfig = Object.entries(divisionCounts)
           // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          .filter(([_, count]) => count < 3)
+          .filter(([_, count]) => !raceConfig[count])
           .map(([division]) => division)
-        if (lowDivisions.length > 0) {
-          return [false, "Divisions must have at least 3 teams: " + lowDivisions.join(", ")]
+        if (noConfig.length > 0) {
+          return [false, "Divisions have no config for requested number of teams: " + noConfig.join(", ")]
         }
 
         const lc = k.leagueConfig()
