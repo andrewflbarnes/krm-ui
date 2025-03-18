@@ -11,15 +11,18 @@ const selectors = {
 export default async (request: Request, context: Context) => {
   const url = new URL(request.url)
   const league = url.searchParams.get('league')
+  const customUrl = url.searchParams.get('url')
 
-  if (!league) {
-    return new Response('Missing league', {
+  console.log('league:', league, 'url:', customUrl)
+  if ((!league && !customUrl) || (league && customUrl)) {
+    return new Response('Must provide a league or url in query params', {
       status: 400,
     })
   }
 
   try {
-    const leagueData = await getLeagueData(league)
+    const trackerUrl = customUrl || `https://www.kingsski.club/${league}`
+    const leagueData = await getLeagueData(trackerUrl)
     return new Response(JSON.stringify(leagueData), {
       headers: {
         'content-type': 'application/json',
@@ -33,8 +36,8 @@ export default async (request: Request, context: Context) => {
   }
 }
 
-async function getLeagueData(league: string) {
-  const { data } = await axios.get(`https://www.kingsski.club/${league}`)
+async function getLeagueData(url: string) {
+  const { data } = await axios.get(url)
   const $ = cheerio.load(data)
   const leagueData = {}
 

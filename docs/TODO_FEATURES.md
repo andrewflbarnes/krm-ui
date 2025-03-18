@@ -29,6 +29,7 @@
 - [x] Visualise configuration presets for rounds
 - [x] Don't show race stages which have no config
 - [x] Reopen stages
+- [x] Custom URLs for pulling config
 
 ## Must
 
@@ -36,7 +37,6 @@
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Set round metadata on creation (description, venue, round number, etc.)
-- [ ] Custom URLs for pulling config
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
