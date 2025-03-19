@@ -21,7 +21,7 @@ export default function TeamConfig() {
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
         <Card sx={{ width: "50%" }}>
           <CardContent>
-            <ConfigActions />
+            <ConfigActions onClose={handleClose} />
           </CardContent>
         </Card>
       </Modal>

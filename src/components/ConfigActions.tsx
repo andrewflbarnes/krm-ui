@@ -5,7 +5,9 @@ import notification from "../hooks/notification";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { createSignal } from "solid-js";
 
-export default function ConfigActions() {
+export default function ConfigActions(props: {
+  onClose(): void;
+}) {
   const [k, { setLeagueConfig }] = useKings()
   const hasConfig = () => !!k.leagueConfig()
   const [confirmingUpsert, setConfirmingUpsert] = createSignal(false)
@@ -28,6 +30,7 @@ export default function ConfigActions() {
 
   const upsertConfig = () => {
     setConfirmingUpsert(false)
+    props.onClose()
     notification.info(`Loading config for ${k.league()} league...`)
     tracker.getLeagueData(k.league(), isCustom() ? mutTracker() : null)
       .then(data => {

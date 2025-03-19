@@ -33,6 +33,7 @@
 
 ## Must
 
+- [ ] Playwright tests for all round configurations
 - [ ] Add all configs up to 32 teams (:
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
