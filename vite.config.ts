@@ -16,4 +16,13 @@ export default defineConfig({
     sourcemap: true,
     outDir: "dist/krm-ui",
   },
+  test: {
+    exclude: [
+      "**/.git/**",
+      "**/dist/**",
+      "**/coverage/**",
+      "**/node_modules/**",
+      "**/playwright/**",
+    ],
+  },
 });
