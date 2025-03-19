@@ -4,6 +4,10 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@storybook/builder-vite': ^8.6.4
+  '@storybook/csf-plugin': ^8.6.4
+
 importers:
 
   .:
