@@ -1,7 +1,16 @@
-import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage, Stage } from "../kings"
+import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
 import { calcTeamResults, createRound } from "../kings/round-utils";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
+
+export type CustomConfig<T> = {
+  id: string;
+  owner: string;
+  description?: string;
+  config: T;
+}[]
+export type CustomRoundConfig= CustomConfig<RoundConfig>
+export type CustomMiniLeagueTemplate = CustomConfig<MiniLeagueTemplate>
 
 export type RoundInfo = Omit<Round, "races">
 export type ProgressionStage = Exclude<Stage, "stage1">;
@@ -17,6 +26,8 @@ export type KrmApi = {
   reopenStage(id: string, stage: RaceStage): void;
   uploadRound(id: string): Promise<void>;
   syncRounds(league: string): Promise<RoundInfo[]>;
+  getCustomRoundConfigs(): Promise<{ configs: CustomRoundConfig[] }>;
+  getCustomMiniLeagueConfigs(): Promise<{ configs: CustomMiniLeagueTemplate[] }>;
 }
 
 export default (function krmApiLocalStorage(): KrmApi {
@@ -316,6 +327,14 @@ export default (function krmApiLocalStorage(): KrmApi {
       dl.forEach(saveRound)
       // todo we need to ensure any in state rounds are refreshed
       return dl
-    }
+    },
+    async getCustomRoundConfigs() {
+      // FIXME
+      return new Promise((res) => res({ configs: [] }))
+    },
+    async getCustomMiniLeagueConfigs() {
+      // FIXME
+      return new Promise((res) => res({ configs: [] }))
+    },
   }
 })()
