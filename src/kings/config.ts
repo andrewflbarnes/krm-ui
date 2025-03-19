@@ -385,6 +385,17 @@ export const raceConfig: {
         template: miniLeagueTemplates.knockout,
       },
     ],
-    results: resultsFromKnockout(6),
+    results: [
+      ...resultsFromKnockout(6),
+      ...resultsForGroup("stage2", "III", [
+        { position: 1, rank: 7 },
+        { position: 2, rank: 8 },
+        { position: 3, rank: 9 },
+      ]),
+    ]
   },
 } as const
+// Round config tests
+// - stage 2 teams <= stage 1 teams
+// - knokcout teams <= stage 2 teams (or stage 1 teams)
+// - bug when displaying joint results from different groups shown twice at ordered of declaration

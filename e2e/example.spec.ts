@@ -179,4 +179,5 @@ test('test', async ({ page }) => {
   await page.getByRole('button', { name: 'Finish' }).click();
   await page.getByText('Yes').click();
   await expect(page.getByRole('main')).toContainText('1st');
+  await expect(page.getByRole('main')).toContainText('9th');
 });
