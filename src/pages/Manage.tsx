@@ -1,21 +1,17 @@
 import { useLocation } from "@solidjs/router";
 import { ExpandLess, ExpandMore } from "@suid/icons-material";
 import { Box, Grow, List, ListItemButton, ListItemText, ListSubheader, Paper } from "@suid/material";
-import { createSignal, For, ParentProps, Show } from "solid-js";
+import { createSelector, createSignal, For, ParentProps, Show } from "solid-js";
 import Link from "../components/Link";
 import { miniLeagueTemplates, raceConfig } from "../kings";
 
 export default function Manage(props: ParentProps) {
-  const [expConf, setExpConf] = createSignal(false)
-  const handleExpandConfigure = () => {
-    setExpConf(old => !old)
-    setExpRound(false)
+  const [openSubList, setOpenSubList] = createSignal("")
+  const updateSubList = (v:string) => {
+    setOpenSubList(old => old == v ? "" : v)
   }
-  const [expRound, setExpRound] = createSignal(false)
-  const handleExpandRounds = () => {
-    setExpRound(old => !old)
-    setExpConf(false)
-  }
+  const selectedSubList = createSelector(openSubList)
+
   return (
     <Box sx={{
       display: "flex",
@@ -28,35 +24,67 @@ export default function Manage(props: ParentProps) {
           <ListSubheader>Race</ListSubheader>
           <NavigationListItem path="new">New</NavigationListItem>
           <NavigationListItem path="continue">Continue</NavigationListItem>
+
           <ListSubheader>Configure</ListSubheader>
-          <ListItemButton onClick={handleExpandConfigure}>
-            <ListItemText primary="Mini Leagues" />
-            {expConf() ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Show when={expConf()}>
-            <For each={Object.keys(miniLeagueTemplates)}>{(ml) => (
-              <Grow in={expConf()}>
-                <NavigationListItem path={`minileague/${ml}`}>{ml}</NavigationListItem>
-              </Grow>
-            )}</For>
-          </Show>
-          <ListItemButton onClick={handleExpandRounds}>
-            <ListItemText primary="Rounds" />
-            {expRound() ? <ExpandLess /> : <ExpandMore />}
-          </ListItemButton>
-          <Show when={expRound()}>
-            <For each={Object.keys(raceConfig)}>{(numTeams) => (
-              <Grow in={expRound()}>
-                <NavigationListItem path={`round/${numTeams}`}>{numTeams} Teams</NavigationListItem>
-              </Grow>
-            )}</For>
-          </Show>
+
+          <CollapsibleNavItems
+            title="Mini Leagues"
+            id="ml"
+            open={selectedSubList("ml")}
+            onExpand={updateSubList}
+            navs={Object.keys(miniLeagueTemplates).map(ml => ({
+              label: `${ml}`,
+              href: `minileague/${ml}`,
+            }))}
+          />
+
+          <CollapsibleNavItems
+            title="Rounds"
+            id="round"
+            open={selectedSubList("round")}
+            onExpand={updateSubList}
+            navs={Object.keys(raceConfig).map(num => ({
+              label: `${num} Teams`,
+              href: `round/${num}`,
+            }))}
+          />
         </List>
       </Paper>
       <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
         {props.children}
       </Paper>
     </Box>
+  )
+}
+
+function CollapsibleNavItems(props: {
+  id: string;
+  open: boolean;
+  onExpand: (selector: string) => void;
+  title: string;
+  navs: {
+    label: string;
+    href: string;
+  }[],
+}) {
+  const handleExpandRounds = () => {
+    props.onExpand(props.id)
+  }
+
+  return (
+    <>
+      <ListItemButton onClick={handleExpandRounds}>
+        <ListItemText primary={props.title} />
+        {props.open ? <ExpandLess /> : <ExpandMore />}
+      </ListItemButton>
+      <Show when={props.open}>
+        <For each={props.navs}>{({ label, href }) => (
+          <Grow in={props.open}>
+            <NavigationListItem path={href}>{label}</NavigationListItem>
+          </Grow>
+        )}</For>
+      </Show>
+    </>
   )
 }
 
