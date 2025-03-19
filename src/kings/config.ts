@@ -388,9 +388,9 @@ export const raceConfig: {
     results: [
       ...resultsFromKnockout(6),
       ...resultsForGroup("stage2", "III", [
-        { position: 1, rank: 7 },
-        { position: 2, rank: 8 },
-        { position: 3, rank: 9 },
+        { position: 0, rank: 7 },
+        { position: 1, rank: 8 },
+        { position: 2, rank: 9 },
       ]),
     ]
   },
