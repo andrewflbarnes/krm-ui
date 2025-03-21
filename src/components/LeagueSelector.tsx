@@ -15,7 +15,7 @@ export default function LeagueSelector() {
   return (
     <div>
       <Selector
-        type="menu"
+        type="input"
         current={k.config().name}
         onClose={handleClose}
         locked={k.lock()}
