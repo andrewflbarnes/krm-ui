@@ -211,7 +211,7 @@ function ManageNewInternal() {
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()
-      navigate(`/${r.id}/stage1`)
+      navigate(`/races/${r.id}/stage1`)
     } else {
       notification.error(err)
     }

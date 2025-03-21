@@ -14,7 +14,7 @@ export default function RunRaceRedirect() {
     const round = query.data
     const status = round.status
     if (status === "abandoned") {
-      navigate(`/${round.id}/${round.status}`, { replace: true })
+      navigate(`/races/${round.id}/${round.status}`, { replace: true })
       return
     }
     setStage(status)
