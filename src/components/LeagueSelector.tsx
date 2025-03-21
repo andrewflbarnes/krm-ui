@@ -18,7 +18,7 @@ export default function LeagueSelector() {
         type="menu"
         current={k.config().name}
         onClose={handleClose}
-        disabled={k.lock()}
+        locked={k.lock()}
         options={options}
       />
     </div>
