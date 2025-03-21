@@ -1,6 +1,6 @@
 import { DownhillSkiing, Groups } from "@suid/icons-material";
 import { Box, Chip, Typography } from "@suid/material";
-import { createMemo, For } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import { MiniLeagueTemplate, Race } from "../kings";
 import ValidityCheck from "../ui/ValidityCheck";
 import MiniLeague from "./MiniLeague";
@@ -11,6 +11,14 @@ type Props = {
 }
 
 export default function ManageConfigMiniLeague(props: Props) {
+  return (
+    <Show when={props.template} fallback={`No such minileague configuration: ${props.name}`}>
+      <Content {...props} />
+    </Show>
+  )
+}
+
+function Content(props: Props) {
   const validRaceCount = () => {
     const expected = props.template.teams * (props.template.teams - 1) / 2
     return props.template.races.length % expected == 0

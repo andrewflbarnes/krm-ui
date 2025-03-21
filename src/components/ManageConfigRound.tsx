@@ -16,10 +16,20 @@ const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) 
   }))
 }
 
-export default function ManageConfigRound(props: {
+type Props = {
   title: string;
   config: RoundConfig;
-}) {
+}
+
+export default function ManageConfigRound(props: Props) {
+  return (
+    <Show when={props.config} fallback={`no such round configuration: ${props.title}`}>
+        <Content {...props} />
+    </Show>
+  )
+}
+
+function Content(props: Props) {
   const mockResults = (): Record<string, RoundResult[]> => {
     const results = props.config.results.map(r => ({
       rank: r.rank,

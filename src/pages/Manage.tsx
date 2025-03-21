@@ -4,13 +4,19 @@ import { Box, Grow, List, ListItemButton, ListItemText, ListSubheader, Paper } f
 import { createSelector, createSignal, For, ParentProps, Show } from "solid-js";
 import Link from "../components/Link";
 import { miniLeagueTemplates, raceConfig } from "../kings";
+import { useCustomMinileagues, useCustomRounds } from "../hooks/custom-config";
 
 export default function Manage(props: ParentProps) {
   const [openSubList, setOpenSubList] = createSignal("")
-  const updateSubList = (v:string) => {
+  const updateSubList = (v: string) => {
     setOpenSubList(old => old == v ? "" : v)
   }
   const selectedSubList = createSelector(openSubList)
+
+  // TODO how do we reconccile this with firebase? Should we just not use tanstack or do we use firebase to psuh updates to query client?
+  const customRounds = useCustomRounds()
+  const customMls = useCustomMinileagues()
+
 
   return (
     <Box sx={{
@@ -38,6 +44,19 @@ export default function Manage(props: ParentProps) {
             }))}
           />
 
+          <Show when={customMls().configs?.length > 0}>
+            <CollapsibleNavItems
+              title="Custom Mini Leagues"
+              id="customml"
+              open={selectedSubList("customml")}
+              onExpand={updateSubList}
+              navs={customMls().configs.map(({ id }) => ({
+                label: `${id}`,
+                href: `minileague/${id}`,
+              }))}
+            />
+          </Show>
+
           <CollapsibleNavItems
             title="Rounds"
             id="round"
@@ -48,6 +67,19 @@ export default function Manage(props: ParentProps) {
               href: `round/${num}`,
             }))}
           />
+
+          <Show when={customRounds().configs?.length > 0}>
+            <CollapsibleNavItems
+              title="Custom Rounds"
+              id="customround"
+              open={selectedSubList("customround")}
+              onExpand={updateSubList}
+              navs={customRounds().configs.map(({ id }) => ({
+                label: `${id}`,
+                href: `round/${id}`,
+              }))}
+            />
+          </Show>
         </List>
       </Paper>
       <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >

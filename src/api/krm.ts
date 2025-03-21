@@ -4,13 +4,15 @@ import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 
 export type CustomConfig<T> = {
-  id: string;
-  owner: string;
-  description?: string;
-  config: T;
-}[]
-export type CustomRoundConfig= CustomConfig<RoundConfig>
-export type CustomMiniLeagueTemplate = CustomConfig<MiniLeagueTemplate>
+  configs: {
+    id: string;
+    owner: string;
+    description?: string;
+    config: T;
+  }[];
+}
+export type CustomRoundConfigs = CustomConfig<RoundConfig>
+export type CustomMiniLeagueTemplates = CustomConfig<MiniLeagueTemplate>
 
 export type RoundInfo = Omit<Round, "races">
 export type ProgressionStage = Exclude<Stage, "stage1">;
@@ -26,8 +28,8 @@ export type KrmApi = {
   reopenStage(id: string, stage: RaceStage): void;
   uploadRound(id: string): Promise<void>;
   syncRounds(league: string): Promise<RoundInfo[]>;
-  getCustomRoundConfigs(): Promise<{ configs: CustomRoundConfig[] }>;
-  getCustomMiniLeagueConfigs(): Promise<{ configs: CustomMiniLeagueTemplate[] }>;
+  getCustomRoundConfigs(): Promise<CustomRoundConfigs>;
+  getCustomMiniLeagueConfigs(): Promise<CustomMiniLeagueTemplates>;
 }
 
 export default (function krmApiLocalStorage(): KrmApi {
