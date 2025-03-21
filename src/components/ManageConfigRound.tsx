@@ -1,20 +1,11 @@
 import { Box, Divider, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { asKnockoutId, divisions, MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
+import { minileagueRaces } from "../kings/round-utils";
 import MiniLeague from "./MiniLeague";
 import RunRaceResults from "./RunRaceResults";
 
-const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => {
-  return template.races.map((r, i) => ({
-    team1: teams[r[0]],
-    team2: teams[r[1]],
-    division: "mixed" as const,
-    stage: "stage1" as const,
-    group: name,
-    groupRace: i,
-    teamMlIndices: r,
-  }))
-}
+const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => minileagueRaces(template, teams, name, "stage1", "mixed")
 
 type Props = {
   title: string;

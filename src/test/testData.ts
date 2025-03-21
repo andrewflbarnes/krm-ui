@@ -1,5 +1,6 @@
 import { MiniLeagueTemplate } from "../kings"
 import { Race } from "../kings"
+import { minileagueRaces } from "../kings/round-utils"
 
 export const races: Race[] = [
   { group: "1st/2nd", team1: "Bath 1", team2: "Bristol 1", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 0, },
@@ -32,12 +33,4 @@ export const teams = [
 
 export const initTeams = (mlt: MiniLeagueTemplate) => teams.slice(0, mlt.teams)
 
-export const initRaces = (mlt: MiniLeagueTemplate): Race[] => mlt.races.map((r, ri) => ({
-  team1: teams[r[0]],
-  team2: teams[r[1]],
-  division: "mixed" as const,
-  stage: "stage1" as const,
-  group: "Z",
-  groupRace: ri,
-  teamMlIndices: r,
-}))
+export const initRaces = (mlt: MiniLeagueTemplate): Race[] => minileagueRaces(mlt, teams, "Z", "stage1", "mixed")

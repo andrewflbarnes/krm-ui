@@ -3,26 +3,7 @@ import { ComponentProps, createEffect, createSignal, untrack } from "solid-js";
 import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
 import MiniLeague from '../components/MiniLeague';
 import { expect, fn, userEvent, waitFor } from '@storybook/test';
-
-const teams = [
-  "Bath 1",
-  "Bristol 2",
-  "Plymouth 1",
-  "Exeter 3",
-  "Aber 1",
-  "Cardiff 2"
-]
-const initTeams = (mlt: MiniLeagueTemplate) => teams.slice(0, mlt.teams)
-
-const initRaces = (mlt: MiniLeagueTemplate) => mlt.races.map((r, ri) => ({
-  team1: teams[r[0]],
-  team2: teams[r[1]],
-  division: "mixed" as const,
-  stage: "stage1" as const,
-  group: "Z",
-  groupRace: ri,
-  teamMlIndices: r,
-}))
+import { initRaces, initTeams } from '../test';
 
 // Identical to above but reverse the teams to ensure rendering isn't affected
 function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {

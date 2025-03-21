@@ -1,5 +1,5 @@
 import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
-import { calcTeamResults, createRound } from "../kings/round-utils";
+import { calcTeamResults, createRound, minileagueSeededRaces } from "../kings/round-utils";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 
@@ -92,21 +92,7 @@ export default (function krmApiLocalStorage(): KrmApi {
       acc[division] = divisionConf[nextStatus]?.reduce((accd, { template, name: groupName, seeds }) => {
         const lastStageDivisionRaces = round.races[status][division]
 
-        const races: Race[] = template.races.map((race, i) => {
-          const seed1 = seeds[race[0]]
-          const team1 = lastStageDivisionRaces[seed1.group].results[seed1.position][0]
-          const seed2 = seeds[race[1]]
-          const team2 = lastStageDivisionRaces[seed2.group].results[seed2.position][0]
-          return {
-            stage: nextStatus,
-            group: groupName,
-            groupRace: i,
-            teamMlIndices: race,
-            team1,
-            team2,
-            division: division as Division,
-          }
-        })
+        const races = minileagueSeededRaces(template, seeds, lastStageDivisionRaces, groupName, nextStatus, division)
         accd[groupName] = {
           races,
           teams: seeds.map(({ group, position }) => lastStageDivisionRaces[group].results[position][0]),

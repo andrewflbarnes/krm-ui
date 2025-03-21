@@ -59,17 +59,20 @@ export type MiniLeagueTemplate = {
   readonly races: readonly (readonly [number, number])[];
 }
 
+/** A seed from the previous round (or initial seeding) */
+export type MiniLeagueSeed = {
+  /** The group from the previous round to seed from */
+  readonly group: string,
+  /** The position in the group to seed from */
+  readonly position: number,
+}
+
 /** A concrete minileague configuration for a specific group and seeds */
 export type MiniLeagueConfig = {
   /** The name of the minileague */
   readonly name: string;
   /** The seeds from the previous round (or initial seeding) */
-  readonly seeds: readonly {
-    /** The group from the previous round to seed from */
-    readonly group: string,
-    /** The position in the group to seed from */
-    readonly position: number,
-  }[];
+  readonly seeds: readonly MiniLeagueSeed[];
   /** The template of races for this minileague */
   readonly template: MiniLeagueTemplate;
 }

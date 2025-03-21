@@ -2,6 +2,7 @@ import { DownhillSkiing, Groups } from "@suid/icons-material";
 import { Box, Chip, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
 import { MiniLeagueTemplate, Race } from "../kings";
+import { minileagueRaces } from "../kings/round-utils";
 import ValidityCheck from "../ui/ValidityCheck";
 import MiniLeague from "./MiniLeague";
 
@@ -44,15 +45,7 @@ function Content(props: Props) {
   const validTeams = () => props.template.races.every(r => r[0] < props.template.teams && r[1] < props.template.teams)
   const noSelfRaces = () => props.template.races.every(r => r[0] != r[1])
   const teams = createMemo(() => Array.from({ length: props.template.teams }, (_, i) => `Team ${i + 1}`))
-  const races = (): Race[] => props.template.races.map((r, i) => ({
-    team1: teams()[r[0]],
-    team2: teams()[r[1]],
-    group: "A",
-    stage: "stage1",
-    division: "mixed",
-    groupRace: i,
-    teamMlIndices: r,
-  }))
+  const races = () => minileagueRaces(props.template, teams(), "A", "stage1", "mixed")
   return (
     <div style={{
       display: "flex",

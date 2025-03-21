@@ -1,6 +1,6 @@
 import { raceConfig } from "./config"
 import { parseResults } from "./result-utils"
-import { ClubSeeding, divisions,  Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, RaceStage } from "./types"
+import { ClubSeeding, divisions, Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces } from "./types"
 import { Race } from "./types"
 
 export function isStage(s: string): RaceStage | null {
@@ -182,15 +182,8 @@ export function createRound(id: string, league: League, teams: RoundSeeding, dis
   const races = divisions.reduce((acc, division) => {
     const divisionConf = config[division]
     acc[division] = divisionConf.stage1.reduce((accd, { template, name: groupName, seeds }) => {
-      const races: Race[] = template.races.map((race, i) => ({
-        stage: "stage1",
-        group: groupName,
-        groupRace: i,
-        teamMlIndices: race,
-        team1: teamOrder[division][seeds[race[0]].position],
-        team2: teamOrder[division][seeds[race[1]].position],
-        division: division as Division,
-      }))
+      const initialSeeds = teamOrder[division]
+      const races = minileagueSeededRaces(template, seeds, null, groupName, "stage1", division, (seed) => initialSeeds[seed.position])
       accd[groupName] = {
         races,
         teams: teamOrder[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
@@ -220,4 +213,76 @@ export function createRound(id: string, league: League, teams: RoundSeeding, dis
     teams,
     distributionOrder: distributionOrder || teams,
   }
+}
+
+/**
+  * Create a set of races for a given minileague template based on a provided
+  * list of teams. This is more useful for mocking data, for seeding based
+  * race generation see minileagueSeededRaces.
+  *
+  * @param template {MiniLeagueTemplate} The template to generate races for
+  * @param teams {string[]} A list of teams to generate races for
+  * @param group {string} The name of this minileague
+  * @param stage {RaceStage} The stage of these races
+  * @param division {Division} The division of these races
+  */
+export function minileagueRaces(
+  template: MiniLeagueTemplate,
+  teams: string[],
+  group: string,
+  stage: RaceStage,
+  division: Division,
+): Race[] {
+  return template.races.map((r, i) => ({
+    team1: teams[r[0]],
+    team2: teams[r[1]],
+    group,
+    stage,
+    division,
+    groupRace: i,
+    teamMlIndices: r,
+  }))
+}
+
+/**
+  * Create a set of races for a given minileague template based on seeding
+  * from a previous stage of races. Note that an optional seed resolver can be
+  * provided to allow for more complex seeding logic for example in an initial
+  * seeding where there is no previous round of races
+  *
+  * @param template {MiniLeagueTemplate} The template to generate races for
+  * @param seeds {readonly MiniLeagueSeed[]} The seeds to use
+  * @param lastStageRaces {Record<string, GroupRaces>} The last stages races
+  * @param group {string} The name of this minileague
+  * @param stage {RaceStage} The stage of these races
+  * @param division {Division} The division of these races
+  * @param seedResolver {function(MiniLeagueSeed, Record<string, GroupRaces>): string} An function to resolve a seed to a team name
+  */
+export function minileagueSeededRaces(
+  template: MiniLeagueTemplate,
+  seeds: readonly MiniLeagueSeed[],
+  lastStageRaces: {
+    [group: string]: GroupRaces
+  },
+  group: string,
+  stage: RaceStage,
+  division: Division,
+  seedResolver: (seed: MiniLeagueSeed, races: Record<string, GroupRaces>) => string =
+    (seed, races) => races[seed.group].results[seed.position][0],
+): Race[] {
+  return template.races.map((r, i) => {
+    const seed1 = seeds[r[0]]
+    const team1 = seedResolver(seed1, lastStageRaces)
+    const seed2 = seeds[r[1]]
+    const team2 = seedResolver(seed2, lastStageRaces)
+    return {
+      team1,
+      team2,
+      group,
+      stage,
+      division,
+      groupRace: i,
+      teamMlIndices: r,
+    }
+  })
 }
