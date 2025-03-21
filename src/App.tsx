@@ -40,7 +40,9 @@ export default function App() {
           <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
           <Route path="/continue" component={RaceManagerContinue} info={{ breadcrumb: "Continue" }} />
           <Route path="/minileague/:ml" component={ManageMiniLeague} info={{ breadcrumb: "ML" }} />
-          <Route path="/round/:round" component={ManageRound} info={{ breadcrumb: "Round" }} />
+          <Route path="/round" info={{ breadcrumb: "Round" }}>
+            <Route path="/:round" component={ManageRound} />
+          </Route>
         </Route>
         <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
         <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
@@ -48,10 +50,12 @@ export default function App() {
         <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
           <Route path="/:devview?" />
         </Route>
-        <Route path="/:raceid" component={RunRace} info={{ breadcrumb: "Race" }}>
-          <Route path="/" component={RunRaceRedirect} />
-          <Route path="/abandoned" component={RunRaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
-          <Route path="/:stage" component={RunRaceInProgress} info={{ breadcrumb: "Stage" }} />
+        <Route path="/races" info={{ breadcrumb: "Race", breadcrumbTo: "/manage/continue" }}>
+          <Route path="/:raceid" component={RunRace}>
+            <Route path="/" component={RunRaceRedirect} />
+            <Route path="/abandoned" component={RunRaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
+            <Route path="/:stage" component={RunRaceInProgress} info={{ breadcrumb: "Stage" }} />
+          </Route>
         </Route>
         <Route path="*404" component={Status404} info={{ breadcrumb: "OOPS!" }} />
       </Router>

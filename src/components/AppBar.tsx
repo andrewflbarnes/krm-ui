@@ -60,7 +60,10 @@ export default function KrmAppBar() {
                 alignItems: "center",
                 display: { xs: "none", md: "flex" },
               }}>
+              {/*
+                Don't really like how this workss and renders
                 <KrmBreadcrumbs />
+              */}
               </Box>
               <Box sx={{
                 display: "flex",

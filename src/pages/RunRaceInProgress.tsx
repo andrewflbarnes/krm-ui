@@ -7,6 +7,7 @@ import { Card, Typography } from "@suid/material";
 import { stages, useRaceOptions } from "../hooks/results";
 import { isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
+import { useBreadcrumberUpdate } from "../hooks/breadcrumb";
 
 export default function RunRaceInProgress() {
   return (
@@ -23,6 +24,8 @@ function RunRaceInProgressInternal() {
   } = useRaceOptions()
   const query = useRound()
   const round = () => query.data
+
+  useBreadcrumberUpdate(() => stages[stage()], 'Stage')
 
   const { userId } = useAuth()
 

@@ -35,7 +35,7 @@ export const useRaceOptions = () => {
   const params = useParams<{ raceid: string, stage?: string }>()
   const updateStage = (s: Stage) => {
     if (s && s != params.stage) {
-      navigate(`/${params.raceid}/${s}`)
+      navigate(`/races/${params.raceid}/${s}`)
     }
   }
   const useRound = () => createQuery<Round>(() => ({

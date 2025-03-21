@@ -32,7 +32,7 @@ function GoToRace(props: {
     <div>
       This round hasn't been abandoned,
       &nbsp;
-      <A href={`/${props.round.id}/${props.round.status}`} style={{ "text-decoration": "none" }}>
+      <A href={`/races/${props.round.id}/${props.round.status}`} style={{ "text-decoration": "none" }}>
         <Typography color="primary" style={{ display: "inline" }}>
           view the latest stage here
         </Typography>

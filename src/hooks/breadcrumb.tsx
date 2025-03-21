@@ -1,5 +1,5 @@
 import { useCurrentMatches } from "@solidjs/router"
-import { createContext, createEffect, ParentProps, useContext } from "solid-js"
+import { Accessor, createContext, createEffect, ParentProps, useContext } from "solid-js"
 import { createStore } from "solid-js/store"
 
 export type BreadcrumberContextState = {
@@ -38,17 +38,25 @@ export function useBreadcrumber() {
   return useContext(BreadcrumberContext)
 }
 
-export function useBreadcrumberUpdate(value: string) {
+export function useBreadcrumberUpdate(value: string | Accessor<string>, repl?: string) {
   const [, { override }] = useBreadcrumber()
   const matches = useCurrentMatches()
   createEffect(() => {
+    const v = typeof value === "function" ? value() : value
+    if (!v) {
+      return
+    }
+    if (repl) {
+      override(repl, v)
+      return
+    }
     const m = matches()
     if (m.length < 1) {
       return
     }
     const breadcrumb = m[m.length - 1].route.info?.breadcrumb
     if (breadcrumb?.length) {
-      override(breadcrumb, value)
+      override(breadcrumb, v)
     }
   })
 

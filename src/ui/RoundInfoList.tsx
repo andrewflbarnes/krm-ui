@@ -132,7 +132,7 @@ function RoundInfoRow(props: {
               </>
             )
           }}</MoreMenu>
-          <Link href={`/${props.round.id}/${props.round.status}`}>
+          <Link href={`/races/${props.round.id}/${props.round.status}`}>
             <IconButton>
               <Show when={inProgress()}
                 fallback={<Assignment />}
