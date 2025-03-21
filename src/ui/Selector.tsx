@@ -68,7 +68,7 @@ export default function Selector<T>(props: SelectorProps<T>) {
   const id = createUniqueId();
 
   return (
-    <div {...props.containerProps}>
+    <div>
       <Switch>
         <Match when={props.type == "input" || !props.type}>
           <FormControl fullWidth sx={{
@@ -81,60 +81,61 @@ export default function Selector<T>(props: SelectorProps<T>) {
             }
           }}>
             <StyledInputLabel id={`${id}-select-label`}>{props.title}</StyledInputLabel>
-            <div>
-              <StyledBadge invisible={!props.locked} badgeContent={<Lock />}>
-                <StyledSelect
-                  size="small"
-                  labelId={`${id}-select-label`}
-                  id={`${id}-select`}
-                  value={props.current}
-                  label={props.title}
-                  onChange={(e: SelectChangeEvent) => props.onClose?.(props.options.find(v => v.label == e.target.value as T)?.value)}
-                  disabled={props.disabled || props.locked}
-                  IconComponent={props.locked ? () => "" : undefined}
-                >
-                  <For each={props.options}>{(opt) => {
-                    return <MenuItem value={opt.label}>{opt.label}</MenuItem>
-                  }}
-                  </For>
-                </StyledSelect>
-              </StyledBadge>
-            </div>
+            <StyledBadge invisible={!props.locked} badgeContent={<Lock />}>
+              <StyledSelect
+                {...props.containerProps}
+                size="small"
+                labelId={`${id}-select-label`}
+                id={`${id}-select`}
+                value={props.current}
+                label={props.title}
+                onChange={(e: SelectChangeEvent) => props.onClose?.(props.options.find(v => v.label == e.target.value as T)?.value)}
+                disabled={props.disabled || props.locked}
+                IconComponent={props.locked ? () => "" : undefined}
+              >
+                <For each={props.options}>{(opt) => {
+                  return <MenuItem value={opt.label}>{opt.label}</MenuItem>
+                }}
+                </For>
+              </StyledSelect>
+            </StyledBadge>
           </FormControl>
         </Match>
         <Match when={props.type == "menu"}>
-          <Button
-            sx={{
-              "&:disabled": {
-                color: props.locked ? "inherit" : undefined,
-                opacity: props.locked ? 0.6 : undefined,
-              }
-            }}
-            id={`${id}-selector-button`}
-            size="small"
-            color="inherit"
-            aria-controls={open() ? `${id}-selector-menu` : undefined}
-            aria-haspopup="true"
-            aria-expanded={open() ? "true" : undefined}
-            disabled={props.disabled || props.locked}
-            onClick={(event) => {
-              setAnchorEl(event.currentTarget);
-            }}
-          >
-            {props.current?.toString()}
-          </Button>
-          <Menu
-            id={`${id}-selector-menu`}
-            anchorEl={anchorEl()}
-            open={open()}
-            onClose={() => handleClose(null)}
-            MenuListProps={{ "aria-labelledby": `${id}-selector-button` }}
-          >
-            <For each={props.options}>{(opt) => {
-              return <MenuItem onClick={() => handleClose(opt.value)}>{opt.label}</MenuItem>
-            }}
-            </For>
-          </Menu>
+          <div {...props.containerProps}>
+            <Button
+              sx={{
+                "&:disabled": {
+                  color: props.locked ? "inherit" : undefined,
+                  opacity: props.locked ? 0.6 : undefined,
+                }
+              }}
+              id={`${id}-selector-button`}
+              size="small"
+              color="inherit"
+              aria-controls={open() ? `${id}-selector-menu` : undefined}
+              aria-haspopup="true"
+              aria-expanded={open() ? "true" : undefined}
+              disabled={props.disabled || props.locked}
+              onClick={(event) => {
+                setAnchorEl(event.currentTarget);
+              }}
+            >
+              {props.current?.toString()}
+            </Button>
+            <Menu
+              id={`${id}-selector-menu`}
+              anchorEl={anchorEl()}
+              open={open()}
+              onClose={() => handleClose(null)}
+              MenuListProps={{ "aria-labelledby": `${id}-selector-button` }}
+            >
+              <For each={props.options}>{(opt) => {
+                return <MenuItem onClick={() => handleClose(opt.value)}>{opt.label}</MenuItem>
+              }}
+              </For>
+            </Menu>
+          </div>
         </Match>
       </Switch>
     </div>
