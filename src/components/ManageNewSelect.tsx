@@ -110,6 +110,7 @@ function TeamSelector(props: ComponentProps) {
             <TableRow>
               <TableCell>
                 <TextField
+                  data-testid="add-team"
                   size="small"
                   variant="outlined"
                   value={newTeam()}

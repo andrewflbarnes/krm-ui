@@ -24,7 +24,7 @@ export default function RunRaceResults(props: {
       <Show when={props.results} fallback="No results">
         <Box sx={{ flexDirection: { xs: "column", md: "row" } }} style={{ display: "flex", padding: "3", gap: "2em" }}>
           <For each={Object.entries(props.results)}>{([division, results]) => (
-            <div>
+            <div data-testid={`results-${division}`}>
               <h2 style={{ "text-align": "center" }}>{division.capitalize()}</h2>
               <TableContainer component={Paper}>
                 <Table aria-label="simple table dense" size="small">

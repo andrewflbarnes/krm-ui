@@ -28,33 +28,20 @@ test('test', async ({ page }) => {
   await expect(page.getByText('Config loaded for ')).toBeVisible();
   await page.getByRole('link', { name: 'Race' }).click();
   await page.getByRole('link', { name: 'New' }).click();
-  await page.locator('#mui-cl-2').click();
-  await page.locator('#mui-cl-2').fill('2');
-  await page.locator('#mui-cl-2').press('Tab');
-  await page.locator('#mui-cl-3').fill('2');
-  await page.locator('#mui-cl-3').press('Tab');
-  await page.locator('#mui-cl-4').fill('2');
-  await page.locator('#mui-cl-4').press('Tab');
-  await page.locator('#mui-cl-5').fill('2');
-  await page.locator('#mui-cl-5').press('Tab');
-  await page.locator('#mui-cl-6').fill('2');
-  await page.locator('#mui-cl-6').press('Tab');
-  await page.locator('#mui-cl-7').fill('2');
-  await page.locator('#mui-cl-7').press('Tab');
-  await page.locator('#mui-cl-8').fill('2');
-  await page.locator('#mui-cl-8').press('Tab');
-  await page.locator('#mui-cl-9').fill('2');
-  await page.locator('#mui-cl-9').press('Tab');
-  await page.locator('#mui-cl-10').fill('2');
-  await page.locator('#mui-cl-10').press('Tab');
-  await page.locator('#mui-cl-11').fill('2');
-  await page.locator('#mui-cl-11').press('Tab');
-  await page.locator('#mui-cl-12').fill('2');
-  await page.locator('#mui-cl-12').press('Tab');
-  await page.locator('#mui-cl-13').fill('2');
-  await page.locator('#mui-cl-13').press('Tab');
-  await page.locator('#mui-cl-14').fill('1');
-  await page.locator('#mui-cl-14').press('Tab');
+  const addClub = page.getByTestId('add-team').locator('input')
+  await addClub.click();
+  await addClub.fill('Test');
+  await page.getByTestId('add-team').getByRole('button').click();
+  const clubRow = page.getByRole('row', { name: 'Test' })
+  const mixedTeams = clubRow.locator('input').nth(0)
+  await mixedTeams.click();
+  await mixedTeams.fill('9');
+  const ladiesTeams = clubRow.locator('input').nth(1)
+  await ladiesTeams.click();
+  await ladiesTeams.fill('8');
+  const boardTeams = clubRow.locator('input').nth(2)
+  await boardTeams.click();
+  await boardTeams.fill('8');
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.locator('h3')).toContainText('Missing teams');
   await page.getByRole('button', { name: 'Next' }).click();
@@ -116,12 +103,12 @@ test('test', async ({ page }) => {
 
   const mixedI = page.getByRole('table').filter({ hasText: 'Mixed I' })
   await mixedI.getByTestId('race-I-0-1').click();
-  await mixedI.getByTestId('race-I-1-1').click();
+  await mixedI.getByTestId('race-I-1-2').click();
   await mixedI.getByTestId('race-I-2-1').click();
   const mixedII = page.getByRole('table').filter({ hasText: 'Mixed II' })
-  await mixedII.getByTestId('race-II-0-1').click();
+  await mixedII.getByTestId('race-II-0-2').click();
   await mixedII.getByTestId('race-II-1-1').click();
-  await mixedII.getByTestId('race-II-2-1').click();
+  await mixedII.getByTestId('race-II-2-2').click();
   const mixedIII = page.getByRole('table').filter({ hasText: 'Mixed III' })
   await mixedIII.getByTestId('race-III-0-1').click();
   await mixedIII.getByTestId('race-III-1-1').click();
@@ -129,14 +116,14 @@ test('test', async ({ page }) => {
 
   const ladiesI = page.getByRole('table').filter({ hasText: 'Ladies I' })
   await ladiesI.getByTestId('race-I-0-1').click();
-  await ladiesI.getByTestId('race-I-1-1').click();
+  await ladiesI.getByTestId('race-I-1-2').click();
   await ladiesI.getByTestId('race-I-2-1').click();
   await ladiesI.getByTestId('race-I-3-1').click();
   await ladiesI.getByTestId('race-I-4-1').click();
   await ladiesI.getByTestId('race-I-5-1').click();
   const ladiesII = page.getByRole('table').filter({ hasText: 'Ladies II' })
   await ladiesII.getByTestId('race-II-0-1').click();
-  await ladiesII.getByTestId('race-II-1-1').click();
+  await ladiesII.getByTestId('race-II-1-2').click();
   await ladiesII.getByTestId('race-II-2-1').click();
   await ladiesII.getByTestId('race-II-3-1').click();
   await ladiesII.getByTestId('race-II-4-1').click();
@@ -144,14 +131,14 @@ test('test', async ({ page }) => {
 
   const boardI = page.getByRole('table').filter({ hasText: 'Board I' })
   await boardI.getByTestId('race-I-0-1').click();
-  await boardI.getByTestId('race-I-1-1').click();
+  await boardI.getByTestId('race-I-1-2').click();
   await boardI.getByTestId('race-I-2-1').click();
   await boardI.getByTestId('race-I-3-1').click();
   await boardI.getByTestId('race-I-4-1').click();
   await boardI.getByTestId('race-I-5-1').click();
   const boardII = page.getByRole('table').filter({ hasText: 'Board II' })
   await boardII.getByTestId('race-II-0-1').click();
-  await boardII.getByTestId('race-II-1-1').click();
+  await boardII.getByTestId('race-II-1-2').click();
   await boardII.getByTestId('race-II-2-1').click();
   await boardII.getByTestId('race-II-3-1').click();
   await boardII.getByTestId('race-II-4-1').click();
@@ -178,6 +165,32 @@ test('test', async ({ page }) => {
   await expect(page.getByRole('main')).toContainText('Finish');
   await page.getByRole('button', { name: 'Finish' }).click();
   await page.getByText('Yes').click();
-  await expect(page.getByRole('main')).toContainText('1st');
-  await expect(page.getByRole('main')).toContainText('9th');
+  const mixedResults = page.getByTestId('results-mixed')
+  await expect(mixedResults.getByRole('row', { name: '1st' })).toContainText('Test 1')
+  await expect(mixedResults.getByRole('row', { name: '2nd' })).toContainText('Test 2')
+  await expect(mixedResults.getByRole('row', { name: '3rd' })).toContainText('Test 3')
+  await expect(mixedResults.getByRole('row', { name: '4th' })).toContainText('Test 4')
+  await expect(mixedResults.getByRole('row', { name: '5th' })).toContainText('Test 5')
+  await expect(mixedResults.getByRole('row', { name: '6th' })).toContainText('Test 6')
+  await expect(mixedResults.getByRole('row', { name: '7th' })).toContainText('Test 7')
+  await expect(mixedResults.getByRole('row', { name: '8th' })).toContainText('Test 8')
+  await expect(mixedResults.getByRole('row', { name: '9th' })).toContainText('Test 9')
+  const ladiesResults = page.getByTestId('results-ladies')
+  await expect(ladiesResults.getByRole('row', { name: '1st' })).toContainText('Test 1')
+  await expect(ladiesResults.getByRole('row', { name: '2nd' })).toContainText('Test 2')
+  await expect(ladiesResults.getByRole('row', { name: '3rd' })).toContainText('Test 3')
+  await expect(ladiesResults.getByRole('row', { name: '4th' })).toContainText('Test 4')
+  await expect(ladiesResults.getByRole('row', { name: '5th' })).toContainText('Test 5')
+  await expect(ladiesResults.getByRole('row', { name: '6th' })).toContainText('Test 6')
+  await expect(ladiesResults.getByRole('row', { name: '7th' })).toContainText('Test 7')
+  await expect(ladiesResults.getByRole('row', { name: '8th' })).toContainText('Test 8')
+  const boardResults = page.getByTestId('results-board')
+  await expect(boardResults.getByRole('row', { name: '1st' })).toContainText('Test 1')
+  await expect(boardResults.getByRole('row', { name: '2nd' })).toContainText('Test 2')
+  await expect(boardResults.getByRole('row', { name: '3rd' })).toContainText('Test 3')
+  await expect(boardResults.getByRole('row', { name: '4th' })).toContainText('Test 4')
+  await expect(boardResults.getByRole('row', { name: '5th' })).toContainText('Test 5')
+  await expect(boardResults.getByRole('row', { name: '6th' })).toContainText('Test 6')
+  await expect(boardResults.getByRole('row', { name: '7th' })).toContainText('Test 7')
+  await expect(boardResults.getByRole('row', { name: '8th' })).toContainText('Test 8')
 });

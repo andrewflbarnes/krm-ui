@@ -20,7 +20,7 @@ function orderResults(a: Result, b: Result): number {
       return bLast[i] - aLast[i]
     }
   }
-  return -1
+  return a.name.localeCompare(b.name)
 }
 
 export function parseResults(leagueData: LeagueData): DivisionResults {
