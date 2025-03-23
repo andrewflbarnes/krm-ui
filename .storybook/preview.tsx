@@ -13,7 +13,7 @@ const theme = createTheme({ palette: palette });
 
 const preview: Preview = {
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
     controls: {
       matchers: {
         color: /(background|color)$/i,
