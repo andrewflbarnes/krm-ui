@@ -36,6 +36,13 @@ export default function CustomRoundStage(props: {
   const [mls, setMls] = createSignal<{ [mlkey: string]: MiniLeagueTemplate }>({})
   const [mlNames, setMlNames] = createSignal<{ [mlkey: string]: string }>({})
   const [selectedSeeds, setSelectedSeeds] = createSignal<{ [mlkey: string]: SeedInfo[] }>({})
+  // utility for filtering out the seeds which have been selected
+  const selectableSeeds = createMemo(() => {
+    const selected = Object.values(selectedSeeds()).flatMap(s => s)
+    return allSeeds()
+      .map(({ name }) => name)
+      .filter(name => !selected.some(ss => ss?.name === name))
+  })
 
   createEffect(() => {
     if (!props.previous) {
@@ -179,7 +186,7 @@ export default function CustomRoundStage(props: {
                 noResults
                 teams={allSeedNames()}
                 races={races()}
-                selectable
+                selectable={selectableSeeds()}
                 onTeamSelected={(t, ti) => handleTeamSelected(t, ti, k)}
               />
             </div>

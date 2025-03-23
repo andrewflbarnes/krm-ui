@@ -27,7 +27,7 @@ type MiniLeagueProps = {
   // Selectable allows a user to modify the team/seed in each position, in this
   // cacse the teams props is a superset of the actual teams in this minileague
   // and the races are expected to be synthetic
-  selectable?: boolean;
+  selectable?: string[];
   onTeamSelected?: (team: string, i: number) => void;
 }
 
@@ -101,13 +101,30 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       "padding-right": "1em",
                     }}
                   >
-                    <Show when={props.selectable} fallback={team}>
-                      <Selector
-                        options={teamOptions()}
-                        containerProps={{ style: { "min-width": "10em" } }}
-                        onClose={(v) => props.onTeamSelected(v, i())}
-                      />
-                    </Show>
+                    <Show when={props.selectable} fallback={team}>{(selectable) => {
+                      const [selected, setSelected] = createSignal("")
+                      const handleTeamSelected = (v: string, i: number) => {
+                        setSelected(v)
+                        props.onTeamSelected(v, i)
+                      }
+                      const theseOptions = () => {
+                        const s = selected()
+                        const opts = teamOptions().filter(o => selectable().includes(o.value))
+                        opts.unshift({ value: "", label: "-" })
+                        if (s.length) {
+                          opts.unshift({ value: s, label: s })
+                        }
+                        return opts
+                      }
+                      return (
+                        <Selector
+                          current={selected()}
+                          options={theseOptions()}
+                          containerProps={{ style: { "min-width": "10em" } }}
+                          onClose={(v) => handleTeamSelected(v, i())}
+                        />
+                      )
+                    }}</Show>
                   </div>
                 </th>
                 <For each={collapsedRaces()}>{(races) => {
