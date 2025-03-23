@@ -1,7 +1,7 @@
 import { DownhillSkiing, Groups } from "@suid/icons-material";
 import { Box, Chip, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import { MiniLeagueTemplate, Race } from "../kings";
+import { MiniLeagueTemplate } from "../kings";
 import { minileagueRaces } from "../kings/round-utils";
 import ValidityCheck from "../ui/ValidityCheck";
 import MiniLeague from "./MiniLeague";
@@ -125,16 +125,31 @@ function Content(props: Props) {
           onResultChange={() => { }}
         />
       </div>
-      <div style={{ display: "flex", gap: "2em", "flex-direction": "column" }}>
+      <div style={{ display: "flex", gap: "2em", "flex-direction": "column", "align-items": "center" }}>
         <Typography variant="h3">
           Races
         </Typography>
         <Typography>
-          <For each={props.template.races}>{(r) => (
-            <div>
-              Team {r[0] + 1} vs Team {r[1] + 1}
-            </div>
-          )}</For>
+          <Box sx={{
+            display: "grid",
+            columnGap: "2em",
+            gridAutoFlow: "column",
+            gridTemplateRows: {
+              xs: `repeat(${races().length}, 2em)`,
+              sm: `repeat(${Math.ceil(races().length / 2)}, 2em)`,
+              md: `repeat(${Math.ceil(races().length / 3)}, 2em)`,
+            },
+          }}>
+            <For each={props.template.races}>{(r, i) => (
+              <div>
+                <span style={{ display: "inline-block", width: "2em", "text-align": "right" }}>
+                  {i() + 1}
+                </span>
+                &nbsp;
+                Team {r[0] + 1} vs Team {r[1] + 1}
+              </div>
+            )}</For>
+          </Box>
         </Typography>
       </div>
     </div>
