@@ -1,9 +1,13 @@
+import { fn } from '@storybook/test';
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import CustomRoundStage from '../components/CustomRoundStage';
 
 const meta = {
   title: 'kings/CustomRoundStage',
   component: CustomRoundStage,
+  args: {
+    onConfigUpdated: fn()
+  }
 } satisfies Meta<typeof CustomRoundStage>;
 
 export default meta;
