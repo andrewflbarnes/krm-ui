@@ -16,6 +16,7 @@ export default function CustomRoundStage(props: {
 }) {
   const [key, setKey] = createSignal(0)
   const [mls, setMls] = createSignal<Record<string, MiniLeagueTemplate>>({})
+  const [mlNames, setMlNames] = createSignal<Record<string, string>>({})
   const [infoTemplate, setInfoTemplate] = createSignal<MiniLeagueTemplate>(null)
   const [selectMinileague, setSelectMinileague] = createSignal(false)
   const [allSeeds, setAllSeeds] = createSignal<string[]>([])
@@ -60,7 +61,17 @@ export default function CustomRoundStage(props: {
       const updatedMls = { ...mls() }
       delete updatedMls[mlKey]
       setMls(updatedMls)
+      const updatedNames = { ...mlNames() }
+      delete updatedNames[mlKey]
+      setMlNames(updatedNames)
       setRemoveMinileague()
+    })
+  }
+
+  const handleGroupNameChange = (name: string, k: string) => {
+    setMlNames({
+      ...mlNames(),
+      [k]: name
     })
   }
   return (
@@ -93,6 +104,7 @@ export default function CustomRoundStage(props: {
                 <TextField
                   label="Group"
                   size="small"
+                  onChange={e => handleGroupNameChange(e.target.value, k)}
                 />
                 <div style={{ "margin-left": "auto" }}>
                   <IconButton onClick={[setRemoveMinileague, k]}>
