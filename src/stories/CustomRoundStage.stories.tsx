@@ -1,4 +1,5 @@
-import { fn } from '@storybook/test';
+import { waitFor } from '@solidjs/testing-library';
+import { expect, fn, userEvent } from '@storybook/test';
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import CustomRoundStage from '../components/CustomRoundStage';
 
@@ -7,6 +8,13 @@ const meta = {
   component: CustomRoundStage,
   args: {
     onConfigUpdated: fn()
+  },
+  play: async ({ canvas, step }) => {
+    await step('Add minileague 1', async () => {
+      await userEvent.click(canvas.getByText("Add minileague"))
+      await waitFor(() => expect(canvas.getByText("mini4")).toBeInTheDocument())
+      await userEvent.click(canvas.getByText("mini4"))
+    })
   }
 } satisfies Meta<typeof CustomRoundStage>;
 

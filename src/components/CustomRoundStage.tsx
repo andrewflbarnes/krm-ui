@@ -128,22 +128,27 @@ export default function CustomRoundStage(props: {
       handleConfigUpdated(mls(), updatedNames, selectedSeeds())
     })
   }
+
+  let ref!: HTMLDivElement
   return (
-    <div>
+    <div ref={ref}>
       <MinileagueInfoModal
         open={!!infoTemplate()}
         onClose={() => setInfoTemplate(null)}
         template={infoTemplate()}
+        container={ref}
       />
       <MinileagueSelectModal
         open={selectMinileague()}
         onClose={() => setSelectMinileague(false)}
         onSelect={handleAddMiniLeague}
+        container={ref}
       />
       <MinileagueDeleteModal
         open={!!removeMinileague()}
         onClose={() => setRemoveMinileague()}
         onDelete={() => handleRemoveMiniLeague(removeMinileague())}
+        container={ref}
       />
       <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
         <For each={Object.keys(mls())}>{k => {
@@ -190,12 +195,14 @@ function MinileagueDeleteModal(props: {
   open: boolean;
   onClose: () => void;
   onDelete: () => void;
+  container?: Element;
 }) {
   return (
     <ModalConfirmAction
       open={props.open}
       onDiscard={props.onClose}
       onConfirm={props.onDelete}
+      container={props.container}
     >
       Are you sure you want to delete this minileague?
     </ModalConfirmAction>
@@ -206,11 +213,13 @@ function MinileagueSelectModal(props: {
   open: boolean;
   onClose: () => void;
   onSelect: (template: MiniLeagueTemplate) => void;
+  container?: Element;
 }) {
   return (
     <KingsModal
       open={props.open}
       onClose={props.onClose}
+      container={props.container}
     >
       <>
         <Typography variant="h2">Select minileague template</Typography>
@@ -226,11 +235,13 @@ function MinileagueInfoModal(props: {
   open: boolean;
   onClose: () => void;
   template?: MiniLeagueTemplate;
+  container?: Element;
 }) {
   return (
     <KingsModal
       open={props.open}
       onClose={props.onClose}
+      container={props.container}
     >
       <Show when={props.template} fallback={"no template provided :("}>
         <ManageConfigMiniLeague name="mini4" template={props.template} />

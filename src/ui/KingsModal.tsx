@@ -8,9 +8,11 @@ import { ParentProps } from "solid-js";
 export default function KingsModal(props: ParentProps<{
   open: boolean;
   onClose: () => void;
+  container?: Element;
 }>) {
   return (
     <Modal
+      container={props.container}
       open={props.open}
       onClose={props.onClose}
       style={{

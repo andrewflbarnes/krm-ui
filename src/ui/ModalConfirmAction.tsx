@@ -13,6 +13,7 @@ type ModalConfirmActionProps = {
   onDiscard: () => void;
   discardVariant?: "text" | "outlined" | "contained";
   discardColor?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
+  container?: Element;
 }
 export default function ModalConfirmAction(props: ParentProps<ModalConfirmActionProps>) {
   const [confirmText, setConfirmText] = createSignal("")
@@ -21,6 +22,7 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
     <KingsModal
       open={props.open}
       onClose={props.onDiscard}
+      container={props.container}
     >
       <CardContent>
         <Typography>
