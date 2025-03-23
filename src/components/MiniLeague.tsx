@@ -15,7 +15,7 @@ const dimDelay = "0s" // delay before dimming starts
 const dimIn = "0s"    // transition time for dimming
 
 type MiniLeagueProps = {
-  name: string;
+  name?: string;
   teams: string[];
   races: Race[];
   collapsed?: boolean;
@@ -61,22 +61,24 @@ export default function MiniLeague(props: MiniLeagueProps) {
       />
       <Typography>
         <table style={{ "border-spacing": "3px 0" }}>
-          <thead>
-            <tr>
-              <td colspan={collapsedRaces().length + 2}>
-                <Typography variant="h4">
-                  {props.name}
-                </Typography>
-              </td>
-              <Show when={!props.noResults}>
-                <td colspan={1}>
-                  <Show when={props.races.every(({ winner }) => !!winner)}>
-                    <Typography variant="caption" color="success.main">Complete</Typography>
-                  </Show>
+          <Show when={!props.noResults || props.name}>
+            <thead>
+              <tr>
+                <td colspan={collapsedRaces().length + 2}>
+                  <Typography variant="h4">
+                    {props.name}
+                  </Typography>
                 </td>
-              </Show>
-            </tr>
-          </thead>
+                <Show when={!props.noResults}>
+                  <td colspan={1}>
+                    <Show when={props.races.every(({ winner }) => !!winner)}>
+                      <Typography variant="caption" color="success.main">Complete</Typography>
+                    </Show>
+                  </td>
+                </Show>
+              </tr>
+            </thead>
+          </Show>
           <For each={props.teams}>{(team) => {
             return (
               <tr>
