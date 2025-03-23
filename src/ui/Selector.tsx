@@ -15,7 +15,7 @@ import { createSignal, createUniqueId, JSX, Switch, For, Match } from "solid-js"
 type SelectorProps<T> = {
   title?: string;
   type?: "input" | "menu";
-  current: T;
+  current?: T;
   onClose?: (v: T) => void;
   disabled?: boolean;
   locked?: boolean;

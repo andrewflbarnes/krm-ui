@@ -3,6 +3,7 @@ import { createMemo, createSelector, createSignal, For, Match, Show, Switch } fr
 import { Race } from "../kings";
 import { calcTeamResults, collapseRaces } from "../kings/utils";
 import RaceResultIcon from "../ui/RaceResultIcon";
+import Selector from "../ui/Selector";
 
 const borderColour = "dimgray"
 const highlightColour = "lightgreen"
@@ -21,25 +22,34 @@ type MiniLeagueProps = {
   collapsed?: boolean;
   live?: boolean;
   noResults?: boolean;
-  onResultChange: (race: Race) => void;
+  onResultChange?: (race: Race) => void;
   readonly?: boolean;
+  // Selectable allows a user to modify the team/seed in each position, in this
+  // cacse the teams props is a superset of the actual teams in this minileague
+  // and the races are expected to be synthetic
+  selectable?: boolean;
+  onTeamSelected?: (team: string, i: number) => void;
 }
 
 export default function MiniLeague(props: MiniLeagueProps) {
   const [highlight, setHighlight] = createSignal<number | null>(null);
   const highlightRace = createSelector(highlight)
   const collapsedRaces = createMemo(() => collapseRaces(props.races, props.collapsed))
+  const teams = createMemo(() => props.selectable
+    ? [...new Set(props.races.flatMap(({ team1, team2 }) => [team1, team2]))]
+    : props.teams)
+  const teamOptions = createMemo(() => props.teams.map(t => ({ value: t, label: t })))
 
   const highlightTeams = createMemo(() => {
     if (highlight() == null) {
       return []
     }
     const race = props.races[highlight()]
-    return [props.teams[race[0]], props.teams[race[1]]]
+    return [teams()[race[0]], teams()[race[1]]]
   })
 
 
-  const teamPositions = createMemo(() => calcTeamResults(props.teams, props.races))
+  const teamPositions = createMemo(() => calcTeamResults(teams(), props.races))
 
   const [anchorEl, setAnchorEl] = createSignal<HTMLTableColElement | null>(null)
   const [ctxRace, setCtxRace] = createSignal<{ race: Race, team: string }>()
@@ -79,7 +89,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
               </tr>
             </thead>
           </Show>
-          <For each={props.teams}>{(team) => {
+          <For each={teams()}>{(team, i) => {
             return (
               <tr>
                 <th style={{ "text-align": "left", position: "relative", height: "2em", "white-space": "nowrap" }} scope="row">
@@ -91,7 +101,13 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       "padding-right": "1em",
                     }}
                   >
-                    {team}
+                    <Show when={props.selectable} fallback={team}>
+                      <Selector
+                        options={teamOptions()}
+                        containerProps={{ style: { "min-width": "10em" } }}
+                        onClose={(v) => props.onTeamSelected(v, i())}
+                      />
+                    </Show>
                   </div>
                 </th>
                 <For each={collapsedRaces()}>{(races) => {
@@ -102,8 +118,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                         let topBorder = false
                         let botBorder = false
                         const { team1, team2 } = raceDetails
-                        const t1idx = props.teams.indexOf(team1)
-                        const t2idx = props.teams.indexOf(team2)
+                        const t1idx = teams().indexOf(team1)
+                        const t2idx = teams().indexOf(team2)
                         if (raceDetails) {
                           const needsBorder = Math.abs(t1idx - t2idx) > 1
                           if (needsBorder) {
@@ -168,7 +184,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
                   const posInfo = () => {
                     const p = pos()
-                    if (teamPositions().pos[p].length == props.teams.length) {
+                    if (teamPositions().pos[p].length == teams().length) {
                       if (!props.races.some(r => r.winner)) {
                         return ""
                       }

@@ -1,5 +1,5 @@
-import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, asKnockoutId, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
-import { calcTeamResults, createRound, minileagueSeededRaces } from "../kings/round-utils";
+import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
+import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings/round-utils";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 
@@ -156,7 +156,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         if (!rankResult) {
           rankResult = {
             rank,
-            rankStr: asKnockoutId(rank),
+            rankStr: asPosition(rank),
             teams: [],
           }
         } else if (rankResult.teams.length < 2) {

@@ -1,3 +1,4 @@
+import { asPosition } from "./round-utils";
 import { League, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
 
 export type LeagueConfig = {
@@ -97,28 +98,13 @@ function resultsForGroup(stage: RaceStage, group: string, positions: {
   return positions.map(position => ({ stage, group, ...position }))
 }
 
-export function asKnockoutId(num: number) {
-  const mod = num % 10
-  if ([11, 12, 13].includes(num) || mod > 3 || mod === 0) {
-    return `${num}th`
-  }
-  switch (num % 10) {
-    case 1:
-      return `${num}st`
-    case 2:
-      return `${num}nd`
-    case 3:
-      return `${num}rd`
-  }
-}
-
 export function resultsFromKnockout(numTeams: number): readonly ResultsConfig[] {
   if (numTeams % 2 !== 0) {
     throw new Error("Only even numbers of teams are supported")
   }
   const results: ResultsConfig[] = []
   for (let i = 1; i <= numTeams; i += 2) {
-    const group = `${asKnockoutId(i)}/${asKnockoutId(i + 1)}`
+    const group = `${asPosition(i)}/${asPosition(i + 1)}`
     results.push({
       stage: "knockout",
       group,

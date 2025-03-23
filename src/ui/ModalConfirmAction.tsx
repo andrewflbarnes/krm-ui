@@ -1,5 +1,6 @@
-import { Button, Card, CardActions, CardContent, Modal, TextField, Typography } from "@suid/material";
+import { Button, CardActions, CardContent, TextField, Typography } from "@suid/material";
 import { createSignal, onMount, ParentProps, Show } from "solid-js";
+import KingsModal from "../ui/KingsModal";
 
 type ModalConfirmActionProps = {
   open: boolean;
@@ -17,38 +18,36 @@ export default function ModalConfirmAction(props: ParentProps<ModalConfirmAction
   const [confirmText, setConfirmText] = createSignal("")
   const canConfirm = () => !props.confirmText || confirmText() == props.confirmText || confirmText() == `"${props.confirmText}"`
   return (
-    <Modal
+    <KingsModal
       open={props.open}
-      sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}
+      onClose={props.onDiscard}
     >
-      <Card>
-        <CardContent>
-          <Typography>
-            {props.children}
-          </Typography>
-          <Show when={props.confirmText}>
-            <ConfirmSection text={props.confirmText} current={confirmText()} onUpdate={setConfirmText} />
-          </Show>
-        </CardContent>
-        <CardActions>
-          <Button
-            onClick={props.onConfirm}
-            variant={props.confirmVariant || "text"}
-            color={props.confirmColor || "primary"}
-            disabled={!canConfirm()}
-          >
-            {props.confirmLabel || "Yes"}
-          </Button>
-          <Button
-            onClick={props.onDiscard}
-            variant={props.discardVariant || "text"}
-            color={props.discardColor || "primary"}
-          >
-            {props.discardLabel || "No"}
-          </Button>
-        </CardActions>
-      </Card>
-    </Modal>
+      <CardContent>
+        <Typography>
+          {props.children}
+        </Typography>
+        <Show when={props.confirmText}>
+          <ConfirmSection text={props.confirmText} current={confirmText()} onUpdate={setConfirmText} />
+        </Show>
+      </CardContent>
+      <CardActions>
+        <Button
+          onClick={props.onConfirm}
+          variant={props.confirmVariant || "text"}
+          color={props.confirmColor || "primary"}
+          disabled={!canConfirm()}
+        >
+          {props.confirmLabel || "Yes"}
+        </Button>
+        <Button
+          onClick={props.onDiscard}
+          variant={props.discardVariant || "text"}
+          color={props.discardColor || "primary"}
+        >
+          {props.discardLabel || "No"}
+        </Button>
+      </CardActions>
+    </KingsModal>
   )
 }
 

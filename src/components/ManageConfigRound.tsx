@@ -1,7 +1,7 @@
 import { Box, Divider, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
-import { asKnockoutId, divisions, MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
-import { minileagueRaces } from "../kings/round-utils";
+import { divisions, MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
+import { asPosition, minileagueRaces } from "../kings/round-utils";
 import MiniLeague from "./MiniLeague";
 import RunRaceResults from "./RunRaceResults";
 
@@ -24,10 +24,10 @@ function Content(props: Props) {
   const mockResults = (): Record<string, RoundResult[]> => {
     const results = props.config.results.map(r => ({
       rank: r.rank,
-      rankStr: asKnockoutId(r.rank),
+      rankStr: asPosition(r.rank),
       teams: [r.group.includes('/')
         ? `${r.group} ${r.position == 0 ? "winner" : "loser"}`
-        : `${asKnockoutId(r.position + 1)} group ${r.group}`]
+        : `${asPosition(r.position + 1)} group ${r.group}`]
 
     })).reduce((acc, r) => {
       // We need to combine any like ranks
@@ -100,12 +100,12 @@ function PreviewStage(props: {
         <For each={props.config}>{(group) => {
           const groupTeams = props.seeds
             ? group.seeds.map(s => `Seed ${s.position + 1}`)
-            : group.seeds.map(s => `${asKnockoutId(s.position + 1)} group ${s.group}`)
+            : group.seeds.map(s => `${asPosition(s.position + 1)} group ${s.group}`)
           const races = mockRaces(group.name, group.template, groupTeams)
           return (
             <div>
               <Show when={props.knockout} fallback={
-                <MiniLeague name={"Group " + group.name} races={races} teams={groupTeams} noResults onResultChange={() => { }} />
+                <MiniLeague name={"Group " + group.name} races={races} teams={groupTeams} noResults />
               }>
                 <For each={races}>{(r) => (
                   <Typography>

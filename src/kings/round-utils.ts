@@ -7,6 +7,25 @@ export function isStage(s: string): RaceStage | null {
   return s == "stage1" || s == "stage2" || s == "knockout" ? s : null
 }
 
+/** Converts betweens numbers and their equivalent positional string e.g.
+  * 1 -> 1st, 2 -> 2nd, 101 -> 101st, etc.
+  */
+export function asPosition(num: number) {
+  const mod = num % 10
+  if ([11, 12, 13].includes(num) || mod > 3 || mod === 0) {
+    return `${num}th`
+  }
+  switch (num % 10) {
+    case 1:
+      return `${num}st`
+    case 2:
+      return `${num}nd`
+    case 3:
+      return `${num}rd`
+  }
+}
+
+
 export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
   return Object.entries(parseResults(leagueConfig)).reduce((acc, [division, seeded]) => {
     acc[division] = seeded.filter(t => {
