@@ -1,16 +1,7 @@
 import { Lock } from "@suid/icons-material";
-import {
-  Badge,
-  Button,
-  FormControl,
-  InputLabel,
-  Menu,
-  MenuItem,
-  Select,
-  styled,
-} from "@suid/material";
+import { Badge, Button, FormControl, InputLabel, Menu, MenuItem, Select, styled, } from "@suid/material";
 import { SelectChangeEvent } from "@suid/material/Select";
-import { createSignal, createUniqueId, JSX, Switch, For, Match } from "solid-js";
+import { createSignal, createUniqueId, Switch, For, Match, ComponentProps } from "solid-js";
 
 type SelectorProps<T> = {
   title?: string;
@@ -23,8 +14,13 @@ type SelectorProps<T> = {
     label: string;
     value: T;
   }[];
-  containerProps?: JSX.HTMLAttributes<HTMLDivElement>;
-}
+} & ({
+  type: "input" | undefined;
+  containerProps?: ComponentProps<typeof Select>;
+} | {
+  type: "menu";
+  containerProps?: ComponentProps<typeof Button>;
+})
 
 const StyledSelect = styled(Select)({
   color: "inherit",
@@ -83,8 +79,8 @@ export default function Selector<T>(props: SelectorProps<T>) {
             <StyledInputLabel id={`${id}-select-label`}>{props.title}</StyledInputLabel>
             <StyledBadge invisible={!props.locked} badgeContent={<Lock />}>
               <StyledSelect
-                {...props.containerProps}
                 size="small"
+                {...props.containerProps}
                 labelId={`${id}-select-label`}
                 id={`${id}-select`}
                 value={props.current}
@@ -102,7 +98,7 @@ export default function Selector<T>(props: SelectorProps<T>) {
           </FormControl>
         </Match>
         <Match when={props.type == "menu"}>
-          <div {...props.containerProps}>
+          <div>
             <Button
               sx={{
                 "&:disabled": {
@@ -110,9 +106,10 @@ export default function Selector<T>(props: SelectorProps<T>) {
                   opacity: props.locked ? 0.6 : undefined,
                 }
               }}
-              id={`${id}-selector-button`}
               size="small"
               color="inherit"
+              {...props.containerProps}
+              id={`${id}-selector-button`}
               aria-controls={open() ? `${id}-selector-menu` : undefined}
               aria-haspopup="true"
               aria-expanded={open() ? "true" : undefined}

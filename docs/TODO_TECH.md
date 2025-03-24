@@ -11,6 +11,7 @@
 
 ## Must
 
+- [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
 - [ ] Replace KingsContext with global signals
 - [ ] Transition all "api" interactions to tanstack query and async
 - [ ] Align how RoundConfigs are passed to create/progress/complete

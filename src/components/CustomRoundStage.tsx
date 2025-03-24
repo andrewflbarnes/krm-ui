@@ -157,6 +157,7 @@ export default function CustomRoundStage(props: {
         onDelete={() => handleRemoveMiniLeague(removeMinileague())}
         container={ref}
       />
+      <Button onClick={() => setSelectMinileague(true)}>Add minileague</Button>
       <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
         <For each={Object.keys(mls())}>{k => {
           // The seeds are used synthetically to generate races purely for rendering
@@ -193,7 +194,6 @@ export default function CustomRoundStage(props: {
           )
         }}</For>
       </div>
-      <Button onClick={() => setSelectMinileague(true)}>Add minileague</Button>
     </div>
   )
 }
