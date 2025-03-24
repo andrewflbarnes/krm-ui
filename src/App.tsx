@@ -19,6 +19,7 @@ const RunRaceInProgress = lazy(() => import("./pages/RunRaceInProgress"));
 const RunRaceRedirect = lazy(() => import("./pages/RunRaceRedirect"));
 const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
 const ManageRound = lazy(() => import("./pages/ManageRound"));
+const CreateRoundConfig = lazy(() => import("./pages/CreateRoundConfig"));
 const RunRace = lazy(() => import("./pages/RunRace"));
 import { Toaster } from "solid-toast";
 import "./utils/stringutils";
@@ -41,6 +42,7 @@ export default function App() {
           <Route path="/continue" component={RaceManagerContinue} info={{ breadcrumb: "Continue" }} />
           <Route path="/minileague/:ml" component={ManageMiniLeague} info={{ breadcrumb: "ML" }} />
           <Route path="/round" info={{ breadcrumb: "Round" }}>
+            <Route path="/create" component={CreateRoundConfig} />
             <Route path="/:round" component={ManageRound} />
           </Route>
         </Route>

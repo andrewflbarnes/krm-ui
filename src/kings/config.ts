@@ -1,5 +1,5 @@
-import { asPosition } from "./round-utils";
 import { League, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
+import { asPosition } from "./utils";
 
 export type LeagueConfig = {
   name: string;

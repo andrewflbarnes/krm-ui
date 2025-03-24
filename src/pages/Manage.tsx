@@ -80,6 +80,9 @@ export default function Manage(props: ParentProps) {
               }))}
             />
           </Show>
+
+          <ListSubheader>Create config</ListSubheader>
+          <NavigationListItem path="round/create">Round</NavigationListItem>
         </List>
       </Paper>
       <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >

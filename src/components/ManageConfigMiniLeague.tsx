@@ -122,7 +122,6 @@ function Content(props: Props) {
           name={""}
           readonly
           noResults
-          onResultChange={() => { }}
         />
       </div>
       <div style={{ display: "flex", gap: "2em", "flex-direction": "column", "align-items": "center" }}>

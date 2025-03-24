@@ -16,18 +16,21 @@ export default function KingsModal(props: ParentProps<{
       open={props.open}
       onClose={props.onClose}
       style={{
-        display: "grid",
         height: "100%",
         width: "100%",
-        "place-items": "center",
       }}
     >
       <Card
         sx={{
-          width: "80%",
+          width: "fit-content",
+          maxWidth: "80%",
+          margin: "auto",
+          marginTop: "10%",
           maxHeight: "80%",
           padding: "1em",
           overflow: "scroll",
+          display: "grid",
+          placeItems: "center",
         }}
       >
         <Typography>
