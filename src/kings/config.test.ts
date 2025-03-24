@@ -4,12 +4,30 @@ import { miniLeagueTemplates, raceConfig } from './config';
 describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (name, template) => {
   const numTeams = template.teams
 
-  const numRaces = name == "full3" ? 6 : (numTeams * (numTeams - 1)) / 2
+  const numRaces = (function() {
+    switch (name) {
+      case "full3":
+        return 6
+      case "full2":
+        return 3
+      default:
+        return (numTeams * (numTeams - 1)) / 2
+    }
+  })()
   it(`has ${numRaces} races`, () => {
     expect(template.races.length).toBe(numRaces)
   })
 
-  const numTeamRaces = name == "full3" ? 4 : numTeams - 1
+  const numTeamRaces = (function() {
+    switch (name) {
+      case "full3":
+        return 4
+      case "full2":
+        return 3
+      default:
+        return numTeams - 1
+    }
+  })()
   for (let i = 0; i < numTeams; i++) {
     it(`team ${i + 1} has ${numTeamRaces} races`, () => {
       expect(template.races.filter(r => r[0] == i || r[1] == i).length).toBe(numTeamRaces)

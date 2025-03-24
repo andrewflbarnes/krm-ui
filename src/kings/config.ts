@@ -36,6 +36,14 @@ export const miniLeagueTemplates = {
       [0, 1],
     ],
   },
+  "full2": {
+    teams: 2,
+    races: [
+      [0, 1],
+      [1, 0],
+      [0, 1],
+    ],
+  },
   "mini3": {
     teams: 3,
     races: [
@@ -124,6 +132,16 @@ export function resultsFromKnockout(numTeams: number): readonly ResultsConfig[] 
 export const raceConfig: {
   [k: number]: RoundConfig
 } = {
+  2: {
+    stage1: [
+      {
+        name: "A",
+        seeds: wrapStage1Seeds([0, 1]),
+        template: miniLeagueTemplates.full2,
+      },
+    ],
+    results: wrapSingleGroupResults(2),
+  },
   3: {
     stage1: [
       {

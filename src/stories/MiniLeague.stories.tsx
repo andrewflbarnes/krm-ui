@@ -50,7 +50,9 @@ const meta = {
     })
     await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
     await waitFor(() => expect(canvas.getByText(/2nd/)).toBeInTheDocument())
-    await waitFor(() => expect(canvas.getByText(/3rd/)).toBeInTheDocument())
+    if (args.teams.length > 2) {
+      await waitFor(() => expect(canvas.getByText(/3rd/)).toBeInTheDocument())
+    }
     if (args.teams.length > 3) {
       await waitFor(() => expect(canvas.getByText(/4th/)).toBeInTheDocument())
     }
@@ -184,6 +186,15 @@ export const Full3: Story = {
     name: "Full 3",
     teams: initTeams(f3),
     races: initRaces(f3),
+  },
+}
+
+const f2 = miniLeagueTemplates.full2
+export const Full2: Story = {
+  args: {
+    name: "Full 2",
+    teams: initTeams(f2),
+    races: initRaces(f2),
   },
 }
 
