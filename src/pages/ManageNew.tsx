@@ -12,6 +12,8 @@ import { createRound, orderSeeds } from "../kings/utils"
 import { useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 
+const raceConfigs = raceConfig
+
 export default function ManageNew() {
   return (
     <BasicErrorBoundary>
@@ -134,7 +136,7 @@ function ManageNewInternal() {
         }
 
         const seeding = orderSeeds(k.leagueConfig(), numTeams)
-        const r = createRound("setup", k.league(), seeding)
+        const r = createRound("setup", k.league(), seeding, raceConfigs)
         batch(() => {
           setDistributionOrder(seeding)
           setSeeding(seeding)
@@ -149,7 +151,7 @@ function ManageNewInternal() {
       title: "Shuffle Teans",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
-          const r = createRound("setup", k.league(), seeds)
+          const r = createRound("setup", k.league(), seeds, raceConfigs)
           batch(() => {
             setRound(r)
             setDistributionOrder(seeds)
@@ -207,7 +209,7 @@ function ManageNewInternal() {
   }
 
   const handleDone = () => {
-    const r = krmApi.createRound(k.league(), seeding(), distributionOrder())
+    const r = krmApi.createRound(k.league(), seeding(), raceConfigs, distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()

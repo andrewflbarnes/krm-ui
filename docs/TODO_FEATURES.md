@@ -37,6 +37,7 @@
 - [ ] Add all configs up to 32 teams (:
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
+- [ ] Custom configuration groups
 - [ ] Set round metadata on creation (description, venue, round number, etc.)
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
@@ -48,6 +49,7 @@
 
 ## Should
 
+- [ ] Dynamic test/validation for custom round config
 - [ ] DSQ reasons
 - [ ] Support optional knockouts
 - [ ] Generate results HTML

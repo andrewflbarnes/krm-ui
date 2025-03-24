@@ -1,21 +1,22 @@
-import { raceConfig } from "./config"
 import { parseResults } from "./result-utils"
-import { ClubSeeding, divisions, Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces } from "./types"
-import { Race } from "./types"
+import type { ClubSeeding, Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, Race, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces } from "./types"
+import { divisions } from "./types"
 
 export function isStage(s: string): RaceStage | null {
   return s == "stage1" || s == "stage2" || s == "knockout" ? s : null
 }
 
-/** Converts betweens numbers and their equivalent positional string e.g.
+/**
+  * Converts betweens numbers and their equivalent positional string e.g.
   * 1 -> 1st, 2 -> 2nd, 101 -> 101st, etc.
   */
-export function asPosition(num: number) {
+export function asPosition(num: number): string {
   const mod = num % 10
-  if ([11, 12, 13].includes(num) || mod > 3 || mod === 0) {
+  const bigmod = num % 100
+  if ([11, 12, 13].includes(bigmod) || mod > 3 || mod === 0) {
     return `${num}th`
   }
-  switch (num % 10) {
+  switch (mod) {
     case 1:
       return `${num}st`
     case 2:
@@ -24,7 +25,6 @@ export function asPosition(num: number) {
       return `${num}rd`
   }
 }
-
 
 export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
   return Object.entries(parseResults(leagueConfig)).reduce((acc, [division, seeded]) => {
@@ -189,10 +189,18 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
   }
 }
 
-export function createRound(id: string, league: League, teams: RoundSeeding, distributionOrder?: RoundSeeding): Round {
+export function createRound(
+  id: string,
+  league: League,
+  teams: RoundSeeding,
+  raceConfigs: {
+    [numTeams: number]: RoundConfig
+  },
+  distributionOrder?: RoundSeeding,
+): Round {
   const teamOrder = distributionOrder || teams
   const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
-    acc[division] = raceConfig[seeds.length]
+    acc[division] = raceConfigs[seeds.length]
     return acc
   }, {} as {
     [division in Division]: RoundConfig;

@@ -1,4 +1,4 @@
-import { divisions, Division, League, LeagueData, Race, raceConfig, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
+import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
 import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings/round-utils";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
@@ -78,14 +78,7 @@ export default (function krmApiLocalStorage(): KrmApi {
       throw new Error(err)
     }
 
-    const { teams } = round
-
-    const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
-      acc[division] = raceConfig[seeds.length]
-      return acc
-    }, {} as {
-      [division in Division]: RoundConfig;
-    })
+    const { config } = round
 
     const nextRaces = divisions.reduce((acc, division) => {
       const divisionConf = config[division]
@@ -139,14 +132,7 @@ export default (function krmApiLocalStorage(): KrmApi {
       throw new Error(err)
     }
 
-    const { teams } = round
-
-    const config = Object.entries(teams).reduce((acc, [division, seeds]) => {
-      acc[division] = raceConfig[seeds.length]
-      return acc
-    }, {} as {
-      [division in Division]: RoundConfig;
-    })
+    const { config } = round
 
     const results = divisions.reduce((acc, division) => {
       const divisionConf = config[division].results
@@ -197,8 +183,8 @@ export default (function krmApiLocalStorage(): KrmApi {
     getLeagueConfig(league: League): LeagueData | null {
       return JSON.parse(localStorage.getItem(getStorageKeyLeagueConfig(league)))
     },
-    createRound(league: League, teams: RoundSeeding, distributionOrder?: RoundSeeding): Round {
-      const round = createRound(newStorageKeyRound(league), league, teams, distributionOrder)
+    createRound(league: League, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
+      const round = createRound(newStorageKeyRound(league), league, teams, raceConfigs, distributionOrder)
       saveRound(round)
       return round
     },

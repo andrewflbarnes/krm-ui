@@ -11,7 +11,9 @@
 
 ## Must
 
+- [ ] Replace KingsContext with global signals
 - [ ] Transition all "api" interactions to tanstack query and async
+- [ ] Align how RoundConfigs are passed to create/progress/complete
 - [ ] Verify stage 2 should always have same number of teams as stage 1
 - [ ] Validation checks when re-opening a stage
 - [ ] Service worker for offline use
