@@ -104,7 +104,6 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   >
                     <Show when={props.selectable} fallback={team}>{(selectable) => {
                       const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
-                      console.log({ is: props.initialSelected, i: i() })
                       const handleTeamSelected = (v: string, i: number) => {
                         setSelected(v)
                         props.onTeamSelected(v, i)

@@ -8,18 +8,28 @@ import ModalConfirmAction from "../ui/ModalConfirmAction"
 import ManageConfigMiniLeague from "./ManageConfigMiniLeague"
 import MiniLeague from "./MiniLeague"
 
-type SeedInfo = {
+export type SeedInfo = {
   name: string;
   seed: MiniLeagueSeed;
 }
 
-type CreateConfig = {
-  template: MiniLeagueTemplate;
-  name: string | undefined;
-  seeds: (MiniLeagueSeed | undefined)[]
+export type CreateConfig = {
+  minileagues: Record<string, {
+    template: MiniLeagueTemplate;
+    name: string | undefined;
+    seeds: (SeedInfo | undefined)[];
+  }>,
+  allSeeds: SeedInfo[];
 }
 
-type ConfigUpdateHandler = (config: Record<string, CreateConfig>) => void
+function initialValues<T extends Record<string, unknown>, K extends keyof T[string]>(obj: T, key: K): Record<string, T[string][K]> {
+  return Object.entries(obj ?? {}).reduce((acc, [k, v]) => {
+    acc[k] = v[key]
+    return acc
+  }, {} as Record<K, T[string][K]>)
+}
+
+export type ConfigUpdateHandler = (config: CreateConfig) => void
 
 function genSeeds(mls: MiniLeagueTemplate[], previous: { group: string, teams: number }[]) {
   if (previous) {
@@ -42,37 +52,27 @@ function genSeeds(mls: MiniLeagueTemplate[], previous: { group: string, teams: n
 }
 
 export default function CustomRoundStage(oprops: {
-  initialConfig?: CreateConfig[];
+  initialConfig?: CreateConfig;
   previous?: {
     group: string;
     teams: number;
   }[],
   onConfigUpdated: ConfigUpdateHandler;
 }) {
-  const props = mergeProps({ initialConfig: [] }, oprops)
+  const props = mergeProps({ initialConfig: {
+    minileagues: {},
+    allSeeds: [],
+  } }, oprops)
   // Allows us to better track added and, more importantly, removed minileagues
-  const [key, setKey] = createSignal(props.initialConfig.length)
+  const [key, setKey] = createSignal(Object.values(props.initialConfig.minileagues ?? {}).length)
   const [infoTemplate, setInfoTemplate] = createSignal<MiniLeagueTemplate>(null)
   const [selectMinileague, setSelectMinileague] = createSignal(false)
-  const initialAllSeeds = genSeeds(props.initialConfig.map(c => c?.template), props.previous)
-  const [allSeeds, setAllSeeds] = createSignal<SeedInfo[]>(initialAllSeeds)
+  const [allSeeds, setAllSeeds] = createSignal<SeedInfo[]>(props.initialConfig.allSeeds ?? [])
   const allSeedNames = createMemo(() => allSeeds().map(s => s.name))
   // The below signals are used to hold the config state
-  const initialMls = props.initialConfig.reduce((acc, { template }, i) => {
-    acc[i] = template
-    return acc
-  }, {})
-  const [mls, setMls] = createSignal<{ [mlkey: string]: MiniLeagueTemplate }>(initialMls)
-  const initialNames = props.initialConfig.reduce((acc, { name }, i) => {
-    acc[i] = name
-    return acc
-  }, {})
-  const [mlNames, setMlNames] = createSignal<{ [mlkey: string]: string }>(initialNames)
-  const initialSelectedSeeds = props.initialConfig.reduce((acc, { seeds }, i) => {
-    acc[i] = seeds.map(s => initialAllSeeds.find(({ seed }) => s?.group === seed.group && s?.position === seed.position))
-    return acc
-  }, {} as { [mlkey: string]: SeedInfo[] })
-  const [selectedSeeds, setSelectedSeeds] = createSignal<{ [mlkey: string]: SeedInfo[] }>(initialSelectedSeeds)
+  const [mls, setMls] = createSignal<{ [mlkey: string]: MiniLeagueTemplate }>(initialValues(props.initialConfig.minileagues, "template"))
+  const [mlNames, setMlNames] = createSignal<{ [mlkey: string]: string }>(initialValues(props.initialConfig.minileagues, "name"))
+  const [selectedSeeds, setSelectedSeeds] = createSignal<{ [mlkey: string]: SeedInfo[] }>(initialValues(props.initialConfig.minileagues, "seeds"))
   // utility for filtering out the seeds which have been selected
   const selectableSeeds = createMemo(() => {
     const selected = Object.values(selectedSeeds() ?? {}).flatMap(s => s)
@@ -86,14 +86,30 @@ export default function CustomRoundStage(oprops: {
   })
 
   const handleConfigUpdated = (config: Record<string, MiniLeagueTemplate>, names: Record<string, string>, seeds: Record<string, SeedInfo[]>) => {
-    props.onConfigUpdated(Object.entries(config).reduce((acc, [k, template]) => {
-      acc[k] = {
-        template,
-        seeds: seeds[k].map(s => s?.seed),
-        name: names[k],
-      }
-      return acc
-    }, {}))
+    const mls: CreateConfig["minileagues"] = {};
+    [
+      ...Object.keys(config),
+      ...Object.keys(names),
+      ...Object.keys(seeds),
+    ].forEach(k => mls[k] = {
+      template: undefined,
+      seeds: [],
+      name: undefined,
+    })
+
+    Object.entries(config).forEach(([k, template]) => {
+      mls[k].template = template
+    })
+    Object.entries(names).forEach(([k, name]) => {
+      mls[k].name = name
+    })
+    Object.entries(seeds).forEach(([k, seeds]) => {
+      mls[k].seeds = seeds
+    })
+    props.onConfigUpdated({
+      minileagues: mls,
+      allSeeds: allSeeds(),
+    })
   }
 
   const handleAddMiniLeague = (template: MiniLeagueTemplate) => {
