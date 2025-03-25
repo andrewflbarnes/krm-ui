@@ -121,10 +121,9 @@ export default function MiniLeague(props: MiniLeagueProps) {
                           current={selected()}
                           options={theseOptions()}
                           containerProps={{
-                            variant: "standard",
-                            size: "small",
                             style: { "min-width": "10em" },
                           }}
+                          small
                           onClose={(v) => handleTeamSelected(v, i())}
                         />
                       )

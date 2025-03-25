@@ -1,7 +1,7 @@
 import { Lock } from "@suid/icons-material";
 import { Badge, Button, FormControl, InputLabel, Menu, MenuItem, Select, styled, } from "@suid/material";
 import { SelectChangeEvent } from "@suid/material/Select";
-import { createSignal, createUniqueId, Switch, For, Match, ComponentProps } from "solid-js";
+import { createSignal, createUniqueId, Switch, For, Match, JSX } from "solid-js";
 
 type SelectorProps<T> = {
   title?: string;
@@ -14,13 +14,10 @@ type SelectorProps<T> = {
     label: string;
     value: T;
   }[];
-} & ({
-  type: "input" | undefined;
-  containerProps?: ComponentProps<typeof Select>;
-} | {
-  type: "menu";
-  containerProps?: ComponentProps<typeof Button>;
-})
+  containerProps?: JSX.HTMLAttributes<HTMLDivElement>
+  // implementation specific
+  small?: boolean;
+}
 
 const StyledSelect = styled(Select)({
   color: "inherit",
@@ -81,6 +78,11 @@ export default function Selector<T>(props: SelectorProps<T>) {
               <StyledSelect
                 size="small"
                 {...props.containerProps}
+                sx={{
+                  '& .MuiSelect-select': {
+                    py: props.small ? '3px' : undefined,
+                  }
+                }}
                 labelId={`${id}-select-label`}
                 id={`${id}-select`}
                 value={props.current}
@@ -98,17 +100,18 @@ export default function Selector<T>(props: SelectorProps<T>) {
           </FormControl>
         </Match>
         <Match when={props.type == "menu"}>
-          <div>
+          <div {...props.containerProps}>
             <Button
               sx={{
+                width: "100%",
                 "&:disabled": {
                   color: props.locked ? "inherit" : undefined,
                   opacity: props.locked ? 0.6 : undefined,
                 }
               }}
               size="small"
+              variant="outlined"
               color="inherit"
-              {...props.containerProps}
               id={`${id}-selector-button`}
               aria-controls={open() ? `${id}-selector-menu` : undefined}
               aria-haspopup="true"
