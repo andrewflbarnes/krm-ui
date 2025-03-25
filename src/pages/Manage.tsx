@@ -31,7 +31,7 @@ export default function Manage(props: ParentProps) {
           <NavigationListItem path="new">New</NavigationListItem>
           <NavigationListItem path="continue">Continue</NavigationListItem>
 
-          <ListSubheader>Configure</ListSubheader>
+          <ListSubheader>View config</ListSubheader>
 
           <CollapsibleNavItems
             title="Mini Leagues"
@@ -82,7 +82,7 @@ export default function Manage(props: ParentProps) {
           </Show>
 
           <ListSubheader>Create config</ListSubheader>
-          <NavigationListItem path="round/create">Round</NavigationListItem>
+          <NavigationListItem path="round/create">+ Round</NavigationListItem>
         </List>
       </Paper>
       <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
