@@ -31,7 +31,8 @@ function initialValues<T extends Record<string, unknown>, K extends keyof T[stri
 
 export type ConfigUpdateHandler = (config: CreateConfig) => void
 
-function genSeeds(mls: MiniLeagueTemplate[], previous: { group: string, teams: number }[]) {
+// TODO split this
+function genSeeds(minileagues: Record<string, MiniLeagueTemplate>, names: Record<string, string>, previous: { group: string, teams: number }[]) {
   if (previous) {
     return previous.flatMap(({ group, teams }) => Array.from({ length: teams }, (_, i) => ({
       name: `${asPosition(i + 1)} group ${group}`,
@@ -41,6 +42,7 @@ function genSeeds(mls: MiniLeagueTemplate[], previous: { group: string, teams: n
       }
     })))
   } else {
+    const mls = Object.values(minileagues)
     return Array.from({ length: mls.reduce((acc, { teams }) => acc + teams, 0) }, (_, i) => ({
       name: `Seed ${i + 1}`,
       seed: {
@@ -58,11 +60,14 @@ export default function CustomRoundStage(oprops: {
     teams: number;
   }[],
   onConfigUpdated: ConfigUpdateHandler;
+  onNameUpdated: (mlkey: string, name: string) => void;
 }) {
-  const props = mergeProps({ initialConfig: {
-    minileagues: {},
-    allSeeds: [],
-  } }, oprops)
+  const props = mergeProps({
+    initialConfig: {
+      minileagues: {},
+      allSeeds: [],
+    }
+  }, oprops)
   // Allows us to better track added and, more importantly, removed minileagues
   const [key, setKey] = createSignal(Object.values(props.initialConfig.minileagues ?? {}).length)
   const [infoTemplate, setInfoTemplate] = createSignal<MiniLeagueTemplate>(null)
@@ -82,7 +87,7 @@ export default function CustomRoundStage(oprops: {
   })
 
   createEffect(() => {
-    setAllSeeds(genSeeds(Object.values(mls()), props.previous))
+    setAllSeeds(genSeeds(mls(), mlNames(), props.previous))
   })
 
   const handleConfigUpdated = (config: Record<string, MiniLeagueTemplate>, names: Record<string, string>, seeds: Record<string, SeedInfo[]>) => {
@@ -167,7 +172,7 @@ export default function CustomRoundStage(oprops: {
     }
     batch(() => {
       setMlNames(updatedNames)
-      handleConfigUpdated(mls(), updatedNames, selectedSeeds())
+      props.onNameUpdated(k, name)
     })
   }
 

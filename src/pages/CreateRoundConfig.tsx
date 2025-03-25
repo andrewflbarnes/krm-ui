@@ -29,6 +29,46 @@ export default function CreateRoundConfig() {
       }
     })
   }
+  const handleNameUpdated = (mlkey: string, newName: string) => {
+    const s = stage()
+    setConfig(c => ({
+      ...c,
+      ...(s == "stage1" && c.stage2 ? {
+        stage2: {
+          ...c.stage2,
+          minileagues: {
+            ...c.stage2.minileagues,
+            [mlkey]: {
+              ...c.stage2.minileagues[mlkey],
+              seeds: c.stage2.minileagues[mlkey].seeds.map(seedInfo => {
+                if (!seedInfo?.seed?.group || seedInfo.seed.group != c.stage1.minileagues[mlkey].name) {
+                  return seedInfo
+                }
+                const { name, seed } = seedInfo
+                return {
+                  seed: {
+                    ...seed,
+                    group: newName,
+                  },
+                  name: name.replace(/[gG]roup .*/, "group " + (newName ?? "N/A")),
+                }
+              })
+            }
+          }
+        }
+      } : {}),
+      [s]: {
+        ...c[s],
+        minileagues: {
+          ...c[s].minileagues,
+          [mlkey]: {
+            ...c[s].minileagues[mlkey],
+            name: newName,
+          }
+        }
+      }
+    }))
+  }
   return (
     <div style={{ display: "flex", "align-items": "center", "flex-direction": "column" }}>
       <Button onClick={handleStageChange}>
@@ -39,6 +79,7 @@ export default function CreateRoundConfig() {
           <CustomRoundStage
             initialConfig={config()?.[stage()]}
             onConfigUpdated={handleConfigUpdate}
+            onNameUpdated={handleNameUpdated}
             previous={previous()}
           />
         </Show>
