@@ -1,6 +1,6 @@
 import { Delete, InfoOutlined } from "@suid/icons-material"
 import { Button, IconButton, TextField, Typography } from "@suid/material"
-import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js"
+import { batch, createEffect, createMemo, createSignal, For, mergeProps, Show } from "solid-js"
 import { MiniLeagueSeed, MiniLeagueTemplate, miniLeagueTemplates } from "../kings"
 import { asPosition, minileagueRaces } from "../kings/round-utils"
 import KingsModal from "../ui/KingsModal"
@@ -13,57 +13,76 @@ type SeedInfo = {
   seed: MiniLeagueSeed;
 }
 
-type ConfigUpdateHandler = (config: Record<string, {
+type CreateConfig = {
   template: MiniLeagueTemplate;
   name: string | undefined;
   seeds: (MiniLeagueSeed | undefined)[]
-}>) => void
+}
 
-export default function CustomRoundStage(props: {
+type ConfigUpdateHandler = (config: Record<string, CreateConfig>) => void
+
+function genSeeds(mls: MiniLeagueTemplate[], previous: { group: string, teams: number }[]) {
+  if (previous) {
+    return previous.flatMap(({ group, teams }) => Array.from({ length: teams }, (_, i) => ({
+      name: `${asPosition(i + 1)} group ${group}`,
+      seed: {
+        group,
+        position: i,
+      }
+    })))
+  } else {
+    return Array.from({ length: mls.reduce((acc, { teams }) => acc + teams, 0) }, (_, i) => ({
+      name: `Seed ${i + 1}`,
+      seed: {
+        group: "Seeds",
+        position: i,
+      }
+    }))
+  }
+}
+
+export default function CustomRoundStage(oprops: {
+  initialConfig?: CreateConfig[];
   previous?: {
     group: string;
     teams: number;
   }[],
   onConfigUpdated: ConfigUpdateHandler;
 }) {
+  const props = mergeProps({ initialConfig: [] }, oprops)
   // Allows us to better track added and, more importantly, removed minileagues
-  const [key, setKey] = createSignal(0)
+  const [key, setKey] = createSignal(props.initialConfig.length)
   const [infoTemplate, setInfoTemplate] = createSignal<MiniLeagueTemplate>(null)
   const [selectMinileague, setSelectMinileague] = createSignal(false)
-  const [allSeeds, setAllSeeds] = createSignal<SeedInfo[]>([])
+  const initialAllSeeds = genSeeds(props.initialConfig.map(c => c?.template), props.previous)
+  const [allSeeds, setAllSeeds] = createSignal<SeedInfo[]>(initialAllSeeds)
   const allSeedNames = createMemo(() => allSeeds().map(s => s.name))
   // The below signals are used to hold the config state
-  const [mls, setMls] = createSignal<{ [mlkey: string]: MiniLeagueTemplate }>({})
-  const [mlNames, setMlNames] = createSignal<{ [mlkey: string]: string }>({})
-  const [selectedSeeds, setSelectedSeeds] = createSignal<{ [mlkey: string]: SeedInfo[] }>({})
+  const initialMls = props.initialConfig.reduce((acc, { template }, i) => {
+    acc[i] = template
+    return acc
+  }, {})
+  const [mls, setMls] = createSignal<{ [mlkey: string]: MiniLeagueTemplate }>(initialMls)
+  const initialNames = props.initialConfig.reduce((acc, { name }, i) => {
+    acc[i] = name
+    return acc
+  }, {})
+  const [mlNames, setMlNames] = createSignal<{ [mlkey: string]: string }>(initialNames)
+  const initialSelectedSeeds = props.initialConfig.reduce((acc, { seeds }, i) => {
+    acc[i] = seeds.map(s => initialAllSeeds.find(({ seed }) => s?.group === seed.group && s?.position === seed.position))
+    return acc
+  }, {} as { [mlkey: string]: SeedInfo[] })
+  const [selectedSeeds, setSelectedSeeds] = createSignal<{ [mlkey: string]: SeedInfo[] }>(initialSelectedSeeds)
   // utility for filtering out the seeds which have been selected
   const selectableSeeds = createMemo(() => {
-    const selected = Object.values(selectedSeeds()).flatMap(s => s)
+    const selected = Object.values(selectedSeeds() ?? {}).flatMap(s => s)
     return allSeeds()
-      .map(({ name }) => name)
+      ?.map(({ name }) => name)
       .filter(name => !selected.some(ss => ss?.name === name))
   })
 
   createEffect(() => {
-    if (!props.previous) {
-      const updatedSeeds = Array.from({ length: Object.values(mls()).reduce((acc, { teams }) => acc + teams, 0) }, (_, i) => ({
-        name: `Seed ${i + 1}`,
-        seed: {
-          group: "Seeds",
-          position: i,
-        }
-      }))
-      setAllSeeds(updatedSeeds)
-    } else {
-      const updatedSeeds = props.previous.flatMap(({ group, teams }) => Array.from({ length: teams }, (_, i) => ({
-        name: `${asPosition(i + 1)} group ${group}`,
-        seed: {
-          group,
-          position: i,
-        }
-      })))
-      setAllSeeds(updatedSeeds)
-    }
+    setAllSeeds(genSeeds(Object.values(mls()), props.previous))
   })
 
   const handleConfigUpdated = (config: Record<string, MiniLeagueTemplate>, names: Record<string, string>, seeds: Record<string, SeedInfo[]>) => {
@@ -164,13 +183,16 @@ export default function CustomRoundStage(props: {
           // purposes - the minileague component won't actually tie the teams in the
           // races to the teams which are selected.
           const ml = mls()[k]
+          const defaultName = mlNames()[k]
           const races = createMemo(() => minileagueRaces(ml, allSeedNames(), 'A', "stage1", "mixed"))
+          const selected = () => selectedSeeds()[k].map(s => s?.name)
           return (
             <div style={{ display: "flex", "flex-direction": "column", "gap": "1em" }}>
               <div style={{ display: "flex", "align-items": "center" }}>
                 <TextField
                   label="Group"
                   size="small"
+                  defaultValue={defaultName}
                   onChange={e => handleGroupNameChange(e.target.value, k)}
                 />
                 <div style={{ "margin-left": "auto" }}>
@@ -188,6 +210,7 @@ export default function CustomRoundStage(props: {
                 teams={allSeedNames()}
                 races={races()}
                 selectable={selectableSeeds()}
+                initialSelected={selected()}
                 onTeamSelected={(t, ti) => handleTeamSelected(t, ti, k)}
               />
             </div>

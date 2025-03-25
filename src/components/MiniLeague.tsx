@@ -28,6 +28,7 @@ type MiniLeagueProps = {
   // cacse the teams props is a superset of the actual teams in this minileague
   // and the races are expected to be synthetic
   selectable?: string[];
+  initialSelected?: string[];
   onTeamSelected?: (team: string, i: number) => void;
 }
 
@@ -102,7 +103,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     }}
                   >
                     <Show when={props.selectable} fallback={team}>{(selectable) => {
-                      const [selected, setSelected] = createSignal("")
+                      const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
+                      console.log({ is: props.initialSelected, i: i() })
                       const handleTeamSelected = (v: string, i: number) => {
                         setSelected(v)
                         props.onTeamSelected(v, i)
