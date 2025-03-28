@@ -1,5 +1,5 @@
 import { Delete, InfoOutlined } from "@suid/icons-material"
-import { Button, IconButton, TextField, Typography } from "@suid/material"
+import { Button, IconButton, Paper, TextField, Typography } from "@suid/material"
 import { createMemo, createSignal, For, Show } from "solid-js"
 import { SeedInfo, useCreateRoundConfig } from "../hooks/create-config"
 import { MiniLeagueTemplate, miniLeagueTemplates, RaceStage } from "../kings"
@@ -57,55 +57,57 @@ export default function CustomRoundStage(props: {
         onDelete={handleRemoveMiniLeague}
         container={ref}
       />
-      <Button onClick={() => setSelectMinileague(true)}>Add minileague</Button>
+      <Button fullWidth onClick={() => setSelectMinileague(true)}>Add minileague</Button>
       <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
         <For each={Object.entries(mls())}>{([k, ml]) => {
           const defaultName = ml.name
           return (
-            <div style={{ display: "flex", "flex-direction": "column", "gap": "1em" }}>
-              <div style={{ display: "flex", "align-items": "center" }}>
-                <TextField
-                  label="Group"
-                  size="small"
-                  defaultValue={defaultName}
-                  onChange={e => changeName(props.stage, k, e.target.value)}
-                />
-                <div style={{ "margin-left": "auto" }}>
-                  <IconButton onClick={[setRemove, k]}>
-                    <Delete fontSize="small" color="error" />
-                  </IconButton>
-                  <IconButton onClick={[setInfoTemplate, miniLeagueTemplates[ml.template]]}>
-                    <InfoOutlined fontSize="small" />
-                  </IconButton>
-                </div>
-              </div>
-              <For each={ml.seeds}>{(seed, i) => {
-                const thisSelectable = createMemo(() => {
-                  const ts = selectableSeeds(props.stage, seed).map(s => ({ label: s.name, value: s.id }))
-                  if (seed) {
-                    ts.splice(1, 0, { label: "-", value: null })
-                  } else {
-                    ts.unshift({ label: "-", value: null })
-                  }
-                  return ts
-                })
-                const handleSelected = (v: string) => {
-                  selectTeam(props.stage, k, i(), allSeedsMap()[v])
-                }
-                return (
-                  <Selector
-                    type="input"
-                    current={seed?.name ?? "-"}
-                    options={thisSelectable()}
-                    containerProps={{
-                      style: { "min-width": "10em" },
-                    }}
-                    small
-                    onClose={(v) => handleSelected(v)}
+            <Paper elevation={5} style={{ padding: "1em" }}>
+              <div style={{ display: "flex", "flex-direction": "column", "gap": "1em" }}>
+                <div style={{ display: "flex", "align-items": "center" }}>
+                  <TextField
+                    label="Group"
+                    size="small"
+                    defaultValue={defaultName}
+                    onChange={e => changeName(props.stage, k, e.target.value)}
                   />
-                )
-              }}</For>
-            </div>
+                  <div style={{ "margin-left": "auto" }}>
+                    <IconButton onClick={[setRemove, k]}>
+                      <Delete fontSize="small" color="error" />
+                    </IconButton>
+                    <IconButton onClick={[setInfoTemplate, miniLeagueTemplates[ml.template]]}>
+                      <InfoOutlined fontSize="small" />
+                    </IconButton>
+                  </div>
+                </div>
+                <For each={ml.seeds}>{(seed, i) => {
+                  const thisSelectable = createMemo(() => {
+                    const ts = selectableSeeds(props.stage, seed).map(s => ({ label: s.name, value: s.id }))
+                    if (seed) {
+                      ts.splice(1, 0, { label: "-", value: null })
+                    } else {
+                      ts.unshift({ label: "-", value: null })
+                    }
+                    return ts
+                  })
+                  const handleSelected = (v: string) => {
+                    selectTeam(props.stage, k, i(), allSeedsMap()[v])
+                  }
+                  return (
+                    <Selector
+                      type="input"
+                      current={seed?.name ?? "-"}
+                      options={thisSelectable()}
+                      containerProps={{
+                        style: { "min-width": "10em" },
+                      }}
+                      small
+                      onClose={(v) => handleSelected(v)}
+                    />
+                  )
+                }}</For>
+              </div>
+            </Paper>
           )
         }}</For>
       </div>
