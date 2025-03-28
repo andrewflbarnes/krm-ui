@@ -1,6 +1,6 @@
 import { ClerkProvider, useAuth as useClerkAuth, useUser } from "clerk-solidjs"
 import { signInWithCustomToken, signOut, User } from "firebase/auth"
-import { Accessor, createComputed, createContext, createMemo, createSignal, ParentProps, useContext } from "solid-js"
+import { Accessor, batch, createComputed, createContext, createMemo, createSignal, ParentProps, useContext } from "solid-js"
 import { auth, db } from "../firebase"
 import notification from "./notification"
 import { dark } from "@clerk/themes";
@@ -41,7 +41,7 @@ export function AuthProvider(props: ParentProps) {
 }
 
 function FirebaseProvider(props: ParentProps) {
-  const { user } = useUser()
+  const { user, isSignedIn } = useUser()
   const username = createMemo(() => user()?.username)
   const fullName = createMemo(() => user()?.fullName)
   const firstName = createMemo(() => user()?.firstName)
@@ -53,6 +53,9 @@ function FirebaseProvider(props: ParentProps) {
   const [authenticated, setAuthenticated] = createSignal(false)
 
   createComputed((saved) => {
+    if (!isSignedIn() || !authenticated()) {
+      return saved
+    }
     const userinfo = {
       owner: userId(),
       username: username(),
@@ -73,11 +76,13 @@ function FirebaseProvider(props: ParentProps) {
   }, false)
 
   createComputed(() => {
-    if (!userId()) {
-      setFbUser(undefined)
-      signOut(auth)
-      setAuthLock(false)
-      setAuthenticated(false)
+    if (!isSignedIn()) {
+      batch(() => {
+        setFbUser(undefined)
+        signOut(auth)
+        setAuthLock(false)
+        setAuthenticated(false)
+      })
     }
 
     if (userId() && !fbUser() && !authLock()) {
