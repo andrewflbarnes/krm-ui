@@ -1,6 +1,9 @@
-import { Button, Card, CardActions, CardContent, CardHeader, Modal, Typography } from "@suid/material";
+import { Button, CardActions, CardContent, CardHeader, Typography } from "@suid/material";
+import { createQuery } from "@tanstack/solid-query";
+import { doc, getDoc } from "firebase/firestore";
+import { Match, Switch } from "solid-js";
 import { RoundInfo } from "../api/krm";
-import { useAuth } from "../hooks/auth";
+import { db } from "../firebase";
 import KingsModal from "./KingsModal";
 
 type ModalRoundInfoProps = {
@@ -10,7 +13,25 @@ type ModalRoundInfoProps = {
 }
 
 export default function ModalRoundInfo(props: ModalRoundInfoProps) {
-  const { fullName, username } = useAuth()
+  const ownerId = () => props.round?.owner
+  const user = createQuery(() => ({
+    queryKey: ["user", ownerId()],
+    queryFn: async () => {
+      const userRef = doc(db, "users", props.round.owner)
+      const user = await getDoc(userRef)
+      if (user.exists()) {
+        return user.data()
+      }
+      return {
+        fullName: "Unknown",
+        username: "Unknown",
+      }
+    },
+    enabled: !!ownerId() && ownerId() !== "local",
+    staleTime: 1000 * 60,
+    retry: 3,
+  }))
+
   return (
     <KingsModal
       open={props.open}
@@ -35,7 +56,18 @@ export default function ModalRoundInfo(props: ModalRoundInfoProps) {
             Board: {props.round.teams.board.length}
           </p>
           <p>
-            Owner: {username()} ({fullName()})
+            Owner:&nbsp;
+            <Switch fallback={"Unable to load user"}>
+              <Match when={ownerId() === "local"}>
+                Local user (you)
+              </Match>
+              <Match when={user.isPending}>
+                Loading user info...
+              </Match>
+              <Match when={user.data}>
+                {user.data.username} ({user.data.fullName})
+              </Match>
+            </Switch>
           </p>
         </Typography>
       </CardContent>
