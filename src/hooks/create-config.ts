@@ -47,7 +47,6 @@ const addMiniLeague = (stage: RaceStage, mlconfig: string, teams: number): strin
 }
 
 const removeMiniLeague = (stage: RaceStage, mlkey: string) => {
-  // TODO remove any stage 1 seeds referenced
   batch(() => {
     setConfig(stage, mlkey, undefined)
     setConfig(produce((store) => {

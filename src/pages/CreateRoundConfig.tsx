@@ -1,4 +1,4 @@
-import { Button } from "@suid/material";
+import { Button, Typography } from "@suid/material";
 import { createSignal, Show } from "solid-js";
 import CustomRoundStage from "../components/CustomRoundStage";
 import { ConfigState } from "../hooks/create-config";
@@ -8,20 +8,25 @@ const conf: {
   [state in ConfigState]: {
     prev?: ConfigState;
     next?: ConfigState;
+    title: string;
   }
 } = {
   stage1: {
+    title: "Stage 1",
     next: "stage2",
   },
   stage2: {
+    title: "Stage 2",
     prev: "stage1",
     next: "knockout",
   },
   knockout: {
+    title: "Knockout",
     prev: "stage2",
     next: "results",
   },
   results: {
+    title: "Results",
     prev: "knockout",
   }
 }
@@ -34,11 +39,16 @@ export default function CreateRoundConfig() {
   const prev = () => conf[stage()].prev
   const next = () => conf[stage()].next
   return (
-    <div style={{ display: "flex", "align-items": "center", "flex-direction": "column" }}>
+    <div style={{
+      display: "flex",
+      "align-items": "center",
+      "flex-direction": "column",
+      "gap": "1em",
+    }}>
       <div style={{
         display: "grid",
         "align-items": "center",
-        "grid-template-columns": "1fr 1fr",
+        "grid-template-columns": "1fr 1fr 1fr",
         width: "100%",
       }}>
         <Button
@@ -47,6 +57,9 @@ export default function CreateRoundConfig() {
         >
           &lt;&lt;&lt;&nbsp;{prev()}
         </Button>
+        <Typography textAlign="center">
+          {conf[stage()].title}
+        </Typography>
         <Button
           disabled={!next()}
           onClick={() => handleStageChange(next())}

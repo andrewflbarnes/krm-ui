@@ -58,7 +58,7 @@ export default function CustomRoundStage(props: {
         container={ref}
       />
       <Button fullWidth onClick={() => setSelectMinileague(true)}>Add minileague</Button>
-      <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
+      <div style={{ display: "flex", "flex-direction": "column", gap: "1em", "margin-top": "1em" }}>
         <For each={Object.entries(mls())}>{([k, ml]) => {
           const defaultName = ml.name
           return (
