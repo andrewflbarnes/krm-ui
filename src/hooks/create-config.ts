@@ -7,13 +7,13 @@ export type ConfigState = RaceStage | "results"
 
 export type SeedInfo = {
   id: string;
-  stage: RaceStage | "seed";
+  stage: ConfigState | "seed";
   name?: string;
   mlkey: string;
   position: number;
 }
 
-type ConfigMinileague = {
+export type ConfigMinileague = {
   template: string;
   teams: number;
   name?: string;
@@ -21,14 +21,14 @@ type ConfigMinileague = {
 }
 
 type Createconfig = Partial<{
-  [stage in RaceStage]: {
+  [stage in ConfigState]: {
     [mlkey: string]: ConfigMinileague
   }
 }>
 
 const [config, setConfig] = createStore<Createconfig>({})
 
-const addMiniLeague = (stage: RaceStage, mlconfig: string, teams: number): string => {
+const addMiniLeague = (stage: ConfigState, mlconfig: string, teams: number): string => {
   const mlkey = createUniqueId()
   const seeds = Array.from(Array(teams))
   batch(() => {
@@ -46,7 +46,7 @@ const addMiniLeague = (stage: RaceStage, mlconfig: string, teams: number): strin
   return mlkey
 }
 
-const removeMiniLeague = (stage: RaceStage, mlkey: string) => {
+const removeMiniLeague = (stage: ConfigState, mlkey: string) => {
   batch(() => {
     setConfig(stage, mlkey, undefined)
     setConfig(produce((store) => {
@@ -72,11 +72,11 @@ const removeMiniLeague = (stage: RaceStage, mlkey: string) => {
   })
 }
 
-const selectTeam = (stage: RaceStage, mlkey: string, position: number, seed: SeedInfo) => {
+const selectTeam = (stage: ConfigState, mlkey: string, position: number, seed: SeedInfo) => {
   setConfig(stage, mlkey, "seeds", position, seed)
 }
 
-const changeName = (stage: RaceStage, mlkey: string, name: string) => {
+const changeName = (stage: ConfigState, mlkey: string, name: string) => {
   batch(() => {
     setConfig(stage, mlkey, "name", name)
     setConfig(produce((store) => {
@@ -106,7 +106,7 @@ const availableSeedStages: {
   results: ["stage1", "stage2", "knockout"],
 }
 
-const allSeeds = (stage: RaceStage): SeedInfo[] => {
+const allSeeds = (stage: ConfigState): SeedInfo[] => {
   if (stage === "stage1") {
     const countSeeds = Object.values(config.stage1 ?? {})
       .reduce((acc, ml) => acc + ml.teams, 0)
@@ -120,7 +120,7 @@ const allSeeds = (stage: RaceStage): SeedInfo[] => {
   }
   return Object.entries(config)
     .filter(([k]) => availableSeedStages[stage].includes(k as ConfigState))
-    .flatMap(([k, mls]: [RaceStage, Record<string, ConfigMinileague>]) => Object.entries(mls)
+    .flatMap(([k, mls]: [ConfigState, Record<string, ConfigMinileague>]) => Object.entries(mls)
       .flatMap(([mlkey, ml]) => Array.from({ length: ml.teams }, (_, i) => ({
         id: `${k}:${mlkey}:${i}`,
         stage: k,
@@ -137,7 +137,7 @@ const matchSeeds = (seed: SeedInfo, other: SeedInfo) => {
   return seed.stage == other.stage && seed.mlkey == other.mlkey && seed.position == other.position
 }
 
-const selectableSeeds = (stage: RaceStage, selected?: SeedInfo): SeedInfo[] => {
+const selectableSeeds = (stage: ConfigState, selected?: SeedInfo): SeedInfo[] => {
   const all = allSeeds(stage)
   const selectable = all.filter(seed => !Object.values(config[stage])
     .some(ml => ml.seeds

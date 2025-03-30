@@ -27,7 +27,7 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-export const Default: Story = {
+export const Stage1: Story = {
   args: {
     stage: "stage1",
   }
@@ -36,5 +36,17 @@ export const Default: Story = {
 export const Stage2: Story = {
   args: {
     stage: "stage2",
+  }
+}
+
+export const Knockout: Story = {
+  args: {
+    stage: "knockout",
+  }
+}
+
+export const Results: Story = {
+  args: {
+    stage: "results",
   }
 }
