@@ -148,9 +148,9 @@ type CustomMinileagueProps = {
 function CustomKnockoutMinileague(props: CustomMinileagueProps) {
   return (
     <div>
-      <div>
+      <Typography>
         {props.ml.name}
-      </div>
+      </Typography>
       <div style={{
         display: "grid",
         "grid-template-columns": "1fr auto 1fr auto",

@@ -11,6 +11,8 @@ const meta = {
       addMiniLeague,
       changeName,
       setConfig,
+      setResultsConfig,
+      addKnockout,
     } = useCreateRoundConfig()
     batch(() => {
       setConfig("stage1", undefined)
@@ -19,6 +21,9 @@ const meta = {
       setConfig("stage2", undefined)
       const mlkey2 = addMiniLeague("stage2", "mini4", 4)
       changeName("stage2", mlkey2, "I")
+      setConfig("knockout", undefined)
+      setResultsConfig("seeds", [])
+      addKnockout(0, "1st/2nd")
     })
     return <CustomRoundStage {...props} />
   },
@@ -42,11 +47,5 @@ export const Stage2: Story = {
 export const Knockout: Story = {
   args: {
     stage: "knockout",
-  }
-}
-
-export const Results: Story = {
-  args: {
-    stage: "results",
   }
 }
