@@ -1,4 +1,4 @@
-import { Delete, InfoOutlined } from "@suid/icons-material"
+import { Delete, InfoOutlined, WarningAmberRounded } from "@suid/icons-material"
 import { Button, IconButton, Paper, TextField, Typography } from "@suid/material"
 import { createMemo, createSignal, FlowProps, For, JSX, Show } from "solid-js"
 import { ChangeEventHandler } from '@suid/types'
@@ -10,6 +10,7 @@ import Selector from "../ui/Selector"
 import ManageConfigMiniLeague from "./ManageConfigMiniLeague"
 import { Dynamic } from "solid-js/web"
 import { asPosition } from "../kings/round-utils"
+import PopoverIconButton from "../ui/PopoverIconButton"
 
 export default function CustomRoundStage(props: {
   stage: RaceStage;
@@ -113,16 +114,42 @@ function BaseCustomRoundStage(props: FlowProps<{
 }, (mlkey: string, ml: ConfigMinileague) => JSX.Element>) {
   const {
     config,
+    selectableSeeds,
   } = useCreateRoundConfig()
 
   const mls = (): Record<string, ConfigMinileague> => config[props.stage] ?? {}
 
+  const errors = (): string[] => {
+    switch (props.stage) {
+      case "stage1":
+      case "stage2":
+        return selectableSeeds(props.stage).map(s => `${s.name} is not in a group`)
+      case "knockout":
+        return []
+    }
+  }
+
   let ref!: HTMLDivElement
   return (
     <div ref={ref}>
-      <Button fullWidth onClick={props.add}>
-        Add {props.stage === "knockout" ? "Knockout" : "Group"}
-      </Button>
+      <div style={{
+        display: "grid",
+        "grid-template-columns": "1fr auto 1fr",
+      }}>
+        <div />
+        <Button sx={{ width: "10em", mx: "auto", display: "flex" }} onClick={props.add}>
+          Add {props.stage === "knockout" ? "Knockout" : "Group"}
+        </Button>
+        <Show when={errors().length > 0}>
+          <div>
+            <PopoverIconButton
+              messages={errors()}
+              icon={<WarningAmberRounded />}
+              color="warning"
+            />
+          </div>
+        </Show>
+      </div>
       <div style={{ display: "flex", "flex-direction": "column", gap: "1em", "margin-top": "1em" }}>
         <For each={Object.entries(mls())}>{([k, ml]) => {
           return (

@@ -1,16 +1,13 @@
-import { Button, Popover, Typography } from "@suid/material";
-import { createSignal, For, JSX } from "solid-js";
+import { Button, IconButton, Popover, Typography } from "@suid/material";
+import { createSignal, createUniqueId, For, JSX } from "solid-js";
 
-type PopoverButtonProps = {
-  title: string;
+type PopoverIconButtonProps = {
   messages: string[];
-  startIcon?: JSX.Element;
-  endIcon?: JSX.Element;
-  variant?: "text" | "outlined" | "contained";
+  icon: JSX.Element;
   color?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
 }
 
-export default function PopoverButton(props: PopoverButtonProps) {
+export default function PopoverIconButton(props: PopoverIconButtonProps) {
 
   const [anchorEl, setAnchorEl] = createSignal<HTMLButtonElement | null>(null);
 
@@ -25,20 +22,18 @@ export default function PopoverButton(props: PopoverButtonProps) {
   };
 
   const open = () => Boolean(anchorEl());
-  const id = () => (open() ? `${props.title}-popover` : undefined);
+  const uniq = createUniqueId()
+  const id = () => (open() ? `${uniq}-popover` : undefined);
 
   return (
     <>
-      <Button
+      <IconButton
         aria-describedby={id()}
         onClick={handleClick}
         color={props.color || "primary"}
-        startIcon={props.startIcon}
-        endIcon={props.endIcon}
-        variant={props.variant}
       >
-        {props.title}
-      </Button>
+        {props.icon}
+      </IconButton>
 
       <Popover
         id={id()}

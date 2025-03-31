@@ -167,7 +167,7 @@ const matchSeeds = (seed: SeedInfo, other: SeedInfo) => {
 const selectableSeeds = (stage: ConfigState, selected?: SeedInfo): SeedInfo[] => {
   const all = allSeeds(stage)
   const selectable = checkStage(stage)
-    ? all.filter(seed => !Object.values(config[stage])
+    ? all.filter(seed => !Object.values(config[stage] ?? {})
       .some(ml => ml.seeds
         .some(s => matchSeeds(s, seed))))
     : all.filter(seed => !resultsConfig.seeds.some(r =>
