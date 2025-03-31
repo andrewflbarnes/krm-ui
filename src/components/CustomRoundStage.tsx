@@ -123,7 +123,9 @@ function BaseCustomRoundStage(props: FlowProps<{
     switch (props.stage) {
       case "stage1":
       case "stage2":
-        return selectableSeeds(props.stage).map(s => `${s.name} is not in a group`)
+        return Object.keys(config[props.stage] ?? {}).length > 0
+          ? selectableSeeds(props.stage).map(s => `${s.name} is not in a group`)
+          : []
       case "knockout":
         return []
     }
