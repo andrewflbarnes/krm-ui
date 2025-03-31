@@ -1,17 +1,18 @@
 import { Delete, InfoOutlined } from "@suid/icons-material"
 import { Button, IconButton, Paper, TextField, Typography } from "@suid/material"
-import { createMemo, createSignal, FlowProps, For, JSX, Show  } from "solid-js"
+import { createMemo, createSignal, FlowProps, For, JSX, Show } from "solid-js"
 import { ChangeEventHandler } from '@suid/types'
-import { ConfigMinileague, ConfigState, SeedInfo, useCreateRoundConfig } from "../hooks/create-config"
-import { MiniLeagueTemplate, miniLeagueTemplates } from "../kings"
+import { ConfigMinileague, SeedInfo, useCreateRoundConfig } from "../hooks/create-config"
+import { MiniLeagueTemplate, miniLeagueTemplates, RaceStage } from "../kings"
 import KingsModal from "../ui/KingsModal"
 import ModalConfirmAction from "../ui/ModalConfirmAction"
 import Selector from "../ui/Selector"
 import ManageConfigMiniLeague from "./ManageConfigMiniLeague"
 import { Dynamic } from "solid-js/web"
+import { asPosition } from "../kings/round-utils"
 
 export default function CustomRoundStage(props: {
-  stage: ConfigState;
+  stage: RaceStage;
 }) {
   const {
     removeMiniLeague,
@@ -24,11 +25,16 @@ export default function CustomRoundStage(props: {
   }, {} as Record<string, SeedInfo>))
   const [infoTemplate, setInfoTemplate] = createSignal<MiniLeagueTemplate>(null)
   const [selectMinileague, setSelectMinileague] = createSignal(false)
+  const [addKnockout, setAddKnockout] = createSignal(false)
   const [remove, setRemove] = createSignal<string>()
 
   const handleRemoveMiniLeague = () => {
     removeMiniLeague(props.stage, remove())
     setRemove()
+  }
+
+  const handleAddMiniLeague = (ml: string, teams: number) => {
+    addMiniLeague(props.stage, ml, teams)
   }
 
   const component = (): (props: CustomMinileagueProps) => JSX.Element => (function() {
@@ -38,16 +44,33 @@ export default function CustomRoundStage(props: {
         return CustomStageMinileague
       case "knockout":
         return CustomKnockoutMinileague
-      case "results":
-        return CustomKnockoutMinileague
       default:
         throw new Error(`Unknown stage ${props.stage}`)
     }
   })()
 
+  const handleAdd = () => {
+    switch (props.stage) {
+      case "stage1":
+      case "stage2":
+        setSelectMinileague(true)
+        break
+      case "knockout":
+        setAddKnockout(true)
+        break
+      default:
+        throw new Error(`Unknown stage ${props.stage}`)
+    }
+  }
+
   let ref!: HTMLDivElement
   return (
     <div ref={ref}>
+      <AddKnockoutModal
+        open={addKnockout()}
+        onClose={() => setAddKnockout(null)}
+        container={ref}
+      />
       <MinileagueInfoModal
         open={!!infoTemplate()}
         onClose={() => setInfoTemplate(null)}
@@ -57,7 +80,7 @@ export default function CustomRoundStage(props: {
       <MinileagueSelectModal
         open={selectMinileague()}
         onClose={() => setSelectMinileague(false)}
-        onSelect={(ml, teams) => addMiniLeague(props.stage, ml, teams)}
+        onSelect={handleAddMiniLeague}
         container={ref}
       />
       <MinileagueDeleteModal
@@ -66,7 +89,7 @@ export default function CustomRoundStage(props: {
         onDelete={handleRemoveMiniLeague}
         container={ref}
       />
-      <BaseCustomRoundStage stage={props.stage} addMiniLeague={() => setSelectMinileague(true)}>{(mlkey, ml) => {
+      <BaseCustomRoundStage stage={props.stage} add={handleAdd}>{(mlkey, ml) => {
         return (
           <Dynamic component={component()}
             stage={props.stage}
@@ -84,8 +107,37 @@ export default function CustomRoundStage(props: {
   )
 }
 
+function BaseCustomRoundStage(props: FlowProps<{
+  stage: RaceStage;
+  add: () => void;
+}, (mlkey: string, ml: ConfigMinileague) => JSX.Element>) {
+  const {
+    config,
+  } = useCreateRoundConfig()
+
+  const mls = (): Record<string, ConfigMinileague> => config[props.stage] ?? {}
+
+  let ref!: HTMLDivElement
+  return (
+    <div ref={ref}>
+      <Button fullWidth onClick={props.add}>
+        Add {props.stage === "knockout" ? "Knockout" : "Group"}
+      </Button>
+      <div style={{ display: "flex", "flex-direction": "column", gap: "1em", "margin-top": "1em" }}>
+        <For each={Object.entries(mls())}>{([k, ml]) => {
+          return (
+            <Paper elevation={5} style={{ padding: "1em" }}>
+              {props.children(k, ml)}
+            </Paper>
+          )
+        }}</For>
+      </div>
+    </div>
+  )
+}
+
 type CustomMinileagueProps = {
-  stage: ConfigState;
+  stage: RaceStage;
   mlkey: string;
   ml: ConfigMinileague;
   allSeedsMap: Record<string, SeedInfo>;
@@ -101,7 +153,7 @@ function CustomKnockoutMinileague(props: CustomMinileagueProps) {
       </div>
       <div style={{
         display: "grid",
-        "grid-template-columns": "1fr auto 1fr",
+        "grid-template-columns": "1fr auto 1fr auto",
         "grid-column-gap": "1em",
         "align-items": "center",
       }}>
@@ -126,33 +178,9 @@ function CustomKnockoutMinileague(props: CustomMinileagueProps) {
             allSeedsMap={props.allSeedsMap}
           />
         </div>
-      </div>
-    </div>
-  )
-}
-
-function BaseCustomRoundStage(props: FlowProps<{
-  stage: ConfigState;
-  addMiniLeague: () => void;
-}, (mlkey: string, ml: ConfigMinileague) => JSX.Element>) {
-  const {
-    config,
-  } = useCreateRoundConfig()
-
-  const mls = (): Record<string, ConfigMinileague> => config[props.stage] ?? {}
-
-  let ref!: HTMLDivElement
-  return (
-    <div ref={ref}>
-      <Button fullWidth onClick={props.addMiniLeague}>Add minileague</Button>
-      <div style={{ display: "flex", "flex-direction": "column", gap: "1em", "margin-top": "1em" }}>
-        <For each={Object.entries(mls())}>{([k, ml]) => {
-          return (
-            <Paper elevation={5} style={{ padding: "1em" }}>
-              {props.children(k, ml)}
-            </Paper>
-          )
-        }}</For>
+        <IconButton onClick={props.setRemove}>
+          <Delete fontSize="small" color="error" />
+        </IconButton>
       </div>
     </div>
   )
@@ -171,7 +199,7 @@ function CustomStageMinileague(props: CustomMinileagueProps) {
         <TextField
           label="Group"
           size="small"
-          defaultValue={props.ml.name}
+          value={props.ml.name ?? ""}
           onChange={handleNameChange}
         />
         <div style={{ "margin-left": "auto" }}>
@@ -197,7 +225,7 @@ function CustomStageMinileague(props: CustomMinileagueProps) {
 }
 
 function SeedSelector(props: {
-  stage: ConfigState;
+  stage: RaceStage;
   mlkey: string;
   seed: SeedInfo;
   i: number;
@@ -248,6 +276,40 @@ function MinileagueDeleteModal(props: {
     >
       Are you sure you want to delete this minileague?
     </ModalConfirmAction>
+  )
+}
+
+function AddKnockoutModal(props: {
+  open: boolean;
+  onClose: () => void;
+  container?: Element;
+}) {
+  const {
+    availableKnockouts,
+    addKnockout,
+  } = useCreateRoundConfig()
+  const handleAddKnockout = (position: number, name: string) => {
+    addKnockout(position, name)
+    props.onClose()
+  }
+  return (
+    <KingsModal
+      open={props.open}
+      onClose={props.onClose}
+      container={props.container}
+    >
+      <>
+        <Typography variant="h2">Add knockout</Typography>
+        <For each={availableKnockouts()}>{(position) => {
+          const name = `${asPosition(position + 1)}/${asPosition(position + 2)}`
+          return (
+            <Button onClick={() => handleAddKnockout(position, name)}>
+              {name}
+            </Button>
+          )
+        }}</For>
+      </>
+    </KingsModal >
   )
 }
 

@@ -1,5 +1,6 @@
 import { Button, Typography } from "@suid/material";
 import { createSignal, Show } from "solid-js";
+import CustomRoundResults from "../components/CustomRoundResults";
 import CustomRoundStage from "../components/CustomRoundStage";
 import { ConfigState } from "../hooks/create-config";
 import { isStage } from "../kings/utils";
@@ -69,7 +70,7 @@ export default function CreateRoundConfig() {
       </div>
       <div style={{ margin: "0 auto" }}>
         <Show when={isStage(stage())} keyed fallback={(
-          <>TODO</>
+          <CustomRoundResults />
         )}>{(s) => (
           <CustomRoundStage
             stage={s}
