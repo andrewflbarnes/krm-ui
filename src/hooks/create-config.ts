@@ -59,6 +59,15 @@ const addMiniLeague = (stage: RaceStage, mlconfig: string, teams: number, name?:
 
 const removeMiniLeague = (stage: RaceStage, mlkey: string) => {
   batch(() => {
+    setResultsConfig(produce((store) => {
+      store.seeds.forEach(seed => {
+        seed.seed = seed.seed.filter(s => s.mlkey != mlkey)
+      })
+      store.seeds = store.seeds.filter(s => s.seed.length > 0)
+    }))
+    setResultsConfig("seeds", { from: 0, to: resultsConfig.seeds.length - 1 }, produce((seed) => {
+      seed.seed = seed.seed.filter(s => s.mlkey != mlkey)
+    }))
     setConfig(stage, mlkey, undefined)
     setConfig(produce((store) => {
       Object.entries(config).forEach(([s, mls]) => {
