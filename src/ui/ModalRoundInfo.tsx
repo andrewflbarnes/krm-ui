@@ -1,5 +1,5 @@
 import { Button, CardActions, CardContent, CardHeader, Typography } from "@suid/material";
-import { createQuery } from "@tanstack/solid-query";
+import { useQuery } from "@tanstack/solid-query";
 import { doc, getDoc } from "firebase/firestore";
 import { Match, Switch } from "solid-js";
 import { RoundInfo } from "../api/krm";
@@ -14,7 +14,7 @@ type ModalRoundInfoProps = {
 
 export default function ModalRoundInfo(props: ModalRoundInfoProps) {
   const ownerId = () => props.round?.owner
-  const user = createQuery(() => ({
+  const user = useQuery(() => ({
     queryKey: ["user", ownerId()],
     queryFn: async () => {
       const userRef = doc(db, "users", props.round.owner)

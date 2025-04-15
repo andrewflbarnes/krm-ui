@@ -1,5 +1,5 @@
 import { useNavigate, useParams } from "@solidjs/router"
-import { createQuery } from "@tanstack/solid-query"
+import { useQuery } from "@tanstack/solid-query"
 import { createSignal } from "solid-js"
 import { Round, Stage } from "../kings"
 import krmApi from "../api/krm"
@@ -38,7 +38,7 @@ export const useRaceOptions = () => {
       navigate(`/races/${params.raceid}/${s}`)
     }
   }
-  const useRound = () => createQuery<Round>(() => ({
+  const useRound = () => useQuery<Round>(() => ({
     queryKey: [params.raceid],
     queryFn: async () => new Promise((res) => {
       res(krmApi.getRound(params.raceid))

@@ -7,7 +7,7 @@ import {
 } from "@suid/material";
 import { Match, ParentProps, Switch } from "solid-js";
 import { Suspense } from "solid-js";
-import { createQuery } from "@tanstack/solid-query";
+import { useQuery } from "@tanstack/solid-query";
 import { OpenInNew } from "@suid/icons-material";
 import { parseResults } from "../kings/utils";
 import { LeagueData, useKings } from "../kings";
@@ -29,11 +29,12 @@ export default function Tracker() {
     return parseResults(leagueData)
   }
 
-  const query = createQuery(() => ({
+  const query = useQuery(() => ({
     queryKey: [league()],
     queryFn: getLeagueData,
     staleTime: 1000 * 60 * 5,
-    retry: (_, e) => e.name === "ImmediateError" ? false : 3,
+    retryDelay: count => Math.min(1000 * 2 ** count, 30000),
+    retry: (_, e) => e.name !== "ImmediateError",
   }))
 
   const divisionResults = () => query.data

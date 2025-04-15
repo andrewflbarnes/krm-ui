@@ -1,4 +1,4 @@
-import { createQuery } from "@tanstack/solid-query"
+import { useQuery } from "@tanstack/solid-query"
 import { createMemo } from "solid-js"
 import krm from "../api/krm"
 
@@ -8,7 +8,7 @@ export function useCustomRounds(props = {
   retry: 3,
 }) {
   const { staleTime, retry } = props
-  const query = createQuery(() => ({
+  const query = useQuery(() => ({
     queryKey: [customRoundsQueryKey],
     queryFn: async () => {
       return await krm.getCustomRoundConfigs()
@@ -31,7 +31,7 @@ export function useCustomMinileagues(props = {
   retry: 3,
 }) {
   const { staleTime, retry } = props
-  const query = createQuery(() => ({
+  const query = useQuery(() => ({
     queryKey: [customMinileaguesQueryKey],
     queryFn: async () => {
       return await krm.getCustomMiniLeagueConfigs()
