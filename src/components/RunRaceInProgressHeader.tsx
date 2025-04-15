@@ -108,7 +108,7 @@ export default function RunRaceInProgressHeader(props: {
         <Selector
           containerProps={{ style: { "min-width": "10em" } }}
           title="Stage"
-          current={stages[stage()]}
+          current={stage()}
           onClose={(v: Stage) => setStage(v)}
           options={stageOptions()}
         />
@@ -116,7 +116,7 @@ export default function RunRaceInProgressHeader(props: {
           <Selector
             containerProps={{ style: { "min-width": "10em" } }}
             title="View"
-            current={views[view()]}
+            current={view()}
             onClose={(v: View) => setView(current => v ?? current)}
             options={options}
           />

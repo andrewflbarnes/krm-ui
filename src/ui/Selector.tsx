@@ -3,7 +3,7 @@ import { Badge, Button, FormControl, InputLabel, Menu, MenuItem, Select, styled,
 import { SelectChangeEvent } from "@suid/material/Select";
 import { createSignal, createUniqueId, Switch, For, Match, JSX } from "solid-js";
 
-type SelectorProps<T> = {
+type SelectorProps<T extends string | number> = {
   title?: string;
   type?: "input" | "menu";
   current?: T;
@@ -50,7 +50,7 @@ const StyledBadge = styled(Badge)({
   }
 });
 
-export default function Selector<T>(props: SelectorProps<T>) {
+export default function Selector<T extends string | number>(props: SelectorProps<T>) {
   const [anchorEl, setAnchorEl] = createSignal<null | HTMLElement>(null);
   const open = () => Boolean(anchorEl());
   const handleClose = (v?: T) => {
@@ -87,12 +87,12 @@ export default function Selector<T>(props: SelectorProps<T>) {
                 id={`${id}-select`}
                 value={props.current}
                 label={props.title}
-                onChange={(e: SelectChangeEvent) => props.onClose?.(props.options.find(v => v.label == e.target.value as T)?.value)}
+                onChange={(e: SelectChangeEvent<T>) => props.onClose?.(e.target.value)}
                 disabled={props.disabled || props.locked}
                 IconComponent={props.locked ? () => "" : undefined}
               >
                 <For each={props.options}>{(opt) => {
-                  return <MenuItem value={opt.label}>{opt.label}</MenuItem>
+                  return <MenuItem value={opt.value}>{opt.label}</MenuItem>
                 }}
                 </For>
               </StyledSelect>

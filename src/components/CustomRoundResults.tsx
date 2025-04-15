@@ -110,7 +110,7 @@ function SeedSelector(props: {
   return (
     <Selector
       type="input"
-      current={props.seed?.name ?? "-"}
+      current={props.seed?.id ?? "-"}
       options={thisSelectable()}
       containerProps={{
         style: { "min-width": "10em" },
