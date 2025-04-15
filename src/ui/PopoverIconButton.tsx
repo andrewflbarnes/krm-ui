@@ -1,4 +1,4 @@
-import { Button, IconButton, Popover, Typography } from "@suid/material";
+import { IconButton, Popover, Typography } from "@suid/material";
 import { createSignal, createUniqueId, For, JSX } from "solid-js";
 
 type PopoverIconButtonProps = {

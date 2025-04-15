@@ -8,7 +8,6 @@ import {
 } from "@suid/material";
 import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "clerk-solidjs";
 import { createMemo, ParentProps } from "solid-js";
-import KrmBreadcrumbs from "./Breadcrumbs";
 import LeagueSelector from "./LeagueSelector";
 
 function Link(props: ParentProps<{ href: string }>) {
