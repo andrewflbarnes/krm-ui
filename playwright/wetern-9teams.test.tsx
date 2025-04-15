@@ -28,6 +28,7 @@ test('test', async ({ page }) => {
   await expect(page.getByText('Config loaded for ')).toBeVisible();
   await page.getByRole('link', { name: 'Race' }).click();
   await page.getByRole('link', { name: 'New' }).click();
+  await page.getByRole('button', { name: 'Next' }).click();
   const addClub = page.getByTestId('add-team').locator('input')
   await addClub.click();
   await addClub.fill('Test');

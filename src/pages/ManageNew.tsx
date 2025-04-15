@@ -11,6 +11,7 @@ import { createStore } from "solid-js/store"
 import { createRound, orderSeeds } from "../kings/utils"
 import { useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
+import ManageNewDetails from "../components/ManageNewDetails"
 
 const raceConfigs = raceConfig
 
@@ -64,6 +65,20 @@ function ManageNewInternal() {
     division: string
   }[]>();
 
+  const [details, setDetails] = createSignal<{
+    description: string;
+    venue: string;
+    round: number;
+  }>({
+    venue: "",
+    description: "",
+    round: 1,
+  })
+
+  const handleDetailUpdate = (d: ReturnType<typeof details>) => {
+    setDetails(d)
+  }
+
   const [distributionOrder, setDistributionOrder] = createSignal<RoundSeeding>();
   const [seeding, setSeeding] = createSignal<RoundSeeding>();
   const [originalConfig, setOriginalConfig] = createSignal<{
@@ -81,6 +96,11 @@ function ManageNewInternal() {
   }
 
   const steps: Step[] = [
+    {
+      title: "Details",
+      content: () => <ManageNewDetails {...details()} onDetailUpdate={handleDetailUpdate} />,
+      validator: () => [true],
+    },
     {
       title: "Select Teams",
       content: () => <ManageNewSelect config={numTeams} onUpdate={handleTeamNumsUpdate} />,
