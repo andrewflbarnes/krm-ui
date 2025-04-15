@@ -19,7 +19,7 @@ export type ProgressionStage = Exclude<Stage, "stage1">;
 export type KrmApi = {
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
-  createRound(league: League, teams: RoundSeeding, distributionOrder?: RoundSeeding): Round;
+  createRound(league: League, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
   getRounds(league?: string): RoundInfo[];
   getRound(id: string): Round;
   deleteRound(id: string): void;

@@ -2,7 +2,7 @@ import { fn } from '@storybook/test';
 import { createMemo, createSignal } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import ManageNewShuffle from '../components/ManageNewShuffle';
-import { Round, RoundSeeding } from '../kings';
+import { raceConfig, Round, RoundSeeding } from '../kings';
 import { createRound } from '../kings/round-utils';
 
 const meta = {
@@ -33,7 +33,7 @@ const seeding: RoundSeeding = {
   "board": ["Bath 1", "Bristol 1", "Plymouth 1", "Aberystwyth 1"],
 }
 
-const round = createRound("id-of-round", "western", seeding)
+const round = createRound("id-of-round", "western", seeding, raceConfig)
 
 export const Default: Story = {
   args: {

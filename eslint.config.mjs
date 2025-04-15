@@ -8,7 +8,14 @@ import * as tsParser from "@typescript-eslint/parser";
 /** @type {import('eslint').Linter.Config[]} */
 export default [
   {
-    ignores: ["dist/**", ".netlify/**", "coverage/**"],
+    ignores: [
+      "dist/**",
+      ".netlify/**",
+      "coverage/**",
+      "playwright-report/**",
+      "**/node_modules/",
+      ".git/",
+    ],
   },
   {
     files: ["src/**/*.{js,mjs,cjs,ts}"],
