@@ -1,5 +1,5 @@
-import { League, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
-import { asKnockoutPosition, asPosition } from "./utils";
+import { League, MiniLeagueConfig, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
+import { asKnockoutPosition } from "./utils";
 
 export type LeagueConfig = {
   name: string;
@@ -91,8 +91,13 @@ export const miniLeagueTemplates = {
   [k: string]: MiniLeagueTemplate
 }
 
-function wrapStage1Seeds(seeds: number[]): { group: string, position: number }[] {
-  return seeds.map(seed => ({ group: "Seeds", position: seed }))
+function seeds(name: string, seeds: number[], template?: MiniLeagueTemplate): MiniLeagueConfig {
+  const resolvedTemplate = template ?? miniLeagueTemplates[`mini${seeds.length}` as keyof typeof miniLeagueTemplates]
+  return {
+    name,
+    seeds: seeds.map(seed => ({ group: "Seeds", position: seed })),
+    template: resolvedTemplate,
+  }
 }
 
 function wrapSingleGroupResults(numTeams: number): readonly ResultsConfig[] {
@@ -106,21 +111,35 @@ function resultsForGroup(stage: RaceStage, group: string, positions: {
   return positions.map(position => ({ stage, group, ...position }))
 }
 
-function knockouts(config: {
-  place: number,
-  seeds: [{
-    group: string;
-    position: number;
-  }, {
-    group: string;
-    position: number;
-  }]
-}[]): RoundConfig["knockout"] {
-  return config.map(c => ({
-    name: asKnockoutPosition(c.place),
-    seeds: c.seeds,
-    template: miniLeagueTemplates.knockout,
-  }))
+function knockoutsFromGroups(config: {
+  from: number;
+  to: number;
+  group1: string;
+  group2: string;
+}[]): MiniLeagueConfig[] {
+  return config.flatMap(c => {
+    let seedPosition = 0;
+    const races: MiniLeagueConfig[] = []
+    for (let place = c.from; place < c.to; place += 2) {
+      races.unshift({
+        name: asKnockoutPosition(place),
+        seeds: [
+          {
+            group: c.group1,
+            position: seedPosition,
+          },
+          {
+            group: c.group2,
+            position: seedPosition,
+          },
+        ],
+        template: miniLeagueTemplates.knockout,
+      })
+      seedPosition += 1
+    }
+    return races
+
+  })
 }
 
 export function resultsFromKnockout(numTeams: number): readonly ResultsConfig[] {
@@ -151,66 +170,38 @@ export const raceConfig: {
 } = {
   2: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 1]),
-        template: miniLeagueTemplates.full2,
-      },
+      seeds("A", [0, 1], miniLeagueTemplates.full2)
     ],
     results: wrapSingleGroupResults(2),
   },
   3: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 1, 2]),
-        template: miniLeagueTemplates.full3,
-      },
+      seeds("A", [0, 1, 2], miniLeagueTemplates.full3)
     ],
     results: wrapSingleGroupResults(3),
   },
   4: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 1, 2, 3]),
-        template: miniLeagueTemplates.mini4,
-      },
+      seeds("A", [0, 1, 2, 3])
     ],
     results: wrapSingleGroupResults(4),
   },
   5: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 1, 2, 3, 4]),
-        template: miniLeagueTemplates.mini5,
-      },
+      seeds("A", [0, 1, 2, 3, 4])
     ],
     results: wrapSingleGroupResults(5),
   },
   6: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 1, 2, 3, 4, 5]),
-        template: miniLeagueTemplates.mini6,
-      },
+      seeds("A", [0, 1, 2, 3, 4, 5])
     ],
     results: wrapSingleGroupResults(6),
   },
   7: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 3, 4, 6]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 2, 5]),
-        template: miniLeagueTemplates.mini3,
-      },
+      seeds("A", [0, 3, 4, 6]),
+      seeds("B", [1, 2, 5]),
     ],
     stage2: [
       {
@@ -249,16 +240,8 @@ export const raceConfig: {
   },
   8: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 3, 4, 7]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 2, 5, 6]),
-        template: miniLeagueTemplates.mini4,
-      },
+      seeds("A", [0, 3, 4, 7]),
+      seeds("B", [1, 2, 5, 6]),
     ],
     stage2: [
       {
@@ -335,21 +318,9 @@ export const raceConfig: {
   },
   9: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 5, 6]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 4, 7]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 3, 8]),
-        template: miniLeagueTemplates.mini3,
-      },
+      seeds("A", [0, 5, 6]),
+      seeds("B", [1, 4, 7]),
+      seeds("C", [2, 3, 8]),
     ],
     stage2: [
       {
@@ -380,28 +351,13 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
-      },
+        from: 1,
+        to: 6,
+        group1: "I",
+        group2: "II",
+      }
     ]),
     results: [
       ...resultsFromKnockout(6),
@@ -414,21 +370,9 @@ export const raceConfig: {
   },
   10: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 5, 6, 9]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 4, 7]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 3, 8]),
-        template: miniLeagueTemplates.mini3,
-      },
+      seeds("A", [0, 5, 6, 9]),
+      seeds("B", [1, 4, 7]),
+      seeds("C", [2, 3, 8]),
     ],
     stage2: [
       {
@@ -437,9 +381,8 @@ export const raceConfig: {
           { group: "A", position: 0 },
           { group: "B", position: 1 },
           { group: "C", position: 0 },
-          { group: "A", position: 2 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
       {
         name: "II",
@@ -453,68 +396,37 @@ export const raceConfig: {
       {
         name: "III",
         seeds: [
-          { group: "A", position: 3 },
+          { group: "A", position: 2 },
           { group: "B", position: 2 },
           { group: "C", position: 2 },
+          { group: "A", position: 3 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 7,
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "III", position: 0 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
-      },
+        from: 1,
+        to: 6,
+        group1: "I",
+        group2: "II",
+      }
     ]),
     results: [
-      ...resultsFromKnockout(8),
+      ...resultsFromKnockout(6),
       ...resultsForGroup("stage2", "III", [
-        { position: 1, rank: 9 },
-        { position: 2, rank: 10 },
+        { position: 0, rank: 7 },
+        { position: 1, rank: 8 },
+        { position: 2, rank: 9 },
+        { position: 3, rank: 10 },
       ]),
     ]
   },
   11: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 5, 6, 10]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 4, 7, 9]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 3, 8]),
-        template: miniLeagueTemplates.mini3,
-      },
+      seeds("A", [0, 5, 6, 10]),
+      seeds("B", [1, 4, 7, 9]),
+      seeds("C", [2, 3, 8]),
     ],
     stage2: [
       {
@@ -547,35 +459,13 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 7,
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "II", position: 3 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
-      },
+        from: 1,
+        to: 8,
+        group1: "I",
+        group2: "II",
+      }
     ]),
     results: [
       ...resultsFromKnockout(8),
@@ -588,26 +478,10 @@ export const raceConfig: {
   },
   12: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 7, 8]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 6, 9]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 5, 10]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "D",
-        seeds: wrapStage1Seeds([3, 4, 11]),
-        template: miniLeagueTemplates.mini3,
-      },
+      seeds("A", [0, 7, 8]),
+      seeds("B", [1, 6, 9]),
+      seeds("C", [2, 5, 10]),
+      seeds("D", [3, 4, 11]),
     ],
     stage2: [
       {
@@ -641,35 +515,13 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 7,
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "II", position: 3 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
-      },
+        from: 1,
+        to: 8,
+        group1: "I",
+        group2: "II",
+      }
     ]),
     results: [
       ...resultsFromKnockout(8),
@@ -683,21 +535,9 @@ export const raceConfig: {
   },
   13: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 5, 6, 11, 12]),
-        template: miniLeagueTemplates.mini5,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 4, 7, 10]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 3, 8, 9]),
-        template: miniLeagueTemplates.mini4,
-      },
+      seeds("A", [0, 5, 6, 11, 12]),
+      seeds("B", [1, 4, 7, 10]),
+      seeds("C", [2, 3, 8, 9]),
     ],
     stage2: [
       {
@@ -738,48 +578,18 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 11,
-        seeds: [
-          { group: "III", position: 2 },
-          { group: "IV", position: 2 },
-        ],
+        from: 7,
+        to: 12,
+        group1: "III",
+        group2: "IV",
       },
       {
-        place: 9,
-        seeds: [
-          { group: "III", position: 1 },
-          { group: "IV", position: 1 },
-        ],
-      },
-      {
-        place: 7,
-        seeds: [
-          { group: "III", position: 0 },
-          { group: "IV", position: 0 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
+        from: 1,
+        to: 6,
+        group1: "I",
+        group2: "II",
       },
     ]),
     results: [
@@ -791,26 +601,10 @@ export const raceConfig: {
   },
   14: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 7, 8, 13]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 6, 9, 12]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 5, 10]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "D",
-        seeds: wrapStage1Seeds([3, 4, 11]),
-        template: miniLeagueTemplates.mini3,
-      },
+      seeds("A", [0, 7, 8, 13]),
+      seeds("B", [1, 6, 9, 12]),
+      seeds("C", [2, 5, 10]),
+      seeds("D", [3, 4, 11]),
     ],
     stage2: [
       {
@@ -852,55 +646,18 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 13,
-        seeds: [
-          { group: "III", position: 2 },
-          { group: "IV", position: 2 },
-        ],
+        from: 9,
+        to: 14,
+        group1: "III",
+        group2: "IV",
       },
       {
-        place: 11,
-        seeds: [
-          { group: "III", position: 1 },
-          { group: "IV", position: 1 },
-        ],
-      },
-      {
-        place: 9,
-        seeds: [
-          { group: "III", position: 0 },
-          { group: "IV", position: 0 },
-        ],
-      },
-      {
-        place: 7,
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "II", position: 3 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
+        from: 1,
+        to: 8,
+        group1: "I",
+        group2: "II",
       },
     ]),
     results: [
@@ -909,26 +666,10 @@ export const raceConfig: {
   },
   15: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 7, 8]),
-        template: miniLeagueTemplates.mini3,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 6, 9, 14]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 5, 10, 13]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "D",
-        seeds: wrapStage1Seeds([3, 4, 11, 12]),
-        template: miniLeagueTemplates.mini4,
-      },
+      seeds("A", [0, 7, 8]),
+      seeds("B", [1, 6, 9, 14]),
+      seeds("C", [2, 5, 10, 13]),
+      seeds("D", [3, 4, 11, 12]),
     ],
     stage2: [
       {
@@ -971,55 +712,18 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 13,
-        seeds: [
-          { group: "III", position: 2 },
-          { group: "IV", position: 2 },
-        ],
+        from: 9,
+        to: 14,
+        group1: "III",
+        group2: "IV",
       },
       {
-        place: 11,
-        seeds: [
-          { group: "III", position: 1 },
-          { group: "IV", position: 1 },
-        ],
-      },
-      {
-        place: 9,
-        seeds: [
-          { group: "III", position: 0 },
-          { group: "IV", position: 0 },
-        ],
-      },
-      {
-        place: 7,
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "II", position: 3 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
+        from: 1,
+        to: 8,
+        group1: "I",
+        group2: "II",
       },
     ]),
     results: [
@@ -1031,26 +735,10 @@ export const raceConfig: {
   },
   16: {
     stage1: [
-      {
-        name: "A",
-        seeds: wrapStage1Seeds([0, 7, 8, 15]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "B",
-        seeds: wrapStage1Seeds([1, 6, 9, 14]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "C",
-        seeds: wrapStage1Seeds([2, 5, 10, 13]),
-        template: miniLeagueTemplates.mini4,
-      },
-      {
-        name: "D",
-        seeds: wrapStage1Seeds([3, 4, 11, 12]),
-        template: miniLeagueTemplates.mini4,
-      },
+      seeds("A", [0, 7, 8, 15]),
+      seeds("B", [1, 6, 9, 14]),
+      seeds("C", [2, 5, 10, 13]),
+      seeds("D", [3, 4, 11, 12]),
     ],
     stage2: [
       {
@@ -1094,62 +782,18 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ],
-    knockout: knockouts([
+    knockout: knockoutsFromGroups([
       {
-        place: 15,
-        seeds: [
-          { group: "III", position: 3 },
-          { group: "IV", position: 3 },
-        ],
+        from: 9,
+        to: 16,
+        group1: "III",
+        group2: "IV",
       },
       {
-        place: 13,
-        seeds: [
-          { group: "III", position: 2 },
-          { group: "IV", position: 2 },
-        ],
-      },
-      {
-        place: 11,
-        seeds: [
-          { group: "III", position: 1 },
-          { group: "IV", position: 1 },
-        ],
-      },
-      {
-        place: 9,
-        seeds: [
-          { group: "III", position: 0 },
-          { group: "IV", position: 0 },
-        ],
-      },
-      {
-        place: 7,
-        seeds: [
-          { group: "I", position: 3 },
-          { group: "II", position: 3 },
-        ],
-      },
-      {
-        place: 5,
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "II", position: 2 },
-        ],
-      },
-      {
-        place: 3,
-        seeds: [
-          { group: "I", position: 1 },
-          { group: "II", position: 1 },
-        ],
-      },
-      {
-        place: 1,
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "II", position: 0 },
-        ],
+        from: 1,
+        to: 8,
+        group1: "I",
+        group2: "II",
       },
     ]),
     results: [
