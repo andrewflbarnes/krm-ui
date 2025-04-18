@@ -109,7 +109,10 @@ function PreviewStage(props: {
               }>
                 <For each={races}>{(r) => (
                   <Typography>
-                    <div style={{ display: "grid", "grid-template-columns": "1fr 2em 1fr" }}>
+                    <div style={{ display: "grid", "grid-template-columns": " 1fr 1fr 2em 1fr" }}>
+                      <div style={{ "text-align": "left" }}>
+                        {r.group}
+                      </div>
                       <div style={{ "text-align": "left" }}>
                         {r.team1}
                       </div>

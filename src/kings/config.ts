@@ -1,5 +1,5 @@
 import { League, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
-import { asPosition } from "./utils";
+import { asKnockoutPosition, asPosition } from "./utils";
 
 export type LeagueConfig = {
   name: string;
@@ -106,13 +106,30 @@ function resultsForGroup(stage: RaceStage, group: string, positions: {
   return positions.map(position => ({ stage, group, ...position }))
 }
 
+function knockouts(config: {
+  place: number,
+  seeds: [{
+    group: string;
+    position: number;
+  }, {
+    group: string;
+    position: number;
+  }]
+}[]): RoundConfig["knockout"] {
+  return config.map(c => ({
+    name: asKnockoutPosition(c.place),
+    seeds: c.seeds,
+    template: miniLeagueTemplates.knockout,
+  }))
+}
+
 export function resultsFromKnockout(numTeams: number): readonly ResultsConfig[] {
   if (numTeams % 2 !== 0) {
     throw new Error("Only even numbers of teams are supported")
   }
   const results: ResultsConfig[] = []
   for (let i = 1; i <= numTeams; i += 2) {
-    const group = `${asPosition(i)}/${asPosition(i + 1)}`
+    const group = asKnockoutPosition(i)
     results.push({
       stage: "knockout",
       group,
@@ -363,32 +380,29 @@ export const raceConfig: {
         template: miniLeagueTemplates.mini3,
       },
     ],
-    knockout: [
+    knockout: knockouts([
       {
-        name: "5th/6th",
+        place: 5,
         seeds: [
           { group: "I", position: 2 },
           { group: "II", position: 2 },
         ],
-        template: miniLeagueTemplates.knockout,
       },
       {
-        name: "3rd/4th",
+        place: 3,
         seeds: [
           { group: "I", position: 1 },
           { group: "II", position: 1 },
         ],
-        template: miniLeagueTemplates.knockout,
       },
       {
-        name: "1st/2nd",
+        place: 1,
         seeds: [
           { group: "I", position: 0 },
           { group: "II", position: 0 },
         ],
-        template: miniLeagueTemplates.knockout,
       },
-    ],
+    ]),
     results: [
       ...resultsFromKnockout(6),
       ...resultsForGroup("stage2", "III", [

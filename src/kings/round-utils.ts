@@ -30,6 +30,10 @@ export function asPosition(num: number): string {
   }
 }
 
+export function asKnockoutPosition(num: number): string {
+  return `${asPosition(num)}/${asPosition(num + 1)}`
+}
+
 export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
   return Object.entries(parseResults(leagueConfig)).reduce((acc, [division, seeded]) => {
     acc[division] = seeded.filter(t => {
