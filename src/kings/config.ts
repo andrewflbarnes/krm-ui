@@ -679,6 +679,141 @@ export const raceConfig: {
       ]),
     ]
   },
+  16: {
+    stage1: [
+      {
+        name: "A",
+        seeds: wrapStage1Seeds([0, 7, 8, 15]),
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "B",
+        seeds: wrapStage1Seeds([1, 6, 9, 14]),
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "C",
+        seeds: wrapStage1Seeds([2, 5, 10, 13]),
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "D",
+        seeds: wrapStage1Seeds([3, 4, 11, 12]),
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 0 },
+          { group: "B", position: 1 },
+          { group: "C", position: 0 },
+          { group: "D", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 0 },
+          { group: "C", position: 1 },
+          { group: "D", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "B", position: 3 },
+          { group: "C", position: 2 },
+          { group: "D", position: 3 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "IV",
+        seeds: [
+          { group: "A", position: 3 },
+          { group: "B", position: 2 },
+          { group: "C", position: 3 },
+          { group: "D", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    knockout: [
+      {
+        name: "15th/16th",
+        seeds: [
+          { group: "III", position: 3 },
+          { group: "IV", position: 3 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "13th/14th",
+        seeds: [
+          { group: "III", position: 2 },
+          { group: "IV", position: 2 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "11th/12th",
+        seeds: [
+          { group: "III", position: 1 },
+          { group: "IV", position: 1 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "9th/10th",
+        seeds: [
+          { group: "III", position: 0 },
+          { group: "IV", position: 0 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "7th/8th",
+        seeds: [
+          { group: "I", position: 3 },
+          { group: "II", position: 3 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "5th/6th",
+        seeds: [
+          { group: "I", position: 2 },
+          { group: "II", position: 2 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "3rd/4th",
+        seeds: [
+          { group: "I", position: 1 },
+          { group: "II", position: 1 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "1st/2nd",
+        seeds: [
+          { group: "I", position: 0 },
+          { group: "II", position: 0 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+    ],
+    results: [
+      ...resultsFromKnockout(16),
+    ]
+  },
 } as const
 // Round config tests
 // - stage 2 teams <= stage 1 teams
