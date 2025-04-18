@@ -5,6 +5,7 @@ import { createSelector, createSignal, For, ParentProps, Show } from "solid-js";
 import Link from "../components/Link";
 import { miniLeagueTemplates, raceConfig } from "../kings";
 import { useCustomMinileagues, useCustomRounds } from "../hooks/custom-config";
+import { useFeatureFlags } from "../hooks/experimental";
 
 export default function Manage(props: ParentProps) {
   const [openSubList, setOpenSubList] = createSignal("")
@@ -16,7 +17,7 @@ export default function Manage(props: ParentProps) {
   // TODO how do we reconccile this with firebase? Should we just not use tanstack or do we use firebase to psuh updates to query client?
   const customRounds = useCustomRounds()
   const customMls = useCustomMinileagues()
-
+  const flags = useFeatureFlags()
 
   return (
     <Box sx={{
@@ -81,8 +82,10 @@ export default function Manage(props: ParentProps) {
             />
           </Show>
 
-          <ListSubheader>Create config</ListSubheader>
-          <NavigationListItem path="round/create">+ Round</NavigationListItem>
+          <Show when={flags.experimental()}>
+            <ListSubheader>Create config</ListSubheader>
+            <NavigationListItem path="round/create">+ Round</NavigationListItem>
+          </Show>
         </List>
       </Paper>
       <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
