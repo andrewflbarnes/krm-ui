@@ -580,6 +580,105 @@ export const raceConfig: {
       ]),
     ]
   },
+  12: {
+    stage1: [
+      {
+        name: "A",
+        seeds: wrapStage1Seeds([0, 7, 8]),
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "B",
+        seeds: wrapStage1Seeds([1, 6, 9]),
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "C",
+        seeds: wrapStage1Seeds([2, 5, 10]),
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "D",
+        seeds: wrapStage1Seeds([3, 4, 11]),
+        template: miniLeagueTemplates.mini3,
+      },
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 0 },
+          { group: "B", position: 1 },
+          { group: "C", position: 0 },
+          { group: "D", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 0 },
+          { group: "C", position: 1 },
+          { group: "D", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "B", position: 2 },
+          { group: "C", position: 2 },
+          { group: "D", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    knockout: [
+      {
+        name: "7th/8th",
+        seeds: [
+          { group: "I", position: 3 },
+          { group: "II", position: 3 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "5th/6th",
+        seeds: [
+          { group: "I", position: 2 },
+          { group: "II", position: 2 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "3rd/4th",
+        seeds: [
+          { group: "I", position: 1 },
+          { group: "II", position: 1 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+      {
+        name: "1st/2nd",
+        seeds: [
+          { group: "I", position: 0 },
+          { group: "II", position: 0 },
+        ],
+        template: miniLeagueTemplates.knockout,
+      },
+    ],
+    results: [
+      ...resultsFromKnockout(8),
+      ...resultsForGroup("stage2", "III", [
+        { position: 0, rank: 9 },
+        { position: 1, rank: 10 },
+        { position: 2, rank: 11 },
+        { position: 3, rank: 12 },
+      ]),
+    ]
+  },
 } as const
 // Round config tests
 // - stage 2 teams <= stage 1 teams
