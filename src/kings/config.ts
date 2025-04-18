@@ -907,6 +907,128 @@ export const raceConfig: {
       ...resultsFromKnockout(14),
     ]
   },
+  15: {
+    stage1: [
+      {
+        name: "A",
+        seeds: wrapStage1Seeds([0, 7, 8]),
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "B",
+        seeds: wrapStage1Seeds([1, 6, 9, 14]),
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "C",
+        seeds: wrapStage1Seeds([2, 5, 10, 13]),
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "D",
+        seeds: wrapStage1Seeds([3, 4, 11, 12]),
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 0 },
+          { group: "B", position: 1 },
+          { group: "C", position: 0 },
+          { group: "D", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 0 },
+          { group: "C", position: 1 },
+          { group: "D", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "B", position: 3 },
+          { group: "C", position: 2 },
+          { group: "D", position: 3 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+      {
+        name: "IV",
+        seeds: [
+          { group: "B", position: 2 },
+          { group: "C", position: 3 },
+          { group: "D", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+    ],
+    knockout: knockouts([
+      {
+        place: 13,
+        seeds: [
+          { group: "III", position: 2 },
+          { group: "IV", position: 2 },
+        ],
+      },
+      {
+        place: 11,
+        seeds: [
+          { group: "III", position: 1 },
+          { group: "IV", position: 1 },
+        ],
+      },
+      {
+        place: 9,
+        seeds: [
+          { group: "III", position: 0 },
+          { group: "IV", position: 0 },
+        ],
+      },
+      {
+        place: 7,
+        seeds: [
+          { group: "I", position: 3 },
+          { group: "II", position: 3 },
+        ],
+      },
+      {
+        place: 5,
+        seeds: [
+          { group: "I", position: 2 },
+          { group: "II", position: 2 },
+        ],
+      },
+      {
+        place: 3,
+        seeds: [
+          { group: "I", position: 1 },
+          { group: "II", position: 1 },
+        ],
+      },
+      {
+        place: 1,
+        seeds: [
+          { group: "I", position: 0 },
+          { group: "II", position: 0 },
+        ],
+      },
+    ]),
+    results: [
+      ...resultsFromKnockout(14),
+      ...resultsForGroup("stage2", "III", [
+        { position: 3, rank: 15 },
+      ]),
+    ]
+  },
   16: {
     stage1: [
       {
