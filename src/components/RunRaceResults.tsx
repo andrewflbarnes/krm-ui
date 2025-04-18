@@ -1,17 +1,8 @@
 import { Box, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 import { RoundResult } from "../kings";
+import { kingsPoints } from "../kings/utils";
 import styles from "./RunRaceResults.module.css";
-
-function kingsPoints(division: string, rank: number) {
-  const start = division == "mixed" ? 30 : 15
-  switch (rank) {
-    case 1: return start
-    case 2: return start - 2
-    case 3: return start - 4
-    default: return Math.max(start - 1 - rank, 1)
-  }
-}
 
 export default function RunRaceResults(props: {
   results: Record<string, RoundResult[]>;

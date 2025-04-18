@@ -1,9 +1,9 @@
 import { Box, Divider, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
-import { divisions, MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
+import { MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
 import { asPosition, minileagueRaces } from "../kings/round-utils";
+import ManageConfigRoundResults from "./ManageConfigRoundResults";
 import MiniLeague from "./MiniLeague";
-import RunRaceResults from "./RunRaceResults";
 
 const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => minileagueRaces(template, teams, name, "stage1", "mixed")
 
@@ -21,8 +21,8 @@ export default function ManageConfigRound(props: Props) {
 }
 
 function Content(props: Props) {
-  const mockResults = (): Record<string, RoundResult[]> => {
-    const results = props.config.results.map(r => ({
+  const mockResults = (): RoundResult[] => {
+    return props.config.results.map(r => ({
       rank: r.rank,
       rankStr: asPosition(r.rank),
       teams: [r.group.includes('/')
@@ -39,11 +39,6 @@ function Content(props: Props) {
       }
       return acc
     }, [])
-
-    return divisions.reduce((acc, d) => {
-      acc[d] = results
-      return acc
-    }, {})
   }
 
   return (
@@ -74,11 +69,11 @@ function Content(props: Props) {
       </Box>
       <Divider variant="fullWidth" />
       <div style={{ display: "flex", "flex-direction": "column", "align-content": "center" }}>
-        <Typography variant="h3" textAlign="center">
+        <Typography variant="h3" textAlign="center" marginBottom="1rem">
           Results
         </Typography>
         <div style={{ margin: "0 auto" }}>
-          <RunRaceResults results={mockResults()} />
+          <ManageConfigRoundResults results={mockResults()} />
         </div>
       </div>
     </div>
@@ -93,10 +88,10 @@ function PreviewStage(props: {
 }) {
   return (
     <div style={{ margin: "0 auto" }}>
-      <Typography variant="h3" style={{ "text-align": "center" }}>
+      <Typography variant="h3" textAlign="center" marginBottom="1rem">
         {props.title}
       </Typography>
-      <div>
+      <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
         <For each={props.config}>{(group) => {
           const groupTeams = props.seeds
             ? group.seeds.map(s => `Seed ${s.position + 1}`)

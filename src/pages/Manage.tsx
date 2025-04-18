@@ -26,7 +26,7 @@ export default function Manage(props: ParentProps) {
       gap: "8px",
       height: "100%",
     }}>
-      <div style={{ overflow: "scroll" }}>
+      <div style={{ "overflow-y": "scroll" }}>
         <Paper sx={{ width: "fit-content", height: "fit-content" }} elevation={4} >
           <List>
             <ListSubheader>Race</ListSubheader>

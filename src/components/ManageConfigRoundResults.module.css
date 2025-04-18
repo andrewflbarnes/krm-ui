@@ -1,0 +1,14 @@
+.td {
+  display: table-cell;
+  padding: 8px 16px;
+  border-bottom: 1px solid #404040;
+  white-space: nowrap;
+}
+
+.td-points {
+  display: table-cell;
+  padding: 8px 16px;
+  border-bottom: 1px solid #404040;
+  white-space: nowrap;
+  text-align: center;
+}

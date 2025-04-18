@@ -46,3 +46,14 @@ export function parseResults(leagueData: LeagueData): DivisionResults {
       return acc
     }, {})
 }
+
+export function kingsPoints(division: string, rank: number) {
+  const start = division == "mixed" ? 30 : 15
+  switch (rank) {
+    case 1: return start
+    case 2: return start - 2
+    case 3: return start - 4
+    default: return Math.max(start - 1 - rank, 1)
+  }
+}
+
