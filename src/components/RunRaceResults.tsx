@@ -4,7 +4,7 @@ import { RoundResult } from "../kings";
 import styles from "./RunRaceResults.module.css";
 
 function kingsPoints(division: string, rank: number) {
-  const start = division == "mixed" ? 30 : division == "ladies" ? 15 : 10
+  const start = division == "mixed" ? 30 : 15
   switch (rank) {
     case 1: return start
     case 2: return start - 2
