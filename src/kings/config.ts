@@ -961,6 +961,99 @@ export const raceConfig: {
       ...resultsFromKnockout(18),
     ]
   },
+  19: {
+    stage1: [
+      seeds("A", [0, 11, 12, 18]),
+      seeds("B", [1, 10, 13]),
+      seeds("C", [2, 9, 14]),
+      seeds("D", [3, 8, 15]),
+      seeds("E", [4, 7, 16]),
+      seeds("F", [5, 6, 17]),
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 0 },
+          { group: "C", position: 0 },
+          { group: "E", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "B", position: 0 },
+          { group: "D", position: 0 },
+          { group: "F", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "C", position: 1 },
+          { group: "E", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "IV",
+        seeds: [
+          { group: "B", position: 1 },
+          { group: "D", position: 1 },
+          { group: "F", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "V",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "C", position: 2 },
+          { group: "E", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "VI",
+        seeds: [
+          { group: "B", position: 2 },
+          { group: "D", position: 2 },
+          { group: "F", position: 2 },
+          { group: "A", position: 3 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    knockout: knockoutsFromGroups([
+      {
+        from: 13,
+        to: 18,
+        group1: "V",
+        group2: "VI",
+      },
+      {
+        from: 7,
+        to: 12,
+        group1: "III",
+        group2: "IV",
+      },
+      {
+        from: 1,
+        to: 6,
+        group1: "I",
+        group2: "II",
+      },
+    ]),
+    results: [
+      ...resultsFromKnockout(18),
+      ...resultsForGroup("stage2", "VI", [
+        { position: 3, rank: 19 },
+      ]),
+    ]
+  },
 } as const
 // Round config tests
 // - stage 2 teams <= stage 1 teams
