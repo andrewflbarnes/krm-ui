@@ -800,6 +800,78 @@ export const raceConfig: {
       ...resultsFromKnockout(16),
     ]
   },
+  17: {
+    stage1: [
+      seeds("A", [0, 9, 10]),
+      seeds("B", [1, 8, 11]),
+      seeds("C", [2, 7, 12, 16]),
+      seeds("D", [3, 6, 13]),
+      seeds("E", [4, 5, 14, 15]),
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 0 },
+          { group: "B", position: 1 },
+          { group: "C", position: 0 },
+          { group: "D", position: 1 },
+          { group: "E", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "B", position: 0 },
+          { group: "C", position: 1 },
+          { group: "D", position: 0 },
+          { group: "E", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "C", position: 2 },
+          { group: "E", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini3,
+      },
+      {
+        name: "IV",
+        seeds: [
+          { group: "B", position: 2 },
+          { group: "C", position: 3 },
+          { group: "D", position: 2 },
+          { group: "E", position: 3 },
+        ],
+        template: miniLeagueTemplates.mini4,
+      },
+    ],
+    knockout: knockoutsFromGroups([
+      {
+        from: 11,
+        to: 16,
+        group1: "III",
+        group2: "IV",
+      },
+      {
+        from: 1,
+        to: 10,
+        group1: "I",
+        group2: "II",
+      },
+    ]),
+    results: [
+      ...resultsFromKnockout(16),
+      ...resultsForGroup("stage2", "IV", [
+        { position: 3, rank: 17 },
+      ]),
+    ]
+  },
 } as const
 // Round config tests
 // - stage 2 teams <= stage 1 teams
