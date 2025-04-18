@@ -26,68 +26,70 @@ export default function Manage(props: ParentProps) {
       gap: "8px",
       height: "100%",
     }}>
-      <Paper sx={{ width: "fit-content", height: "fit-content" }} elevation={4} >
-        <List>
-          <ListSubheader>Race</ListSubheader>
-          <NavigationListItem path="new">New</NavigationListItem>
-          <NavigationListItem path="continue">Continue</NavigationListItem>
+      <div style={{ overflow: "scroll" }}>
+        <Paper sx={{ width: "fit-content", height: "fit-content" }} elevation={4} >
+          <List>
+            <ListSubheader>Race</ListSubheader>
+            <NavigationListItem path="new">New</NavigationListItem>
+            <NavigationListItem path="continue">Continue</NavigationListItem>
 
-          <ListSubheader>View config</ListSubheader>
+            <ListSubheader>View config</ListSubheader>
 
-          <CollapsibleNavItems
-            title="Mini Leagues"
-            id="ml"
-            open={selectedSubList("ml")}
-            onExpand={updateSubList}
-            navs={Object.keys(miniLeagueTemplates).map(ml => ({
-              label: `${ml}`,
-              href: `minileague/${ml}`,
-            }))}
-          />
-
-          <Show when={customMls().configs?.length > 0}>
             <CollapsibleNavItems
-              title="Custom Mini Leagues"
-              id="customml"
-              open={selectedSubList("customml")}
+              title="Mini Leagues"
+              id="ml"
+              open={selectedSubList("ml")}
               onExpand={updateSubList}
-              navs={customMls().configs.map(({ id }) => ({
-                label: `${id}`,
-                href: `minileague/${id}`,
+              navs={Object.keys(miniLeagueTemplates).map(ml => ({
+                label: `${ml}`,
+                href: `minileague/${ml}`,
               }))}
             />
-          </Show>
 
-          <CollapsibleNavItems
-            title="Rounds"
-            id="round"
-            open={selectedSubList("round")}
-            onExpand={updateSubList}
-            navs={Object.keys(raceConfig).map(num => ({
-              label: `${num} Teams`,
-              href: `round/${num}`,
-            }))}
-          />
+            <Show when={customMls().configs?.length > 0}>
+              <CollapsibleNavItems
+                title="Custom Mini Leagues"
+                id="customml"
+                open={selectedSubList("customml")}
+                onExpand={updateSubList}
+                navs={customMls().configs.map(({ id }) => ({
+                  label: `${id}`,
+                  href: `minileague/${id}`,
+                }))}
+              />
+            </Show>
 
-          <Show when={customRounds().configs?.length > 0}>
             <CollapsibleNavItems
-              title="Custom Rounds"
-              id="customround"
-              open={selectedSubList("customround")}
+              title="Rounds"
+              id="round"
+              open={selectedSubList("round")}
               onExpand={updateSubList}
-              navs={customRounds().configs.map(({ id }) => ({
-                label: `${id}`,
-                href: `round/${id}`,
+              navs={Object.keys(raceConfig).map(num => ({
+                label: `${num} Teams`,
+                href: `round/${num}`,
               }))}
             />
-          </Show>
 
-          <Show when={flags.experimental()}>
-            <ListSubheader>Create config</ListSubheader>
-            <NavigationListItem path="round/create">+ Round</NavigationListItem>
-          </Show>
-        </List>
-      </Paper>
+            <Show when={customRounds().configs?.length > 0}>
+              <CollapsibleNavItems
+                title="Custom Rounds"
+                id="customround"
+                open={selectedSubList("customround")}
+                onExpand={updateSubList}
+                navs={customRounds().configs.map(({ id }) => ({
+                  label: `${id}`,
+                  href: `round/${id}`,
+                }))}
+              />
+            </Show>
+
+            <Show when={flags.experimental()}>
+              <ListSubheader>Create config</ListSubheader>
+              <NavigationListItem path="round/create">+ Round</NavigationListItem>
+            </Show>
+          </List>
+        </Paper>
+      </div>
       <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
         {props.children}
       </Paper>
