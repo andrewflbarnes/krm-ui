@@ -2133,6 +2133,109 @@ export const raceConfig: {
       ...resultsFromKnockout(29, 22),
     ],
   },
+  30: {
+    stage1: [
+      seeds("A", [0, 19, 20]),
+      seeds("B", [1, 18, 21]),
+      seeds("C", [2, 17, 22]),
+      seeds("D", [3, 16, 23]),
+      seeds("E", [4, 15, 24]),
+      seeds("F", [5, 14, 25]),
+      seeds("G", [6, 13, 26]),
+      seeds("H", [7, 12, 27]),
+      seeds("I", [8, 11, 28]),
+      seeds("J", [9, 10, 29]),
+    ],
+    stage2: [
+      {
+        name: "I",
+        seeds: [
+          { group: "A", position: 0 },
+          { group: "C", position: 0 },
+          { group: "E", position: 0 },
+          { group: "G", position: 0 },
+          { group: "I", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "II",
+        seeds: [
+          { group: "B", position: 0 },
+          { group: "D", position: 0 },
+          { group: "F", position: 0 },
+          { group: "H", position: 0 },
+          { group: "J", position: 0 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "III",
+        seeds: [
+          { group: "A", position: 1 },
+          { group: "C", position: 1 },
+          { group: "E", position: 1 },
+          { group: "G", position: 1 },
+          { group: "I", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "IV",
+        seeds: [
+          { group: "B", position: 1 },
+          { group: "D", position: 1 },
+          { group: "F", position: 1 },
+          { group: "H", position: 1 },
+          { group: "J", position: 1 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "V",
+        seeds: [
+          { group: "A", position: 2 },
+          { group: "C", position: 2 },
+          { group: "E", position: 2 },
+          { group: "G", position: 2 },
+          { group: "I", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+      {
+        name: "VI",
+        seeds: [
+          { group: "B", position: 2 },
+          { group: "D", position: 2 },
+          { group: "F", position: 2 },
+          { group: "H", position: 2 },
+          { group: "J", position: 2 },
+        ],
+        template: miniLeagueTemplates.mini5,
+      },
+    ],
+    knockout: knockoutsFromGroups([
+      {
+        from: 21,
+        to: 30,
+        group1: "V",
+        group2: "VI",
+      },
+      {
+        from: 11,
+        to: 20,
+        group1: "III",
+        group2: "IV",
+      },
+      {
+        from: 1,
+        to: 10,
+        group1: "I",
+        group2: "II",
+      },
+    ]),
+    results: resultsFromKnockout(30),
+  },
 } as const
 // Round config tests
 // - stage 2 teams <= stage 1 teams
