@@ -1,5 +1,5 @@
 import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
-import { createMutation, useQueryClient } from "@tanstack/solid-query";
+import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { GroupRaces, RaceStage, Round, Stage } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
@@ -175,7 +175,7 @@ function ProgressButton(props: {
   const queryClient = useQueryClient()
   const { setStage } = useRaceOptions()
 
-  const progressRound = createMutation(() => ({
+  const progressRound = useMutation(() => ({
     mutationKey: ["progressRound"],
     mutationFn: async (data: { id: string }) => new Promise<ProgressionStage>((res) => {
       const nextStatus = krmApi.progressRound(data.id);
@@ -234,7 +234,7 @@ function ReopenButton(props: {
 }) {
   const queryClient = useQueryClient()
 
-  const reopenStage = createMutation(() => ({
+  const reopenStage = useMutation(() => ({
     mutationKey: ["reopenStage"],
     mutationFn: async (data: { id: string, stage: RaceStage }) => new Promise((res) => {
       krmApi.reopenStage(data.id, data.stage);

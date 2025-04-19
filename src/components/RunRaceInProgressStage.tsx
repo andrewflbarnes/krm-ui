@@ -1,5 +1,5 @@
 import { Card, Stack } from "@suid/material";
-import { createMutation, useQueryClient } from "@tanstack/solid-query";
+import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, For, createEffect, createMemo, on } from "solid-js";
 import { Race, Round, StageRaces } from "../kings";
 import MiniLeague from "./MiniLeague";
@@ -58,7 +58,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   } = useRaceOptions()
   const splits = () => 3
 
-  const mut = createMutation(() => ({
+  const mut = useMutation(() => ({
     mutationKey: [props.round.id],
     mutationFn: async (data: { id: string, race: Race }) => new Promise((res) => {
       krmApi.updateRace(data.id, data.race);
