@@ -70,190 +70,188 @@ export default function MiniLeague(props: MiniLeagueProps) {
         team={ctxRace()?.team}
         onResultChange={props.onResultChange}
       />
-      <Typography>
-        <table style={{ "border-spacing": "3px 0" }}>
-          <Show when={!props.noResults || props.name}>
-            <thead>
-              <tr>
-                <td colspan={collapsedRaces().length + 2}>
-                  <Typography variant="h4">
-                    {props.name}
-                  </Typography>
+      <table style={{ "border-spacing": "3px 0" }}>
+        <Show when={!props.noResults || props.name}>
+          <thead>
+            <tr>
+              <td colspan={collapsedRaces().length + 2}>
+                <Typography variant="h4">
+                  {props.name}
+                </Typography>
+              </td>
+              <Show when={!props.noResults}>
+                <td colspan={1}>
+                  <Show when={props.races.every(({ winner }) => !!winner)}>
+                    <Typography variant="caption" color="success.main">Complete</Typography>
+                  </Show>
                 </td>
-                <Show when={!props.noResults}>
-                  <td colspan={1}>
-                    <Show when={props.races.every(({ winner }) => !!winner)}>
-                      <Typography variant="caption" color="success.main">Complete</Typography>
-                    </Show>
-                  </td>
-                </Show>
-              </tr>
-            </thead>
-          </Show>
-          <For each={teams()}>{(team, i) => {
-            return (
-              <tr>
-                <th style={{ "text-align": "left", position: "relative", height: "2em", "white-space": "nowrap" }} scope="row">
-                  <div
-                    style={{
-                      opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
-                      transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimIn,
-                      "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
-                      "padding-right": "1em",
-                    }}
-                  >
-                    <Show when={props.selectable} fallback={team}>{(selectable) => {
-                      const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
-                      const handleTeamSelected = (v: string, i: number) => {
-                        setSelected(v)
-                        props.onTeamSelected(v, i)
+              </Show>
+            </tr>
+          </thead>
+        </Show>
+        <For each={teams()}>{(team, i) => {
+          return (
+            <tr>
+              <th style={{ "text-align": "left", position: "relative", height: "2em", "white-space": "nowrap" }} scope="row">
+                <div
+                  style={{
+                    opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
+                    transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimIn,
+                    "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
+                    "padding-right": "1em",
+                  }}
+                >
+                  <Show when={props.selectable} fallback={team}>{(selectable) => {
+                    const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
+                    const handleTeamSelected = (v: string, i: number) => {
+                      setSelected(v)
+                      props.onTeamSelected(v, i)
+                    }
+                    const theseOptions = () => {
+                      const s = selected()
+                      const opts = teamOptions().filter(o => selectable().includes(o.value))
+                      opts.unshift({ value: "", label: "-" })
+                      if (s.length) {
+                        opts.unshift({ value: s, label: s })
                       }
-                      const theseOptions = () => {
-                        const s = selected()
-                        const opts = teamOptions().filter(o => selectable().includes(o.value))
-                        opts.unshift({ value: "", label: "-" })
-                        if (s.length) {
-                          opts.unshift({ value: s, label: s })
-                        }
-                        return opts
-                      }
-                      return (
-                        <Selector
-                          current={selected()}
-                          options={theseOptions()}
-                          containerProps={{
-                            style: { "min-width": "10em" },
-                          }}
-                          small
-                          onClose={(v) => handleTeamSelected(v, i())}
-                        />
-                      )
-                    }}</Show>
-                  </div>
-                </th>
-                <For each={collapsedRaces()}>{(races) => {
-                  const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
-                  return (
-                    <Switch>
-                      <Match when={!!raceDetails}>{(_) => {
-                        let topBorder = false
-                        let botBorder = false
-                        const { team1, team2 } = raceDetails
-                        const t1idx = teams().indexOf(team1)
-                        const t2idx = teams().indexOf(team2)
-                        if (raceDetails) {
-                          const needsBorder = Math.abs(t1idx - t2idx) > 1
-                          if (needsBorder) {
+                      return opts
+                    }
+                    return (
+                      <Selector
+                        current={selected()}
+                        options={theseOptions()}
+                        containerProps={{
+                          style: { "min-width": "10em" },
+                        }}
+                        small
+                        onClose={(v) => handleTeamSelected(v, i())}
+                      />
+                    )
+                  }}</Show>
+                </div>
+              </th>
+              <For each={collapsedRaces()}>{(races) => {
+                const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
+                return (
+                  <Switch>
+                    <Match when={!!raceDetails}>{(_) => {
+                      let topBorder = false
+                      let botBorder = false
+                      const { team1, team2 } = raceDetails
+                      const t1idx = teams().indexOf(team1)
+                      const t2idx = teams().indexOf(team2)
+                      if (raceDetails) {
+                        const needsBorder = Math.abs(t1idx - t2idx) > 1
+                        if (needsBorder) {
+                          botBorder = true
+                          topBorder = true
+                        } else {
+                          if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
                             botBorder = true
-                            topBorder = true
                           } else {
-                            if ((team1 == team && t1idx > t2idx) || (team2 == team && t2idx > t1idx)) {
-                              botBorder = true
-                            } else {
-                              topBorder = true
-                            }
+                            topBorder = true
                           }
                         }
-                        const ti = team1 == team ? 1 : 2
-                        const dsq = ti == 1 ? raceDetails.team1Dsq : raceDetails.team2Dsq
-                        const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
-                        const teamOrdinal = (ti == 1 && t1idx < t2idx) || (ti == 2 && t2idx < t1idx) ? 1 : 2
-                        return (
-                          <td
-                            data-testid={`race-${raceDetails.group}-${raceDetails.groupRace}-${teamOrdinal}`}
-                            onMouseEnter={() => setHighlight(raceDetails.groupRace)}
-                            onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
-                            style={{
-                              cursor: props.readonly ? "inherit" : "pointer",
-                              "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
-                              "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
-                              "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                              "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                              position: "relative",
-                              height: checkSize,
-                              width: checkSize,
-                              opacity: dim() ? dimOpacity : 1,
-                              transition: `opacity ${dim() ? dimIn : "0s"}`,
-                              "transition-delay": dim() ? dimDelay : "0s",
-                            }}
-                            onContextMenu={props.readonly ? null : [handleContext, { race: raceDetails, team }]}
-                            onClick={() => !props.readonly && !raceDetails.winner && props.onResultChange({ ...raceDetails, winner: ti })}
-                          >
-                            <div style={{
-                              display: "flex",
-                              "flex-direction": "row",
-                              "align-items": "center",
-                              "justify-content": "center",
-                            }}>
-                              <RaceResultIcon
-                                won={raceDetails.winner == ti}
-                                dsq={dsq}
-                                conceded={raceDetails.winner != ti && raceDetails.indicators == "by"}
-                              />
-                            </div>
-                          </td>
-                        )
-                      }}</Match>
-                      <Match when={!raceDetails}>
-                        <td style={{ background: borderColour }} />
-                      </Match>
-                    </Switch>
-                  )
-                }}</For>
-                <Show when={!props.noResults}>{(_) => {
-                  const wins = () => teamPositions().data[team]?.wins
-                  const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
-                  const posInfo = () => {
-                    const p = pos()
-                    if (teamPositions().pos[p].length == teams().length) {
-                      if (!props.races.some(r => r.winner)) {
-                        return ""
                       }
-                    }
-                    const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
-                    switch (p) {
-                      case 0:
-                        return [`${joint}1st`, "🥇"]
-                      case 1:
-                        return [`${joint}2nd`, "🥈"]
-                      case 2:
-                        return [`${joint}3rd`, "🥉"]
-                      default:
-                        return [`${joint}${p + 1}th`, ""]
+                      const ti = team1 == team ? 1 : 2
+                      const dsq = ti == 1 ? raceDetails.team1Dsq : raceDetails.team2Dsq
+                      const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
+                      const teamOrdinal = (ti == 1 && t1idx < t2idx) || (ti == 2 && t2idx < t1idx) ? 1 : 2
+                      return (
+                        <td
+                          data-testid={`race-${raceDetails.group}-${raceDetails.groupRace}-${teamOrdinal}`}
+                          onMouseEnter={() => setHighlight(raceDetails.groupRace)}
+                          onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
+                          style={{
+                            cursor: props.readonly ? "inherit" : "pointer",
+                            "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
+                            "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
+                            "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                            "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                            position: "relative",
+                            height: checkSize,
+                            width: checkSize,
+                            opacity: dim() ? dimOpacity : 1,
+                            transition: `opacity ${dim() ? dimIn : "0s"}`,
+                            "transition-delay": dim() ? dimDelay : "0s",
+                          }}
+                          onContextMenu={props.readonly ? null : [handleContext, { race: raceDetails, team }]}
+                          onClick={() => !props.readonly && !raceDetails.winner && props.onResultChange({ ...raceDetails, winner: ti })}
+                        >
+                          <div style={{
+                            display: "flex",
+                            "flex-direction": "row",
+                            "align-items": "center",
+                            "justify-content": "center",
+                          }}>
+                            <RaceResultIcon
+                              won={raceDetails.winner == ti}
+                              dsq={dsq}
+                              conceded={raceDetails.winner != ti && raceDetails.indicators == "by"}
+                            />
+                          </div>
+                        </td>
+                      )
+                    }}</Match>
+                    <Match when={!raceDetails}>
+                      <td style={{ background: borderColour }} />
+                    </Match>
+                  </Switch>
+                )
+              }}</For>
+              <Show when={!props.noResults}>{(_) => {
+                const wins = () => teamPositions().data[team]?.wins
+                const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
+                const posInfo = () => {
+                  const p = pos()
+                  if (teamPositions().pos[p].length == teams().length) {
+                    if (!props.races.some(r => r.winner)) {
+                      return ""
                     }
                   }
-                  return (
-                    <>
-                      <td
-                        style={{
-                          height: checkSize,
-                          width: checkSize,
-                        }}
-                      >
-                        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                          {wins()}
-                        </div>
-                      </td>
-                      <td style={{ width: "3em" }}>
-                        <div style={{ "white-space": "nowrap", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
-                          <Show when={finished() || props.live}>
-                            <div>
-                              {posInfo()[0]}
-                            </div>
-                            <div>
-                              {posInfo()[1]}
-                            </div>
-                          </Show>
-                        </div>
-                      </td>
-                    </>
-                  )
-                }}</Show>
-              </tr>
-            )
-          }}</For>
-        </table>
-      </Typography>
+                  const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
+                  switch (p) {
+                    case 0:
+                      return [`${joint}1st`, "🥇"]
+                    case 1:
+                      return [`${joint}2nd`, "🥈"]
+                    case 2:
+                      return [`${joint}3rd`, "🥉"]
+                    default:
+                      return [`${joint}${p + 1}th`, ""]
+                  }
+                }
+                return (
+                  <>
+                    <td
+                      style={{
+                        height: checkSize,
+                        width: checkSize,
+                      }}
+                    >
+                      <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
+                        {wins()}
+                      </div>
+                    </td>
+                    <td style={{ width: "3em" }}>
+                      <div style={{ "white-space": "nowrap", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
+                        <Show when={finished() || props.live}>
+                          <div>
+                            {posInfo()[0]}
+                          </div>
+                          <div>
+                            {posInfo()[1]}
+                          </div>
+                        </Show>
+                      </div>
+                    </td>
+                  </>
+                )
+              }}</Show>
+            </tr>
+          )
+        }}</For>
+      </table>
     </>
   )
 }

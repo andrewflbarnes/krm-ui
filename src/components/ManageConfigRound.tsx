@@ -1,5 +1,5 @@
 import { Box, Divider, Typography } from "@suid/material";
-import { For, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 import { MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
 import { asPosition, minileagueRaces } from "../kings/round-utils";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
@@ -15,10 +15,12 @@ type Props = {
 export default function ManageConfigRound(props: Props) {
   return (
     <Show when={props.config} fallback={`no such round configuration: ${props.title}`}>
-        <Content {...props} />
+      <Content {...props} />
     </Show>
   )
 }
+
+const [basic] = createSignal(true)
 
 function Content(props: Props) {
   const mockResults = (): RoundResult[] => {
@@ -48,12 +50,7 @@ function Content(props: Props) {
       </Typography>
       <Divider variant="fullWidth" />
       <Box
-        sx={{
-          flexDirection: { xs: "column", lg: "row" },
-          alignItems: { xs: "center", lg: "flex-start" },
-          gap: { xs: "2em", lg: "0" },
-        }}
-        style={{ display: "flex", "justify-content": "center" }}
+        style={{ display: "flex", "justify-content": "center", "flex-flow": "row wrap" }}
       >
         <PreviewStage title="Stage 1" config={props.config.stage1} seeds />
         <Show when={props.config.stage2}>{(stage2) => {
@@ -87,43 +84,60 @@ function PreviewStage(props: {
   knockout?: boolean;
 }) {
   return (
-    <div style={{ margin: "0 auto" }}>
-      <Typography variant="h3" textAlign="center" marginBottom="1rem">
+    <div style={{ margin: "0 auto", flex: 1, padding: "1em" }}>
+      <Typography variant="h3" textAlign="center" marginBottom="1rem" whiteSpace="nowrap">
         {props.title}
       </Typography>
-      <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
-        <For each={props.config}>{(group) => {
-          const groupTeams = props.seeds
-            ? group.seeds.map(s => `Seed ${s.position + 1}`)
-            : group.seeds.map(s => `${asPosition(s.position + 1)} group ${s.group}`)
-          const races = mockRaces(group.name, group.template, groupTeams)
-          return (
-            <div>
-              <Show when={props.knockout} fallback={
-                <MiniLeague name={"Group " + group.name} races={races} teams={groupTeams} noResults />
-              }>
-                <For each={races}>{(r) => (
+      <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
+        <div style={{ display: "flex", "flex-direction": "column", gap: "1em" }}>
+          <For each={props.config}>{(group) => {
+            const groupTeams = props.seeds
+              ? group.seeds.map(s => `Seed ${s.position + 1}`)
+              : group.seeds.map(s => `${asPosition(s.position + 1)} group ${s.group}`)
+            const races = mockRaces(group.name, group.template, groupTeams)
+            return (
+              <div>
+                <Show when={props.knockout} fallback={
+                  <Show when={basic()} fallback={
+                    <MiniLeague name={"Group " + group.name} races={races} teams={groupTeams} noResults />
+                  }>
+                    <div style={{ display: "flex", "flex-direction": "column", "justify-content": "center" }}>
+                      <Typography variant="h4" textAlign="center">
+                        Group {group.name}
+                      </Typography>
+                      <For each={groupTeams}>{(team) => (
+                        <Typography textAlign="center">
+                          {team}
+                        </Typography>
+                      )}</For>
+                    </div>
+                  </Show>
+                }>
                   <Typography>
-                    <div style={{ display: "grid", "grid-template-columns": " 1fr 1fr 2em 1fr" }}>
-                      <div style={{ "text-align": "left" }}>
-                        {r.group}
-                      </div>
-                      <div style={{ "text-align": "left" }}>
-                        {r.team1}
-                      </div>
-                      <div style={{ "text-align": "center" }}>
-                        vs
-                      </div>
-                      <div style={{ "text-align": "right" }}>
-                        {r.team2}
-                      </div>
+                    <div style={{ display: "grid", "grid-template-columns": "1fr 1fr auto 1fr", "white-space": "nowrap" }}>
+                      <For each={races}>{(r) => (
+                        <>
+                          <div style={{ "text-align": "left" }}>
+                            {r.group}&nbsp;
+                          </div>
+                          <div style={{ "text-align": "left" }}>
+                            {r.team1}&nbsp;
+                          </div>
+                          <div style={{ "text-align": "center" }}>
+                            vs&nbsp;
+                          </div>
+                          <div style={{ "text-align": "right" }}>
+                            {r.team2}
+                          </div>
+                        </>
+                      )}</For>
                     </div>
                   </Typography>
-                )}</For>
-              </Show>
-            </div>
-          )
-        }}</For>
+                </Show>
+              </div>
+            )
+          }}</For>
+        </div>
       </div>
     </div>
   )
