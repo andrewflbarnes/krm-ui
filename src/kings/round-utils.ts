@@ -199,7 +199,12 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
 
 export function createRound(
   id: string,
-  league: League,
+  details: {
+    league: League;
+    round: number;
+    description: string;
+    venue: string;
+  },
   teams: RoundSeeding,
   raceConfigs: {
     [numTeams: number]: RoundConfig
@@ -236,10 +241,10 @@ export function createRound(
   return {
     id,
     owner: "local",
-    league,
+    league: details.league,
     date: new Date(),
-    description: "Round 2",
-    venue: "Gloucester",
+    description: `Round ${details.round}${details.description ? ` - ${details.description}` : ""}`,
+    venue: details.venue,
     status: "stage1",
     config,
     races: {

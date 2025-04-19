@@ -74,6 +74,10 @@ function ManageNewInternal() {
     description: "",
     round: 1,
   })
+  const roundDetails = () => ({
+    ...details(),
+    league: k.league(),
+  })
 
   const handleDetailUpdate = (d: ReturnType<typeof details>) => {
     setDetails(d)
@@ -156,7 +160,7 @@ function ManageNewInternal() {
         }
 
         const seeding = orderSeeds(k.leagueConfig(), numTeams)
-        const r = createRound("setup", k.league(), seeding, raceConfigs)
+        const r = createRound("setup", roundDetails(), seeding, raceConfigs)
         batch(() => {
           setDistributionOrder(seeding)
           setSeeding(seeding)
@@ -171,7 +175,7 @@ function ManageNewInternal() {
       title: "Shuffle Teans",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
-          const r = createRound("setup", k.league(), seeds, raceConfigs)
+          const r = createRound("setup", roundDetails(), seeds, raceConfigs)
           batch(() => {
             setRound(r)
             setDistributionOrder(seeds)
@@ -229,7 +233,7 @@ function ManageNewInternal() {
   }
 
   const handleDone = () => {
-    const r = krmApi.createRound(k.league(), seeding(), raceConfigs, distributionOrder())
+    const r = krmApi.createRound(roundDetails(), seeding(), raceConfigs, distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()

@@ -16,10 +16,16 @@ export type CustomMiniLeagueTemplates = CustomConfig<MiniLeagueTemplate>
 
 export type RoundInfo = Omit<Round, "races">
 export type ProgressionStage = Exclude<Stage, "stage1">;
+export type RoundDetails = {
+  league: League;
+  round: number;
+  venue: string;
+  description: string;
+}
 export type KrmApi = {
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
-  createRound(league: League, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
+  createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
   getRounds(league?: string): RoundInfo[];
   getRound(id: string): Round;
   deleteRound(id: string): void;
@@ -183,8 +189,8 @@ export default (function krmApiLocalStorage(): KrmApi {
     getLeagueConfig(league: League): LeagueData | null {
       return JSON.parse(localStorage.getItem(getStorageKeyLeagueConfig(league)))
     },
-    createRound(league: League, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
-      const round = createRound(newStorageKeyRound(league), league, teams, raceConfigs, distributionOrder)
+    createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
+      const round = createRound(newStorageKeyRound(details.league), details, teams, raceConfigs, distributionOrder)
       saveRound(round)
       return round
     },

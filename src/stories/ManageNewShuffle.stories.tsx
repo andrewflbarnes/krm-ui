@@ -33,7 +33,13 @@ const seeding: RoundSeeding = {
   "board": ["Bath 1", "Bristol 1", "Plymouth 1", "Aberystwyth 1"],
 }
 
-const round = createRound("id-of-round", "western", seeding, raceConfig)
+const details = {
+  league: "western",
+  round: 1,
+  description: "This is a round",
+  venue: "Glossy",
+} as const
+const round = createRound("id-of-round", details, seeding, raceConfig)
 
 export const Default: Story = {
   args: {
