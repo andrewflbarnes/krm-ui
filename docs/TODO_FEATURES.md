@@ -30,15 +30,15 @@
 - [x] Don't show race stages which have no config
 - [x] Reopen stages
 - [x] Custom URLs for pulling config
+- [x] Add all configs up to 32 teams (:
 
 ## Must
 
+- [ ] Set round metadata on creation (description, venue, round number, etc.)
 - [ ] Playwright tests for all round configurations
-- [ ] Add all configs up to 32 teams (:
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Custom configuration groups
-- [ ] Set round metadata on creation (description, venue, round number, etc.)
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
