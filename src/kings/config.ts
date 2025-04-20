@@ -1547,11 +1547,11 @@ export const raceConfig: {
   25: {
     stage1: [
       seeds("A", [0, 11, 12, 23]),
-      seeds("B", [1, 10, 13, 22]),
+      seeds("B", [1, 10, 13, 22, 24]),
       seeds("C", [2, 9, 14, 21]),
       seeds("D", [3, 8, 15, 20]),
       seeds("E", [4, 7, 16, 19]),
-      seeds("F", [5, 6, 17, 18, 24]),
+      seeds("F", [5, 6, 17, 18]),
     ],
     stage2: [
       {
@@ -1612,9 +1612,9 @@ export const raceConfig: {
         name: "VII",
         seeds: [
           { group: "A", position: 3 },
+          { group: "B", position: 4 },
           { group: "C", position: 3 },
           { group: "E", position: 3 },
-          { group: "F", position: 4 },
         ],
         template: miniLeagueTemplates.mini4,
       },

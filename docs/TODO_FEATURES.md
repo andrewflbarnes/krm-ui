@@ -32,11 +32,10 @@
 - [x] Custom URLs for pulling config
 - [x] Add all configs up to 32 teams (:
 - [x] Set round metadata on creation (description, venue, round number, etc.)
+- [x] Split mini5 races to prevent congestion: `[[2, 2], [1, 2], [1, 2]]`
 
 ## Must
 
-- [ ] Split mini5 races to prevent congestion: `[[2, 2], [1, 2], [1, 2]]`
-- [ ] Split 30 races (all mini5) into 5 segments
 - [ ] Playwright tests for all round configurations
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
@@ -51,6 +50,8 @@
 
 ## Should
 
+- [ ] Split 30 races (all mini5) into 5 segments
+- [ ] More general solution for configuring 10 races/5 team league race splits
 - [ ] Dynamic test/validation for custom round config
 - [ ] DSQ reasons
 - [ ] Support optional knockouts

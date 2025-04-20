@@ -11,10 +11,13 @@ import RaceListPrintable from "./RaceListPrintable";
 import { usePrint } from "../hooks/print";
 import { useRaceOptions } from "../hooks/results";
 
-const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean) => {
+const orderRaces = (divisionRaces: StageRaces, northern: boolean) => {
+  const splits = 3
   const topSplits = northern ? splits : 1;
   const inSplits = northern ? 1 : splits;
   const or: Race[] = [];
+  let splitInsertion = or.length
+  let lastSplit = 0
   for (let i = 0; i < topSplits; i++) {
     Object.entries(divisionRaces)
       .sort((a, b) => b.toLocaleString().localeCompare(a.toLocaleString()))
@@ -22,11 +25,46 @@ const orderRaces = (divisionRaces: StageRaces, splits: number, northern: boolean
       .forEach((groupRaces) => {
         for (let j = 0; j < inSplits; j++) {
           const split = i + j
+          // Use the splitInsertion location when breaking up larger (5+ teams) group races
+          if (lastSplit != split) {
+            splitInsertion = or.length
+            lastSplit = split
+          }
           Object.values(groupRaces).forEach(({ races }) => {
-            const size = races.length / splits
-            const start = split * size
-            const end = Math.min((split + 1) * size, races.length)
-            races.slice(start, end).forEach(r => or.push(r))
+            if (races.length == 15) {
+              // 6 teams (probably!) - need a better check for this...
+              if (split == 0) {
+                or.splice(splitInsertion, 0, ...races.slice(0, 3))
+                splitInsertion += 3
+                races.slice(3, 6).forEach(r => or.push(r))
+              } else if (split == 1) {
+                or.splice(splitInsertion, 0, ...races.slice(6, 9))
+                splitInsertion += 3
+                races.slice(9, 12).forEach(r => or.push(r))
+              } else {
+                races.slice(12, 15).forEach(r => or.push(r))
+              }
+            } else if (races.length == 10) {
+              // 5 teams (probably!) - need a better check for this...
+              if (split == 0) {
+                or.splice(splitInsertion, 0, ...races.slice(0, 2))
+                splitInsertion += 2
+                races.slice(2, 4).forEach(r => or.push(r))
+              } else if (split == 1) {
+                or.splice(splitInsertion, 0, races[4])
+                splitInsertion += 1
+                races.slice(5, 7).forEach(r => or.push(r))
+              } else {
+                or.splice(splitInsertion, 0, races[7])
+                splitInsertion += 1
+                races.slice(8, 10).forEach(r => or.push(r))
+              }
+            } else {
+              const size = races.length / splits
+              const start = split * size
+              const end = Math.min((split + 1) * size, races.length)
+              races.slice(start, end).forEach(r => or.push(r))
+            }
           })
         }
       })
@@ -56,7 +94,6 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     northern,
     view,
   } = useRaceOptions()
-  const splits = () => 3
 
   const mut = useMutation(() => ({
     mutationKey: [props.round.id],
@@ -85,7 +122,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   }
 
   const orderedRaces = createMemo(() => {
-    return orderRaces(props.round.races[props.stage], splits(), northern())
+    return orderRaces(props.round.races[props.stage], northern())
   })
 
   const [print, setPrint] = usePrint()
