@@ -1,4 +1,3 @@
-import { Context } from '@netlify/functions'
 import * as cheerio from 'cheerio'
 import axios from 'axios'
 
@@ -8,7 +7,7 @@ const selectors = {
   "board": "Snowboard"
 }
 
-export default async (request: Request, context: Context) => {
+export default async (request: Request) => {
   const url = new URL(request.url)
   const league = url.searchParams.get('league')
   const customUrl = url.searchParams.get('url')
@@ -44,15 +43,15 @@ async function getLeagueData(url: string) {
   Object.entries(selectors).forEach(([division, selector]) => {
     $('h1:contains(' + selector + ')')
       .closest(".content")
-      .find("table").each((d, table) => {
+      .find("table").each((_, table) => {
         const headers = [];
-        $(table).find('th').each((i, header) => {
+        $(table).find('th').each((_, header) => {
           headers.push($(header).text())
         })
 
-        $(table).find('tbody tr').each((i, row) => {
+        $(table).find('tbody tr').each((_, row) => {
           const data = []
-          $(row).find('td').each((j, cell) => {
+          $(row).find('td').each((_, cell) => {
             data.push($(cell).text());
           });
           const { club, team, results, total } = getTeamInfo(headers, data)

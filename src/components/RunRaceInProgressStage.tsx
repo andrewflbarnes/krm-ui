@@ -185,6 +185,6 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           />
         </div>
       </div>
-    </div>
+    </div >
   )
 }

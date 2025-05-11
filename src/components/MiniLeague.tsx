@@ -134,7 +134,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
                 return (
                   <Switch>
-                    <Match when={!!raceDetails}>{(_) => {
+                    <Match when={!!raceDetails}>{(_) => { // eslint-disable-line @typescript-eslint/no-unused-vars
                       let topBorder = false
                       let botBorder = false
                       const { team1, team2 } = raceDetails
@@ -199,7 +199,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   </Switch>
                 )
               }}</For>
-              <Show when={!props.noResults}>{(_) => {
+              <Show when={!props.noResults}>{(_) => { // eslint-disable-line @typescript-eslint/no-unused-vars
                 const wins = () => teamPositions().data[team]?.wins
                 const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
                 const posInfo = () => {

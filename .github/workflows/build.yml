@@ -42,6 +42,10 @@ jobs:
           pnpm install
       - name: Test
         run: pnpm test
+      - name: Check TS violations
+        run: pnpm check
+      - name: Check ESLint violations
+        run: pnpm lint
       - name: Update version
         run: .github/update_version.sh
       - name: Build

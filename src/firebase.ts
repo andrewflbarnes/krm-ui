@@ -31,38 +31,46 @@ export const auth = getAuth(app);
 export const serde = {
   toFirestoreRound: (round: Round) => {
     Object.values(round.config).forEach(c => {
+      // @ts-expect-error readonly field error while not properly implemented
       c.stage1.forEach(s => s.template.races = s.template.races.reduce((acc, r, i) => {
         acc[i] = r
         return acc
       }, {}))
+      // @ts-expect-error readonly field error while not properly implemented
       c.stage2?.forEach(s => s.template.races = s.template.races.reduce((acc, r, i) => {
         acc[i] = r
         return acc
       }, {}))
+      // @ts-expect-error readonly field error while not properly implemented
       c.knockout?.forEach(s => s.template.races = s.template.races.reduce((acc, r, i) => {
         acc[i] = r
         return acc
       }, {}))
     })
     Object.values(round.races.stage1).forEach(div => Object.values(div).forEach(group => {
+      // @ts-expect-error readonly field error while not properly implemented
       group.results = group.results?.reduce((acc, r, i) => {
         acc[i] = r
         return acc
       }, {}) || {}
     }))
     Object.values(round.races.stage2 || {}).forEach(div => Object.values(div).forEach(group => {
+      // @ts-expect-error readonly field error while not properly implemented
       group.results = group.results?.reduce((acc, r, i) => {
         acc[i] = r
         return acc
       }, {}) || {}
     }))
     Object.values(round.races.knockout || {}).forEach(div => Object.values(div).forEach(group => {
+      // @ts-expect-error readonly field error while not properly implemented
       group.results = group.results?.reduce((acc, r, i) => {
         acc[i] = r
         return acc
       }, {}) || {}
     }))
+    // @ts-expect-error readonly field error while not properly implemented
     round.date = round.date.toISOString()
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return round as any
   },
   fromFirestoreRound: (round: Round) => {
@@ -71,6 +79,7 @@ export const serde = {
     }
     const convertAndSetTemplates = (c: MiniLeagueConfig) => {
       type V = (typeof c.template.races)[number]
+      // @ts-expect-error readonly field error while not properly implemented
       c.template.races = convert(c.template.races as unknown as Record<number, V>)
     }
     Object.values(round.config).forEach(c => {
