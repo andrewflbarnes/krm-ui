@@ -1,4 +1,4 @@
-import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate } from "../kings"
+import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate, leagues } from "../kings"
 import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings/round-utils";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
@@ -23,6 +23,7 @@ export type RoundDetails = {
   description: string;
 }
 export type KrmApi = {
+  clearLocalData():void;
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
   createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
@@ -187,6 +188,17 @@ export default (function krmApiLocalStorage(): KrmApi {
   }
 
   return {
+    clearLocalData() {
+      const ids = JSON.parse(localStorage.getItem(getStorageKeyRounds()) ?? "[]") as string[]
+      ids.forEach(id => {
+        localStorage.removeItem(id)
+      })
+      for (const league of leagues) {
+        localStorage.removeItem(getStorageKeyLeagueConfig(league))
+      }
+      localStorage.removeItem(getStorageKeyRounds())
+      localStorage.removeItem("kings-selected-league")
+    },
     saveLeagueConfig(league: League, config: LeagueData) {
       localStorage.setItem(getStorageKeyLeagueConfig(league), JSON.stringify(config))
     },

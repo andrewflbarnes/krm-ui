@@ -36,7 +36,11 @@ export default function Home() {
               Continue a race
             </Button>
           </Show>
-          <Button variant="outlined" color="inherit">
+          <Button
+            variant="outlined"
+            color="inherit"
+            onClick={() => krm.clearLocalData()}
+          >
             Reset data
           </Button>
           <Show when={!hasRounds()}>
