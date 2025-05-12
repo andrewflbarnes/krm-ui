@@ -18,7 +18,7 @@ export type RoundInfo = Omit<Round, "races">
 export type ProgressionStage = Exclude<Stage, "stage1">;
 export type RoundDetails = {
   league: League;
-  round: number;
+  round: string;
   venue: string;
   description: string;
 }
@@ -204,7 +204,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         .map(round => {
           return {
             ...round,
-            date: new Date(round.date),
+            date: new Date(round.details.date),
             races: undefined,
           }
         })

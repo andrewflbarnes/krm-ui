@@ -132,14 +132,19 @@ export type Round = {
   owner: string;
   /** The league this round is part of */
   league: League;
+  /** Metadata for the round */
+  details: {
+    /** The round number/type e.g. 1, 2, 3, 4, finals */
+    round: string;
+    /** Short description of the round */
+    description: string;
+    /** The location of the round */
+    venue: string;
+    /** The date the round took place */
+    date: Date;
+  };
   /** The current status of the round */
   status: RoundStatus;
-  /** The date the round took place */
-  date: Date;
-  /** Short description of the round */
-  description: string;
-  /** The location of the round */
-  venue: string;
   /** The teams in the round, ordered by seeding */
   teams: RoundSeeding;
   /** The teams in the round, ordered by distribution into minileagues

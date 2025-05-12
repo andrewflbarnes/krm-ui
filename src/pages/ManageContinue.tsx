@@ -8,7 +8,7 @@ import ModalConfirmAction from "../ui/ModalConfirmAction";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
-  return unsortedRounds.sort((a, b) => b.date.getTime() - a.date.getTime())
+  return unsortedRounds.sort((a, b) => b.details.date.getTime() - a.details.date.getTime())
 }
 
 export default function ManageContinue() {

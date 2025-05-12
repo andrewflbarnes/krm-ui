@@ -68,11 +68,11 @@ function ManageNewInternal() {
   const [details, setDetails] = createSignal<{
     description: string;
     venue: string;
-    round: number;
+    round: string;
   }>({
     venue: "",
     description: "",
-    round: 1,
+    round: "1",
   })
   const roundDetails = () => ({
     ...details(),

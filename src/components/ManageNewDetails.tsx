@@ -4,13 +4,13 @@ import Selector from "../ui/Selector";
 type Details = {
   description: string;
   venue: string;
-  round: number;
+  round: string;
 }
 
 const rounds = [1, 2, 3, 4]
   .map(r => ({
     label: `Round ${r}`,
-    value: r,
+    value: r.toString(),
   }))
 
 export default function ManageNewDetails(props: Details & {

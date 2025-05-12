@@ -41,10 +41,10 @@ export default function ModalRoundInfo(props: ModalRoundInfoProps) {
       <CardContent>
         <Typography>
           <p>
-            Venue: {props.round.venue}
+            Venue: {props.round.details.venue}
           </p>
           <p>
-            Description: {props.round.description}
+            Description: {props.round.details.description}
           </p>
           <p>
             Mixed: {props.round.teams.mixed.length}

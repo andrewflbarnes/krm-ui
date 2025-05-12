@@ -35,7 +35,7 @@ const seeding: RoundSeeding = {
 
 const details = {
   league: "western",
-  round: 1,
+  round: "1",
   description: "This is a round",
   venue: "Glossy",
 } as const

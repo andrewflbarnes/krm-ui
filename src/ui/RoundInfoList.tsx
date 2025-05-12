@@ -141,7 +141,7 @@ function RoundInfoRow(props: {
               </Show>
             </IconButton>
           </Link>
-          {props.round.date.toLocaleDateString()}
+          {props.round.details.date.toLocaleDateString()}
         </Stack>
       </TableCell>
       <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
@@ -152,7 +152,7 @@ function RoundInfoRow(props: {
           <IconButton onClick={() => props.handleInfo(props.round)}>
             <InfoOutlined fontSize="small" />
           </IconButton>
-          {props.round.description}
+          {props.round.details.description}
         </div>
       </TableCell>
       <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>

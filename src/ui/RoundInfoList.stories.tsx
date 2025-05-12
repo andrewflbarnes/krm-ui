@@ -40,13 +40,16 @@ const examplepTeams = {
 const exampleRound: RoundInfo = {
   id: "round-id-12345",
   status: "complete",
-  venue: "Gloucester",
-  description: "This is a local round with a lengthy description for the round",
+  details: {
+    venue: "Gloucester",
+    description: "This is a local round with a lengthy description for the round",
+    date: new Date(),
+    round: "1"
+  },
   teams: examplepTeams,
   distributionOrder: examplepTeams,
   owner: "local",
   league: "western",
-  date: new Date(),
   config: {
     mixed: {
       stage1: [{ name: "A", seeds: [{ group: "Seeds", position: 1 }], template: miniLeagueTemplates.mini4 }],
@@ -66,14 +69,20 @@ const exampleRound: RoundInfo = {
 const trackedRound: RoundInfo = {
   ...exampleRound,
   owner: "owner-id",
-  description: "This round is tracked",
+  details: {
+    ...exampleRound.details,
+    description: "This round is tracked",
+  },
   status: "stage1",
 }
 
 const otherRound: RoundInfo = {
   ...exampleRound,
   owner: "other-owner-id",
-  description: "This round is untracked",
+  details: {
+    ...exampleRound.details,
+    description: "This round is untracked",
+  },
   status: "knockout",
 }
 

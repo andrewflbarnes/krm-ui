@@ -16,10 +16,10 @@ export default function RunRaceAbandoned() {
         Races were abandoned for this {round().league} round.
       </Typography>
       <Typography>
-        Date: {round().date.toLocaleDateString()}
+        Date: {round().details.date.toLocaleDateString()}
       </Typography>
       <Typography>
-        {round().description}
+        {round().details.description}
       </Typography>
     </Show>
   )

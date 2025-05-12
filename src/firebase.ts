@@ -94,7 +94,7 @@ export const serde = {
     Object.values(round.races.stage1).forEach(div => Object.values(div).forEach(convertAndSetGroupRaces))
     Object.values(round.races.stage2 || {}).forEach(div => Object.values(div).forEach(convertAndSetGroupRaces))
     Object.values(round.races.knockout || {}).forEach(div => Object.values(div).forEach(convertAndSetGroupRaces))
-    round.date = new Date(round.date)
+    round.details.date = new Date(round.details.date)
     return round
   },
 }
