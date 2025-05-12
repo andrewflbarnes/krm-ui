@@ -5,6 +5,7 @@ import { useKings } from "../kings";
 import notification from "../hooks/notification";
 import { Button } from "@suid/material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
+import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
@@ -12,8 +13,16 @@ function getSortedRounds(league: string) {
 }
 
 export default function ManageContinue() {
+  return (
+    <BasicErrorBoundary message="Failed to render">
+      <ManageContinueInternal />
+    </BasicErrorBoundary>
+  )
+}
+
+function ManageContinueInternal() {
   const [k] = useKings()
-  const [rounds, setRounds] = createSignal<RoundInfo[]>()
+  const [rounds, setRounds] = createSignal<RoundInfo[]>([])
   createComputed(() => {
     setRounds(getSortedRounds(k.league()))
   })

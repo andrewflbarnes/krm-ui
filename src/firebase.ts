@@ -69,7 +69,7 @@ export const serde = {
       }, {}) || {}
     }))
     // @ts-expect-error readonly field error while not properly implemented
-    round.date = round.date.toISOString()
+    round.details.date = round.details.date.toISOString()
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return round as any
   },

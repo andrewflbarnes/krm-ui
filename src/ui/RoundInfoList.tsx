@@ -100,6 +100,14 @@ function RoundInfoRow(props: {
 }) {
   const inProgress = () => props.round.status != "complete" && props.round.status != "abandoned"
   const status = () => inProgress() ? `in progress: ${props.round.status}` : props.round.status
+  const roundDesc = () => {
+    const { round, description } = props.round.details
+    const desc = `Round ${round}`
+    if (description?.length < 1) {
+      return desc
+    }
+    return `${desc} - ${description}`
+  }
   return (
     <TableRow>
       <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
@@ -152,7 +160,7 @@ function RoundInfoRow(props: {
           <IconButton onClick={() => props.handleInfo(props.round)}>
             <InfoOutlined fontSize="small" />
           </IconButton>
-          {props.round.details.description}
+          {roundDesc()}
         </div>
       </TableCell>
       <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>

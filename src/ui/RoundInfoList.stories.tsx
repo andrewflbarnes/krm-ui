@@ -71,6 +71,7 @@ const trackedRound: RoundInfo = {
   owner: "owner-id",
   details: {
     ...exampleRound.details,
+    round: "3",
     description: "This round is tracked",
   },
   status: "stage1",
@@ -81,6 +82,7 @@ const otherRound: RoundInfo = {
   owner: "other-owner-id",
   details: {
     ...exampleRound.details,
+    round: "2",
     description: "This round is untracked",
   },
   status: "knockout",

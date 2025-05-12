@@ -1,4 +1,4 @@
-import { Box, Button, Stack } from "@suid/material"
+import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
@@ -9,19 +9,11 @@ import krmApi from "../api/krm"
 import notification from "../hooks/notification"
 import { createStore } from "solid-js/store"
 import { createRound, orderSeeds } from "../kings/utils"
-import { useNavigate } from "@solidjs/router"
+import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 import ManageNewDetails from "../components/ManageNewDetails"
 
 const raceConfigs = raceConfig
-
-export default function ManageNew() {
-  return (
-    <BasicErrorBoundary>
-      <ManageNewInternal />
-    </BasicErrorBoundary>
-  )
-}
 
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
@@ -32,6 +24,14 @@ function initConfig(leagueConfig?: LeagueData) {
     }
     return acc
   }, {})
+}
+
+export default function ManageNew() {
+  return (
+    <BasicErrorBoundary>
+      <ManageNewInternal />
+    </BasicErrorBoundary>
+  )
 }
 
 function ManageNewInternal() {
@@ -245,20 +245,36 @@ function ManageNewInternal() {
 
   return (
     <Stack flexDirection="column" height="100%">
-      <Box sx={{ flexGrow: 1 }}>
-        {steps[step()].content()}
-      </Box>
-      <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
-        <Show when={step() > 0}>
-          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handlePrev}>Previous</Button>
-        </Show>
-        <Show when={step() < steps.length - 1}>
-          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleNext}>Next</Button>
-        </Show>
-        <Show when={step() == steps.length - 1}>
-          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleDone}>Done</Button>
-        </Show>
-      </Stack>
+      <Show when={k.leagueConfig()} fallback={<CallToLoadConfig />}>
+        <Box sx={{ flexGrow: 1 }}>
+          {steps[step()].content()}
+        </Box>
+        <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
+          <Show when={step() > 0}>
+            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handlePrev}>Previous</Button>
+          </Show>
+          <Show when={step() < steps.length - 1}>
+            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleNext}>Next</Button>
+          </Show>
+          <Show when={step() == steps.length - 1}>
+            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleDone}>Done</Button>
+          </Show>
+        </Stack>
+      </Show>
     </Stack>
+  )
+}
+
+function CallToLoadConfig() {
+  return (
+    <div>
+      Please
+      &nbsp;
+      <A href="/teams" style={{ "text-decoration": "none" }}>
+        <Typography color="primary" style={{ display: "inline" }}>
+          load the league configuration first
+        </Typography>
+      </A>
+    </div>
   )
 }

@@ -176,9 +176,13 @@ export default (function krmApiLocalStorage(): KrmApi {
 
   function getRound(id: string): Round {
     const r = JSON.parse(localStorage.getItem(id))
+    const { details } = r
     return {
       ...r,
-      date: r.date ? new Date(r.date) : r,
+      details: {
+        ...details,
+        date: details.date ? new Date(details.date) : new Date(),
+      }
     }
   }
 
@@ -204,7 +208,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         .map(round => {
           return {
             ...round,
-            date: new Date(round.details.date),
+            date: new Date(round.details?.date),
             races: undefined,
           }
         })
