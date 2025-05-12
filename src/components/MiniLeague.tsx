@@ -101,7 +101,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     "padding-right": "1em",
                   }}
                 >
-                  <Show when={props.selectable} fallback={team}>{(selectable) => {
+                  <Show when={props.selectable} fallback={<Typography>{team}</Typography>}>{(selectable) => {
                     const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
                     const handleTeamSelected = (v: string, i: number) => {
                       setSelected(v)
@@ -230,20 +230,24 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       }}
                     >
                       <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                        {wins()}
+                        <Typography>
+                          {wins()}
+                        </Typography>
                       </div>
                     </td>
                     <td style={{ width: "3em" }}>
-                      <div style={{ "white-space": "nowrap", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
-                        <Show when={finished() || props.live}>
-                          <div>
-                            {posInfo()[0]}
-                          </div>
-                          <div>
-                            {posInfo()[1]}
-                          </div>
-                        </Show>
-                      </div>
+                      <Typography>
+                        <div style={{ "white-space": "nowrap", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
+                          <Show when={finished() || props.live}>
+                            <div>
+                              {posInfo()[0]}
+                            </div>
+                            <div>
+                              {posInfo()[1]}
+                            </div>
+                          </Show>
+                        </div>
+                      </Typography>
                     </td>
                   </>
                 )
