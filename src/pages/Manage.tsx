@@ -5,7 +5,7 @@ import { createSelector, createSignal, For, ParentProps, Show } from "solid-js";
 import Link from "../components/Link";
 import { miniLeagueTemplates, raceConfig } from "../kings";
 import { useCustomMinileagues, useCustomRounds } from "../hooks/custom-config";
-import { useFeatureFlags } from "../hooks/experimental";
+import { useFeatureFlags } from "../hooks/flags";
 
 export default function Manage(props: ParentProps) {
   const [openSubList, setOpenSubList] = createSignal("")

@@ -7,7 +7,8 @@ import {
   Typography,
 } from "@suid/material";
 import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "clerk-solidjs";
-import { createMemo, ParentProps } from "solid-js";
+import { createMemo, ParentProps, Show } from "solid-js";
+import { useFeatureFlags } from "../hooks/flags";
 import LeagueSelector from "./LeagueSelector";
 
 function Link(props: ParentProps<{ href: string }>) {
@@ -31,6 +32,7 @@ function Link(props: ParentProps<{ href: string }>) {
 }
 
 export default function KrmAppBar() {
+  const { developer } = useFeatureFlags()
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -71,6 +73,11 @@ export default function KrmAppBar() {
                 justifyContent: "flex-end",
                 alignItems: "center",
               }}>
+                <Show when={developer()}>
+                  <Link href="/dev">
+                    Dev
+                  </Link>
+                </Show>
                 <Link href="/manage/continue">
                   Race
                 </Link>

@@ -59,6 +59,7 @@
 - [ ] Support custom splits (instead of an alogrithmic split 3 ways)
 - [ ] Track seeding by year from tracker/scraping
 - [ ] Add validity checks to ManageConfigRound
+- [ ] Reduce number of clicks to load config from /manage/new
 - [ ] Import data from file
 - [ ] Import data via link (base64)
 
