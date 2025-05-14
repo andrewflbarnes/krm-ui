@@ -6,17 +6,33 @@ import { createSignal, Show } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import notification from "../hooks/notification"
 
+function getRounds(league: string) {
+  try {
+    return krm.getRounds(league)
+  } catch (e) {
+    console.warn("Failed to get rounds for league", league, e)
+  }
+  return []
+}
+
 export default function Home() {
   const [k] = useKings()
+  const [rounds, setRounds] = createSignal(getRounds(k.league()))
   const hasRounds = () => {
     try {
-      return krm.getRounds(k.league())
-        .filter(({  status }) => status != 'complete' && status != 'abandoned' )
+      return rounds()
+        .filter(({ status }) => status != 'complete' && status != 'abandoned')
         .length > 0
     } catch (e) {
       console.warn("Failed to get rounds for league", k.league(), e)
     }
     return false
+  }
+  const resetRounds = () => {
+    setReset(false)
+    krm.clearLocalData()
+    setRounds(getRounds(k.league()))
+    notification.info("Cleared cached data")
   }
   const nav = useNavigate()
   const [reset, setReset] = createSignal(false)
@@ -30,11 +46,7 @@ export default function Home() {
       <ModalConfirmAction
         open={reset()}
         onDiscard={() => setReset(false)}
-        onConfirm={() => {
-          setReset(false)
-          krm.clearLocalData()
-          notification.info("Cleared cached data")
-        }}
+        onConfirm={resetRounds}
       >
         Are you sure? This will clear all locally cached data.
       </ModalConfirmAction>
