@@ -44,6 +44,9 @@ export default function ModalRoundInfo(props: ModalRoundInfoProps) {
             Venue: {props.round.details.venue}
           </p>
           <p>
+            Round: {props.round.details.round}
+          </p>
+          <p>
             Description: {props.round.details.description}
           </p>
           <p>
