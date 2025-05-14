@@ -6,7 +6,14 @@ import { Show } from "solid-js";
 
 export default function Home() {
   const [k] = useKings()
-  const hasRounds = () => krm.getRounds(k.league()).length > 0
+  const hasRounds = () => {
+    try {
+      return krm.getRounds(k.league()).length > 0
+    } catch (e) {
+      console.warn("Failed to get rounds for league", k.league(), e)
+    }
+    return false
+  }
   const nav = useNavigate()
   return (
     <div style={{
