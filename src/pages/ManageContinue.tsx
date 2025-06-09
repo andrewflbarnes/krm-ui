@@ -55,8 +55,14 @@ function ManageContinueInternal() {
   }
 
   const handleCopyToClipboard = (id: string) => {
-    const data = krmApi.getRound(id)
-    navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+    try {
+      const data = krmApi.getRound(id)
+      navigator.clipboard.writeText(JSON.stringify(data, null, 2))
+      notification.info("Data copied")
+    } catch (e) {
+      notification.error(`Failed to copy data to clipboard: ${e.message}`)
+      console.error("Failed to copy data to clipboard", e)
+    }
   }
 
   return (
