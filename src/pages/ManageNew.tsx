@@ -12,6 +12,7 @@ import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 import ManageNewDetails from "../components/ManageNewDetails"
+import { Construction } from "@suid/icons-material"
 
 const raceConfigs = raceConfig
 
@@ -266,15 +267,29 @@ function ManageNewInternal() {
 }
 
 function CallToLoadConfig() {
+  const [, { loadConfig }] = useKings()
   return (
-    <div>
-      Please
-      &nbsp;
-      <A href="/teams" style={{ "text-decoration": "none" }}>
-        <Typography color="primary" style={{ display: "inline" }}>
-          load the league configuration first
-        </Typography>
-      </A>
-    </div>
+    <Stack
+      displayRaw="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap="1em"
+    >
+      <Button
+        variant="outlined"
+        onClick={[loadConfig, undefined]}
+        startIcon={<Construction />}
+      >
+        Load Config
+      </Button>
+      <div>
+        {" "}or load custom configuration from the{" "}
+        <A href="/teams" style={{ "text-decoration": "none" }}>
+          <Typography color="primary" style={{ display: "inline" }}>
+            teams page
+          </Typography>
+        </A>
+      </div>
+    </Stack>
   )
 }

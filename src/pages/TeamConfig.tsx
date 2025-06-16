@@ -4,8 +4,6 @@ import ConfigActions from "../components/ConfigActions";
 import ConfigClubs from "../components/ConfigClubs";
 import { createSignal, Show } from "solid-js";
 import { Construction, Settings } from "@suid/icons-material";
-import notification from "../hooks/notification";
-import tracker from "../api/tracker";
 
 export default function TeamConfig() {
   const [k] = useKings()
@@ -35,18 +33,9 @@ export default function TeamConfig() {
 }
 
 function NoData() {
-  const [k, { setLeagueConfig }] = useKings()
+  const [, { loadConfig }] = useKings()
   const load = () => {
-    const league = k.league()
-    notification.info(`Loading config for ${league} league...`)
-    tracker.getLeagueData(league)
-      .then(data => {
-        setLeagueConfig(data)
-        notification.success(`Config loaded for ${league} league`)
-      })
-      .catch(e => {
-        notification.error(e.message)
-      })
+    loadConfig()
   }
   return (
     <Stack

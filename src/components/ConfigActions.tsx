@@ -1,14 +1,12 @@
 import { Box, Button, TextField } from "@suid/material";
 import { useKings } from "../kings";
-import tracker from "../api/tracker"
-import notification from "../hooks/notification";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { createSignal } from "solid-js";
 
 export default function ConfigActions(props: {
   onClose(): void;
 }) {
-  const [k, { setLeagueConfig }] = useKings()
+  const [k, { loadConfig }] = useKings()
   const hasConfig = () => !!k.leagueConfig()
   const [confirmingUpsert, setConfirmingUpsert] = createSignal(false)
   const handleCancelUpsert = () => setConfirmingUpsert(false)
@@ -31,15 +29,7 @@ export default function ConfigActions(props: {
   const upsertConfig = () => {
     setConfirmingUpsert(false)
     props.onClose()
-    notification.info(`Loading config for ${k.league()} league...`)
-    tracker.getLeagueData(k.league(), isCustom() ? mutTracker() : null)
-      .then(data => {
-        setLeagueConfig(data)
-        notification.success(`Config loaded for ${k.league()} league`)
-      })
-      .catch(e => {
-        notification.error(e.message)
-      })
+    loadConfig(isCustom() ? mutTracker() : null)
   }
 
   return (

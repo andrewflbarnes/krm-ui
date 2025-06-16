@@ -4,6 +4,8 @@ import kings from "./config"
 import { League, LeagueData } from "./types";
 import { leagues } from "./types";
 import krmApi from "../api/krm"
+import notification from "../hooks/notification";
+import tracker from "../api/tracker";
 
 function getStorageKeyLeague() {
   return "kings-selected-league"
@@ -44,6 +46,18 @@ const makeContext = (initLeague?: League) => {
     const resetConfig = krmApi.getLeagueConfig(selectedLeague())
     setLeagueConfig(resetConfig)
   }
+  const loadConfig = (trackingUrl: string = null) => {
+    const league = selectedLeague()
+    notification.info(`Loading config for ${league} league...`)
+    tracker.getLeagueData(league, trackingUrl)
+      .then(data => {
+        setLeagueConfig(data)
+        notification.success(`Config loaded for ${league} league`)
+      })
+      .catch(e => {
+        notification.error(e.message)
+      })
+  }
   return [
     {
       league: selectedLeague,
@@ -56,6 +70,7 @@ const makeContext = (initLeague?: League) => {
       setLeague,
       setLeagueConfig,
       clearLocalData,
+      loadConfig,
     }
   ] as const
 }
