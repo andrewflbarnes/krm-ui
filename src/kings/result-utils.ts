@@ -20,6 +20,11 @@ function orderResults(a: Result, b: Result): number {
       return bLast[i] - aLast[i]
     }
   }
+  const aIdx = +a.name.replace(/.*?(\d*)$/, "$1") >>> 0
+  const bIdx = +b.name.replace(/.*?(\d*)$/, "$1") >>> 0
+  if (aIdx !== bIdx) {
+    return aIdx - bIdx
+  }
   return a.name.localeCompare(b.name)
 }
 
@@ -27,7 +32,7 @@ export function parseResults(leagueData: LeagueData): DivisionResults {
   return divisions
     .reduce((acc, division) => {
       const divisionResult = []
-      Object.entries(leagueData).forEach(([clubName, club]) => {
+      Object.entries(leagueData || {}).forEach(([clubName, club]) => {
         Object.entries(club.teams[division] ?? {}).forEach(([name, { results }]) => {
           const tr: Result = {
             club: clubName,

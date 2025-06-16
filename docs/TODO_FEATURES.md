@@ -33,6 +33,7 @@
 - [x] Add all configs up to 32 teams (:
 - [x] Set round metadata on creation (description, venue, round number, etc.)
 - [x] Split mini5 races to prevent congestion: `[[2, 2], [1, 2], [1, 2]]`
+- [x] Fix seeding for teams > 10 - use numerical not lexical
 
 ## Must
 
