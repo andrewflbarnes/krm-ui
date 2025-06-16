@@ -1,8 +1,19 @@
 import { Button, Card, CardContent, Modal } from "@suid/material";
-import { For, createSignal } from "solid-js";
+import { For, createSignal, createEffect } from "solid-js";
 
 export default function DeveloperData() {
   const [data, setData] = createSignal<string | undefined>()
+  createEffect(() => {
+    const close = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        setData(undefined);
+      }
+    }
+    window.addEventListener("keydown", close);
+    return () => {
+      window.removeEventListener("keydown", close);
+    }
+  })
   return (
     <>
       <Modal
