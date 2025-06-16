@@ -16,7 +16,7 @@ function getRounds(league: string) {
 }
 
 export default function Home() {
-  const [k] = useKings()
+  const [k, { clearLocalData }] = useKings()
   const [rounds, setRounds] = createSignal(getRounds(k.league()))
   const hasRounds = () => {
     try {
@@ -30,7 +30,7 @@ export default function Home() {
   }
   const resetRounds = () => {
     setReset(false)
-    krm.clearLocalData()
+    clearLocalData()
     setRounds(getRounds(k.league()))
     notification.info("Cleared cached data")
   }

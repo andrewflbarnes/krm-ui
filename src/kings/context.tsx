@@ -39,7 +39,25 @@ const makeContext = (initLeague?: League) => {
       setConfig(newConfig)
     })
   }
-  return [{ league: selectedLeague, config, leagueConfig, lock }, { setLock, setLeague, setLeagueConfig }] as const
+  const clearLocalData = () => {
+    krmApi.clearLocalData()
+    const resetConfig = krmApi.getLeagueConfig(selectedLeague())
+    setLeagueConfig(resetConfig)
+  }
+  return [
+    {
+      league: selectedLeague,
+      config,
+      leagueConfig,
+      lock
+    },
+    {
+      setLock,
+      setLeague,
+      setLeagueConfig,
+      clearLocalData,
+    }
+  ] as const
 }
 
 const KingsContext = createContext(makeContext())

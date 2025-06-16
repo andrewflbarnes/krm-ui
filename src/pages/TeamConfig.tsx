@@ -1,9 +1,11 @@
-import { Box, Card, CardContent, IconButton, Modal, Typography } from "@suid/material";
+import { Box, Button, Card, CardContent, IconButton, Modal, Stack, Typography } from "@suid/material";
 import { useKings } from "../kings";
 import ConfigActions from "../components/ConfigActions";
 import ConfigClubs from "../components/ConfigClubs";
 import { createSignal, Show } from "solid-js";
 import { Construction, Settings } from "@suid/icons-material";
+import notification from "../hooks/notification";
+import tracker from "../api/tracker";
 
 export default function TeamConfig() {
   const [k] = useKings()
@@ -33,15 +35,36 @@ export default function TeamConfig() {
 }
 
 function NoData() {
+  const [k, { setLeagueConfig }] = useKings()
+  const load = () => {
+    const league = k.league()
+    notification.info(`Loading config for ${league} league...`)
+    tracker.getLeagueData(league)
+      .then(data => {
+        setLeagueConfig(data)
+        notification.success(`Config loaded for ${league} league`)
+      })
+      .catch(e => {
+        notification.error(e.message)
+      })
+  }
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-      <Typography variant="h2" textAlign="center">
-        No config loaded
-      </Typography>
-      <Construction sx={{ fontSize: "20em" }} />
+    <Stack
+      displayRaw="flex"
+      flexDirection="column"
+      alignItems="center"
+      gap="1em"
+    >
+      <Button
+        variant="outlined"
+        onClick={load}
+        startIcon={<Construction />}
+      >
+        Load Config
+      </Button>
       <Typography variant="body1" textAlign="center">
-        Click the settings icon in the top right to load config
+        Or click the settings icon in the top right to load custom config
       </Typography>
-    </Box>
+    </Stack>
   )
 }
