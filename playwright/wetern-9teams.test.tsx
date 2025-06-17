@@ -20,11 +20,13 @@ import { test, expect } from '@playwright/test';
 
 test('test', async ({ page }) => {
   await page.goto('http://localhost:5174/krm-ui');
+  await expect(page.getByText('Reset Data')).toBeVisible();
+  await page.getByRole('button', { name: 'reset data' }).click();
+  await expect(page.getByText('are you sure')).toBeVisible();
+  await page.getByText('yes').click();
   await page.getByRole('link', { name: 'Teams' }).click();
-  await page.getByRole('main').getByRole('button').click();
-  await page.getByText('Load config', { exact: true }).click();
-  await page.getByText('Yes').click();
-  
+  await page.getByRole('button', { name: 'Load config' }).click();
+
   await expect(page.getByText('Config loaded for ')).toBeVisible();
   await page.getByRole('link', { name: 'Race' }).click();
   await page.getByRole('link', { name: 'New' }).click();
