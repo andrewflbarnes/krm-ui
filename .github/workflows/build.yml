@@ -19,19 +19,34 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - id: setup
+      - name: Setup
         uses: ./.github/actions/setup
       - name: Test
         run: pnpm test
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Check TS violations
         run: pnpm check
       - name: Check ESLint violations
         run: pnpm lint
+  deploy:
+    needs: [test, check]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup
+        uses: ./.github/actions/setup
       - name: Update version
         run: .github/update_version.sh
       - name: Build
