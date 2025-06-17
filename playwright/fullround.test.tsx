@@ -18,19 +18,25 @@ import { test, expect } from '@playwright/test';
 //});
 //import { test, expect } from '@playwright/test';
 
-test('test', async ({ page }) => {
+test('7, 8 and 9 teams with expected results', async ({ page }) => {
   await page.goto('http://localhost:5174/krm-ui');
+
+  // reset locally held data
   await expect(page.getByText('Reset Data')).toBeVisible();
   await page.getByRole('button', { name: 'reset data' }).click();
   await expect(page.getByText('are you sure')).toBeVisible();
   await page.getByText('yes').click();
   await page.getByRole('link', { name: 'Teams' }).click();
   await page.getByRole('button', { name: 'Load config' }).click();
-
   await expect(page.getByText('Config loaded for ')).toBeVisible();
+
+  // Create new round
   await page.getByRole('link', { name: 'Race' }).click();
   await page.getByRole('link', { name: 'New' }).click();
   await page.getByRole('button', { name: 'Next' }).click();
+
+  // Add teams step
+  // Add new test club with 7, 8 and 9 teams
   const addClub = page.getByTestId('add-team').locator('input')
   await addClub.click();
   await addClub.fill('Test');
@@ -44,18 +50,28 @@ test('test', async ({ page }) => {
   await ladiesTeams.fill('8');
   const boardTeams = clubRow.locator('input').nth(2)
   await boardTeams.click();
-  await boardTeams.fill('8');
+  await boardTeams.fill('7');
+
+  // Missing teams step
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.locator('h3')).toContainText('Missing teams');
+
+  // Summary step
   await page.getByRole('button', { name: 'Next' }).click();
   await expect(page.getByRole('heading', { name: 'Mixed' })).toBeAttached()
   await page.getByRole('button', { name: 'Next' }).click({
     position: { x: 10, y: 10 },
   });
+
+  // Finish creating the round
   await page.getByRole('button', { name: 'Done' }).click();
+
+  // Stage 1
   await expect(page.getByLabel('Stage 1')).toContainText('Stage 1');
   await page.getByRole('button', { name: 'View Race List' }).click();
   await page.getByText('Mini Leagues').click();
+
+  // Mixed stage 1
   const mixedA = page.getByRole('table').filter({ hasText: 'Mixed A' })
   await expect(mixedA).toBeAttached();
   await mixedA.getByTestId('race-A-0-1').click();
@@ -70,6 +86,7 @@ test('test', async ({ page }) => {
   await mixedC.getByTestId('race-C-1-1').click();
   await mixedC.getByTestId('race-C-2-1').click();
 
+  // Ladies stage 1
   const ladiesA = page.getByRole('table').filter({ hasText: 'Ladies A' })
   await ladiesA.getByTestId('race-A-0-1').click();
   await ladiesA.getByTestId('race-A-1-1').click();
@@ -85,6 +102,7 @@ test('test', async ({ page }) => {
   await ladiesB.getByTestId('race-B-4-1').click();
   await ladiesB.getByTestId('race-B-5-1').click();
 
+  // Board stage 1
   const boardA = page.getByRole('table').filter({ hasText: 'Board A' })
   await boardA.getByTestId('race-A-0-1').click();
   await boardA.getByTestId('race-A-1-1').click();
@@ -96,14 +114,13 @@ test('test', async ({ page }) => {
   await boardB.getByTestId('race-B-0-1').click();
   await boardB.getByTestId('race-B-1-1').click();
   await boardB.getByTestId('race-B-2-1').click();
-  await boardB.getByTestId('race-B-3-1').click();
-  await boardB.getByTestId('race-B-4-1').click();
-  await boardB.getByTestId('race-B-5-1').click();
 
+  // Stage 2
   await expect(page.getByRole('main')).toContainText('Start Stage 2');
   await page.getByRole('button', { name: 'Start Stage' }).click();
   await page.getByText('Yes').click();
 
+  // Mixed stage 2
   const mixedI = page.getByRole('table').filter({ hasText: 'Mixed I' })
   await mixedI.getByTestId('race-I-0-1').click();
   await mixedI.getByTestId('race-I-1-2').click();
@@ -117,6 +134,7 @@ test('test', async ({ page }) => {
   await mixedIII.getByTestId('race-III-1-1').click();
   await mixedIII.getByTestId('race-III-2-1').click();
 
+  // Ladies stage 2
   const ladiesI = page.getByRole('table').filter({ hasText: 'Ladies I' })
   await ladiesI.getByTestId('race-I-0-1').click();
   await ladiesI.getByTestId('race-I-1-2').click();
@@ -132,6 +150,7 @@ test('test', async ({ page }) => {
   await ladiesII.getByTestId('race-II-4-1').click();
   await ladiesII.getByTestId('race-II-5-1').click();
 
+  // Board stage 2
   const boardI = page.getByRole('table').filter({ hasText: 'Board I' })
   await boardI.getByTestId('race-I-0-1').click();
   await boardI.getByTestId('race-I-1-2').click();
@@ -141,33 +160,33 @@ test('test', async ({ page }) => {
   await boardI.getByTestId('race-I-5-1').click();
   const boardII = page.getByRole('table').filter({ hasText: 'Board II' })
   await boardII.getByTestId('race-II-0-1').click();
-  await boardII.getByTestId('race-II-1-2').click();
+  await boardII.getByTestId('race-II-1-1').click();
   await boardII.getByTestId('race-II-2-1').click();
-  await boardII.getByTestId('race-II-3-1').click();
-  await boardII.getByTestId('race-II-4-1').click();
-  await boardII.getByTestId('race-II-5-1').click();
 
+  // Knockouts
   await expect(page.getByRole('main')).toContainText('Start Knockouts');
   await page.getByRole('button', { name: 'Start Knockouts' }).click();
   await page.getByText('Yes').click();
 
+  // Mixed Knockouts
   await page.getByRole('table').filter({ hasText: 'Mixed 5th/6th' }).getByTestId('race-5th/6th-0-1').click();
   await page.getByRole('table').filter({ hasText: 'Mixed 3rd/4th' }).getByTestId('race-3rd/4th-0-1').click();
   await page.getByRole('table').filter({ hasText: 'Mixed 1st/2nd' }).getByTestId('race-1st/2nd-0-1').click();
 
+  // Ladies Knockouts
   await page.getByRole('table').filter({ hasText: 'Ladies 7th/8th' }).getByTestId('race-7th/8th-0-1').click();
   await page.getByRole('table').filter({ hasText: 'Ladies 5th/6th' }).getByTestId('race-5th/6th-0-1').click();
   await page.getByRole('table').filter({ hasText: 'Ladies 3rd/4th' }).getByTestId('race-3rd/4th-0-1').click();
   await page.getByRole('table').filter({ hasText: 'Ladies 1st/2nd' }).getByTestId('race-1st/2nd-0-1').click();
 
-  await page.getByRole('table').filter({ hasText: 'Board 7th/8th' }).getByTestId('race-7th/8th-0-1').click();
-  await page.getByRole('table').filter({ hasText: 'Board 5th/6th' }).getByTestId('race-5th/6th-0-1').click();
-  await page.getByRole('table').filter({ hasText: 'Board 3rd/4th' }).getByTestId('race-3rd/4th-0-1').click();
-  await page.getByRole('table').filter({ hasText: 'Board 1st/2nd' }).getByTestId('race-1st/2nd-0-1').click();
+  // Board Knockouts - none
 
+  // Results
   await expect(page.getByRole('main')).toContainText('Finish');
   await page.getByRole('button', { name: 'Finish' }).click();
   await page.getByText('Yes').click();
+
+  // Mixed results
   const mixedResults = page.getByTestId('results-mixed')
   await expect(mixedResults.getByRole('row', { name: '1st' })).toContainText('Test 1')
   await expect(mixedResults.getByRole('row', { name: '2nd' })).toContainText('Test 2')
@@ -178,6 +197,8 @@ test('test', async ({ page }) => {
   await expect(mixedResults.getByRole('row', { name: '7th' })).toContainText('Test 7')
   await expect(mixedResults.getByRole('row', { name: '8th' })).toContainText('Test 8')
   await expect(mixedResults.getByRole('row', { name: '9th' })).toContainText('Test 9')
+
+  // Ladies results
   const ladiesResults = page.getByTestId('results-ladies')
   await expect(ladiesResults.getByRole('row', { name: '1st' })).toContainText('Test 1')
   await expect(ladiesResults.getByRole('row', { name: '2nd' })).toContainText('Test 2')
@@ -187,6 +208,8 @@ test('test', async ({ page }) => {
   await expect(ladiesResults.getByRole('row', { name: '6th' })).toContainText('Test 6')
   await expect(ladiesResults.getByRole('row', { name: '7th' })).toContainText('Test 7')
   await expect(ladiesResults.getByRole('row', { name: '8th' })).toContainText('Test 8')
+
+  // Board results
   const boardResults = page.getByTestId('results-board')
   await expect(boardResults.getByRole('row', { name: '1st' })).toContainText('Test 1')
   await expect(boardResults.getByRole('row', { name: '2nd' })).toContainText('Test 2')
@@ -195,5 +218,4 @@ test('test', async ({ page }) => {
   await expect(boardResults.getByRole('row', { name: '5th' })).toContainText('Test 5')
   await expect(boardResults.getByRole('row', { name: '6th' })).toContainText('Test 6')
   await expect(boardResults.getByRole('row', { name: '7th' })).toContainText('Test 7')
-  await expect(boardResults.getByRole('row', { name: '8th' })).toContainText('Test 8')
 });
