@@ -241,7 +241,7 @@ function ReopenButton(props: {
       res({});
     }),
     onSuccess: () => {
-      notification.success("Reopend stage at " + stages[props.stage])
+      notification.success("Reopened stage at " + stages[props.stage])
       queryClient.invalidateQueries({
         queryKey: [props.id],
       })
