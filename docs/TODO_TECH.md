@@ -11,6 +11,7 @@
 
 ## Must
 
+- [ ] Playwright tests for all round configurations
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
 - [ ] Replace KingsContext with global signals
 - [ ] Transition all "api" interactions to tanstack query and async
@@ -23,6 +24,11 @@
 
 ## Should
 
+- [ ] playwright - add description,venue, etc. in info step
+- [ ] playwright - validate missing teams
+- [ ] playwright - validate team swap
+- [ ] playwright - perform team swap
+- [ ] playwright - validate summary
 - [ ] For unknown leagues display an error message/page
 - [ ] Rationalise utility functions like orderRaces, kingsPoints
 - [ ] Deploy to kingsski.club

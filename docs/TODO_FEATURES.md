@@ -37,7 +37,7 @@
 
 ## Must
 
-- [ ] Playwright tests for all round configurations
+- [ ] Support 0 teams
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Custom configuration groups
