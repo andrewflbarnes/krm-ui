@@ -37,6 +37,7 @@
 
 ## Must
 
+- [ ] Don't allow reopen on non owned races
 - [ ] Support 0 teams
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
