@@ -27,223 +27,206 @@ test.describe('Full round simulation', {
   });
 
   type TestCase = {
-    [key in 'mixed' | 'ladies' | 'board']: {
-      teams: number;
-      stage1: string[],
-      stage2?: string[],
-      knockouts?: number[],
-    }
+    teams: number;
+    stage1: string[],
+    stage2?: string[],
+    knockouts?: number[],
   }
 
   const testCases: TestCase[] = [
     {
-      mixed: {
-        teams: 2,
-        stage1: ['A'],
-      },
-      ladies: {
-        teams: 3,
-        stage1: ['A'],
-      },
-      board: {
-        teams: 3,
-        stage1: ['A'],
-      },
+      teams: 2,
+      stage1: ['A'],
     },
     {
-      mixed: {
-        teams: 4,
-        stage1: ['A'],
-      },
-      ladies: {
-        teams: 5,
-        stage1: ['A'],
-      },
-      board: {
-        teams: 6,
-        stage1: ['A'],
-      },
+      teams: 3,
+      stage1: ['A'],
     },
     {
-      mixed: {
-        teams: 7,
-        stage1: ['A', 'B'],
-        stage2: ['I', 'II'],
-      },
-      ladies: {
-        teams: 8,
-        stage1: ['A', 'B'],
-        stage2: ['I', 'II'],
-        knockouts: [1, 3, 5, 7],
-      },
-      board: {
-        teams: 9,
-        stage1: ['A', 'B', 'C'],
-        stage2: ['I', 'II', 'III'],
-        knockouts: [1, 3, 5],
-      },
+      teams: 4,
+      stage1: ['A'],
     },
     {
-      mixed: {
-        teams: 10,
-        stage1: ['A', 'B', 'C'],
-        stage2: ['I', 'II', 'III'],
-        knockouts: [1, 3, 5],
-      },
-      ladies: {
-        teams: 11,
-        stage1: ['A', 'B', 'C'],
-        stage2: ['I', 'II', 'III'],
-        knockouts: [1, 3, 5, 7],
-      },
-      board: {
-        teams: 12,
-        stage1: ['A', 'B', 'C', 'D'],
-        stage2: ['I', 'II', 'III'],
-        knockouts: [1, 3, 5, 7],
-      },
+      teams: 5,
+      stage1: ['A'],
     },
     {
-      mixed: {
-        teams: 13,
-        stage1: ['A', 'B', 'C'],
-        stage2: ['I', 'II', 'III', 'IV'],
-        knockouts: [1, 3, 5, 7, 9, 11],
-      },
-      ladies: {
-        teams: 14,
-        stage1: ['A', 'B', 'C', 'D'],
-        stage2: ['I', 'II', 'III', 'IV'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13],
-      },
-      board: {
-        teams: 15,
-        stage1: ['A', 'B', 'C', 'D'],
-        stage2: ['I', 'II', 'III', 'IV'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13],
-      },
+      teams: 6,
+      stage1: ['A'],
     },
     {
-      mixed: {
-        teams: 16,
-        stage1: ['A', 'B', 'C', 'D'],
-        stage2: ['I', 'II', 'III', 'IV'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15],
-      },
-      ladies: {
-        teams: 17,
-        stage1: ['A', 'B', 'C', 'D', 'E'],
-        stage2: ['I', 'II', 'III', 'IV'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15],
-      },
-      board: {
-        teams: 18,
-        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
-      },
+      teams: 7,
+      stage1: ['A', 'B'],
+      stage2: ['I', 'II'],
     },
     {
-      mixed: {
-        teams: 19,
-        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
-      },
-      ladies: {
-        teams: 20,
-        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
-      },
-      board: {
-        teams: 21,
-        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19],
-      },
+      teams: 8,
+      stage1: ['A', 'B'],
+      stage2: ['I', 'II'],
+      knockouts: [1, 3, 5, 7],
     },
-//    {
-//      mixed: {
-//        teams: 22,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 21],
-//      },
-//      ladies: {
-//        teams: 23,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 21],
-//      },
-//      board: {
-//        teams: 24,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
-//      },
-//    },
-//    {
-//      mixed: {
-//        teams: 25,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
-//      },
-//      ladies: {
-//        teams: 26,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25],
-//      },
-//      board: {
-//        teams: 27,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
-//      },
-//    },
-//    {
-//      mixed: {
-//        teams: 28,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-//        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26],
-//      },
-//      ladies: {
-//        teams: 29,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-//        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26, 28],
-//      },
-//      board: {
-//        teams: 30,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29],
-//      },
-//    },
     {
-      mixed: {
-        teams: 31,
-        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29],
-      },
-      ladies: {
-        teams: 32,
-        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31],
-      },
-      board: {
-        teams: 2,
-        stage1: ['A'],
-      },
+      teams: 9,
+      stage1: ['A', 'B', 'C'],
+      stage2: ['I', 'II', 'III'],
+      knockouts: [1, 3, 5],
+    },
+    {
+      teams: 10,
+      stage1: ['A', 'B', 'C'],
+      stage2: ['I', 'II', 'III'],
+      knockouts: [1, 3, 5],
+    },
+    {
+      teams: 11,
+      stage1: ['A', 'B', 'C'],
+      stage2: ['I', 'II', 'III'],
+      knockouts: [1, 3, 5, 7],
+    },
+    {
+      teams: 12,
+      stage1: ['A', 'B', 'C', 'D'],
+      stage2: ['I', 'II', 'III'],
+      knockouts: [1, 3, 5, 7],
+    },
+    {
+      teams: 13,
+      stage1: ['A', 'B', 'C'],
+      stage2: ['I', 'II', 'III', 'IV'],
+      knockouts: [1, 3, 5, 7, 9, 11],
+    },
+    {
+      teams: 14,
+      stage1: ['A', 'B', 'C', 'D'],
+      stage2: ['I', 'II', 'III', 'IV'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13],
+    },
+    {
+      teams: 15,
+      stage1: ['A', 'B', 'C', 'D'],
+      stage2: ['I', 'II', 'III', 'IV'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13],
+    },
+    {
+      teams: 16,
+      stage1: ['A', 'B', 'C', 'D'],
+      stage2: ['I', 'II', 'III', 'IV'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15],
+    },
+    {
+      teams: 17,
+      stage1: ['A', 'B', 'C', 'D', 'E'],
+      stage2: ['I', 'II', 'III', 'IV'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15],
+    },
+    {
+      teams: 18,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
+    },
+    {
+      teams: 19,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
+    },
+    {
+      teams: 20,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
+    },
+    {
+      teams: 21,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19],
+    },
+    {
+      teams: 22,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 21],
+    },
+    {
+      teams: 23,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 21],
+    },
+    {
+      teams: 24,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
+    },
+    //    {
+    //      mixed: {
+    //        teams: 25,
+    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
+    //      },
+    //      ladies: {
+    //        teams: 26,
+    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25],
+    //      },
+    //      board: {
+    //        teams: 27,
+    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'],
+    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
+    //      },
+    //    },
+    //    {
+    //      mixed: {
+    //        teams: 28,
+    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+    //        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26],
+    //      },
+    //      ladies: {
+    //        teams: 29,
+    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+    //        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26, 28],
+    //      },
+    //      board: {
+    //        teams: 30,
+    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29],
+    //      },
+    //    },
+    {
+      teams: 31,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29],
+    },
+    {
+      teams: 32,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31],
     },
   ]
-  testCases.forEach(({ mixed, ladies, board }) => {
-    test(`${mixed.teams} mixed, ${ladies.teams} ladies, ${board.teams} board`, async ({ roundSetup, resultsHelper }) => {
+  testCases.forEach((mixed) => {
+    // dummy ladies and board config so we have more isolated tests
+    // eventually we will move to having 0 teams for these divisions
+    // for test purposes once supported
+    const ladies: TestCase = {
+      teams: 2,
+      stage1: ['A'],
+    }
+    const board: TestCase = {
+      teams: 2,
+      stage1: ['A'],
+    }
+    test(`${mixed.teams} teams`, async ({ roundSetup, resultsHelper }) => {
       // Adjust timeout based on total teams
       const totalTeams = mixed.teams + ladies.teams + board.teams;
       const timeout = Math.max(30000, totalTeams * 3000);
