@@ -8,12 +8,12 @@
 - [x] Refactor to a common model for in progress race list and mini league views
 - [x] Deploy to andrewflbarnes.com
 - [x] Protect sensitive variables with serverless function calls
+- [x] Playwright tests for all round configurations
 
 ## Must
 
-- [ ] Playwright tests for all round configurations
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
-- [ ] Replace KingsContext with global signals
+- [ ] Replace KingsContext with global signals - maybe bad idea as "computations created outside a `createRoot` or `render` will never be disposed"
 - [ ] Transition all "api" interactions to tanstack query and async
 - [ ] Align how RoundConfigs are passed to create/progress/complete
 - [ ] Verify stage 2 should always have same number of teams as stage 1
@@ -24,7 +24,7 @@
 
 ## Should
 
-- [ ] playwright - add description,venue, etc. in info step
+- [ ] playwright - add description, venue, etc. in info step
 - [ ] playwright - validate missing teams
 - [ ] playwright - validate team swap
 - [ ] playwright - perform team swap

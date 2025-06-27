@@ -161,46 +161,42 @@ test.describe('Full round simulation', {
       stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
       knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
     },
-    //    {
-    //      mixed: {
-    //        teams: 25,
-    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
-    //      },
-    //      ladies: {
-    //        teams: 26,
-    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25],
-    //      },
-    //      board: {
-    //        teams: 27,
-    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
-    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'],
-    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
-    //      },
-    //    },
-    //    {
-    //      mixed: {
-    //        teams: 28,
-    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-    //        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26],
-    //      },
-    //      ladies: {
-    //        teams: 29,
-    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-    //        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26, 28],
-    //      },
-    //      board: {
-    //        teams: 30,
-    //        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
-    //        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-    //        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29],
-    //      },
-    //    },
+    {
+      teams: 25,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
+    },
+    {
+      teams: 26,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25],
+    },
+    {
+      teams: 27,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23],
+    },
+    {
+      teams: 28,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26],
+    },
+    {
+      teams: 29,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
+      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26, 28],
+    },
+    {
+      teams: 30,
+      stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J'],
+      stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29],
+    },
     {
       teams: 31,
       stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'],

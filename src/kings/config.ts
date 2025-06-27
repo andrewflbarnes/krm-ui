@@ -1277,8 +1277,9 @@ export const raceConfig: {
           { group: "A", position: 1 },
           { group: "C", position: 1 },
           { group: "E", position: 1 },
+          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "IV",
@@ -1286,9 +1287,8 @@ export const raceConfig: {
           { group: "B", position: 1 },
           { group: "D", position: 1 },
           { group: "F", position: 1 },
-          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
       {
         name: "V",
@@ -1337,7 +1337,7 @@ export const raceConfig: {
         { position: 3, rank: 7 },
       ]),
       ...resultsFromKnockout(13, 8),
-      ...resultsForGroup("stage2", "IV", [
+      ...resultsForGroup("stage2", "III", [
         { position: 3, rank: 14 },
       ]),
       ...resultsFromKnockout(22, 15),
@@ -1379,8 +1379,9 @@ export const raceConfig: {
           { group: "A", position: 1 },
           { group: "C", position: 1 },
           { group: "E", position: 1 },
+          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "IV",
@@ -1388,9 +1389,8 @@ export const raceConfig: {
           { group: "B", position: 1 },
           { group: "D", position: 1 },
           { group: "F", position: 1 },
-          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
       {
         name: "V",
@@ -1440,7 +1440,7 @@ export const raceConfig: {
         { position: 3, rank: 7 },
       ]),
       ...resultsFromKnockout(13, 8),
-      ...resultsForGroup("stage2", "IV", [
+      ...resultsForGroup("stage2", "III", [
         { position: 3, rank: 14 },
       ]),
       ...resultsFromKnockout(22, 15),
@@ -1905,8 +1905,9 @@ export const raceConfig: {
           { group: "A", position: 1 },
           { group: "C", position: 1 },
           { group: "E", position: 1 },
+          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "IV",
@@ -1914,9 +1915,8 @@ export const raceConfig: {
           { group: "B", position: 1 },
           { group: "D", position: 1 },
           { group: "F", position: 1 },
-          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
       {
         name: "V",
@@ -1943,8 +1943,9 @@ export const raceConfig: {
           { group: "A", position: 3 },
           { group: "C", position: 3 },
           { group: "E", position: 3 },
+          { group: "G", position: 3 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "VIII",
@@ -1952,9 +1953,8 @@ export const raceConfig: {
           { group: "B", position: 3 },
           { group: "D", position: 3 },
           { group: "F", position: 3 },
-          { group: "G", position: 3 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
     ],
     knockout: knockoutsFromGroups([
@@ -1989,7 +1989,7 @@ export const raceConfig: {
         { position: 3, rank: 7 },
       ]),
       ...resultsFromKnockout(13, 8),
-      ...resultsForGroup("stage2", "IV", [
+      ...resultsForGroup("stage2", "III", [
         { position: 3, rank: 14 },
       ]),
       ...resultsFromKnockout(20, 15),
@@ -1997,8 +1997,8 @@ export const raceConfig: {
         { position: 3, rank: 21 },
       ]),
       ...resultsFromKnockout(27, 22),
-      ...resultsForGroup("stage2", "VIII", [
-        { position: 4, rank: 28 },
+      ...resultsForGroup("stage2", "VII", [
+        { position: 3, rank: 28 },
       ]),
     ],
   },
@@ -2038,8 +2038,9 @@ export const raceConfig: {
           { group: "A", position: 1 },
           { group: "C", position: 1 },
           { group: "E", position: 1 },
+          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "IV",
@@ -2047,9 +2048,8 @@ export const raceConfig: {
           { group: "B", position: 1 },
           { group: "D", position: 1 },
           { group: "F", position: 1 },
-          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
       {
         name: "V",
@@ -2123,7 +2123,7 @@ export const raceConfig: {
         { position: 3, rank: 7 },
       ]),
       ...resultsFromKnockout(13, 8),
-      ...resultsForGroup("stage2", "IV", [
+      ...resultsForGroup("stage2", "III", [
         { position: 3, rank: 14 },
       ]),
       ...resultsFromKnockout(20, 15),
