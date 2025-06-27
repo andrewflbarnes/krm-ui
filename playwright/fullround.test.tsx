@@ -144,26 +144,26 @@ test.describe('Full round simulation', {
         knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
       },
     },
-//    {
-//      mixed: {
-//        teams: 19,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
-//      },
-//      ladies: {
-//        teams: 20,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
-//      },
-//      board: {
-//        teams: 21,
-//        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
-//        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-//        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19],
-//      },
-//    },
+    {
+      mixed: {
+        teams: 19,
+        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17],
+      },
+      ladies: {
+        teams: 20,
+        stage1: ['A', 'B', 'C', 'D', 'E', 'F'],
+        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+        knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
+      },
+      board: {
+        teams: 21,
+        stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
+        stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
+        knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19],
+      },
+    },
 //    {
 //      mixed: {
 //        teams: 22,

@@ -1173,8 +1173,9 @@ export const raceConfig: {
           { group: "A", position: 1 },
           { group: "C", position: 1 },
           { group: "E", position: 1 },
+          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "IV",
@@ -1182,9 +1183,8 @@ export const raceConfig: {
           { group: "B", position: 1 },
           { group: "D", position: 1 },
           { group: "F", position: 1 },
-          { group: "G", position: 1 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
       {
         name: "V",
@@ -1192,8 +1192,9 @@ export const raceConfig: {
           { group: "A", position: 2 },
           { group: "C", position: 2 },
           { group: "E", position: 2 },
+          { group: "G", position: 2 },
         ],
-        template: miniLeagueTemplates.mini3,
+        template: miniLeagueTemplates.mini4,
       },
       {
         name: "VI",
@@ -1201,9 +1202,8 @@ export const raceConfig: {
           { group: "B", position: 2 },
           { group: "D", position: 2 },
           { group: "F", position: 2 },
-          { group: "G", position: 2 },
         ],
-        template: miniLeagueTemplates.mini4,
+        template: miniLeagueTemplates.mini3,
       },
     ],
     knockout: knockoutsFromGroups([
@@ -1232,11 +1232,11 @@ export const raceConfig: {
         { position: 3, rank: 7 },
       ]),
       ...resultsFromKnockout(13, 8),
-      ...resultsForGroup("stage2", "IV", [
+      ...resultsForGroup("stage2", "III", [
         { position: 3, rank: 14 },
       ]),
       ...resultsFromKnockout(20, 15),
-      ...resultsForGroup("stage2", "VI", [
+      ...resultsForGroup("stage2", "V", [
         { position: 3, rank: 21 },
       ]),
     ]
