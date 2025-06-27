@@ -8,11 +8,19 @@ export class RoundSetup {
 
   async resetData() {
     await expect(this.page.getByText('Reset Data')).toBeVisible();
-    await this.page.getByRole('button', { name: 'reset data' }).click();
+    const reset = this.page.getByRole('button', { name: 'reset data' })
+    await expect(reset).toBeVisible();
+    await reset.click();
     await expect(this.page.getByText('are you sure')).toBeVisible();
-    await this.page.getByText('yes').click();
-    await this.page.getByRole('link', { name: 'Teams' }).click();
-    await this.page.getByRole('button', { name: 'Load config' }).click();
+    const confirm = this.page.getByText('yes')
+    await expect(confirm).toBeVisible();
+    await confirm.click();
+    const teams = this.page.getByRole('link', { name: 'Teams' })
+    await expect(teams).toBeVisible();
+    await teams.click();
+    const load = this.page.getByRole('button', { name: 'Load config' })
+    await expect(load).toBeVisible();
+    await load.click();
     await expect(this.page.getByText('Config loaded for ')).toBeVisible();
   }
 
@@ -49,17 +57,25 @@ export class RoundSetup {
   }
 
   async goToNewRound() {
-    await this.page.getByRole('link', { name: 'Race' }).click();
-    await this.page.getByRole('link', { name: 'New' }).click();
+    const race = this.page.getByRole('link', { name: 'Race' })
+    await expect(race).toBeVisible();
+    await race.click();
+    const newrace = this.page.getByRole('link', { name: 'New' })
+    await expect(newrace).toBeVisible();
+    await newrace.click();
   }
 
   async createTeam(teamName: string) {
     const addClub = this.page.getByTestId('add-team').locator('input')
+    await expect(addClub).toBeVisible();
     await addClub.click();
     await addClub.fill(teamName);
-    await this.page.getByTestId('add-team').getByRole('button').click();
+    const addTeam = this.page.getByTestId('add-team').getByRole('button')
+    await expect(addTeam).toBeVisible();
+    await addTeam.click();
 
     this.teamEntry[teamName] = this.page.getByRole('row', { name: teamName });
+    await expect(this.teamEntry[teamName]).toBeVisible();
   }
 
   private async addTeam(teamName: string, count: number, index: number) {
@@ -70,6 +86,7 @@ export class RoundSetup {
     }
 
     const teams = clubRow.locator('input').nth(index)
+    await expect(teams).toBeVisible();
     if (!teams) {
       throw new Error(`Input for team ${teamName} at index ${index} not found`);
     }
@@ -90,13 +107,17 @@ export class RoundSetup {
   }
 
   async next(position?: { x: number, y: number }) {
-    await this.page.getByRole('button', { name: 'Next' }).click({
+    const next = this.page.getByRole('button', { name: 'Next' })
+    await expect(next).toBeVisible();
+    await next.click({
       position,
     });
   }
 
   async done(position?: { x: number, y: number }) {
-    await this.page.getByRole('button', { name: 'Done' }).click({
+    const done = this.page.getByRole('button', { name: 'Done' })
+    await expect(done).toBeVisible();
+    await done.click({
       position,
     });
   }
@@ -106,10 +127,10 @@ export class RoundSetup {
   }
 
   async validateTeamSwap() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' })).toBeAttached()
+    await expect(this.page.getByRole('heading', { name: 'Mixed' })).toBeVisible()
   }
 
   async validateSummary() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' })).toBeAttached()
+    await expect(this.page.getByRole('heading', { name: 'Mixed' })).toBeVisible()
   }
 }
