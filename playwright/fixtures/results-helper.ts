@@ -23,38 +23,56 @@ export class ResultsHelper {
 
   async startStage2() {
     await expect(this.page.getByRole('main')).toContainText('Start Stage 2');
-    await this.page.getByRole('button', { name: 'Start Stage' }).click();
-    await this.page.getByText('Yes').click();
+    const start = this.page.getByRole('button', { name: 'Start Stage' })
+    await expect(start).toBeVisible();
+    await start.click();
+    const confirm = this.page.getByText('Yes')
+    await expect(confirm).toBeVisible();
+    await confirm.click();
     await expect(this.page.getByLabel('Stage 2')).toContainText('Stage 2');
   }
 
   async startKnockouts() {
     await expect(this.page.getByRole('main')).toContainText('Start Knockouts');
-    await this.page.getByRole('button', { name: 'Start Knockouts' }).click();
-    await this.page.getByText('Yes').click();
+    const start = this.page.getByRole('button', { name: 'Start Knockouts' })
+    await expect(start).toBeVisible();
+    await start.click();
+    const confirm = this.page.getByText('Yes')
+    await expect(confirm).toBeVisible();
+    await confirm.click();
     await expect(this.page.getByLabel('Knockouts')).toContainText('Knockouts');
   }
 
   async finishRaces() {
     await expect(this.page.getByRole('main')).toContainText('Finish');
-    await this.page.getByRole('button', { name: 'Finish' }).click();
-    await this.page.getByText('Yes').click();
+    const finish = this.page.getByRole('button', { name: 'Finish' })
+    await expect(finish).toBeVisible();
+    await finish.click();
+    const confirm = this.page.getByText('Yes')
+    await expect(confirm).toBeVisible();
+    await confirm.click();
     await expect(this.page.getByLabel('Results')).toContainText('Results');
   }
 
   async viewMiniLeagues() {
-    await this.page.getByRole('button', { name: 'View Race List' }).click();
-    await this.page.getByText('Mini Leagues').click();
+    const view = this.page.getByRole('button', { name: 'View Race List' })
+    await expect(view).toBeVisible();
+    await view.click();
+    const minileagues = this.page.getByText('Mini Leagues')
+    await expect(minileagues).toBeVisible();
+    await minileagues.click();
   }
 
   async setWinners(division: string, group: string, teamNumbers: (1 | 2)[]) {
     const titleLocator = this.page.getByText(`${division} ${group}`, { exact: true })
     const ml = this.page.getByRole('table').filter({ has: titleLocator })
-    await expect(ml).toBeAttached();
+    await expect(ml).toBeVisible();
 
     let raceNumber = 0;
     for (const teamNumber of teamNumbers) {
-      await ml.getByTestId(`race-${group}-${raceNumber}-${teamNumber}`).click();
+      const marker = ml.getByTestId(`race-${group}-${raceNumber}-${teamNumber}`)
+      await expect(marker).toBeVisible();
+      await marker.click();
       raceNumber++;
     }
   }
@@ -65,7 +83,7 @@ export class ResultsHelper {
   async setWinnersByTeamName(division: string, group: string, club: string) {
     const titleLocator = this.page.getByText(`${division} ${group}`, { exact: true })
     const ml = this.page.getByRole('table').filter({ has: titleLocator })
-    await expect(ml).toBeAttached();
+    await expect(ml).toBeVisible();
 
     const count = this.config[club][division.toLowerCase()];
 
@@ -81,10 +99,11 @@ export class ResultsHelper {
   async setKnockoutWinners(division: string, winners: { position: number, teamNumber: 1 | 2 }[]) {
     for (const winner of winners) {
       const positionStr = asKnockoutPosition(winner.position);
-      await this.page.getByRole('table')
+      const marker = this.page.getByRole('table')
         .filter({ hasText: `${division} ${positionStr}` })
         .getByTestId(`race-${positionStr}-0-${winner.teamNumber}`)
-        .click();
+      await expect(marker).toBeVisible();
+      marker.click();
     }
   }
 
@@ -100,9 +119,10 @@ export class ResultsHelper {
       const title = `${division} ${asKnockoutPosition(position)}`;
       const titleLocator = this.page.getByText(title, { exact: true })
       const ml = this.page.getByRole('table').filter({ has: titleLocator })
-      await expect(ml).toBeAttached();
+      await expect(ml).toBeVisible();
       const team = `${club} ${position}`;
       const marker = ml.getByRole('row', { name: new RegExp(`${team}\\b`) }).getByRole('button')
+      await expect(marker).toBeVisible();
       await marker.click();
     }
   }
@@ -113,8 +133,8 @@ export class ResultsHelper {
   async verifyResults(division: string, club: string, count: number) {
     const results = this.page.getByTestId(`results-${division.toLowerCase()}`);
     for (let i = 1; i <= count; i++) {
-      await expect(results.getByRole('row', { name: new RegExp(`^${asPosition(i)}`) })).toContainText(`${club} ${i}`)
+      await expect.soft(results.getByRole('row', { name: new RegExp(`^${asPosition(i)}`) })).toContainText(`${club} ${i}`)
     }
-    await expect(results.getByRole('row', { name: new RegExp(`^${asPosition(count + 1)}`) })).not.toBeAttached();
+    await expect.soft(results.getByRole('row', { name: new RegExp(`^${asPosition(count + 1)}`) })).not.toBeAttached();
   }
 }
