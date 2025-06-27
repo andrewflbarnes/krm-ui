@@ -75,7 +75,7 @@ export const serde = {
   },
   fromFirestoreRound: (round: Round) => {
     const convert = <T>(races: Record<number, T>): T[] => {
-      return Object.entries(races).sort(([indexA], [indexB]) => +indexB - +indexA).map(([, r]) => r)
+      return Object.entries(races).sort(([indexA], [indexB]) => +indexA - +indexB).map(([, r]) => r)
     }
     const convertAndSetTemplates = (c: MiniLeagueConfig) => {
       type V = (typeof c.template.races)[number]
