@@ -21,10 +21,9 @@ test.describe('Full round simulation', {
 }, () => {
   test.describe.configure({ mode: 'default' });
 
-  test.beforeEach(async ({ page, roundSetup }, testInfo) => {
+  test.beforeEach(async ({ page, roundSetup }) => {
     await page.goto('http://localhost:5174/krm-ui');
     await roundSetup.resetData();
-    testInfo.setTimeout(120000); // Increase timeout for slow tests
   });
 
   type TestCase = {
