@@ -285,6 +285,10 @@ export default (function krmApiLocalStorage(): KrmApi {
     },
     reopenStage(id: string, stage: RaceStage) {
       const round: Round = this.getRound(id)
+      const owner = auth?.currentUser?.uid
+      if (owner !== round.owner && round.owner !== "local") {
+        throw new Error("Cannot update rounds you do not own")
+      }
       reopenRoundAtStage(round, stage)
       saveRound(round)
     },

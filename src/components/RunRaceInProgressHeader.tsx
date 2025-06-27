@@ -78,7 +78,7 @@ export default function RunRaceInProgressHeader(props: {
     return Object.values(races).every(g => Object.values(g).every(r => r.complete))
   }
 
-  const canReopen = () => stage() != props.round.status
+  const canReopen = () => stage() != props.round.status && owned()
 
   const [print, setPrint] = usePrint()
 

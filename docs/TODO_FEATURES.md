@@ -34,10 +34,10 @@
 - [x] Set round metadata on creation (description, venue, round number, etc.)
 - [x] Split mini5 races to prevent congestion: `[[2, 2], [1, 2], [1, 2]]`
 - [x] Fix seeding for teams > 10 - use numerical not lexical
+- [x] Don't allow reopen on non owned races
 
 ## Must
 
-- [ ] Don't allow reopen on non owned races
 - [ ] Support 0 teams
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
