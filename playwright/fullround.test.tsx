@@ -16,10 +16,10 @@ const test = base.extend<{
   },
 })
 
-test.describe('Full round simulationt', {
+test.describe('Full round simulation', {
   tag: "@slow",
 }, () => {
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'default' });
 
   test.beforeEach(async ({ page, roundSetup }, testInfo) => {
     await page.goto('http://localhost:5174/krm-ui');
