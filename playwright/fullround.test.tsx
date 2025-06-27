@@ -1,24 +1,6 @@
-import { test as base, expect } from '@playwright/test';
+import { test as base } from '@playwright/test';
 import { ResultsHelper } from './fixtures/results-helper';
 import { RoundSetup } from './fixtures/round-setup';
-
-//test('has title', async ({ page }) => {
-//  await page.goto('https://playwright.dev/');
-//
-//  // Expect a title "to contain" a substring.
-//  await expect(page).toHaveTitle(/Playwright/);
-//});
-//
-//test('get started link', async ({ page }) => {
-//  await page.goto('https://playwright.dev/');
-//
-//  // Click the get started link.
-//  await page.getByRole('link', { name: 'Get started' }).click();
-//
-//  // Expects page to have a heading with the name of Installation.
-//  await expect(page.getByRole('heading', { name: 'Installation' })).toBeVisible();
-//});
-//import { test, expect } from '@playwright/test';
 
 const test = base.extend<{
   roundSetup: RoundSetup;
@@ -34,163 +16,190 @@ const test = base.extend<{
   },
 })
 
-test('9 mixed, 8 ladies and 7 board teams with expected results', async ({ page, roundSetup, resultsHelper }) => {
-  await page.goto('http://localhost:5174/krm-ui');
+test.describe('Full round simulationt', {
+  tag: "@slow",
+}, () => {
+  test.describe.configure({ mode: 'serial' });
 
-  const club = 'Test';
-  await roundSetup.resetData();
-  await roundSetup.setupRound({
-    [club]: { mixed: 9, ladies: 8, board: 7 }
+  test.beforeEach(async ({ page, roundSetup }, testInfo) => {
+    await page.goto('http://localhost:5174/krm-ui');
+    await roundSetup.resetData();
+    testInfo.setTimeout(120000); // Increase timeout for slow tests
   });
 
-  // Stage 1
-  await resultsHelper.startStage1();
-  await resultsHelper.viewMiniLeagues();
+  type TestCase = {
+    [key in 'mixed' | 'ladies' | 'board']: {
+      teams: number;
+      stage1: string[],
+      stage2?: string[],
+      knockouts?: number[],
+    }
+  }
 
-  // Mixed stage 1
-  await resultsHelper.setWinners("Mixed", "A", [1, 1, 1]);
-  await resultsHelper.setWinners("Mixed", "B", [1, 1, 1]);
-  await resultsHelper.setWinners("Mixed", "C", [1, 1, 1]);
+  const testCases: TestCase[] = [
+    {
+      mixed: {
+        teams: 2,
+        stage1: ['A'],
+      },
+      ladies: {
+        teams: 3,
+        stage1: ['A'],
+      },
+      board: {
+        teams: 3,
+        stage1: ['A'],
+      },
+    },
+    {
+      mixed: {
+        teams: 4,
+        stage1: ['A'],
+      },
+      ladies: {
+        teams: 5,
+        stage1: ['A'],
+      },
+      board: {
+        teams: 6,
+        stage1: ['A'],
+      },
+    },
+    {
+      mixed: {
+        teams: 7,
+        stage1: ['A', 'B'],
+        stage2: ['I', 'II'],
+      },
+      ladies: {
+        teams: 8,
+        stage1: ['A', 'B'],
+        stage2: ['I', 'II'],
+        knockouts: [1, 3, 5, 7],
+      },
+      board: {
+        teams: 9,
+        stage1: ['A', 'B', 'C'],
+        stage2: ['I', 'II', 'III'],
+        knockouts: [1, 3, 5],
+      },
+    },
+    {
+      mixed: {
+        teams: 10,
+        stage1: ['A', 'B', 'C'],
+        stage2: ['I', 'II', 'III'],
+        knockouts: [1, 3, 5],
+      },
+      ladies: {
+        teams: 11,
+        stage1: ['A', 'B', 'C'],
+        stage2: ['I', 'II', 'III'],
+        knockouts: [1, 3, 5, 7],
+      },
+      board: {
+        teams: 12,
+        stage1: ['A', 'B', 'C', 'D'],
+        stage2: ['I', 'II', 'III'],
+        knockouts: [1, 3, 5, 7],
+      },
+    },
+    {
+      mixed: {
+        teams: 13,
+        stage1: ['A', 'B', 'C'],
+        stage2: ['I', 'II', 'III', 'IV'],
+        knockouts: [1, 3, 5, 7, 9, 11],
+      },
+      ladies: {
+        teams: 14,
+        stage1: ['A', 'B', 'C', 'D'],
+        stage2: ['I', 'II', 'III', 'IV'],
+        knockouts: [1, 3, 5, 7, 9, 11, 13],
+      },
+      board: {
+        teams: 15,
+        stage1: ['A', 'B', 'C', 'D'],
+        stage2: ['I', 'II', 'III', 'IV'],
+        knockouts: [1, 3, 5, 7, 9, 11, 13],
+      },
+    },
+  ]
+  testCases.forEach(({ mixed, ladies, board }) => {
+    test(`${mixed.teams} mixed, ${ladies.teams} ladies, ${board.teams} board`, async ({ roundSetup, resultsHelper }) => {
+      const club = 'Test';
+      const config = {
+        [club]: { mixed: mixed.teams, ladies: ladies.teams, board: board.teams }
+      }
 
-  // Ladies stage 1
-  await resultsHelper.setWinners("Ladies", "A", [1, 1, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Ladies", "B", [1, 1, 1, 1, 1, 1]);
+      await roundSetup.setupRound(config);
+      resultsHelper.init(config);
 
-  // Board stage 1
-  await resultsHelper.setWinners("Board", "A", [1, 1, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Board", "B", [1, 1, 1]);
+      // Stage 1
+      await resultsHelper.startStage1();
+      await resultsHelper.viewMiniLeagues();
 
-  // Stage 2
-  await resultsHelper.startStage2();
+      // Mixed stage 1
+      for (const group of mixed.stage1) {
+        await resultsHelper.setWinnersByTeamName("Mixed", group, club);
+      }
 
-  // Mixed stage 2
-  await resultsHelper.setWinners("Mixed", "I", [1, 2, 1]);
-  await resultsHelper.setWinners("Mixed", "II", [2, 1, 2]);
-  await resultsHelper.setWinners("Mixed", "III", [1, 1, 1]);
+      // Ladies stage 1
+      for (const group of ladies.stage1) {
+        await resultsHelper.setWinnersByTeamName("Ladies", group, club);
+      }
 
-  // Ladies stage 2
-  await resultsHelper.setWinners("Ladies", "I", [1, 2, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Ladies", "II", [1, 2, 1, 1, 1, 1]);
+      // Board stage 1
+      for (const group of board.stage1) {
+        await resultsHelper.setWinnersByTeamName("Board", group, club);
+      }
 
-  // Board stage 2
-  await resultsHelper.setWinners("Board", "I", [1, 2, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Board", "II", [1, 1, 1]);
+      // Stage 2
+      if (mixed.stage2 || ladies.stage2 || board.stage2) {
+        await resultsHelper.startStage2();
 
-  // Knockouts
-  await resultsHelper.startKnockouts();
 
-  // Mixed Knockouts
-  await resultsHelper.setKnockoutWinners("Mixed", [
-    { position: 5, teamNumber: 1 },
-    { position: 3, teamNumber: 1 },
-    { position: 1, teamNumber: 1 }
-  ])
+        // Mixed stage 2
+        for (const group of mixed.stage2 ?? []) {
+          await resultsHelper.setWinnersByTeamName("Mixed", group, club);
+        }
 
-  // Ladies Knockouts
-  await resultsHelper.setKnockoutWinners("Ladies", [
-    { position: 7, teamNumber: 1 },
-    { position: 5, teamNumber: 1 },
-    { position: 3, teamNumber: 1 },
-    { position: 1, teamNumber: 1 }
-  ])
+        // Ladies stage 2
+        for (const group of ladies.stage2 ?? []) {
+          await resultsHelper.setWinnersByTeamName("Ladies", group, club);
+        }
 
-  // Board Knockouts - none
+        // Board stage 2
+        for (const group of board.stage2 ?? []) {
+          await resultsHelper.setWinnersByTeamName("Board", group, club);
+        }
+      }
 
-  // Results
-  await resultsHelper.finishRaces();
+      // Knockouts
+      if (mixed.knockouts || ladies.knockouts || board.knockouts) {
+        await resultsHelper.startKnockouts();
 
-  // Mixed results
-  await resultsHelper.verifyResults('Mixed', club, 9);
+        // Mixed Knockouts
+        await resultsHelper.setKnockoutWinnersByTeamName("Mixed", club, mixed.knockouts);
 
-  // Ladies results
-  await resultsHelper.verifyResults('Ladies', club, 8);
+        // Ladies Knockouts
+        await resultsHelper.setKnockoutWinnersByTeamName("Ladies", club, ladies.knockouts);
 
-  // Board results
-  await resultsHelper.verifyResults('Board', club, 7);
-});
+        // Board Knockouts
+        await resultsHelper.setKnockoutWinnersByTeamName("Board", club, board.knockouts);
+      }
 
-test('10 mixed, 11 ladies and 12 board teams with expected results', async ({ page, roundSetup, resultsHelper }) => {
-  await page.goto('http://localhost:5174/krm-ui');
+      // Results
+      await resultsHelper.finishRaces();
 
-  const club = 'Test';
-  await roundSetup.resetData();
-  await roundSetup.setupRound({
-    [club]: { mixed: 10, ladies: 11, board: 12 }
-  });
+      // Mixed results
+      await resultsHelper.verifyResults('Mixed', club, mixed.teams);
 
-  // Stage 1
-  await resultsHelper.startStage1();
-  await resultsHelper.viewMiniLeagues();
+      // Ladies results
+      await resultsHelper.verifyResults('Ladies', club, ladies.teams);
 
-  // Mixed stage 1 - 10 teams: A(4), B(3), C(3)
-  await resultsHelper.setWinners("Mixed", "A", [1, 1, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Mixed", "B", [1, 1, 1]);
-  await resultsHelper.setWinners("Mixed", "C", [1, 1, 1]);
-
-  // Ladies stage 1 - 11 teams: A(4), B(4), C(3)
-  await resultsHelper.setWinners("Ladies", "A", [1, 1, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Ladies", "B", [1, 1, 1, 1, 1, 1]);
-  await resultsHelper.setWinners("Ladies", "C", [1, 1, 1]);
-
-  // Board stage 1 - 12 teams: A(3), B(3), C(3), D(3)
-  await resultsHelper.setWinners("Board", "A", [1, 1, 1]);
-  await resultsHelper.setWinners("Board", "B", [1, 1, 1]);
-  await resultsHelper.setWinners("Board", "C", [1, 1, 1]);
-  await resultsHelper.setWinners("Board", "D", [1, 1, 1]);
-
-  // Stage 2
-  await resultsHelper.startStage2();
-
-  // Mixed stage 2 - 10 teams: I(3), II(3), III(4)
-  await resultsHelper.setWinners("Mixed", "I", [1, 2, 1]);
-  await resultsHelper.setWinners("Mixed", "II", [2, 1, 2]);
-  await resultsHelper.setWinners("Mixed", "III", [1, 1, 1, 1, 1, 1]);
-
-  // Ladies stage 2 - 11 teams: I(4), II(4), III(3)
-  await resultsHelper.setWinners("Ladies", "I", [1, 1, 2, 1, 1, 1]);
-  await resultsHelper.setWinners("Ladies", "II", [2, 1, 1, 1, 2, 1]);
-  await resultsHelper.setWinners("Ladies", "III", [2, 2, 2]);
-
-  // Board stage 2 - 12 teams: I(4), II(4), III(4)
-  await resultsHelper.setWinners("Board", "I", [1, 1, 2, 1, 1, 2]);
-  await resultsHelper.setWinners("Board", "II", [2, 2, 1, 2, 2, 1]);
-  await resultsHelper.setWinners("Board", "III", [1, 1, 1, 1, 1, 1]);
-
-  // Knockouts
-  await resultsHelper.startKnockouts();
-
-  // Mixed Knockouts - 10 teams (6 knockout races for places 1-6, rest from stage2 III)
-  await resultsHelper.setKnockoutWinners("Mixed", [
-    { position: 5, teamNumber: 1 },
-    { position: 3, teamNumber: 1 },
-    { position: 1, teamNumber: 1 }
-  ])
-
-  // Ladies Knockouts - 11 teams (8 knockout races for places 1-8, rest from stage2 III)  
-  await resultsHelper.setKnockoutWinners("Ladies", [
-    { position: 7, teamNumber: 1 },
-    { position: 5, teamNumber: 1 },
-    { position: 3, teamNumber: 1 },
-    { position: 1, teamNumber: 1 }
-  ])
-
-  // Board Knockouts - 12 teams (8 knockout races for places 1-8, rest from stage2 III)
-  await resultsHelper.setKnockoutWinners("Board", [
-    { position: 7, teamNumber: 1 },
-    { position: 5, teamNumber: 1 },
-    { position: 3, teamNumber: 1 },
-    { position: 1, teamNumber: 1 }
-  ])
-
-  // Results
-  await resultsHelper.finishRaces();
-
-  // Mixed results - 10 teams
-  await resultsHelper.verifyResults('Mixed', club, 10);
-
-  // Ladies results - 11 teams
-  await resultsHelper.verifyResults('Ladies', club, 11);
-
-  // Board results - 12 teams
-  await resultsHelper.verifyResults('Board', club, 12);
-});
+      // Board results
+      await resultsHelper.verifyResults('Board', club, board.teams);
+    });
+  })
+})

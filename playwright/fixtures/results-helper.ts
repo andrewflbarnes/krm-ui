@@ -1,8 +1,20 @@
 import { Page, expect } from '@playwright/test';
 import { asKnockoutPosition, asPosition } from '../../src/kings/utils';
 
+type Config = Record<string, {
+  mixed: number;
+  ladies: number;
+  board: number;
+}>
+
 export class ResultsHelper {
+  private config: Config = {};
+
   constructor(public readonly page: Page) {
+  }
+
+  init(config: Config) {
+    this.config = config;
   }
 
   async startStage1() {
@@ -47,6 +59,25 @@ export class ResultsHelper {
     }
   }
 
+  // NOTE: This method relies on overclicking i.e. it will click all possible buttons
+  // but expect to do so by highest seeding precedence. It relies on a team getting
+  // marked as the winner disabling the competing teams button.
+  async setWinnersByTeamName(division: string, group: string, club: string) {
+    const titleLocator = this.page.getByText(`${division} ${group}`, { exact: true })
+    const ml = this.page.getByRole('table').filter({ has: titleLocator })
+    await expect(ml).toBeAttached();
+
+    const count = this.config[club][division.toLowerCase()];
+
+    for (let i = 1; i <= count; i++) {
+      const team = `${club} ${i}`;
+      const markers = ml.getByRole('row', { name: new RegExp(`${team}\\b`) }).getByRole('button')
+      for (const marker of await markers.all()) {
+        await marker.click();
+      }
+    }
+  }
+
   async setKnockoutWinners(division: string, winners: { position: number, teamNumber: 1 | 2 }[]) {
     for (const winner of winners) {
       const positionStr = asKnockoutPosition(winner.position);
@@ -57,13 +88,33 @@ export class ResultsHelper {
     }
   }
 
+  // NOTE: This method relies on overclicking i.e. it will click all possible buttons
+  // but expect to do so by highest seeding precedence. It relies on a team getting
+  // marked as the winner disabling the competing teams button.
+  async setKnockoutWinnersByTeamName(division: string, club: string, positions: number[]) {
+    if (!positions?.length) {
+      return;
+    }
+
+    for (const position of positions) {
+      const title = `${division} ${asKnockoutPosition(position)}`;
+      const titleLocator = this.page.getByText(title, { exact: true })
+      const ml = this.page.getByRole('table').filter({ has: titleLocator })
+      await expect(ml).toBeAttached();
+      const team = `${club} ${position}`;
+      const marker = ml.getByRole('row', { name: new RegExp(`${team}\\b`) }).getByRole('button')
+      await marker.click();
+    }
+  }
+
   // Note - this only supports a single club well ordered results e.g.
   // given the club "Test" and the count 10, we expect the final
   // results to be "Test 1", "Test 2", ..., "Test 10"
   async verifyResults(division: string, club: string, count: number) {
     const results = this.page.getByTestId(`results-${division.toLowerCase()}`);
     for (let i = 1; i <= count; i++) {
-      await expect(results.getByRole('row', { name: asPosition(i) })).toContainText(`${club} ${i}`)
+      await expect(results.getByRole('row', { name: new RegExp(`^${asPosition(i)}`) })).toContainText(`${club} ${i}`)
     }
+    await expect(results.getByRole('row', { name: new RegExp(`^${asPosition(count + 1)}`) })).not.toBeAttached();
   }
 }

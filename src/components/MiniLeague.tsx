@@ -159,6 +159,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       const teamOrdinal = (ti == 1 && t1idx < t2idx) || (ti == 2 && t2idx < t1idx) ? 1 : 2
                       return (
                         <td
+                          role="button"
                           data-testid={`race-${raceDetails.group}-${raceDetails.groupRace}-${teamOrdinal}`}
                           onMouseEnter={() => setHighlight(raceDetails.groupRace)}
                           onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
