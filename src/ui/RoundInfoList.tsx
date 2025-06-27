@@ -1,6 +1,6 @@
-import { ArrowRight, Assignment, InfoOutlined } from "@suid/icons-material";
+import { ArrowRight, Assignment, InfoOutlined, Visibility } from "@suid/icons-material";
 import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
-import { createMemo, For, Show } from "solid-js";
+import { createMemo, For, Match, Show, Switch } from "solid-js";
 import Link from "../components/Link";
 import { RoundInfo } from "../api/krm";
 import MoreMenu from "./MoreMenu";
@@ -34,9 +34,9 @@ export default function RoundInfoList(props: RoundInfoListProps) {
       }
       return acc
     }, [
-      { whose: "Your untracked", rounds: [] },
-      { whose: "Your tracked", rounds: [] },
-      { whose: "Others'", rounds: [] },
+      { whose: "Your untracked", rounds: [], owned: true },
+      { whose: "Your tracked", rounds: [], owned: true },
+      { whose: "Others'", rounds: [], owned: false },
     ])
   })
 
@@ -56,7 +56,7 @@ export default function RoundInfoList(props: RoundInfoListProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={rounds()}>{({ whose, rounds: rs }, idx) => {
+            <For each={rounds()}>{({ whose, rounds: rs, owned }, idx) => {
               return (
                 <Show when={rs.length > 0}>
                   <Show when={firstAppearance() < idx()}>
@@ -75,6 +75,7 @@ export default function RoundInfoList(props: RoundInfoListProps) {
                           handleInfo={props.handleInfo}
                           onCopyToClipboard={props.onCopyToClipboard}
                           canUpload={props.canUpload}
+                          owned={owned}
                         />
                       </Show>
                     )
@@ -97,9 +98,9 @@ function RoundInfoRow(props: {
   onCopyToClipboard: (id: string) => void;
   handleInfo: (roundInfo: RoundInfo) => void;
   canUpload?: boolean;
+  owned?: boolean;
 }) {
   const inProgress = () => props.round.status != "complete" && props.round.status != "abandoned"
-  const status = () => inProgress() ? `in progress: ${props.round.status}` : props.round.status
   const roundDesc = () => {
     const { round, description } = props.round.details
     const desc = `Round ${round}`
@@ -133,7 +134,7 @@ function RoundInfoRow(props: {
               <>
                 <MenuItem onClick={confirmExport}>Export</MenuItem>
                 <MenuItem onClick={confirmDelete}>Delete</MenuItem>
-                <Show when={props.canUpload}>
+                <Show when={props.canUpload && props.owned}>
                   <MenuItem onClick={doUpload}>Upload</MenuItem>
                 </Show>
                 <MenuItem onClick={copyToClipboard}>Copy to clipboard</MenuItem>
@@ -142,18 +143,23 @@ function RoundInfoRow(props: {
           }}</MoreMenu>
           <Link href={`/races/${props.round.id}/${props.round.status}`}>
             <IconButton>
-              <Show when={inProgress()}
+              <Switch
                 fallback={<Assignment />}
               >
-                <ArrowRight color="success" />
-              </Show>
+                <Match when={inProgress() && props.owned}>
+                  <ArrowRight color="success" />
+                </Match>
+                <Match when={inProgress()}>
+                  <Visibility />
+                </Match>
+              </Switch>
             </IconButton>
           </Link>
           {props.round.details.date.toLocaleDateString()}
         </Stack>
       </TableCell>
       <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
-        <Chip size="small" label={status()} color={statusColor[props.round.status] ?? "warning"} variant="outlined" />
+        <Chip size="small" label={props.round.status} color={statusColor[props.round.status] ?? "warning"} variant="outlined" />
       </TableCell>
       <TableCell align="left">
         <div style={{ display: "flex", "align-items": "center" }}>
