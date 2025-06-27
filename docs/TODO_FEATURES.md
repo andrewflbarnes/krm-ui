@@ -39,6 +39,7 @@
 ## Must
 
 - [ ] Support 0 teams
+- [ ] Don't require config to be loaded to start a race
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Custom configuration groups
