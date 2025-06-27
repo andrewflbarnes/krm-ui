@@ -267,7 +267,7 @@ function ManageNewInternal() {
 }
 
 function CallToLoadConfig() {
-  const [, { loadConfig }] = useKings()
+  const [ { loadingConfig }, { loadConfig }] = useKings()
   return (
     <Stack
       displayRaw="flex"
@@ -279,6 +279,7 @@ function CallToLoadConfig() {
         variant="outlined"
         onClick={[loadConfig, undefined]}
         startIcon={<Construction />}
+        disabled={loadingConfig()}
       >
         Load Config
       </Button>

@@ -33,7 +33,7 @@ export default function TeamConfig() {
 }
 
 function NoData() {
-  const [, { loadConfig }] = useKings()
+  const [ { loadingConfig }, { loadConfig }] = useKings()
   const load = () => {
     loadConfig()
   }
@@ -48,6 +48,7 @@ function NoData() {
         variant="outlined"
         onClick={load}
         startIcon={<Construction />}
+        disabled={loadingConfig()}
       >
         Load Config
       </Button>

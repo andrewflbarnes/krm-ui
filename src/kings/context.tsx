@@ -46,9 +46,11 @@ const makeContext = (initLeague?: League) => {
     const resetConfig = krmApi.getLeagueConfig(selectedLeague())
     setLeagueConfig(resetConfig)
   }
+  const [loadingConfig, setLoadingConfig] = createSignal(false)
   const loadConfig = (trackingUrl: string = null) => {
     const league = selectedLeague()
     notification.info(`Loading config for ${league} league...`)
+    setLoadingConfig(true)
     tracker.getLeagueData(league, trackingUrl)
       .then(data => {
         setLeagueConfig(data)
@@ -57,13 +59,17 @@ const makeContext = (initLeague?: League) => {
       .catch(e => {
         notification.error(e.message)
       })
+      .finally(() => {
+        setLoadingConfig(false)
+      })
   }
   return [
     {
       league: selectedLeague,
       config,
       leagueConfig,
-      lock
+      lock,
+      loadingConfig,
     },
     {
       setLock,
