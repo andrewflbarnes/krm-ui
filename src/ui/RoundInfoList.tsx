@@ -1,9 +1,9 @@
-import { ArrowRight, Assignment, InfoOutlined, Visibility } from "@suid/icons-material";
-import { Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
+import { Assignment, InfoOutlined, PlayCircleOutline, Visibility } from "@suid/icons-material";
+import { Button, Chip, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createMemo, For, Match, Show, Switch } from "solid-js";
-import Link from "../components/Link";
 import { RoundInfo } from "../api/krm";
 import MoreMenu from "./MoreMenu";
+import { useNavigate } from "@solidjs/router";
 
 const statusColor = {
   "abandoned": "error",
@@ -48,7 +48,7 @@ export default function RoundInfoList(props: RoundInfoListProps) {
         <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
           <TableHead>
             <TableRow>
-              <TableCell colSpan="3">{firstWhose()} rounds</TableCell>
+              <TableCell colSpan="2">{firstWhose()} rounds</TableCell>
               {/*<TableCell />*/}
               <TableCell align="center">Mixed</TableCell>
               <TableCell align="center">Ladies</TableCell>
@@ -109,9 +109,13 @@ function RoundInfoRow(props: {
     }
     return `${desc} - ${description}`
   }
+  const nav = useNavigate()
+  const navToRace = () => {
+    nav(`/races/${props.round.id}/${props.round.status}`)
+  }
   return (
     <TableRow>
-      <TableCell sx={{ width: "1%", minWidth: "fit-content" }}>
+      <TableCell sx={{ width: "1%", minWidth: "fit-content", padding: 0 }}>
         <Stack direction="row" gap="1em" alignItems="center">
           <MoreMenu id={props.round.id}>{(handleClose) => {
             const confirmDelete = () => {
@@ -141,33 +145,39 @@ function RoundInfoRow(props: {
               </>
             )
           }}</MoreMenu>
-          <Link href={`/races/${props.round.id}/${props.round.status}`}>
-            <IconButton>
-              <Switch
-                fallback={<Assignment />}
-              >
-                <Match when={inProgress() && props.owned}>
-                  <ArrowRight color="success" />
-                </Match>
-                <Match when={inProgress()}>
-                  <Visibility />
-                </Match>
-              </Switch>
-            </IconButton>
-          </Link>
-          {props.round.details.date.toLocaleDateString()}
+          <Button onClick={navToRace} color="inherit" size="large" fullWidth sx={{ justifyContent: "start" }} startIcon={
+            <Switch
+              fallback={<Assignment />}
+            >
+              <Match when={inProgress() && props.owned}>
+                <PlayCircleOutline color="primary" />
+              </Match>
+              <Match when={inProgress()}>
+                <Visibility color="primary" />
+              </Match>
+            </Switch>
+          }>
+            <Stack direction="row" gap="1em" alignItems="center" width="100%">
+              <span style={{"flex-grow": 1, "text-align": "left"}}>
+                {props.round.details.date.toLocaleDateString()}
+              </span>
+              <span style={{ width: "6em", "text-align": "left" }}>
+                <Chip sx={{ cursor: "inherit", textTransform: "capitalize" }} size="small" label={props.round.status} color={statusColor[props.round.status] ?? "primary"} variant="outlined" />
+              </span>
+            </Stack>
+          </Button>
         </Stack>
       </TableCell>
-      <TableCell sx={{ width: "1%", minWidth: "fit-content", pl: "16px" }} padding="none">
-        <Chip size="small" label={props.round.status} color={statusColor[props.round.status] ?? "warning"} variant="outlined" />
-      </TableCell>
       <TableCell align="left">
-        <div style={{ display: "flex", "align-items": "center" }}>
-          <IconButton onClick={() => props.handleInfo(props.round)}>
-            <InfoOutlined fontSize="small" />
-          </IconButton>
+        <Button
+          fullWidth
+          sx={{ justifyContent: "start", textTransform: "none", color: "inherit", width: "100%" }}
+          startIcon={<InfoOutlined />}
+          size="large"
+          onClick={() => props.handleInfo(props.round)}
+        >
           {roundDesc()}
-        </div>
+        </Button>
       </TableCell>
       <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
         {props.round.teams["mixed"].length}
