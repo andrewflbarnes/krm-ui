@@ -19,7 +19,9 @@ const test = base.extend<{
 test.describe('Full round simulation', {
   tag: "@slow",
 }, () => {
-  test.describe.configure({ mode: 'default' });
+  if (process.env.PLAYWRIGHT_UI == 'true') {
+    test.describe.configure({ mode: 'default' });
+  }
 
   test.beforeEach(async ({ page, roundSetup }) => {
     await page.goto('http://localhost:5174/krm-ui');

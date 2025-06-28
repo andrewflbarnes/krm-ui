@@ -7,21 +7,20 @@ export class RoundSetup {
   }
 
   async resetData() {
-    await expect(this.page.getByText('Reset Data')).toBeVisible();
-    const reset = this.page.getByRole('button', { name: 'reset data' })
-    await expect(reset).toBeVisible();
-    await reset.click();
-    await expect(this.page.getByText('are you sure')).toBeVisible();
-    const confirm = this.page.getByText('yes')
-    await expect(confirm).toBeVisible();
-    await confirm.click();
-    const teams = this.page.getByRole('link', { name: 'Teams' })
-    await expect(teams).toBeVisible();
-    await teams.click();
-    const load = this.page.getByRole('button', { name: 'Load config' })
-    await expect(load).toBeVisible();
-    await load.click();
-    await expect(this.page.getByText('Config loaded for ')).toBeVisible();
+    await this.page.getByRole('button', { name: 'reset data' })
+      .describe('Reset data button')
+      .click();
+    await expect(this.page.getByText('are you sure'), 'Confirmation requested').toBeVisible();
+    await this.page.getByText('yes')
+      .describe('Confirm reset button')
+      .click();
+    await this.page.getByRole('link', { name: 'Teams' })
+      .describe('Teams link')
+      .click();
+    await this.page.getByRole('button', { name: 'Load config' })
+      .describe('Load config button')
+      .click();
+    await expect(this.page.getByText('Config loaded for '), 'Config loaded toast displayed').toBeVisible();
   }
 
   async setupRound(clubs: Record<string, { mixed: number, ladies: number, board: number }>) {
@@ -57,80 +56,75 @@ export class RoundSetup {
   }
 
   async goToNewRound() {
-    const race = this.page.getByRole('link', { name: 'Race' })
-    await expect(race).toBeVisible();
-    await race.click();
-    const newrace = this.page.getByRole('link', { name: 'New' })
-    await expect(newrace).toBeVisible();
-    await newrace.click();
+    await this.page.getByRole('link', { name: 'Race' })
+      .describe('Race link')
+      .click();
+    await this.page.getByRole('link', { name: 'New' })
+      .describe('New race link')
+      .click();
   }
 
   async createTeam(teamName: string) {
-    const addClub = this.page.getByTestId('add-team').locator('input')
-    await expect(addClub).toBeVisible();
+    const addClub = this.page.getByTestId('add-team').locator('input').describe('Add club input');
     await addClub.click();
     await addClub.fill(teamName);
-    const addTeam = this.page.getByTestId('add-team').getByRole('button')
-    await expect(addTeam).toBeVisible();
-    await addTeam.click();
+    await this.page.getByTestId('add-team').getByRole('button')
+      .describe('Add team button')
+      .click();
 
-    this.teamEntry[teamName] = this.page.getByRole('row', { name: teamName });
-    await expect(this.teamEntry[teamName]).toBeVisible();
+    this.teamEntry[teamName] = this.page.getByRole('row', { name: teamName }).describe(`${teamName} team input`);
+    await expect(this.teamEntry[teamName], `${teamName} added as club`).toBeVisible();
   }
 
-  private async addTeam(teamName: string, count: number, index: number) {
+  private async addTeam(teamName: string, count: number, index: number, division: string) {
     const clubRow = this.teamEntry[teamName];
 
     if (!clubRow) {
       throw new Error(`Team ${teamName} not found, createTeam first`);
     }
 
-    const teams = clubRow.locator('input').nth(index)
-    await expect(teams).toBeVisible();
-    if (!teams) {
-      throw new Error(`Input for team ${teamName} at index ${index} not found`);
-    }
+    const teams = clubRow.locator('input').nth(index).describe(`${division} team input for ${teamName}`);
     await teams.click();
     await teams.fill(`${count}`);
   }
 
   async addMixed(teamName: string, count: number) {
-    await this.addTeam(teamName, count, 0);
+    await this.addTeam(teamName, count, 0, 'mixed');
   }
 
   async addLadies(teamName: string, count: number) {
-    await this.addTeam(teamName, count, 1);
+    await this.addTeam(teamName, count, 1, 'ladies');
   }
 
   async addBoard(teamName: string, count: number) {
-    await this.addTeam(teamName, count, 2);
+    await this.addTeam(teamName, count, 2, 'board');
   }
 
   async next(position?: { x: number, y: number }) {
-    const next = this.page.getByRole('button', { name: 'Next' })
-    await expect(next).toBeVisible();
-    await next.click({
-      position,
-    });
+    await this.page.getByRole('button', { name: 'Next' })
+      .describe('Next button')
+      .click({
+        position,
+      });
   }
 
   async done(position?: { x: number, y: number }) {
-    const done = this.page.getByRole('button', { name: 'Done' })
-    await expect(done).toBeVisible();
-    await done.click({
-      position,
-    });
+    await this.page.getByRole('button', { name: 'Done' })
+      .describe('Done button')
+      .click({
+        position,
+      });
   }
 
   async validateMissingTeams() {
-    await expect(this.page.locator('h3')).toContainText('Missing teams');
+    await expect(this.page.locator('h3'), 'On missing teams page').toContainText('Missing teams');
   }
 
   async validateTeamSwap() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' })).toBeVisible()
+    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On team swap page').toBeVisible()
   }
 
   async validateSummary() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' })).toBeVisible()
+    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On summary page').toBeVisible()
   }
 }

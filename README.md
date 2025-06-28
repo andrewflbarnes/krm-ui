@@ -62,7 +62,7 @@ of teams
 ```bash
 pnpm e2e
 # or
-pnpm e2e-ui
+pnpm e2e:ui
 ```
 
 Full simulation tests work by assuming a local service is running (e.g. `netlify
