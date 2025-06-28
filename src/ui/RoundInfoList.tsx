@@ -1,5 +1,5 @@
 import { Assignment, InfoOutlined, PlayCircleOutline, Visibility } from "@suid/icons-material";
-import { Button, Chip, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
+import { Button, Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createMemo, For, Match, Show, Switch } from "solid-js";
 import { RoundInfo } from "../api/krm";
 import MoreMenu from "./MoreMenu";
@@ -116,7 +116,7 @@ function RoundInfoRow(props: {
   return (
     <TableRow>
       <TableCell sx={{ width: "1%", minWidth: "fit-content", padding: 0 }}>
-        <Stack direction="row" gap="1em" alignItems="center">
+        <Stack direction="row" alignItems="center">
           <MoreMenu id={props.round.id}>{(handleClose) => {
             const confirmDelete = () => {
               props.handleConfirmDelete(props.round.id)
@@ -145,20 +145,25 @@ function RoundInfoRow(props: {
               </>
             )
           }}</MoreMenu>
-          <Button onClick={navToRace} color="inherit" size="large" fullWidth sx={{ justifyContent: "start" }} startIcon={
-            <Switch
-              fallback={<Assignment />}
-            >
-              <Match when={inProgress() && props.owned}>
-                <PlayCircleOutline color="primary" />
-              </Match>
-              <Match when={inProgress()}>
-                <Visibility color="primary" />
-              </Match>
-            </Switch>
-          }>
+          <IconButton onClick={() => props.handleInfo(props.round)}>
+            <InfoOutlined />
+          </IconButton>
+          <Button
+            onClick={navToRace}
+            color="inherit"
+            size="large"
+            fullWidth sx={{ justifyContent: "start" }}
+          >
             <Stack direction="row" gap="1em" alignItems="center" width="100%">
-              <span style={{"flex-grow": 1, "text-align": "left"}}>
+              <Switch fallback={<Assignment />}>
+                <Match when={inProgress() && props.owned}>
+                  <PlayCircleOutline color="primary" />
+                </Match>
+                <Match when={inProgress()}>
+                  <Visibility color="primary" />
+                </Match>
+              </Switch>
+              <span style={{ "flex-grow": 1, "text-align": "left" }}>
                 {props.round.details.date.toLocaleDateString()}
               </span>
               <span style={{ width: "6em", "text-align": "left" }}>
@@ -169,15 +174,7 @@ function RoundInfoRow(props: {
         </Stack>
       </TableCell>
       <TableCell align="left">
-        <Button
-          fullWidth
-          sx={{ justifyContent: "start", textTransform: "none", color: "inherit", width: "100%" }}
-          startIcon={<InfoOutlined />}
-          size="large"
-          onClick={() => props.handleInfo(props.round)}
-        >
-          {roundDesc()}
-        </Button>
+        {roundDesc()}
       </TableCell>
       <TableCell align="center" sx={{ width: "1%", maxWidth: "fit-content" }}>
         {props.round.teams["mixed"].length}
