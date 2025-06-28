@@ -29,6 +29,7 @@
 - [ ] playwright - validate team swap
 - [ ] playwright - perform team swap
 - [ ] playwright - validate summary
+- [ ] ManageNewSelect should be uncontrolled with event emits - reduce duplice update implementations
 - [ ] For unknown leagues display an error message/page
 - [ ] Rationalise utility functions like orderRaces, kingsPoints
 - [ ] Deploy to kingsski.club

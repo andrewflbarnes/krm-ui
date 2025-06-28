@@ -1,12 +1,12 @@
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import { fn } from '@storybook/test';
-import RoundInfoList from './RoundInfoList';
+import RoundInfoList from '../ui/RoundInfoList';
 import { miniLeagueTemplates } from '../kings';
 import { RoundInfo } from '../api/krm';
 import { Route, Router } from '@solidjs/router';
 
 const meta = {
-  title: 'Kings/RoundInfoList',
+  title: 'ui/RoundInfoList',
   render: props => (
     <Router>
       <Route path="/*" component={() => <RoundInfoList {...props} />} />
