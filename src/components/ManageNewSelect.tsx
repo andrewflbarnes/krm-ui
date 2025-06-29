@@ -44,6 +44,9 @@ function TeamSelector(props: ComponentProps) {
   const [errors, setErrors] = createSignal<string[]>([])
   createEffect(() => {
     const errors = []
+    if ((total().mixed + total().ladies + total().board) == 0) {
+      errors.push("No teams are entered to compete")
+    }
     if (!raceConfig[total().mixed]) {
       errors.push(`Mixed: no configuration for ${total().mixed} teams`)
     }

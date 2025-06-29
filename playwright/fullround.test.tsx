@@ -221,12 +221,12 @@ test.describe('Full round simulation', {
     // eventually we will move to having 0 teams for these divisions
     // for test purposes once supported
     const ladies: TestCase = {
-      teams: 1,
-      stage1: ['A'],
+      teams: 0,
+      stage1: [],
     }
     const board: TestCase = {
-      teams: 1,
-      stage1: ['A'],
+      teams: 0,
+      stage1: [],
     }
     test(`${mixed.teams} teams`, async ({ roundSetup, resultsHelper }) => {
       // Adjust timeout based on total teams

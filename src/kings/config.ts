@@ -172,6 +172,10 @@ export function resultsFromKnockout(numTeams: number, start: number = 1): readon
 export const raceConfig: {
   [k: number]: RoundConfig
 } = {
+  0: {
+    stage1: [],
+    results: [],
+  },
   1: {
     stage1: [
       seeds("A", [0], miniLeagueTemplates.single)

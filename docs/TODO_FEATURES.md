@@ -36,10 +36,10 @@
 - [x] Fix seeding for teams > 10 - use numerical not lexical
 - [x] Don't allow reopen on non owned races
 - [x] Support 1 team
+- [x] Support 0 teams
 
 ## Must
 
-- [ ] Support 0 teams
 - [ ] Don't require config to be loaded to start a race
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
