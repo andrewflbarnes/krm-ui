@@ -6,6 +6,8 @@ A (for now) completely client side runtime for running kings races.
 
 ## Getting Started
 
+Install the deps and run the dev server
+
 ```bash
 pnpm install
 pnpm install -g netlify-cli
@@ -20,16 +22,11 @@ netlify dev
 To enable integration with clerk for user login and persistence to firestore,
 add `VITE_CLERK_PUBLISHABLE_KEY` to your `.env` file.
 
-To enable config to be loaded from Kings tracking sheets add the published
-endpoint and relevant cell ranges as `TRACKER_WESTERN` to your `.env` file.
-The tracker depends on a netlify function to proxy the request which allows us
-to keep the URL a secret in deployed environments. You can run the full stack
-using the `netlify` cli tool.
+## Config loading
 
-```bash
-npm i -g netlify
-netlify dev
-```
+The function for loading lead config scrapes data from the kingsski.club site -
+it expects certain pages to exist by default but a custom URL may be given on
+the teams page when updating.
 
 ## Build
 

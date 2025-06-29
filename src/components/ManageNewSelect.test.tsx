@@ -1,8 +1,8 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { render as renderBase, within } from '@solidjs/testing-library'
 import ManageNewSelect from './ManageNewSelect';
 import { ClubSeeding } from '../kings';
-import { ComponentProps, createSignal } from 'solid-js';
+import { createSignal } from 'solid-js';
 import userEvent from '@testing-library/user-event';
 
 const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].reduce((acc, club) => {
@@ -15,27 +15,19 @@ const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol',
 }, {} as ClubSeeding);
 
 
-type OnUpdate = ComponentProps<typeof ManageNewSelect>["onUpdate"]
-
 const render = (numTeams: number = 0) => {
   const [config, setConfig] = createSignal<ClubSeeding>(initialConfig(numTeams));
-
-  const onUpdate: OnUpdate = (club, division, count) => {
-    setConfig(prev => ({
-      ...prev,
-      [club]: {
-        ...prev[club],
-        [division]: count,
-      }
-    }));
+  const onUpdate = vi.fn();
+  const handleUpdate = (newConfig: ClubSeeding) => {
+    setConfig(newConfig);
+    onUpdate(newConfig);
   }
-
-  const queries = renderBase(() => <ManageNewSelect onUpdate={onUpdate} config={config()} />);
+  const queries = renderBase(() => <ManageNewSelect onUpdate={handleUpdate} config={config()} />);
 
   return {
     ...queries,
     config,
-    setConfig,
+    onUpdate,
   }
 }
 

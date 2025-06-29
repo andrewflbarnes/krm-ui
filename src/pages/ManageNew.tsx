@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
-import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
+import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
@@ -7,7 +7,6 @@ const ManageNewShuffle = lazy(() => import("../components/ManageNewShuffle"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding, useKings } from "../kings"
 import krmApi from "../api/krm"
 import notification from "../hooks/notification"
-import { createStore } from "solid-js/store"
 import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
@@ -39,25 +38,11 @@ function ManageNewInternal() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
-  const [numTeams, setNumTeams] = createStore<ClubSeeding>(initConfig(k.leagueConfig()))
-  createEffect((lastLeague) => {
-    const league = k.league()
-    if (lastLeague == league) {
-      setNumTeams(nt => ({
-        ...initConfig(k.leagueConfig()),
-        ...nt,
-      }))
-    } else {
-      batch(() => {
-        Object.keys(numTeams).forEach(club => setNumTeams(club, undefined))
-        setNumTeams(initConfig(k.leagueConfig()))
-      })
-    }
-    return league
-  }, k.league())
+  const [numTeams, setNumTeams] = createSignal<ClubSeeding>({})
+  const leagueConfig = createMemo(() => initConfig(k.leagueConfig()));
 
-  const handleTeamNumsUpdate = (club: string, division: Division, count: number) => {
-    setNumTeams(club, { [division]: count })
+  const handleTeamNumsUpdate = (config: ClubSeeding) => {
+    setNumTeams(config);
   }
 
   const [missingTeams, setMissingTeams] = createSignal<{
@@ -108,10 +93,10 @@ function ManageNewInternal() {
     },
     {
       title: "Select Teams",
-      content: () => <ManageNewSelect config={numTeams} onUpdate={handleTeamNumsUpdate} />,
+      content: () => <ManageNewSelect config={leagueConfig()} onUpdate={handleTeamNumsUpdate} />,
       onArrive: unlock,
       validator: () => {
-        const divisionCounts = Object.values(numTeams).reduce((acc, next) => {
+        const divisionCounts = Object.values(numTeams()).reduce((acc, next) => {
           acc.mixed += next.mixed
           acc.ladies += next.ladies
           acc.board += next.board
@@ -130,7 +115,7 @@ function ManageNewInternal() {
         }
 
         const lc = k.leagueConfig()
-        const missing = Object.entries(numTeams).reduce((acc, [club, teams]) => {
+        const missing = Object.entries(numTeams()).reduce((acc, [club, teams]) => {
           Object.entries(teams).forEach(([division, num]) => {
             for (let i = 1; i <= num; i++) {
               if (lc[club]?.teams[division]?.[`${club} ${i}`] || (i == 1 && lc[club]?.teams[division]?.[club])) {
@@ -160,7 +145,7 @@ function ManageNewInternal() {
           }
         }
 
-        const seeding = orderSeeds(k.leagueConfig(), numTeams)
+        const seeding = orderSeeds(k.leagueConfig(), numTeams())
         const r = createRound("setup", roundDetails(), seeding, raceConfigs)
         batch(() => {
           setDistributionOrder(seeding)
