@@ -35,7 +35,6 @@ describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (n
   }
 
   it('no races with same team', () => {
-    // @ts-expect-error ts thinks r is always [1, 2]
     expect(template.races.filter(r => r[0] == r[1]).length).toBe(0)
   })
 })
