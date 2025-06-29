@@ -107,7 +107,6 @@ function ManageNewInternal() {
           board: 0,
         })
         const noConfig = Object.entries(divisionCounts)
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           .filter(([_, count]) => !raceConfig[count])
           .map(([division]) => division)
         if (noConfig.length > 0) {

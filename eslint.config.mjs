@@ -3,7 +3,7 @@ import pluginJs from "@eslint/js";
 import tseslint from "typescript-eslint";
 import solid from "eslint-plugin-solid/configs/typescript";
 import * as tsParser from "@typescript-eslint/parser";
-
+import oxlint from 'eslint-plugin-oxlint';
 
 /** @type {import('eslint').Linter.Config[]} */
 export default [
@@ -34,4 +34,5 @@ export default [
     },
   },
   ...tseslint.configs.recommended,
+  ...oxlint.configs['flat/recommended'],
 ];
