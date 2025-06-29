@@ -96,7 +96,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         accd[groupName] = {
           races,
           teams: seeds.map(({ group, position }) => lastStageDivisionRaces[group].results[position][0]),
-          complete: false,
+          complete: !races.length,
           conflict: false,
         }
         return accd

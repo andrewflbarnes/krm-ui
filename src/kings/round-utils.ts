@@ -221,14 +221,17 @@ export function createRound(
 
   const races = divisions.reduce((acc, division) => {
     const divisionConf = config[division]
+    const teams = teamOrder[division]
+    const noRaces = teams.length < 2
+
     acc[division] = divisionConf.stage1.reduce((accd, { template, name: groupName, seeds }) => {
-      const initialSeeds = teamOrder[division]
-      const races = minileagueSeededRaces(template, seeds, null, groupName, "stage1", division, (seed) => initialSeeds[seed.position])
+      const races = minileagueSeededRaces(template, seeds, null, groupName, "stage1", division, (seed) => teams[seed.position])
       accd[groupName] = {
         races,
-        teams: teamOrder[division].filter(t => races.some(r => r.team1 === t || r.team2 === t)),
-        complete: false,
+        teams: noRaces ? teams : teams.filter(t => races.some(r => r.team1 === t || r.team2 === t)),
+        complete: noRaces,
         conflict: false,
+        results: noRaces ? [teams] : undefined,
       }
       return accd
     }, {} as StageRaces[Division])

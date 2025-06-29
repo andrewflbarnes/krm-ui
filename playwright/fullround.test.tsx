@@ -37,6 +37,10 @@ test.describe('Full round simulation', {
 
   const testCases: TestCase[] = [
     {
+      teams: 1,
+      stage1: ['A'],
+    },
+    {
       teams: 2,
       stage1: ['A'],
     },
@@ -217,11 +221,11 @@ test.describe('Full round simulation', {
     // eventually we will move to having 0 teams for these divisions
     // for test purposes once supported
     const ladies: TestCase = {
-      teams: 2,
+      teams: 1,
       stage1: ['A'],
     }
     const board: TestCase = {
-      teams: 2,
+      teams: 1,
       stage1: ['A'],
     }
     test(`${mixed.teams} teams`, async ({ roundSetup, resultsHelper }) => {

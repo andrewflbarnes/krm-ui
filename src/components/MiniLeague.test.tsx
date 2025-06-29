@@ -108,8 +108,8 @@ Object.entries(miniLeagueTemplates).forEach(([name, ml]) => {
         })))
         //await userEvent.click(getByTestId(`race-${testRaces[i].group}-${i}-1`))
       }
-      expect(getByText(/1st/)).toBeInTheDocument()
       if (testTeams.length > 1) {
+        expect(getByText(/1st/)).toBeInTheDocument()
         expect(getByText(/2nd/)).toBeInTheDocument()
       }
       if (testTeams.length > 2) {
@@ -124,7 +124,9 @@ Object.entries(miniLeagueTemplates).forEach(([name, ml]) => {
       if (testTeams.length > 5) {
         expect(getByText(/6th/)).toBeInTheDocument()
       }
-      expect(getByText("Complete")).toBeInTheDocument()
+      if (testTeams.length > 1) {
+        expect(getByText("Complete")).toBeInTheDocument()
+      }
     })
   })
 })

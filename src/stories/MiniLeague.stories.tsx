@@ -206,3 +206,12 @@ export const Knockout: Story = {
     races: initRaces(ko),
   },
 }
+
+const single = miniLeagueTemplates.single
+export const Single: Story = {
+  args: {
+    name: "Single",
+    teams: initTeams(single),
+    races: [],
+  },
+}

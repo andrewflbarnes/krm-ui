@@ -30,6 +30,10 @@ export default typedConfig
 // - type: mini - a normal mini league
 // - type: full - a mini league which contains every team from that round
 export const miniLeagueTemplates = {
+  "single": {
+    teams: 1,
+    races: [],
+  },
   "knockout": {
     teams: 2,
     races: [
@@ -168,6 +172,12 @@ export function resultsFromKnockout(numTeams: number, start: number = 1): readon
 export const raceConfig: {
   [k: number]: RoundConfig
 } = {
+  1: {
+    stage1: [
+      seeds("A", [0], miniLeagueTemplates.single)
+    ],
+    results: wrapSingleGroupResults(1),
+  },
   2: {
     stage1: [
       seeds("A", [0, 1], miniLeagueTemplates.full2)

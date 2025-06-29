@@ -10,7 +10,7 @@ import { ErrorOutlineRounded } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { usePrint } from "../hooks/print";
 import { stages, useRaceOptions, View, views } from "../hooks/results";
-import { isStage } from "../kings/utils";
+import { checkStage, isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
 
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
@@ -70,9 +70,13 @@ export default function RunRaceInProgressHeader(props: {
       return false
     }
 
-    const races = props.round.races[props.round.status]
-    if (!races) {
+    if (props.round.status != stage()) {
       return false
+    }
+
+    const races = checkStage(props.round.status) ? props.round.races[props.round.status] : null
+    if (!races) {
+      return true
     }
 
     return Object.values(races).every(g => Object.values(g).every(r => r.complete))

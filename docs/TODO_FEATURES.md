@@ -35,11 +35,11 @@
 - [x] Split mini5 races to prevent congestion: `[[2, 2], [1, 2], [1, 2]]`
 - [x] Fix seeding for teams > 10 - use numerical not lexical
 - [x] Don't allow reopen on non owned races
+- [x] Support 1 team
 
 ## Must
 
 - [ ] Support 0 teams
-- [ ] Support 1 team
 - [ ] Don't require config to be loaded to start a race
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
