@@ -1,5 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
-import { Button, ButtonGroup } from "@suid/material";
+import { OpenInNew } from "@suid/icons-material";
+import { Button, ButtonGroup, Link } from "@suid/material";
 import { createSelector, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 const DeveloperData = lazy(() => import("../components/DeveloperData"));
@@ -25,9 +26,19 @@ export default function Developer() {
               variant={selected(view.href) ? "contained" : "outlined"}
               onClick={() => nav(view.href)}
             >
-            {view.title}
+              {view.title}
             </Button>
           }</For>
+          <Button endIcon={<OpenInNew fontSize="small" />}>
+            <Link
+              href="/krm-ui-storybook"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="inherit"
+            >
+              Storybook
+            </Link>
+          </Button>
         </ButtonGroup>
       </div>
       <Show when={p.devview}>

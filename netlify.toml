@@ -46,6 +46,16 @@
   status = 200
 
 [[redirects]]
+  from = "/krm-ui-storybook"
+  to = "/krm-ui-storybook"
+  status = 200
+
+[[redirects]]
+  from = "/krm-ui-storybook/*"
+  to = "/krm-ui-storybook/:splat"
+  status = 200
+
+[[redirects]]
   from = "/*"
   to = "/krm-ui"
   status = 302
