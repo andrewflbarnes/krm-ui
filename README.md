@@ -1,6 +1,7 @@
 # Kings Results Manager
 
 [![Netlify Status](https://api.netlify.com/api/v1/badges/e5cffd5d-6924-4829-b7f3-3f5631b4c3b0/deploy-status)](https://app.netlify.com/sites/kings-krmui/deploys)
+[![E2E Tests](https://github.com/andrewflbarnes/krm-ui/actions/workflows/e2e.yml/badge.svg)](https://github.com/andrewflbarnes/krm-ui/actions/workflows/e2e.yml)
 
 A (for now) completely client side runtime for running kings races.
 
