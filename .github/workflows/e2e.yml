@@ -4,6 +4,9 @@ on:
   schedule:
     - cron: "0 7 * * 1"
 
+  # Allows manual executions
+  workflow_dispatch:
+
 env:
   PLAYWRIGHT_TARGET: "https://krm.andrewflbarnes.com"
 
