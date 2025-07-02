@@ -19,12 +19,12 @@ const test = base.extend<{
 test.describe('Full round simulation', {
   tag: "@slow",
 }, () => {
-  if (process.env.PLAYWRIGHT_UI == 'true') {
+  if (process.env.PLAYWRIGHT_NO_PARALLEL == 'true') {
     test.describe.configure({ mode: 'default' });
   }
 
   test.beforeEach(async ({ page, roundSetup }) => {
-    await page.goto('http://localhost:5174/krm-ui');
+    await page.goto('/krm-ui');
     await roundSetup.resetData();
   });
 
