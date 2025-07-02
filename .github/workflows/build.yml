@@ -1,11 +1,9 @@
-# Simple workflow for verifying build
-name: Verify build
+name: Test and Deploy
 
 permissions:
   contents: read
 
 on:
-  # Runs on pushes targeting the default branch
   push:
     branches: ["main"]
 

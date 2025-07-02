@@ -1,9 +1,12 @@
-name: Playwright Tests
+name: E2E Tests
+
 on:
   schedule:
     - cron: "0 7 * * 1"
+
 env:
   PLAYWRIGHT_TARGET: "https://krm.andrewflbarnes.com"
+
 jobs:
   test:
     timeout-minutes: 60
