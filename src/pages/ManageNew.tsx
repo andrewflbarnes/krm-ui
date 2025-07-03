@@ -44,6 +44,8 @@ function ManageNewInternal() {
     setNumTeams(config);
   }
 
+  const [teamSelectErrors, setTeamSelectErrors] = createSignal<string[]>([]);
+
   const [missingTeams, setMissingTeams] = createSignal<{
     club: string,
     team: string,
@@ -99,11 +101,20 @@ function ManageNewInternal() {
           ...initConfig(k.leagueConfig()),
           ...untrack(numTeams),
         }))
-        return <ManageNewSelect config={leagueConfig()} onUpdate={handleTeamNumsUpdate} />
+        return (
+          <ManageNewSelect
+            config={leagueConfig()}
+            onUpdate={handleTeamNumsUpdate}
+            onErrorUpdate={setTeamSelectErrors}
+          />
+        )
       },
       onArrive: unlock,
       loadConfig: true,
       validator: () => {
+        if (teamSelectErrors().length > 0) {
+          return [false, teamSelectErrors().join(", ")]
+        }
         const divisionCounts = Object.values(numTeams()).reduce((acc, next) => {
           acc.mixed += next.mixed
           acc.ladies += next.ladies

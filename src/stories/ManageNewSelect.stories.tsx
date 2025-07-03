@@ -6,11 +6,12 @@ import { ClubSeeding } from '../kings';
 const meta = {
   title: 'Kings/ManageNewSelect',
   render: props => {
-    return <ManageNewSelect onUpdate={props.onUpdate} config={props.config || {}} />;
+    return <ManageNewSelect onErrorUpdate={props.onErrorUpdate} onUpdate={props.onUpdate} config={props.config || {}} />;
   },
   component: ManageNewSelect,
   args: {
     onUpdate: fn(),
+    onErrorUpdate: fn(),
   }
 } satisfies Meta<typeof ManageNewSelect>;
 

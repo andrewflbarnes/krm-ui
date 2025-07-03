@@ -10,6 +10,7 @@ import { createStore, produce } from "solid-js/store";
 type ComponentProps = {
   config: ClubSeeding;
   onUpdate: (config: ClubSeeding) => void;
+  onErrorUpdate?: (errors: string[]) => void;
 };
 
 export default function ManageNewSelect(props: ComponentProps) {
@@ -75,6 +76,7 @@ export default function ManageNewSelect(props: ComponentProps) {
     if (!raceConfig[total().board]) {
       errors.push(`Board: no configuration for ${total().board} teams`)
     }
+    props.onErrorUpdate?.(errors)
     setErrors(errors)
   })
 
