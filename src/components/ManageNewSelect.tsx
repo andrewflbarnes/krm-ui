@@ -13,12 +13,17 @@ type ComponentProps = {
 };
 
 export default function ManageNewSelect(props: ComponentProps) {
-  const [config, setConfig] = createStore<ClubSeeding>();
+  const [config, setConfig] = createStore<ClubSeeding>({});
 
   createEffect(() => {
-    setConfig(current => ({
-      ...props.config,
-      ...current,
+    setConfig(produce((store) => {
+      Object.entries(props.config).forEach(([club, teams]) => {
+        if (!store[club]) {
+          store[club] = {
+            ...teams,
+          }
+        }
+      })
     }))
   });
 

@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
-import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
+import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup, Show, untrack } from "solid-js"
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
@@ -39,7 +39,6 @@ function ManageNewInternal() {
   onCleanup(() => unlock())
 
   const [numTeams, setNumTeams] = createSignal<ClubSeeding>({})
-  const leagueConfig = createMemo(() => initConfig(k.leagueConfig()));
 
   const handleTeamNumsUpdate = (config: ClubSeeding) => {
     setNumTeams(config);
@@ -95,7 +94,13 @@ function ManageNewInternal() {
     },
     {
       title: "Select Teams",
-      content: () => <ManageNewSelect config={leagueConfig()} onUpdate={handleTeamNumsUpdate} />,
+      content: () => {
+        const leagueConfig = createMemo(() => ({
+          ...initConfig(k.leagueConfig()),
+          ...untrack(numTeams),
+        }))
+        return <ManageNewSelect config={leagueConfig()} onUpdate={handleTeamNumsUpdate} />
+      },
       onArrive: unlock,
       loadConfig: true,
       validator: () => {
@@ -232,7 +237,7 @@ function ManageNewInternal() {
   }
 
   return (
-    <Stack flexDirection="column" height="100%">
+    <Stack flexDirection="column" height="100%" gap="1em">
       <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
         <CallToLoadConfig />
       </Show>
