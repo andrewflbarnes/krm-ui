@@ -37,10 +37,10 @@
 - [x] Don't allow reopen on non owned races
 - [x] Support 1 team
 - [x] Support 0 teams
+- [x] Don't require config to be loaded to start a race
 
 ## Must
 
-- [ ] Don't require config to be loaded to start a race
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Custom configuration groups

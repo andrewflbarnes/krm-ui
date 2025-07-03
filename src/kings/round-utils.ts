@@ -35,7 +35,7 @@ export function asKnockoutPosition(num: number): string {
 }
 
 export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
-  return Object.entries(parseResults(leagueConfig)).reduce((acc, [division, seeded]) => {
+  return Object.entries(parseResults(leagueConfig || {})).reduce((acc, [division, seeded]) => {
     acc[division] = seeded.filter(t => {
       let teamIndex = +t.name.replace(/.*?(\d*)$/, "$1") >>> 0
       if (teamIndex != 0) {

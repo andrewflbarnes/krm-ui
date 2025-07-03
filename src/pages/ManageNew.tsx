@@ -11,7 +11,7 @@ import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 import ManageNewDetails from "../components/ManageNewDetails"
-import { Construction } from "@suid/icons-material"
+import { Construction, OpenInNew } from "@suid/icons-material"
 
 const raceConfigs = raceConfig
 
@@ -82,6 +82,7 @@ function ManageNewInternal() {
     content: () => JSX.Element;
     onArrive?: () => void;
     skip?: () => boolean;
+    loadConfig?: boolean;
     validator: () => [boolean, string?]
   }
 
@@ -89,12 +90,14 @@ function ManageNewInternal() {
     {
       title: "Details",
       content: () => <ManageNewDetails {...details()} onDetailUpdate={handleDetailUpdate} />,
+      loadConfig: true,
       validator: () => [true],
     },
     {
       title: "Select Teams",
       content: () => <ManageNewSelect config={leagueConfig()} onUpdate={handleTeamNumsUpdate} />,
       onArrive: unlock,
+      loadConfig: true,
       validator: () => {
         const divisionCounts = Object.values(numTeams()).reduce((acc, next) => {
           acc.mixed += next.mixed
@@ -117,7 +120,7 @@ function ManageNewInternal() {
         const missing = Object.entries(numTeams()).reduce((acc, [club, teams]) => {
           Object.entries(teams).forEach(([division, num]) => {
             for (let i = 1; i <= num; i++) {
-              if (lc[club]?.teams[division]?.[`${club} ${i}`] || (i == 1 && lc[club]?.teams[division]?.[club])) {
+              if (lc?.[club]?.teams[division]?.[`${club} ${i}`] || (i == 1 && lc?.[club]?.teams[division]?.[club])) {
                 continue
               }
               acc.push({ club, team: `${club} ${i}`, division })
@@ -230,28 +233,29 @@ function ManageNewInternal() {
 
   return (
     <Stack flexDirection="column" height="100%">
-      <Show when={k.leagueConfig()} fallback={<CallToLoadConfig />}>
-        <Box sx={{ flexGrow: 1 }}>
-          {steps[step()].content()}
-        </Box>
-        <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
-          <Show when={step() > 0}>
-            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handlePrev}>Previous</Button>
-          </Show>
-          <Show when={step() < steps.length - 1}>
-            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleNext}>Next</Button>
-          </Show>
-          <Show when={step() == steps.length - 1}>
-            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleDone}>Done</Button>
-          </Show>
-        </Stack>
+      <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
+        <CallToLoadConfig />
       </Show>
+      <Box sx={{ flexGrow: 1 }}>
+        {steps[step()].content()}
+      </Box>
+      <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
+        <Show when={step() > 0}>
+          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handlePrev}>Previous</Button>
+        </Show>
+        <Show when={step() < steps.length - 1}>
+          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleNext}>Next</Button>
+        </Show>
+        <Show when={step() == steps.length - 1}>
+          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleDone}>Done</Button>
+        </Show>
+      </Stack>
     </Stack>
   )
 }
 
 function CallToLoadConfig() {
-  const [ { loadingConfig }, { loadConfig }] = useKings()
+  const [{ loadingConfig }, { loadConfig }] = useKings()
   return (
     <Stack
       displayRaw="flex"
@@ -259,22 +263,26 @@ function CallToLoadConfig() {
       alignItems="center"
       gap="1em"
     >
-      <Button
-        variant="outlined"
-        onClick={[loadConfig, undefined]}
-        startIcon={<Construction />}
-        disabled={loadingConfig()}
-      >
-        Load Config
-      </Button>
-      <div>
+      <Stack flexDirection="row" alignItems="center" gap="0.5em">
+        <Button
+          size="small"
+          variant="outlined"
+          onClick={[loadConfig, undefined]}
+          startIcon={<Construction />}
+          disabled={loadingConfig()}
+        >
+          Load Config
+        </Button>
         {" "}or load custom configuration from the{" "}
         <A href="/teams" style={{ "text-decoration": "none" }}>
           <Typography color="primary" style={{ display: "inline" }}>
-            teams page
+            <Stack direction="row" alignItems="center" gap="0.1em">
+              teams page
+              <OpenInNew fontSize="small" />
+            </Stack>
           </Typography>
         </A>
-      </div>
+      </Stack>
     </Stack>
   )
 }
