@@ -41,6 +41,7 @@
 
 ## Must
 
+- [ ] Loading/updating league config should preserve manually added teams
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds
 - [ ] Custom configuration groups
