@@ -30,8 +30,7 @@ const [
     <tbody>`;
   }
 
-  const tableEnd = `
-    </tbody>
+  const tableEnd = `   </tbody>
   </table>
 </div>`;
 
@@ -46,9 +45,9 @@ export type Results = Record<string, RoundResultPoints[]>
   */
 export function resultsToHtml(leagueData: LeagueData, round: number, results: Results) {
   const combined = combineResults(leagueData, round, results)
-  return Object.entries(combined).reduce((acc, [division, divisionResults], position) => {
+  return Object.entries(combined).reduce((acc, [division, divisionResults]) => {
     const htmlRows = divisionResults
-      .map(result => asHtml_(position + 1, result))
+      .map((result, position) => asHtml_(position + 1, result))
       .join("\n")
     acc[division] = `${"ladies" == division.toLocaleLowerCase() ? tableStartAlt : tableStart}\n${htmlRows}\n${tableEnd}`
     return acc
@@ -180,5 +179,7 @@ function asHtml_(position: number, {
         <td>${r4place ? r4 : ''}</td>
         <td>${total}</td>
         <td>${comment}</td>
-      </tr>`;
+      </tr>`
+      .replaceAll(/\n/g, "")
+      .replaceAll(/>\s*/g, ">");
 }
