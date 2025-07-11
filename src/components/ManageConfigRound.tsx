@@ -1,7 +1,7 @@
 import { Box, Divider, Typography } from "@suid/material";
 import { createSignal, For, Show } from "solid-js";
 import { MiniLeagueConfig, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings"
-import { asPosition, minileagueRaces } from "../kings/round-utils";
+import { asPosition, minileagueRaces } from "../kings/utils";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
 import MiniLeague from "./MiniLeague";
 

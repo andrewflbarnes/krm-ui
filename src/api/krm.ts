@@ -1,5 +1,5 @@
 import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate, leagues } from "../kings"
-import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings/round-utils";
+import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings/utils";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
 

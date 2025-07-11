@@ -1,6 +1,6 @@
 import { createMemo, For, Show } from "solid-js";
 import { SeedInfo, useCreateRoundConfig } from "../hooks/create-config"
-import { asPosition } from "../kings/round-utils";
+import { asPosition } from "../kings/utils";
 import Selector from "../ui/Selector";
 
 export default function CustomRoundResults() {

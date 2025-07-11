@@ -124,6 +124,16 @@ export type RoundResult = {
   teams: string[];
 }
 
+/** A result for a complete round including points won */
+export type RoundResultPoints = {
+  /** The rank of the team(s) e.g. 1 => 1st */
+  rank: number;
+  /** The number of points won */
+  points: number;
+  /** The team(s) at this rank */
+  teams: string[];
+}
+
 /** Full configuration for a round including races and metadata */
 export type Round = {
   /** The unique ID of the round */

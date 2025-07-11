@@ -2,7 +2,7 @@ import { DownhillSkiing, Groups } from "@suid/icons-material";
 import { Box, Chip, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
 import { MiniLeagueTemplate } from "../kings";
-import { minileagueRaces } from "../kings/round-utils";
+import { minileagueRaces } from "../kings/utils";
 import ValidityCheck from "../ui/ValidityCheck";
 import MiniLeague from "./MiniLeague";
 

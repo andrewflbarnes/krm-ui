@@ -1,6 +1,6 @@
-import { divisions, DivisionResults, LeagueData, Result } from "./types"
+import { divisions, DivisionResults, LeagueData, Result } from "../types"
 
-function orderResults(a: Result, b: Result): number {
+export function orderResults(a: Result, b: Result): number {
   const tot = b.total - a.total
   if (tot !== 0) {
     return tot
@@ -31,7 +31,7 @@ function orderResults(a: Result, b: Result): number {
 export function parseResults(leagueData: LeagueData): DivisionResults {
   return divisions
     .reduce((acc, division) => {
-      const divisionResult = []
+      const divisionResult: Result[] = []
       Object.entries(leagueData || {}).forEach(([clubName, club]) => {
         Object.entries(club.teams[division] ?? {}).forEach(([name, { results }]) => {
           const tr: Result = {
@@ -49,7 +49,7 @@ export function parseResults(leagueData: LeagueData): DivisionResults {
       divisionResult.sort(orderResults)
       acc[division] = divisionResult
       return acc
-    }, {})
+    }, {} as DivisionResults)
 }
 
 export function kingsPoints(division: string, rank: number) {
@@ -61,4 +61,3 @@ export function kingsPoints(division: string, rank: number) {
     default: return Math.max(start - 1 - rank, 1)
   }
 }
-

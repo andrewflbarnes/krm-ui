@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { parseResults } from './result-utils';
-import { LeagueData } from './types';
+import { LeagueData } from '../types';
 
 describe('parseResults', () => {
   it('returns empty object for null input', () => {

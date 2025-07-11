@@ -1,6 +1,6 @@
 import { parseResults } from "./result-utils"
-import type { ClubSeeding, Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, Race, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces } from "./types"
-import { divisions } from "./types"
+import type { ClubSeeding, Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, Race, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces } from "../types"
+import { divisions } from "../types"
 
 export function checkStage(s: unknown): s is RaceStage {
   return s == "stage1" || s == "stage2" || s == "knockout"

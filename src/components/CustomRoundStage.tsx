@@ -9,7 +9,7 @@ import ModalConfirmAction from "../ui/ModalConfirmAction"
 import Selector from "../ui/Selector"
 import ManageConfigMiniLeague from "./ManageConfigMiniLeague"
 import { Dynamic } from "solid-js/web"
-import { asPosition } from "../kings/round-utils"
+import { asPosition } from "../kings/utils"
 import PopoverIconButton from "../ui/PopoverIconButton"
 
 export default function CustomRoundStage(props: {

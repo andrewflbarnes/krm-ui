@@ -3,7 +3,7 @@ import { createMemo, createSignal } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs';
 import ManageNewShuffle from '../components/ManageNewShuffle';
 import { raceConfig, Round, RoundSeeding } from '../kings';
-import { createRound } from '../kings/round-utils';
+import { createRound } from '../kings/utils';
 
 const meta = {
   title: 'Kings/ManageNewShuffle',
