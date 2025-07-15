@@ -46,37 +46,18 @@ const makeContext = (initLeague?: League) => {
     const resetConfig = krmApi.getLeagueConfig(selectedLeague())
     setLeagueConfig(resetConfig)
   }
-  const [loadingConfig, setLoadingConfig] = createSignal(false)
-  const loadConfig = (trackingUrl: string = null) => {
-    const league = selectedLeague()
-    notification.info(`Loading config for ${league} league...`)
-    setLoadingConfig(true)
-    tracker.getLeagueData(league, trackingUrl)
-      .then(data => {
-        setLeagueConfig(data)
-        notification.success(`Config loaded for ${league} league`)
-      })
-      .catch(e => {
-        notification.error(e.message)
-      })
-      .finally(() => {
-        setLoadingConfig(false)
-      })
-  }
   return [
     {
       league: selectedLeague,
       config,
       leagueConfig,
       lock,
-      loadingConfig,
     },
     {
       setLock,
       setLeague,
       setLeagueConfig,
       clearLocalData,
-      loadConfig,
     }
   ] as const
 }
@@ -124,6 +105,23 @@ export function useKings() {
     krmApi.saveLeagueConfig(state.league(), config)
     actions.setLeagueConfig(config)
   }
+  const [loadingConfig, setLoadingConfig] = createSignal(false)
+  const loadConfig = (trackingUrl: string = null) => {
+    const league = state.league()
+    notification.info(`Loading config for ${league} league...`)
+    setLoadingConfig(true)
+    tracker.getLeagueData(league, trackingUrl)
+      .then(data => {
+        setLeagueConfigEnhanced(data)
+        notification.success(`Config loaded for ${league} league`)
+      })
+      .catch(e => {
+        notification.error(e.message)
+      })
+      .finally(() => {
+        setLoadingConfig(false)
+      })
+  }
   const addLeagueTeams = (teams: { club: string, division: string, team: string }[]) => {
     const lc = state.leagueConfig() ?? {}
     const newLC = { ...lc }
@@ -157,8 +155,13 @@ export function useKings() {
     setLeague: setLeagueEnhanced,
     setLeagueConfig: setLeagueConfigEnhanced,
     addLeagueTeams,
+    loadConfig,
   }
-  return [state, enhancedActions] as const
+  const enhancedState = {
+    ...state,
+    loadingConfig,
+  }
+  return [enhancedState, enhancedActions] as const
 }
 
 export function useKingsLeagueChanger() {

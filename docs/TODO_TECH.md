@@ -25,6 +25,7 @@
 
 ## Should
 
+- [ ] Use actual drawer component for nav
 - [ ] playwright - add description, venue, etc. in info step
 - [ ] playwright - validate missing teams
 - [ ] playwright - validate team swap

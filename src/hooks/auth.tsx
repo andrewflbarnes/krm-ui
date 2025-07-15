@@ -69,7 +69,6 @@ function FirebaseProvider(props: ParentProps) {
     if (update && authenticated()) {
       const ref = doc(db, "users", userId())
       setDoc(ref, userinfo)
-      console.log("saved", saved, username(), userId())
       return serialised
     }
     return saved
