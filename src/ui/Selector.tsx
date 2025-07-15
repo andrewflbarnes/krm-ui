@@ -17,6 +17,7 @@ type SelectorProps<T extends string | number> = {
   containerProps?: JSX.HTMLAttributes<HTMLDivElement>
   // implementation specific
   small?: boolean;
+  defaultBackground?: boolean;
 }
 
 const StyledSelect = styled(Select)({
@@ -71,7 +72,8 @@ export default function Selector<T extends string | number>(props: SelectorProps
             },
             "&& .Mui-disabled .MuiOutlinedInput-notchedOutline": {
               borderColor: props.locked ? "inherit" : undefined,
-            }
+            },
+            backgroundColor: props.defaultBackground ? "background.default" : undefined,
           }}>
             <StyledInputLabel id={`${id}-select-label`}>{props.title}</StyledInputLabel>
             <StyledBadge invisible={!props.locked} badgeContent={<Lock />}>

@@ -58,6 +58,9 @@ export default function Home() {
             variant="outlined"
             color="inherit"
             onClick={() => nav("/manage/new")}
+            sx={{
+              backgroundColor: "background.default",
+            }}
           >
             Create a race
           </Button>
@@ -67,6 +70,9 @@ export default function Home() {
               color="inherit"
               style={{ visibility: `${hasRounds() ? "visible" : "hidden"}` }}
               onClick={() => nav("/manage/continue")}
+              sx={{
+                backgroundColor: "background.default",
+              }}
             >
               Continue a race
             </Button>
@@ -75,6 +81,9 @@ export default function Home() {
             variant="outlined"
             color="inherit"
             onClick={[setReset, true]}
+            sx={{
+              backgroundColor: "background.default",
+            }}
           >
             Reset data
           </Button>

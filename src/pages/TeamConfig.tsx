@@ -49,6 +49,9 @@ function NoData() {
         onClick={load}
         startIcon={<Construction />}
         disabled={loadingConfig()}
+        sx={{
+          backgroundColor: "background.default",
+        }}
       >
         Load Config
       </Button>

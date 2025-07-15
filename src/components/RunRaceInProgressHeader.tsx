@@ -115,6 +115,7 @@ export default function RunRaceInProgressHeader(props: {
           current={stage()}
           onClose={(v: Stage) => setStage(v)}
           options={stageOptions()}
+          defaultBackground
         />
         <Show when={stage() != "complete"}>
           <Selector
@@ -123,6 +124,7 @@ export default function RunRaceInProgressHeader(props: {
             current={view()}
             onClose={(v: View) => setView(current => v ?? current)}
             options={options}
+            defaultBackground
           />
         </Show>
         <div style={{ "margin-left": "auto", display: "flex", gap: "1em" }}>
