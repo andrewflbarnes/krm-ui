@@ -33,7 +33,7 @@ export default function TeamConfig() {
 }
 
 function NoData() {
-  const [ { loadingConfig }, { loadConfig }] = useKings()
+  const [ { loadingConfig, league }, { loadConfig }] = useKings()
   const load = () => {
     loadConfig()
   }
@@ -53,7 +53,7 @@ function NoData() {
           backgroundColor: "background.default",
         }}
       >
-        Load Config
+        Load {league()} Config
       </Button>
       <Typography variant="body1" textAlign="center">
         Or click the settings icon in the top right to load custom config

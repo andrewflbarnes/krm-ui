@@ -271,7 +271,7 @@ function ManageNewInternal() {
 }
 
 function CallToLoadConfig() {
-  const [{ loadingConfig }, { loadConfig }] = useKings()
+  const [{ loadingConfig, league }, { loadConfig }] = useKings()
   return (
     <Stack
       displayRaw="flex"
@@ -287,7 +287,7 @@ function CallToLoadConfig() {
           startIcon={<Construction />}
           disabled={loadingConfig()}
         >
-          Load Config
+          Load {league()} Config
         </Button>
         {" "}or load custom configuration from the{" "}
         <A href="/teams" style={{ "text-decoration": "none" }}>
