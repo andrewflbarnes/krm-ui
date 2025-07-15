@@ -40,15 +40,15 @@ export default function RoundInfoList(props: RoundInfoListProps) {
     ])
   })
 
-  const firstAppearance = () => rounds().findIndex(({ rounds }) => rounds.length > 0)
-  const firstWhose = () => rounds()[firstAppearance()]?.whose || ""
+  const firstAppearance = createMemo(() => rounds().findIndex(({ rounds }) => rounds.length > 0))
+  const firstWhose = () => rounds()[firstAppearance()]?.whose
   return (
     <>
       <TableContainer component={Paper}>
         <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
           <TableHead>
             <TableRow>
-              <TableCell colSpan="2">{firstWhose()} rounds</TableCell>
+              <TableCell colSpan="2">{firstWhose() ? firstWhose() + " rounds" : "Rounds"}</TableCell>
               {/*<TableCell />*/}
               <TableCell align="center">Mixed</TableCell>
               <TableCell align="center">Ladies</TableCell>
