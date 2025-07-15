@@ -55,7 +55,7 @@ function RunRaceInProgressInternal() {
           </Show>
         }</Match>
         <Match when={stage() == "complete"}>
-          <Card style={{ display: "flex", "justify-content": "center", padding: "0 2em 2em 2em", width: "fit-content", margin: "0 auto", "overflow-y": "auto" }}>
+          <Card style={{ display: "flex", "justify-content": "center", padding: "0 2em 2em 2em", width: "fit-content", margin: "0 auto 1em auto", "overflow-y": "auto" }}>
             <RunRaceResults results={round().results} />
           </Card>
           <Show when={!k.leagueConfig()}>
