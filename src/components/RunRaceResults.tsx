@@ -1,6 +1,6 @@
 import { ContentCopy } from "@suid/icons-material";
-import { Box, IconButton, Paper, Stack, Table, TableBody, TableContainer, Typography } from "@suid/material";
-import { createMemo, For, Show } from "solid-js";
+import { Box, IconButton, Paper, Popover, Stack, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { createMemo, createSignal, For, Show } from "solid-js";
 import { RoundResult, useKings } from "../kings";
 import { kingsPoints, resultsToHtml } from "../kings/utils";
 import styles from "./RunRaceResults.module.css";
@@ -45,22 +45,56 @@ export default function RunRaceResults(props: {
       });
   }
 
+  const [popoverEl, setPopoverEl] = createSignal<Element | null>(null);
+  const open = () => Boolean(popoverEl());
+  const onMouseEnter = (division: string, event: { currentTarget: Element }) => {
+    if (html()[division]) {
+      return;
+    }
+    setPopoverEl(event.currentTarget);
+  }
+  const onMouseLeave = () => {
+    setPopoverEl(null);
+  }
+
   return (
     <Typography>
+      <Popover
+        anchorEl={popoverEl()}
+        open={open()}
+        anchorOrigin={{
+          vertical: "bottom",
+          horizontal: "left",
+        }}
+        transformOrigin={{
+          vertical: "top",
+          horizontal: "left",
+        }}
+        sx={{ pointerEvents: "none" }}
+        onClose={onMouseLeave}
+        disableRestoreFocus
+      >
+        No league data loaded
+      </Popover>
       <Show when={props.results} fallback="No results">
         <Box sx={{ flexDirection: { xs: "column", md: "row" } }} style={{ display: "flex", padding: "3", gap: "2em" }}>
           <For each={Object.entries(props.results)}>{([division, results]) => (
             <Show when={results.length > 0}>
               <div data-testid={`results-${division}`}>
                 <Stack direction="row" justifyContent="center" alignItems="center">
-                  <IconButton
-                    size="small"
-                    color="primary"
-                    onClick={[copyToClipboard, division]}
-                    disabled={!html()[division]}
+                  <div
+                    onMouseEnter={[onMouseEnter, division]}
+                    onMouseLeave={onMouseLeave}
                   >
-                    <ContentCopy />
-                  </IconButton>
+                    <IconButton
+                      size="small"
+                      color="primary"
+                      disabled={!html()[division]}
+                      onClick={[copyToClipboard, division]}
+                    >
+                      <ContentCopy />
+                    </IconButton>
+                  </div>
                   <h2 style={{ "text-align": "center" }}>{division.capitalize()}</h2>
                 </Stack>
                 <TableContainer component={Paper}>

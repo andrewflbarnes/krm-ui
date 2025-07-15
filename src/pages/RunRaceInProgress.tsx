@@ -3,11 +3,12 @@ import RunRaceInProgressStage from "../components/RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RunRaceInProgressHeader from "../components/RunRaceInProgressHeader";
 import RunRaceResults from "../components/RunRaceResults";
-import { Card, Typography } from "@suid/material";
+import { Alert, Button, Card, Typography } from "@suid/material";
 import { stages, useRaceOptions } from "../hooks/results";
 import { isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
 import { useBreadcrumberUpdate } from "../hooks/breadcrumb";
+import { useKings } from "../kings";
 
 export default function RunRaceInProgress() {
   return (
@@ -24,6 +25,7 @@ function RunRaceInProgressInternal() {
   } = useRaceOptions()
   const query = useRound()
   const round = () => query.data
+  const [k, { loadConfig }] = useKings();
 
   useBreadcrumberUpdate(() => stages[stage()], 'Stage')
 
@@ -56,6 +58,23 @@ function RunRaceInProgressInternal() {
           <Card style={{ display: "flex", "justify-content": "center", padding: "0 2em 2em 2em", width: "fit-content", margin: "0 auto", "overflow-y": "auto" }}>
             <RunRaceResults results={round().results} />
           </Card>
+          <Show when={!k.leagueConfig()}>
+            <Alert
+              severity="warning"
+              sx={{ marginTop: "auto" }}
+              action={
+                <Button
+                  color="inherit"
+                  size="small"
+                  onClick={[loadConfig, null]}
+                >
+                  Load league data
+                </Button>
+              }
+            >
+              No league data loaded, cannot generate HTML results
+            </Alert>
+          </Show>
         </Match>
         <Match when={true}>
           <div>Unknown stage: {stage()}</div>
