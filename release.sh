@@ -20,8 +20,8 @@ do_release() {
   pnpm pkg set version="$next" || return $?
 
   git add CHANGELOG.md package.json || return $?
-  git commit -m "chore(release): prepare for $next [skip ci]" || return $?
-  git tag "$next" || return $?
+  git commit -m "chore(release): prepare for $next" || return $?
+  git tag -a -m "Release $next" "$next" || return $?
 
   git push origin main
   git push origin tag "$next"

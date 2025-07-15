@@ -1,5 +1,8 @@
 name: Release
 
+permissions:
+  contents: write
+
 on:
   push:
     tags:
@@ -13,13 +16,23 @@ jobs:
         uses: actions/checkout@v4
       - name: Create Release
         id: create_release
-        uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Changes in this release
-          draft: false
-          prerelease: false
+          tag: ${{ github.ref_name }}
+        run: |
+          awk '
+            /^## / {
+              release+=1;
+              if (release > 1) {
+                exit;
+              }
+            }
+            !/<!--/ {
+              if (release > 0) {
+                print
+              }
+            }' CHANGELOG.md > THIS_CHANGELOG.md
+          gh release create "$tag" \
+              --repo="$GITHUB_REPOSITORY" \
+              --title="${GITHUB_REPOSITORY#*/} ${tag}" \
+              --notes-file=THIS_CHANGELOG.md
