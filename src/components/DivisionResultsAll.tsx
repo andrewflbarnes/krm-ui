@@ -13,27 +13,29 @@ export default function DivisionResultsAll(props: Props) {
   const [division, setDivision] = createSignal<Division | "all">("all")
   const results = () => Object.entries(props.results).filter(([div]) => div === division() || division() === "all")
   return (
-    <Box sx={{ display: "flex", flexDirection: "column", gap: "2em" }}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: "2em", height: "100%" }}>
       <Box sx={{ width: "100%", display: "flex", justifyContent: "center" }}>
-      <ButtonGroup>
-        <For each={["all", "mixed", "ladies", "board"] as const}>{div => (
-          <Button onClick={() => setDivision(div)} variant={div == division() ? "contained" : "outlined"}>
-            {div}
-          </Button>
-        )}</For>
-      </ButtonGroup>
+        <ButtonGroup>
+          <For each={["all", "mixed", "ladies", "board"] as const}>{div => (
+            <Button onClick={() => setDivision(div)} variant={div == division() ? "contained" : "outlined"}>
+              {div}
+            </Button>
+          )}</For>
+        </ButtonGroup>
       </Box>
-      <For each={results()}>{([division, divisionResults]) => {
-        const handleEdit = (row: Result) => props.onEdit?.(division, row)
-        return (
-          <Box sx={{ display: "flex", flexDirection: "column" }}>
-            <Typography mb="1rem" textAlign="center" variant="h4">
-              {division}
-            </Typography>
-            <DivisionResults results={divisionResults} editable={props.editable} onEdit={handleEdit} />
-          </Box >
-        )
-      }}</For>
+      <Box overflow="auto">
+        <For each={results()}>{([division, divisionResults]) => {
+          const handleEdit = (row: Result) => props.onEdit?.(division, row)
+          return (
+            <Box sx={{ display: "flex", flexDirection: "column" }}>
+              <Typography mb="1rem" textAlign="center" variant="h4">
+                {division.capitalize()}
+              </Typography>
+              <DivisionResults results={divisionResults} editable={props.editable} onEdit={handleEdit} />
+            </Box >
+          )
+        }}</For>
+      </Box >
     </Box >
   )
 }

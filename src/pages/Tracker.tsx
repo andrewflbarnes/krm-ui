@@ -1,6 +1,7 @@
 import tracker from "../api/tracker";
 import {
   Box,
+  Card,
   LinearProgress,
   Link,
   Typography,
@@ -41,7 +42,7 @@ export default function Tracker() {
 
   return (
     <>
-      <Box sx={{
+      <Card sx={{
         display: "flex",
         flexDirection: "column",
         gap: "3rem",
@@ -62,7 +63,7 @@ export default function Tracker() {
             </Match>
           </Switch>
         </Suspense>
-      </Box>
+      </Card>
     </>
   )
 }
