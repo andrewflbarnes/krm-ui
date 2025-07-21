@@ -14,13 +14,6 @@ export class RoundSetup {
     await this.page.getByText('yes')
       .describe('Confirm reset button')
       .click();
-    await this.page.getByRole('link', { name: 'Teams' })
-      .describe('Teams link')
-      .click();
-    await this.page.getByRole('button', { name: 'Load config' })
-      .describe('Load config button')
-      .click();
-    await expect(this.page.getByText('Config loaded for '), 'Config loaded toast displayed').toBeVisible();
   }
 
   async setupRound(clubs: Record<string, { mixed: number, ladies: number, board: number }>) {
