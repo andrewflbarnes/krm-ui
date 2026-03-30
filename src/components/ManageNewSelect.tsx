@@ -15,6 +15,7 @@ type ComponentProps = {
 
 export default function ManageNewSelect(props: ComponentProps) {
   const [config, setConfig] = createStore<ClubSeeding>({});
+  const clubs = () => Object.keys(config).sort((a, b) => a.localeCompare(b));
 
   createEffect(() => {
     setConfig(produce((store) => {
@@ -101,7 +102,8 @@ export default function ManageNewSelect(props: ComponentProps) {
             </TableRow>
           </TableHead>
           <TableBody>
-            <For each={Object.entries(config)}>{([club, teams]) => {
+            <For each={clubs()}>{(club) => {
+              const teams = config[club];
               return (
                 <TableRow>
                   <TableCell>{club}</TableCell>
