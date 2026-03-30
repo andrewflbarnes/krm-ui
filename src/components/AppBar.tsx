@@ -73,7 +73,7 @@ export default function KrmAppBar() {
                 justifyContent: "flex-end",
                 alignItems: "center",
               }}>
-                <Show when={developer()}>
+                <Show when={developer}>
                   <Link href="/dev">
                     Dev
                   </Link>

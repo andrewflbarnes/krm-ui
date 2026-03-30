@@ -83,7 +83,7 @@ export default function Manage(props: ParentProps) {
               />
             </Show>
 
-            <Show when={flags.experimental()}>
+            <Show when={flags.experimental}>
               <ListSubheader>Create config</ListSubheader>
               <NavigationListItem path="round/create">+ Round</NavigationListItem>
             </Show>
