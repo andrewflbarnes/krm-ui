@@ -58,7 +58,7 @@ export default function RaceListPrintable(props: RaceListPrintableProps) {
                   </Show>
                   <td style={{ "width": "15rem" }}>{r.team1}</td>
                   <td style={{ "width": "2rem" }}>v</td>
-                  <td style={{ "width": "15rem" }}>{r.team1}</td>
+                  <td style={{ "width": "15rem" }}>{r.team2}</td>
                 </tr>
               )}</For>
             </tbody>
