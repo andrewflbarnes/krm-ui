@@ -2,7 +2,7 @@ import { Box, Button, Stack, Typography } from "@suid/material";
 import { useKings } from "../kings";
 import krm from "../api/krm";
 import { useNavigate } from "@solidjs/router";
-import { createSignal, Show } from "solid-js";
+import { createEffect, createSignal, on, Show } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import notification from "../hooks/notification"
 
@@ -18,6 +18,9 @@ function getRounds(league: string) {
 export default function Home() {
   const [k, { clearLocalData }] = useKings()
   const [rounds, setRounds] = createSignal(getRounds(k.league()))
+  createEffect(on(k.league, () => {
+    setRounds(getRounds(k.league()))
+  }, { defer: true }))
   const hasRounds = () => {
     try {
       return rounds()
