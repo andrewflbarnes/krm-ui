@@ -91,6 +91,7 @@ function ManageNewInternal() {
     {
       title: "Details",
       content: () => <ManageNewDetails {...details()} onDetailUpdate={handleDetailUpdate} />,
+      onArrive: unlock,
       loadConfig: true,
       validator: () => [true],
     },
@@ -109,7 +110,7 @@ function ManageNewInternal() {
           />
         )
       },
-      onArrive: unlock,
+      onArrive: lock,
       loadConfig: true,
       validator: () => {
         if (teamSelectErrors().length > 0) {
@@ -151,7 +152,6 @@ function ManageNewInternal() {
     {
       title: "Update teams",
       content: () => <ManageNewUpdateTeams missingTeams={missingTeams()} />,
-      onArrive: lock,
       skip: () => missingTeams().length < 1,
       validator: () => {
         if (missingTeams().length > 0) {
