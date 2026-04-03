@@ -1,7 +1,7 @@
 import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate, leagues } from "../kings"
 import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings/utils";
 import { auth, db, serde } from "../firebase";
-import { setDoc, doc, collection, query, where, getDocs } from "firebase/firestore";
+import { setDoc, doc, collection, query, where, getDocsFromServer } from "firebase/firestore";
 
 export type CustomConfig<T> = {
   configs: {
@@ -318,7 +318,7 @@ export default (function krmApiLocalStorage(): KrmApi {
     async syncRounds(league: string) {
       const roundsRef = collection(db, "rounds")
       const q = query(roundsRef, where("league", "==", league))
-      const rounds = await getDocs(q)
+      const rounds = await getDocsFromServer(q)
       // FIXME detect dups
       const dl = rounds.docs
         .map(doc => doc.data())

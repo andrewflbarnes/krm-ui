@@ -49,9 +49,14 @@ function ManageContinueInternal() {
   const [download, setDownload] = createSignal(false)
   const handleDownload = async () => {
     setDownload(false)
-    await krmApi.syncRounds(k.league())
-    setRounds(getSortedRounds(k.league()))
-    notification.success("Rounds downloaded")
+    try {
+      await krmApi.syncRounds(k.league())
+      setRounds(getSortedRounds(k.league()))
+      notification.success("Rounds downloaded")
+    } catch (e) {
+      notification.error(`Failed to download data from server, check you are online and try again`)
+      console.error("Failed to download data", e)
+    }
   }
 
   const handleCopyToClipboard = (id: string) => {
