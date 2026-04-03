@@ -179,7 +179,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       <div style={{ display: view() === "printable" ? "inherit" : "none" }}>
         <div ref={ref}>
           <RaceListPrintable
-            knockouts={props.round.status === "knockout"}
+            knockouts={props.stage === "knockout"}
             races={orderedRaces()}
             subtitle={`${props.round.league} ${props.stage}`}
           />
