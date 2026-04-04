@@ -1,3 +1,7 @@
+[build]
+  command = "pnpm build"
+  publish = "dist"
+
 [[plugins]]
   package = "@netlify/plugin-lighthouse"
 
@@ -5,7 +9,7 @@
     preset = "desktop"
 
   [[plugins.inputs.audits]]
-    path = "/krm-ui/"
+    path = "krm-ui"
 
 [dev]
   command = "pnpm start" # Command to start your dev server

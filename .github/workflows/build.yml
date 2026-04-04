@@ -47,15 +47,12 @@ jobs:
         uses: ./.github/actions/setup
       - name: Update version
         run: .github/update_version.sh
-      - name: Build
+      - name: Install netlify
+        run: pnpm install -g netlify-cli
+      - name: Build and deploy to Netlify
         env:
           NODE_ENV: production
           VITE_CLERK_PUBLISHABLE_KEY: "${{ secrets.VITE_CLERK_PUBLISHABLE_KEY }}"
-        run: pnpm build
-      - name: Install netlify
-        run: pnpm install -g netlify-cli
-      - name: Deploy to Netlify
-        env:
           NETLIFY_SITE_ID: "${{ secrets.NETLIFY_SITE_ID }}"
           NETLIFY_AUTH_TOKEN: "${{ secrets.NETLIFY_API_TOKEN }}"
         run: .github/deploy.sh
