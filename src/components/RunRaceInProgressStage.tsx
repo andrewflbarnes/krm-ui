@@ -1,8 +1,7 @@
 import { Card, Stack } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
-import { Show, For, createEffect, createMemo, on } from "solid-js";
+import { Show, createEffect, createMemo, on } from "solid-js";
 import { Race, Round, StageRaces } from "../kings";
-import MiniLeague from "./MiniLeague";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 import notification from "../hooks/notification";
@@ -10,6 +9,7 @@ import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RaceListPrintable from "./RaceListPrintable";
 import { usePrint } from "../hooks/print";
 import { useRaceOptions } from "../hooks/results";
+import MiniLeagues from "./MiniLeagues";
 
 const orderRaces = (divisionRaces: StageRaces, northern: boolean) => {
   const splits = 3
@@ -158,21 +158,13 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
         </Show>
         <Show when={showMiniLeagues()}>
           <Card sx={{ p: 3 }} style={{ "overflow-x": "auto", height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
-            <Stack gap="2em" width="100%">
-              <For each={Object.entries(props.round.races[props.stage])}>{([div, divRaces]) => (
-                <For each={Object.entries(divRaces)}>{([name, { races, teams }]) => (
-                  <MiniLeague
-                    live={live()}
-                    collapsed={collapse()}
-                    name={div.capitalize() + " " + name}
-                    races={races}
-                    teams={teams}
-                    onResultChange={handleRaceUpdate}
-                    readonly={props.readonly}
-                  />
-                )}</For>
-              )}</For>
-            </Stack>
+            <MiniLeagues
+              live={live()}
+              collapse={collapse()}
+              races={props.round.races[props.stage]}
+              onRaceUpdate={handleRaceUpdate}
+              readonly={props.readonly}
+            />
           </Card>
         </Show>
       </Stack>
