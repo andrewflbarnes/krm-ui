@@ -17,6 +17,7 @@ const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRaceAbandoned = lazy(() => import("./pages/RunRaceAbandoned"));
 const RunRaceInProgress = lazy(() => import("./pages/RunRaceInProgress"));
 const RunRaceRedirect = lazy(() => import("./pages/RunRaceRedirect"));
+const ManageMenu = lazy(() => import("./pages/ManageMenu"));
 const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
 const ManageRound = lazy(() => import("./pages/ManageRound"));
 const CreateRoundConfig = lazy(() => import("./pages/CreateRoundConfig"));
@@ -37,13 +38,15 @@ export default function App() {
       <Router base={`${import.meta.env.BASE_URL}`} root={HydratedAppLayout}>
         <Route path="/" component={Home} />
         <Route path="/manage" component={RaceManager} info={{ breadcrumb: "Manage" }}>
-          <Route path="/" />
+          <Route path="/" component={ManageMenu} />
           <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
           <Route path="/continue" component={RaceManagerContinue} info={{ breadcrumb: "Continue" }} />
-          <Route path="/minileague/:ml" component={ManageMiniLeague} info={{ breadcrumb: "ML" }} />
-          <Route path="/round" info={{ breadcrumb: "Round" }}>
-            <Route path="/create" component={CreateRoundConfig} />
-            <Route path="/:round" component={ManageRound} />
+          <Route path="/minileague" component={ManageMiniLeague} info={{ breadcrumb: "ML" }}>
+            <Route path="/:ml?" />
+          </Route>
+          <Route path="/round/create" component={CreateRoundConfig} />
+          <Route path="/round" component={ManageRound} info={{ breadcrumb: "Round" }}>
+            <Route path="/:round?" />
           </Route>
         </Route>
         <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />

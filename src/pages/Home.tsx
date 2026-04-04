@@ -65,7 +65,7 @@ export default function Home() {
               backgroundColor: "background.default",
             }}
           >
-            Create a race
+            Start a new race
           </Button>
           <Show when={hasRounds()}>
             <Button
