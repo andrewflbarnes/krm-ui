@@ -126,7 +126,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   })
 
   const [print, setPrint] = usePrint()
-  let ref!: HTMLDivElement;
+  let ref!: HTMLDivElement; // oxlint-disable-line no-unassigned-vars
   createEffect(() => {
     if (print()) {
       const printwindow = window.open('', 'PRINT', 'height=800,width=1000');

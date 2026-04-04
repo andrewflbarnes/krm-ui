@@ -10,7 +10,6 @@ export default function ManageMiniLeague() {
   const p = useParams<{ ml?: string; }>()
   const selected = createSelector(() => p.ml)
   const customMls = useCustomMinileagues()
-  const template = () => miniLeagueTemplates[p.ml] ?? customMls().configs?.find(c => c.id === p.ml)?.config
 
   return (
     <Box sx={{ display: "flex", flexDirection: "row", gap: "16px", height: "100%" }}>
@@ -39,11 +38,14 @@ export default function ManageMiniLeague() {
         </List>
       </Box>
 
-      <Show when={p.ml}>
-        <Box sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} >
-          <ManageConfigMiniLeague name={p.ml} template={template()} />
-        </Box>
-      </Show>
+      <Show when={p.ml}>{ml => {
+        const template = miniLeagueTemplates[ml()] ?? customMls().configs?.find(c => c.id === p.ml)?.config
+        return (
+          <Box sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} >
+            <ManageConfigMiniLeague name={ml()} template={template} />
+          </Box>
+        )
+      }}</Show>
     </Box>
   )
 }

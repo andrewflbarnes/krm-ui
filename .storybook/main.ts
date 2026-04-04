@@ -35,7 +35,7 @@ const config: StorybookConfig = {
       docgen: {
         savePropValueAsString: true,
         shouldExtractLiteralValuesFromEnum: true,
-        propFilter: (prop: any) =>
+        propFilter: (prop) =>
           prop.parent ? !/node_modules/.test(prop.parent.fileName) : true,
       },
     },

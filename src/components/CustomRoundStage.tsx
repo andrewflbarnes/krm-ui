@@ -64,7 +64,7 @@ export default function CustomRoundStage(props: {
     }
   }
 
-  let ref!: HTMLDivElement
+  let ref!: HTMLDivElement // oxlint-disable-line no-unassigned-vars
   return (
     <div ref={ref}>
       <AddKnockoutModal
@@ -131,7 +131,7 @@ function BaseCustomRoundStage(props: FlowProps<{
     }
   }
 
-  let ref!: HTMLDivElement
+  let ref!: HTMLDivElement // oxlint-disable-line no-unassigned-vars
   return (
     <div ref={ref}>
       <div style={{
