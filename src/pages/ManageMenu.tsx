@@ -21,7 +21,7 @@ const options: Option[] = [
   },
   {
     label: "Continue",
-    description: "Continue an existing race",
+    description: "View/Continue an existing race",
     href: "continue",
     icon: <DownhillSkiing fontSize="large" />
   },

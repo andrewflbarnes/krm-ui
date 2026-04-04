@@ -1,11 +1,13 @@
-import { createComputed, createSignal } from "solid-js";
+import { createComputed, createSignal, Show } from "solid-js";
 import krmApi, { RoundInfo } from "../api/krm";
 import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
 import notification from "../hooks/notification";
-import { Button } from "@suid/material";
+import { Button, Card, CardContent, Typography } from "@suid/material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
+import { useNavigate } from "@solidjs/router";
+import { AddCircleOutline, ArrowCircleDown } from "@suid/icons-material";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
@@ -70,6 +72,8 @@ function ManageContinueInternal() {
     }
   }
 
+  const nav = useNavigate()
+
   return (
     <>
       <ModalConfirmAction
@@ -79,15 +83,40 @@ function ManageContinueInternal() {
       >
         This will overwrite any tracked rounds which have not been uploaded/synced, are you sure?
       </ModalConfirmAction>
-      <Button onClick={[setDownload, true]}>
-        Download
-      </Button>
-      <ManageContinueList
-        rounds={rounds()}
-        onDeleteRound={handleDeleteRound}
-        onUploadRound={handleUploadRound}
-        onCopyToClipboard={handleCopyToClipboard}
-      />
+      <Show
+        when={rounds().length > 0}
+        fallback={(
+          <Card variant="outlined">
+            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
+              <Typography variant="h6">
+                No races found
+              </Typography>
+              <Button
+                onClick={handleDownload}
+                startIcon={<ArrowCircleDown />}
+              >
+                download
+              </Button>
+              <Button
+                onClick={[nav, "/manage/new"]}
+                startIcon={<AddCircleOutline />}
+              >
+                create a new race
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+      >
+        <Button onClick={[setDownload, true]}>
+          Download
+        </Button>
+        <ManageContinueList
+          rounds={rounds()}
+          onDeleteRound={handleDeleteRound}
+          onUploadRound={handleUploadRound}
+          onCopyToClipboard={handleCopyToClipboard}
+        />
+      </Show>
     </>
   )
 }
