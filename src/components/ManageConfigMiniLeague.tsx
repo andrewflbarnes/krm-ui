@@ -22,7 +22,7 @@ export default function ManageConfigMiniLeague(props: Props) {
 function Content(props: Props) {
   const validRaceCount = () => {
     const expected = props.template.teams * (props.template.teams - 1) / 2
-    return props.template.races.length % expected == 0
+    return props.template.races.length - expected == 0 || props.template.races.length % expected == 0
   }
   const allRaceAll = () => {
     for (let i = 0; i < props.template.teams; i++) {

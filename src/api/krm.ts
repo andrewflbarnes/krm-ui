@@ -23,7 +23,7 @@ export type RoundDetails = {
   description: string;
 }
 export type KrmApi = {
-  clearLocalData():void;
+  clearLocalData(): void;
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
   createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
