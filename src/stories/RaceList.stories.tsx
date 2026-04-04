@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import RaceList from '../components/RaceList';
-import { fn } from '@storybook/test';
+import { fn } from 'storybook/test';
 import { knockouts, races } from './data';
 import { ComponentProps, createEffect, createSignal, untrack } from 'solid-js';
 import { Race } from '../kings';

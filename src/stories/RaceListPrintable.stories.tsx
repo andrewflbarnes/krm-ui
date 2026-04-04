@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import { knockouts, races } from './data';
 import RaceListPrintable from '../components/RaceListPrintable';
 

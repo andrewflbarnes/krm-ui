@@ -1,5 +1,5 @@
-import { expect, fn, userEvent, waitFor, within } from '@storybook/test';
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import { expect, fn, userEvent, waitFor, within } from 'storybook/test';
+import { Meta, StoryObj } from 'storybook-solidjs-vite';
 import ManageNewSelect from '../components/ManageNewSelect';
 import { ClubSeeding } from '../kings';
 
@@ -12,7 +12,7 @@ const meta = {
   args: {
     onUpdate: fn(),
     onErrorUpdate: fn(),
-  }
+  },
 } satisfies Meta<typeof ManageNewSelect>;
 
 export default meta;
@@ -30,7 +30,7 @@ const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol',
 export const Default: Story = {
   args: {
     config: initialConfig(),
-  }
+  },
 };
 
 const missingConfig = initialConfig(10);

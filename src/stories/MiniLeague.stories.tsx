@@ -1,8 +1,8 @@
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import { ComponentProps, createEffect, createSignal, untrack } from "solid-js";
 import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
 import MiniLeague from '../components/MiniLeague';
-import { expect, fn, userEvent, waitFor } from '@storybook/test';
+import { expect, fn, userEvent, waitFor } from 'storybook/test';
 import { initRaces, initTeams } from '../test';
 
 // Identical to above but reverse the teams to ensure rendering isn't affected
@@ -24,7 +24,7 @@ const MiniLeagueWithHandler = (props: ComponentProps<typeof MiniLeague>) => {
     newRaces[result.groupRace] = result
     console.log("Received result change event: " + JSON.stringify(result))
     setRaces(newRaces)
-    props.onResultChange(result)
+    props.onResultChange?.(result)
     //notification.info("Received result change event: " + JSON.stringify(result))
   }
   return <MiniLeague {...props} onResultChange={handleResultChange} races={races()} />

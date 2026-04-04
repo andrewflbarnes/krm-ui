@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import RunRaceResults from '../components/RunRaceResults';
 import { Round } from '../kings';
 

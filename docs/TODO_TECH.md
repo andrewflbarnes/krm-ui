@@ -25,6 +25,7 @@
 
 ## Should
 
+- [ ] Fix Story types which are empty for some reason
 - [ ] Use actual drawer component for nav
 - [ ] playwright - add description, venue, etc. in info step
 - [ ] playwright - validate missing teams

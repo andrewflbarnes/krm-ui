@@ -1,6 +1,6 @@
 import { Button, createPalette, createTheme, Paper, ThemeProvider } from '@suid/material';
 import { createMemo, createSignal } from 'solid-js';
-import { Preview } from 'storybook-solidjs';
+import { createJSXDecorator, Preview } from 'storybook-solidjs-vite';
 import "../src/utils/stringutils"
 
 const [mode, setMode] = createSignal<"light" | "dark">("light");
@@ -47,20 +47,22 @@ const preview: Preview = {
   //  theme: "light",
   //},
   decorators: [
-    (Story) => (
-      <ThemeProvider theme={theme}>
-        <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
-          <div>
-            <Button variant="contained" color="primary" onClick={() => setMode(mode() === "light" ? "dark" : "light")}>mode: {mode()}</Button>
+    createJSXDecorator((Story) => {
+      return (
+        <ThemeProvider theme={theme}>
+          <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
+            <div>
+              <Button variant="contained" color="primary" onClick={() => setMode(mode() === "light" ? "dark" : "light")}>mode: {mode()}</Button>
+            </div>
+            <div style={{ margin: "auto" }}>
+              <Paper>
+                <Story />
+              </Paper>
+            </div>
           </div>
-          <div style={{ margin: "auto" }}>
-            <Paper>
-              <Story />
-            </Paper>
-          </div>
-        </div>
-      </ThemeProvider >
-    )
+        </ThemeProvider >
+      )
+    })
   ],
 };
 

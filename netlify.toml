@@ -1,5 +1,5 @@
 [build]
-  command = "pnpm build"
+  command = "pnpm build && pnpm build-storybook"
   publish = "dist"
 
 [[plugins]]

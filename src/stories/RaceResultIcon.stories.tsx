@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import RaceResultIcon from '../ui/RaceResultIcon';
 
 const meta = {

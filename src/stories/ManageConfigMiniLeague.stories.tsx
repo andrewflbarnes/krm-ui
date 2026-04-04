@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from 'storybook-solidjs';
+import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import ManageConfigMiniLeague from '../components/ManageConfigMiniLeague';
 import { MiniLeagueTemplate } from '../kings';
 
