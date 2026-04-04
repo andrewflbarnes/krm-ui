@@ -38,6 +38,8 @@
 - [x] Support 1 team
 - [x] Support 0 teams
 - [x] Don't require config to be loaded to start a race
+- [x] Generate results HTML
+- [x] Reduce number of clicks to load config from /manage/new
 
 ## Must
 
@@ -62,11 +64,9 @@
 - [ ] Dynamic test/validation for custom round config
 - [ ] DSQ reasons
 - [ ] Support optional knockouts
-- [ ] Generate results HTML
 - [ ] Support custom splits (instead of an alogrithmic split 3 ways)
 - [ ] Track seeding by year from tracker/scraping
 - [ ] Add validity checks to ManageConfigRound
-- [ ] Reduce number of clicks to load config from /manage/new
 - [ ] Import data from file
 - [ ] Import data via link (base64)
 
