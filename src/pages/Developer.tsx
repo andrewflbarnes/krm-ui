@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { OpenInNew } from "@suid/icons-material";
-import { Button, ButtonGroup, Link } from "@suid/material";
+import { Button, ButtonGroup, Link, Paper } from "@suid/material";
 import { createSelector, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 const DeveloperData = lazy(() => import("../components/DeveloperData"));
@@ -18,7 +18,7 @@ export default function Developer() {
   const selected = createSelector(() => p.devview)
   const nav = useNavigate()
   return (
-    <>
+    <Paper sx={{ height: 1, padding: 1 }}>
       <div style={{ display: "flex", "justify-content": "center" }}>
         <ButtonGroup>
           <For each={devViews}>{view =>
@@ -44,6 +44,6 @@ export default function Developer() {
       <Show when={p.devview}>
         <Dynamic component={devViews.find(v => v.href === p.devview)?.component} />
       </Show>
-    </>
+    </Paper>
   )
 }

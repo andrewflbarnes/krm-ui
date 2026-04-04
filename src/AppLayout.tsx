@@ -20,7 +20,7 @@ export default function AppLayout(props: ParentProps<{
         <AppBar />
       </div>
       <main style={{
-        margin: "1rem",
+        margin: "0.5rem",
         "flex-grow": 1,
         position: "relative",
         overflow: "scroll",

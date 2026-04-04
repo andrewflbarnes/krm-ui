@@ -1,8 +1,10 @@
 import { Button, Card, CardContent, Modal } from "@suid/material";
 import { For, createSignal, createEffect } from "solid-js";
+import { useKings } from "../kings";
 
 export default function DeveloperData() {
   const [data, setData] = createSignal<string | undefined>()
+  const [{ league }] = useKings()
   createEffect(() => {
     const close = (e: KeyboardEvent) => {
       if (e.key === "Escape") {
@@ -38,7 +40,7 @@ export default function DeveloperData() {
         </Card>
       </Modal>
       <div style={{ display: "flex", "flex-direction": "column", "align-items": "start" }}>
-        kings-selected-league: {localStorage.getItem("kings-selected-league")}
+        kings-selected-league: {league()}
         <For each={["western", "northern", "southern", "midlands"]}>{league =>
           <Button onClick={[setData, JSON.parse(localStorage.getItem(`kings-${league}-config`)) || "N/A"]}>
             kings-{league}-config
