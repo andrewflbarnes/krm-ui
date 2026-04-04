@@ -24,7 +24,7 @@ export default function Home() {
   const hasRounds = () => {
     try {
       return rounds()
-        .filter(({ status }) => status != 'complete' && status != 'abandoned')
+        .filter(({ status }) =>  status != 'abandoned')
         .length > 0
     } catch (e) {
       console.warn("Failed to get rounds for league", k.league(), e)
@@ -77,7 +77,7 @@ export default function Home() {
                 backgroundColor: "background.default",
               }}
             >
-              Continue a race
+              View/Continue a race
             </Button>
           </Show>
           <Button
