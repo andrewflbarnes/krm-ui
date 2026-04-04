@@ -52,7 +52,7 @@ export class RoundSetup {
     await this.page.getByRole('link', { name: 'Race' })
       .describe('Race link')
       .click();
-    await this.page.getByRole('link', { name: 'New' })
+    await this.page.getByRole('button', { name: 'New' })
       .describe('New race link')
       .click();
   }
