@@ -72,7 +72,7 @@ export default function Home() {
               variant="outlined"
               color="inherit"
               style={{ visibility: `${hasRounds() ? "visible" : "hidden"}` }}
-              onClick={() => nav("/races/continue")}
+              onClick={() => nav("/races")}
               sx={{
                 backgroundColor: "background.default",
               }}

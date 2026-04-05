@@ -28,7 +28,7 @@ export type KrmApi = {
   getLeagueConfig(league: League): LeagueData | null;
   createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
   getRounds(league?: string): RoundInfo[];
-  getRound(id: string): Round;
+  getRound(id: string): Round | null;
   deleteRound(id: string): void;
   updateRace(id: string, race: Race): void;
   progressRound(id: string): ProgressionStage;
@@ -175,10 +175,10 @@ export default (function krmApiLocalStorage(): KrmApi {
     return "complete"
   }
 
-  function getRound(id: string): Round {
+  function getRound(id: string): Round | null {
     const r = JSON.parse(localStorage.getItem(id))
     if (!r) {
-      return r
+      return null
     }
     const { details } = r
     return {

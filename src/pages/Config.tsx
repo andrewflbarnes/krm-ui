@@ -1,7 +1,7 @@
 import { useCurrentMatches, useNavigate } from "@solidjs/router";
 import { ArrowBack, Assignment, Create, DownhillSkiing, EmojiEvents, ListAlt } from "@suid/icons-material";
 import { Box, Button, Card, CardActionArea, CardContent, Typography } from "@suid/material";
-import { createMemo, For, JSX, ParentProps, Show } from "solid-js";
+import { For, JSX, ParentProps, Show } from "solid-js";
 import { useFeatureFlags } from "../hooks/flags";
 
 const basePath = "/config"
@@ -50,12 +50,6 @@ const configs: Option[] = [
     experimental: true,
   },
 ]
-
-const locations = [...configs, ...data]
-  .sort((a, b) => b.href.length - a.href.length)
-  .map(({ href, label }) => ({ test: new RegExp(href), label }))
-
-console.log("Locations", locations)
 
 function SubMenu(props: { options: Option[], onSelected?: (option: Option) => void }) {
   const flags = useFeatureFlags()
@@ -111,16 +105,14 @@ export default function Config(props: ParentProps) {
 
   const nav = useNavigate()
 
-  const Menu = createMemo(() => (
-    <>
-      <SubMenu options={configs} />
-      <SubMenu options={data} />
-    </>
-  ))
-
   return (
     <>
-      <Show when={nested()} fallback={Menu()}>
+      <Show when={nested()} fallback={
+        <>
+          <SubMenu options={configs} />
+          <SubMenu options={data} />
+        </>
+      }>
         <Box>
           <Button startIcon={<ArrowBack />} onClick={[nav, basePath]}>
             Back

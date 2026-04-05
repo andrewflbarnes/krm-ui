@@ -38,7 +38,7 @@ export const useRaceOptions = () => {
       navigate(`/races/${params.raceid}/${s}`)
     }
   }
-  const useRound = () => useQuery<Round>(() => ({
+  const useRound = () => useQuery<Round | null>(() => ({
     queryKey: [params.raceid],
     queryFn: async () => new Promise((res, rej) => {
       try {
