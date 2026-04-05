@@ -101,7 +101,7 @@ function RacesInternal() {
             onCopyToClipboard={handleCopyToClipboard}
           />
         </Show>
-        <Box sx={{ mt: "auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))", gap: 3 }}>
+        <Box sx={{ mt: "auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))", gap: 1 }}>
           <ButtonCard
             label="New"
             description="Start a new race"

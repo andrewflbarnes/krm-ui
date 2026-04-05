@@ -1,9 +1,10 @@
-import { Box, Button, Card, CardContent, IconButton, Modal, Stack, Typography } from "@suid/material";
+import { Box, Card, CardContent, IconButton, Modal, Stack } from "@suid/material";
 import { useKings } from "../kings";
 import ConfigActions from "../components/ConfigActions";
 import ConfigClubs from "../components/ConfigClubs";
 import { createSignal, Show } from "solid-js";
 import { Construction, Settings } from "@suid/icons-material";
+import ButtonCard from "../ui/ButtonCard";
 
 export default function TeamConfig() {
   const [k] = useKings()
@@ -44,20 +45,13 @@ function NoData() {
       alignItems="center"
       gap="1em"
     >
-      <Button
-        variant="outlined"
+      <ButtonCard
+        label={`Load ${league()} config`}
+        description="Or click the settings icon in the top right to load custom config"
+        icon={<Construction fontSize="large" />}
         onClick={load}
-        startIcon={<Construction />}
         disabled={loadingConfig()}
-        sx={{
-          backgroundColor: "background.default",
-        }}
-      >
-        Load {league()} Config
-      </Button>
-      <Typography variant="body1" textAlign="center">
-        Or click the settings icon in the top right to load custom config
-      </Typography>
+      />
     </Stack>
   )
 }
