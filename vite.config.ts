@@ -1,11 +1,48 @@
 import { defineConfig } from "vite";
 import suidPlugin from "@suid/vite-plugin";
 import solidPlugin from "vite-plugin-solid";
+import { VitePWA } from "vite-plugin-pwa";
 import { ServerResponse } from "node:http";
 
 export default defineConfig({
   base: "/krm-ui",
-  plugins: [suidPlugin(), solidPlugin()],
+  plugins: [
+    suidPlugin(),
+    solidPlugin(),
+    ...(!process.env.PWA ? [] : [VitePWA({
+      registerType: "autoUpdate",
+      base: "/krm-ui/",
+      scope: "/krm-ui/",
+      manifest: {
+        name: "Kings Results Manager",
+        short_name: "KRM",
+        description: "A tool for orchestrating races run by Kings Ski Club",
+        start_url: "/krm-ui/",
+        scope: "/krm-ui/",
+        display: "standalone",
+        theme_color: "#209CEE",
+        background_color: "#ffffff",
+        icons: [
+          {
+            src: "/krm-ui/android-chrome-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+          },
+          {
+            src: "/krm-ui/android-chrome-512x512.png",
+            sizes: "512x512",
+            type: "image/png",
+          },
+          {
+            src: "/krm-ui/android-chrome-maskable-192x192.png",
+            sizes: "192x192",
+            type: "image/png",
+            purpose: "maskable",
+          },
+        ],
+      },
+    })]),
+  ],
   server: {
     allowedHosts: ["localhost", "learning-immortal-griffon.ngrok-free.app"],
     proxy: {
