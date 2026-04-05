@@ -47,7 +47,7 @@ export default function RunRace(props: ParentProps) {
             <StateCard
               icon={<SearchOff sx={{ fontSize: 64, color: "text.disabled", mb: 2 }} />}
               title="Races not found"
-              body="No race data could be loaded. Please verify the race ID in the URL is correct and try again."
+              body="No race data could be loaded. Verify the race ID in the URL is correct and/or try refreshing."
             />
           </Match>
         </Switch>
