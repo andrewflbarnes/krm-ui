@@ -45,7 +45,7 @@ export const useRaceOptions = () => {
         res(krmApi.getRound(params.raceid))
       } catch (e) {
         console.error("Failed to fetch round data", e)
-        rej()
+        rej(e)
       }
     }),
     staleTime: 1000 * 60 * 5,
