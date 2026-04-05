@@ -51,7 +51,7 @@ const configs: Option[] = [
   },
 ]
 
-function SubMenu(props: { options: Option[], onSelected?: (option: Option) => void }) {
+function SubMenu(props: { options: Option[], label?: string, onSelected?: (option: Option) => void }) {
   const flags = useFeatureFlags()
   const nav = useNavigate()
 
@@ -62,11 +62,22 @@ function SubMenu(props: { options: Option[], onSelected?: (option: Option) => vo
 
   return (
     <>
+      <Show when={props.label}>
+        <Box sx={{ display: "flex", alignItems: "center", my: 1 }}>
+          <Typography variant="overline" color="text.disabled" sx={{ ml: 1, lineHeight: 1 }}>
+            {props.label}
+          </Typography>
+          <Box sx={{ flex: 1, height: "1px", bgcolor: "divider" }} />
+        </Box>
+      </Show>
       <Box sx={{
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))",
+        gridTemplateColumns: {
+          xs: `repeat(1, 1fr)`,
+          md: `repeat(2, 1fr)`,
+          lg: `repeat(3, 1fr)`,
+        },
         gap: 1,
-        mb: 1,
       }}>
         <For each={props.options}>{(opt) => {
           const { label, description, icon, experimental } = opt
@@ -109,8 +120,8 @@ export default function Config(props: ParentProps) {
     <>
       <Show when={nested()} fallback={
         <>
-          <SubMenu options={configs} />
-          <SubMenu options={data} />
+          <SubMenu options={configs} label="Configuration" />
+          <SubMenu options={data} label="Data" />
         </>
       }>
         <Box>
