@@ -3,7 +3,7 @@ import { Typography } from "@suid/material"
 import { createEffect, Match, Switch } from "solid-js"
 import { useRaceOptions } from "../hooks/results"
 
-export default function RunRaceRedirect() {
+export default function RaceRedirect() {
   const { useRound, setStage } = useRaceOptions()
   const query = useRound()
   const navigate = useNavigate()

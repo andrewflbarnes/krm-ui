@@ -18,7 +18,7 @@ function StateCard(props: { icon: JSXElement, title: string, body: string }) {
   )
 }
 
-export default function RunRace(props: ParentProps) {
+export default function Race(props: ParentProps) {
   const [, { lock, unlock }] = useKings()
   // We lock as an indicator to the user that the it doesn't make sense to be
   // able to change league while they are running races, even though changing

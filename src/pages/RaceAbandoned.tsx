@@ -4,7 +4,7 @@ import { Show } from "solid-js";
 import { useRaceOptions } from "../hooks/results";
 import { Round } from "../kings";
 
-export default function RunRaceAbandoned() {
+export default function RaceAbandoned() {
   const { useRound } = useRaceOptions()
   const query = useRound()
   const round = () => query.data

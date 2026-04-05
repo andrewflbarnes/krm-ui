@@ -26,15 +26,15 @@ function initConfig(leagueConfig?: LeagueData) {
   }, {})
 }
 
-export default function ManageNew() {
+export default function RaceNew() {
   return (
     <BasicErrorBoundary>
-      <ManageNewInternal />
+      <RaceNewInternal />
     </BasicErrorBoundary>
   )
 }
 
-function ManageNewInternal() {
+function RaceNewInternal() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 

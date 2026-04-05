@@ -60,7 +60,7 @@ export default function Home() {
           <Button
             variant="outlined"
             color="inherit"
-            onClick={() => nav("/manage/new")}
+            onClick={() => nav("/races/new")}
             sx={{
               backgroundColor: "background.default",
             }}
@@ -72,7 +72,7 @@ export default function Home() {
               variant="outlined"
               color="inherit"
               style={{ visibility: `${hasRounds() ? "visible" : "hidden"}` }}
-              onClick={() => nav("/manage/continue")}
+              onClick={() => nav("/races/continue")}
               sx={{
                 backgroundColor: "background.default",
               }}

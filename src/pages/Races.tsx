@@ -15,15 +15,15 @@ function getSortedRounds(league: string) {
   return unsortedRounds.sort((a, b) => b.details.date.getTime() - a.details.date.getTime())
 }
 
-export default function ManageContinue() {
+export default function Races() {
   return (
     <BasicErrorBoundary message="Failed to render">
-      <ManageContinueInternal />
+      <RacesInternal />
     </BasicErrorBoundary>
   )
 }
 
-function ManageContinueInternal() {
+function RacesInternal() {
   const [k] = useKings()
   const [rounds, setRounds] = createSignal<RoundInfo[]>([])
   createComputed(() => {
@@ -106,7 +106,7 @@ function ManageContinueInternal() {
             label="New"
             description="Start a new race"
             icon={<AddCircleOutlined fontSize="large" />}
-            onClick={[nav, "/manage/new"]}
+            onClick={[nav, "/races/new"]}
           />
           <ButtonCard
             label="Download"

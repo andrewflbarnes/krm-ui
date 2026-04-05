@@ -10,15 +10,15 @@ import { useAuth } from "../hooks/auth";
 import { useBreadcrumberUpdate } from "../hooks/breadcrumb";
 import { useKings } from "../kings";
 
-export default function RunRaceInProgress() {
+export default function RaceInProgress() {
   return (
     <BasicErrorBoundary message="race configuration for that number of teams or stage probably doesn't exist yet">
-      <RunRaceInProgressInternal />
+      <RaceInProgressInternal />
     </BasicErrorBoundary>
   )
 }
 
-function RunRaceInProgressInternal() {
+function RaceInProgressInternal() {
   const {
     stage,
     useRound,

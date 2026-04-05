@@ -14,12 +14,12 @@ const Developer = lazy(() => import("./pages/Developer"));
 const TeamConfig = lazy(() => import("./pages/TeamConfig"));
 const Tracker = lazy(() => import("./pages/Tracker"));
 const Portal = lazy(() => import("./pages/Portal"));
-const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
-const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
-const RunRaceAbandoned = lazy(() => import("./pages/RunRaceAbandoned"));
-const RunRaceInProgress = lazy(() => import("./pages/RunRaceInProgress"));
-const RunRaceRedirect = lazy(() => import("./pages/RunRaceRedirect"));
-const RunRace = lazy(() => import("./pages/RunRace"));
+const Races = lazy(() => import("./pages/Races"));
+const Race = lazy(() => import("./pages/Race"));
+const RaceNew = lazy(() => import("./pages/RaceNew"));
+const RaceAbandoned = lazy(() => import("./pages/RaceAbandoned"));
+const RaceInProgress = lazy(() => import("./pages/RaceInProgress"));
+const RaceRedirect = lazy(() => import("./pages/RaceRedirect"));
 const Status404 = lazy(() => import("./pages/Status404"));
 import { Toaster } from "solid-toast";
 import "./utils/stringutils";
@@ -37,6 +37,16 @@ export default function App() {
       <Router base={`${import.meta.env.BASE_URL}`} root={HydratedAppLayout}>
         {/* home */}
         <Route path="/" component={Home} />
+        {/* races */}
+        <Route path="/races" info={{ breadcrumb: "Race", breadcrumbTo: "/manage/continue" }}>
+          <Route path="/" component={Races} />
+          <Route path="/new" component={RaceNew} info={{ breadcrumb: "New" }} />
+          <Route path="/:raceid" component={Race}>
+            <Route path="/" component={RaceRedirect} />
+            <Route path="/abandoned" component={RaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
+            <Route path="/:stage" component={RaceInProgress} info={{ breadcrumb: "Stage" }} />
+          </Route>
+        </Route>
         {/* teams */}
         <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
         {/* config */}
@@ -51,16 +61,6 @@ export default function App() {
             <Route path="/:round?" />
           </Route>
           <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
-        </Route>
-        {/* races */}
-        <Route path="/races" info={{ breadcrumb: "Race", breadcrumbTo: "/manage/continue" }}>
-          <Route path="/" component={RaceManagerContinue} />
-          <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
-          <Route path="/:raceid" component={RunRace}>
-            <Route path="/" component={RunRaceRedirect} />
-            <Route path="/abandoned" component={RunRaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
-            <Route path="/:stage" component={RunRaceInProgress} info={{ breadcrumb: "Stage" }} />
-          </Route>
         </Route>
         {/* developer tools */}
         <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
