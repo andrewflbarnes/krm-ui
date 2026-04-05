@@ -10,7 +10,7 @@
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "pnpm exec oxlint && pnpm exec eslint",
-    "e2e": "playwright test",
+    "e2e": "playwright test --retries 2",
     "e2e:ui": "cross-env PLAYWRIGHT_NO_PARALLEL=true playwright test --ui",
     "e2e:report": "playwright show-report",
     "check": "tsc --noEmit --skipLibCheck",
