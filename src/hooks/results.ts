@@ -1,8 +1,8 @@
 import { useNavigate, useParams } from "@solidjs/router"
 import { useQuery } from "@tanstack/solid-query"
-import { createSignal } from "solid-js"
 import { Round, Stage } from "../kings"
 import krmApi from "../api/krm"
+import { atom, useAtom } from "solid-jotai"
 
 export const stages: {
   [s in Stage]: string
@@ -21,16 +21,22 @@ export const views = {
 } as const
 export type View = keyof typeof views
 
-const [view, setView] = createSignal<View>("list")
-const [live, setLive] = createSignal(false)
-const switchLive = () => setLive(v => !v)
-const [collapse, setCollapse] = createSignal(false)
-const switchCollapse = () => setCollapse(v => !v)
-const [northern, setNorthern] = createSignal(false)
-const switchNorthern = () => setNorthern(v => !v)
-const [round, setRound] = createSignal<Round>()
+const viewAtom = atom<View>("list")
+const liveAtom = atom(false)
+const collapseAtom = atom(false)
+const northernAtom = atom(false)
+const roundAtom = atom<Round>()
 
 export const useRaceOptions = () => {
+  const [view, setView] = useAtom(viewAtom)
+  const [live, setLive] = useAtom(liveAtom)
+  const switchLive = () => setLive(v => !v)
+  const [collapse, setCollapse] = useAtom(collapseAtom)
+  const switchCollapse = () => setCollapse(v => !v)
+  const [northern, setNorthern] = useAtom(northernAtom)
+  const switchNorthern = () => setNorthern(v => !v)
+  const [round, setRound] = useAtom(roundAtom)
+
   const navigate = useNavigate()
   const params = useParams<{ raceid: string, stage?: string }>()
   const updateStage = (s: Stage) => {
