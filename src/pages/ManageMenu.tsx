@@ -1,8 +1,10 @@
-import { useNavigate } from "@solidjs/router";
-import { AddCircleOutlined, Assignment, Create, DownhillSkiing, ListAlt } from "@suid/icons-material";
-import { Box, Card, CardActionArea, CardContent, Typography } from "@suid/material";
-import { For, JSX, Show } from "solid-js";
+import { useCurrentMatches, useNavigate } from "@solidjs/router";
+import { ArrowBack, Assignment, Create, DownhillSkiing, EmojiEvents, ListAlt } from "@suid/icons-material";
+import { Box, Button, Card, CardActionArea, CardContent, Typography } from "@suid/material";
+import { createMemo, For, JSX, ParentProps, Show } from "solid-js";
 import { useFeatureFlags } from "../hooks/flags";
+
+const basePath = "/config"
 
 type Option = {
   label: string;
@@ -12,17 +14,17 @@ type Option = {
   experimental?: boolean;
 }
 
-const options: Option[] = [
+const data: Option[] = [
   {
-    label: "New",
-    description: "Start a new race",
-    href: "new",
-    icon: <AddCircleOutlined fontSize="large" />
+    label: "Results Data",
+    description: "View the latest results tables from kingsski.club",
+    href: "tracker",
+    icon: <EmojiEvents fontSize="large" />
   },
   {
-    label: "Continue",
-    description: "View/Continue an existing race",
-    href: "continue",
+    label: "Site Results",
+    description: "View the the latest results in kingsski.club",
+    href: "portal",
     icon: <DownhillSkiing fontSize="large" />
   },
 ]
@@ -30,87 +32,102 @@ const options: Option[] = [
 const configs: Option[] = [
   {
     label: "View Round",
-    description: "Show round configurations used to determine how teams progress through each stage",
+    description: "Round configurations determining how teams progress through stages",
     href: "round",
     icon: <Assignment fontSize="large" />,
   },
   {
     label: "View Minileague",
-    description: "Show mini league configurations used to determine how teams race in a group",
+    description: "Mini league configurations determining how teams race in a group",
     href: "minileague",
     icon: <ListAlt fontSize="large" />,
   },
   {
     label: "Create Round",
-    description: "Create a custom round configuration used to determine how teams progress through each stage",
+    description: "Custom round configuration determining how teams progress through stages",
     href: "round/create",
     icon: <Create fontSize="large" />,
     experimental: true,
   },
 ]
 
-export default function ManageMenu() {
+const locations = [...configs, ...data]
+  .sort((a, b) => b.href.length - a.href.length)
+  .map(({ href, label }) => ({ test: new RegExp(href), label }))
+
+console.log("Locations", locations)
+
+function SubMenu(props: { options: Option[], onSelected?: (option: Option) => void }) {
+  const flags = useFeatureFlags()
   const nav = useNavigate()
 
-  // TODO how do we reconccile this with firebase? Should we just not use tanstack or do we use firebase to psuh updates to query client?
-  const flags = useFeatureFlags()
+  const handleClick = (option: Option) => {
+    props.onSelected?.(option)
+    nav(option.href)
+  }
 
   return (
     <>
-      <Typography variant="h2" gutterBottom sx={{ width: "100%", textAlign: "center" }}>
-        Racing
-      </Typography>
       <Box sx={{
         display: "grid",
         gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))",
-        gap: 3,
-        mb: 3,
+        gap: 1,
+        mb: 1,
       }}>
-        <For each={options}>{({ label, description, href, icon, experimental }) => (
-          <Show when={!experimental || flags.experimental}>
-            <Card variant="outlined">
-              <CardActionArea sx={{ height: "100%" }} onClick={[nav, href]}>
-                <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Box color="primary.main">
-                    {icon}
-                  </Box>
-                  <Box>
-                    <Typography variant="h6">{label}</Typography>
-                    <Typography variant="body2" color="text.secondary">{description}</Typography>
-                  </Box>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Show>
-        )}</For>
+        <For each={props.options}>{(opt) => {
+          const { label, description, icon, experimental } = opt
+          return (
+            <Show when={!experimental || flags.experimental}>
+              <Card variant="outlined">
+                <CardActionArea sx={{ height: "100%" }} onClick={[handleClick, opt]}>
+                  <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
+                    <Box color="primary.main">
+                      {icon}
+                    </Box>
+                    <Box>
+                      <Typography variant="h6">{label}</Typography>
+                      <Typography variant="body2" color="text.secondary">{description}</Typography>
+                    </Box>
+                  </CardContent>
+                </CardActionArea>
+              </Card>
+            </Show>
+          )
+        }}</For>
       </Box>
+    </>
+  )
+}
 
-      <Typography variant="h2" gutterBottom sx={{ width: "100%", textAlign: "center" }}>
-        Configuration
-      </Typography>
-      <Box sx={{
-        display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))",
-        gap: 3,
-      }}>
-        <For each={configs}>{({ label, description, href, icon, experimental }) => (
-          <Show when={!experimental || flags.experimental}>
-            <Card variant="outlined">
-              <CardActionArea sx={{ height: "100%" }} onClick={[nav, href]}>
-                <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Box color="primary.main">
-                    {icon}
-                  </Box>
-                  <Box>
-                    <Typography variant="h6">{label}</Typography>
-                    <Typography variant="body2" color="text.secondary">{description}</Typography>
-                  </Box>
-                </CardContent>
-              </CardActionArea>
-            </Card>
-          </Show>
-        )}</For>
-      </Box>
+export default function ManageMenu(props: ParentProps) {
+  const m = useCurrentMatches()
+  const nested = () => {
+    const matches = m()
+    if (matches?.length < 1) {
+      return false
+    }
+    return !matches[matches.length - 1].path.endsWith(basePath)
+  }
+
+  const nav = useNavigate()
+
+  const Menu = createMemo(() => (
+    <>
+      <SubMenu options={configs} />
+      <SubMenu options={data} />
+    </>
+  ))
+
+  return (
+    <>
+      <Show when={nested()} fallback={Menu()}>
+        <Box>
+          <Button startIcon={<ArrowBack />} onClick={[nav, basePath]}>
+            Back
+          </Button>
+        </Box>
+        {props.children}
+      </Show>
     </>
   )
 }

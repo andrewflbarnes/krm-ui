@@ -9,7 +9,7 @@ export default function Manage(props: ParentProps) {
       gap: "8px",
       height: "100%",
     }}>
-      <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4} >
+      <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} >
         {props.children}
       </Paper>
     </Box>

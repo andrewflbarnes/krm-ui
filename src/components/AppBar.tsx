@@ -89,17 +89,8 @@ export default function KrmAppBar() {
                     display: { xs: "none", sm: "inline" },
                   }}
                 >
-                  <Link href="/tracker">
-                    Tracker
-                  </Link>
-                </Box>
-                <Box
-                  sx={{
-                    display: { xs: "none", sm: "inline" },
-                  }}
-                >
-                  <Link href="/portal">
-                    Portal
+                  <Link href="/config">
+                    Config
                   </Link>
                 </Box>
                 <ClerkLoaded>

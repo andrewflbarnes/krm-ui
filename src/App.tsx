@@ -38,9 +38,13 @@ export default function App() {
       <Router base={`${import.meta.env.BASE_URL}`} root={HydratedAppLayout}>
         <Route path="/" component={Home} />
         <Route path="/manage" component={RaceManager} info={{ breadcrumb: "Manage" }}>
-          <Route path="/" component={ManageMenu} />
+          <Route path="/" component={RaceManagerContinue} />
           <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
-          <Route path="/continue" component={RaceManagerContinue} info={{ breadcrumb: "Continue" }} />
+        </Route>
+        <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
+        <Route path="/config" component={ManageMenu} info={{ breadcrumb: "Config" }}>
+          <Route path="/" />
+          <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
           <Route path="/minileague" component={ManageMiniLeague} info={{ breadcrumb: "ML" }}>
             <Route path="/:ml?" />
           </Route>
@@ -48,10 +52,8 @@ export default function App() {
           <Route path="/round" component={ManageRound} info={{ breadcrumb: "Round" }}>
             <Route path="/:round?" />
           </Route>
+          <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
         </Route>
-        <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
-        <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
-        <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
         <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
           <Route path="/:devview?" />
         </Route>

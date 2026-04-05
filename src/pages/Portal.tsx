@@ -9,7 +9,6 @@ export default function Portal() {
       display: "flex",
       flexDirection: "column",
       height: "calc(100% + 2rem)",
-      margin: "-1rem",
       border: 0,
     }}>
       <iframe style={{ height: "100%" }} src={`https://www.kingsski.club/${league()}`} title={`Kings Ski Club ${league()} results`} />

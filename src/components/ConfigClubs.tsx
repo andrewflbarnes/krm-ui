@@ -56,8 +56,8 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
       gap: "8px",
       height: "100%",
     }}>
-      <Paper sx={{ width: "fit-content", height: "fit-content" }} elevation={4} >
-        <List>
+      <Paper sx={{ width: "fit-content", height: "fit-content" }} >
+        <List disablePadding>
           <ListItem disablePadding>
             <ListItemButton selected={club() == "all"} onClick={[setClub, "all"]}>
               <ListItemText primary={"All"} />
@@ -74,7 +74,7 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
         </List>
       </Paper>
       <Show when={club()}>
-        <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }} elevation={4}>
+        <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }}>
           <DivisionResultsAll results={clubData()} editable onEdit={handleEdit} />
         </Paper>
       </Show>

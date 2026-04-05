@@ -3,11 +3,12 @@ import krmApi, { RoundInfo } from "../api/krm";
 import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
 import notification from "../hooks/notification";
-import { Button, Card, CardContent, Typography } from "@suid/material";
+import { Box, Typography } from "@suid/material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import { useNavigate } from "@solidjs/router";
-import { AddCircleOutline, ArrowCircleDown } from "@suid/icons-material";
+import { AddCircleOutlined, ArrowCircleDown } from "@suid/icons-material";
+import ButtonCard from "../ui/ButtonCard";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
@@ -28,7 +29,6 @@ function ManageContinueInternal() {
   createComputed(() => {
     setRounds(getSortedRounds(k.league()))
   })
-
 
   // TODO we should use a render prop equivalent, below is getting
   //   out of hand
@@ -83,40 +83,39 @@ function ManageContinueInternal() {
       >
         This will overwrite any tracked rounds which have not been uploaded/synced, are you sure?
       </ModalConfirmAction>
-      <Show
-        when={rounds().length > 0}
-        fallback={(
-          <Card variant="outlined">
-            <CardContent sx={{ display: "flex", flexDirection: "column", alignItems: "center" }}>
-              <Typography variant="h6">
+      <Box sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
+        <Show
+          when={rounds().length > 0}
+          fallback={(
+            <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+              <Typography variant="h2" color="text.secondary">
                 No races found
               </Typography>
-              <Button
-                onClick={handleDownload}
-                startIcon={<ArrowCircleDown />}
-              >
-                download
-              </Button>
-              <Button
-                onClick={[nav, "/manage/new"]}
-                startIcon={<AddCircleOutline />}
-              >
-                create a new race
-              </Button>
-            </CardContent>
-          </Card>
-        )}
-      >
-        <Button onClick={[setDownload, true]}>
-          Download
-        </Button>
-        <ManageContinueList
-          rounds={rounds()}
-          onDeleteRound={handleDeleteRound}
-          onUploadRound={handleUploadRound}
-          onCopyToClipboard={handleCopyToClipboard}
-        />
-      </Show>
+            </Box>
+          )}
+        >
+          <ManageContinueList
+            rounds={rounds()}
+            onDeleteRound={handleDeleteRound}
+            onUploadRound={handleUploadRound}
+            onCopyToClipboard={handleCopyToClipboard}
+          />
+        </Show>
+        <Box sx={{ mt: "auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))", gap: 3 }}>
+          <ButtonCard
+            label="New"
+            description="Start a new race"
+            icon={<AddCircleOutlined fontSize="large" />}
+            onClick={[nav, "/manage/new"]}
+          />
+          <ButtonCard
+            label="Download"
+            description={"Download rounds from the server, this will overwrite any tracked rounds which have not been uploaded/synced"}
+            onClick={[setDownload, true]}
+            icon={<ArrowCircleDown fontSize="large" />}
+          />
+        </Box>
+      </Box>
     </>
   )
 }
