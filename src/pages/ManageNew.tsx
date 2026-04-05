@@ -176,7 +176,7 @@ function ManageNewInternal() {
       }
     },
     {
-      title: "Shuffle Teans",
+      title: "Shuffle Teams",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
           const r = createRound("setup", roundDetails(), seeds, raceConfigs)

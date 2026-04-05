@@ -1,6 +1,22 @@
-import { ErrorBoundary, Match, onCleanup, onMount, ParentProps, Show, Suspense, Switch } from "solid-js"
+import { ErrorBoundary, JSXElement, Match, onCleanup, onMount, ParentProps, Show, Suspense, Switch } from "solid-js"
 import { useKings } from "../kings"
 import { useRaceOptions } from "../hooks/results"
+import { Box, Card, CardContent, CircularProgress, Typography } from "@suid/material"
+import { SearchOff } from "@suid/icons-material"
+
+function StateCard(props: { icon: JSXElement, title: string, body: string }) {
+  return (
+    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 8 }}>
+      <Card sx={{ maxWidth: 420, width: "100%", textAlign: "center" }} elevation={3}>
+        <CardContent sx={{ py: 5, px: 4 }}>
+          {props.icon}
+          <Typography variant="h5" gutterBottom>{props.title}</Typography>
+          <Typography variant="body1" color="text.secondary">{props.body}</Typography>
+        </CardContent>
+      </Card>
+    </Box>
+  )
+}
 
 export default function RunRace(props: ParentProps) {
   const [, { lock, unlock }] = useKings()
@@ -21,10 +37,18 @@ export default function RunRace(props: ParentProps) {
           </Show>
         )}>
           <Match when={query.isLoading}>
-            Loading...
+            <StateCard
+              icon={<CircularProgress size={56} sx={{ mb: 2 }} />}
+              title="Loading races"
+              body="Please wait while race data is being fetched..."
+            />
           </Match>
           <Match when={!query.isSuccess || !query.data}>
-            Races not found :(
+            <StateCard
+              icon={<SearchOff sx={{ fontSize: 64, color: "text.disabled", mb: 2 }} />}
+              title="Races not found"
+              body="No race data could be loaded. Please verify the race ID in the URL is correct and try again."
+            />
           </Match>
         </Switch>
       </Suspense>

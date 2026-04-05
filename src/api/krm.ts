@@ -177,6 +177,9 @@ export default (function krmApiLocalStorage(): KrmApi {
 
   function getRound(id: string): Round {
     const r = JSON.parse(localStorage.getItem(id))
+    if (!r) {
+      return r
+    }
     const { details } = r
     return {
       ...r,

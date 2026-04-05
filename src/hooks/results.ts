@@ -40,8 +40,13 @@ export const useRaceOptions = () => {
   }
   const useRound = () => useQuery<Round>(() => ({
     queryKey: [params.raceid],
-    queryFn: async () => new Promise((res) => {
-      res(krmApi.getRound(params.raceid))
+    queryFn: async () => new Promise((res, rej) => {
+      try {
+        res(krmApi.getRound(params.raceid))
+      } catch (e) {
+        console.error("Failed to fetch round data", e)
+        rej()
+      }
     }),
     staleTime: 1000 * 60 * 5,
   }))
