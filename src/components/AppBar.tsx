@@ -78,7 +78,7 @@ export default function KrmAppBar() {
                     Dev
                   </Link>
                 </Show>
-                <Link href="/manage">
+                <Link href="/races">
                   Race
                 </Link>
                 <Link href="/teams">

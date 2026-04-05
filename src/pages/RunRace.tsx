@@ -7,7 +7,7 @@ import { SearchOff } from "@suid/icons-material"
 function StateCard(props: { icon: JSXElement, title: string, body: string }) {
   return (
     <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", mt: 8 }}>
-      <Card sx={{ maxWidth: 420, width: "100%", textAlign: "center" }} elevation={3}>
+      <Card sx={{ maxWidth: 420, width: "100%", textAlign: "center" }}>
         <CardContent sx={{ py: 5, px: 4 }}>
           {props.icon}
           <Typography variant="h5" gutterBottom>{props.title}</Typography>

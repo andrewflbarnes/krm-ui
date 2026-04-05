@@ -6,22 +6,21 @@ import { createMemo, createSignal, lazy, ParentProps } from "solid-js";
 import { createPalette, createTheme, ThemeProvider } from "@suid/material";
 import AppLayout from "./AppLayout";
 const Home = lazy(() => import("./pages/Home"));
+const Config = lazy(() => import("./pages/Config"));
+const ConfigMiniLeague = lazy(() => import("./pages/ConfigMiniLeague"));
+const ConfigRound = lazy(() => import("./pages/ConfigRound"));
+const ConfigRoundCreate = lazy(() => import("./pages/ConfigRoundCreate"));
 const Developer = lazy(() => import("./pages/Developer"));
-const RaceManager = lazy(() => import("./pages/Manage"));
 const TeamConfig = lazy(() => import("./pages/TeamConfig"));
 const Tracker = lazy(() => import("./pages/Tracker"));
 const Portal = lazy(() => import("./pages/Portal"));
-const Status404 = lazy(() => import("./pages/Status404"));
 const RaceManagerContinue = lazy(() => import("./pages/ManageContinue"));
 const RaceManagerNew = lazy(() => import("./pages/ManageNew"));
 const RunRaceAbandoned = lazy(() => import("./pages/RunRaceAbandoned"));
 const RunRaceInProgress = lazy(() => import("./pages/RunRaceInProgress"));
 const RunRaceRedirect = lazy(() => import("./pages/RunRaceRedirect"));
-const ManageMenu = lazy(() => import("./pages/ManageMenu"));
-const ManageMiniLeague = lazy(() => import("./pages/ManageMiniLeague"));
-const ManageRound = lazy(() => import("./pages/ManageRound"));
-const CreateRoundConfig = lazy(() => import("./pages/CreateRoundConfig"));
 const RunRace = lazy(() => import("./pages/RunRace"));
+const Status404 = lazy(() => import("./pages/Status404"));
 import { Toaster } from "solid-toast";
 import "./utils/stringutils";
 import { AuthProvider } from "./hooks/auth";
@@ -36,34 +35,38 @@ export default function App() {
     }}>
       <Toaster position="bottom-right" />
       <Router base={`${import.meta.env.BASE_URL}`} root={HydratedAppLayout}>
+        {/* home */}
         <Route path="/" component={Home} />
-        <Route path="/manage" component={RaceManager} info={{ breadcrumb: "Manage" }}>
-          <Route path="/" component={RaceManagerContinue} />
-          <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
-        </Route>
+        {/* teams */}
         <Route path="/teams" component={TeamConfig} info={{ breadcrumb: "Teams" }} />
-        <Route path="/config" component={ManageMenu} info={{ breadcrumb: "Config" }}>
+        {/* config */}
+        <Route path="/config" component={Config} info={{ breadcrumb: "Config" }}>
           <Route path="/" />
           <Route path="/tracker" component={Tracker} info={{ breadcrumb: "Tracker" }} />
-          <Route path="/minileague" component={ManageMiniLeague} info={{ breadcrumb: "ML" }}>
+          <Route path="/minileague" component={ConfigMiniLeague} info={{ breadcrumb: "ML" }}>
             <Route path="/:ml?" />
           </Route>
-          <Route path="/round/create" component={CreateRoundConfig} />
-          <Route path="/round" component={ManageRound} info={{ breadcrumb: "Round" }}>
+          <Route path="/round/create" component={ConfigRoundCreate} />
+          <Route path="/round" component={ConfigRound} info={{ breadcrumb: "Round" }}>
             <Route path="/:round?" />
           </Route>
           <Route path="/portal" component={Portal} info={{ breadcrumb: "Portal" }} />
         </Route>
-        <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
-          <Route path="/:devview?" />
-        </Route>
+        {/* races */}
         <Route path="/races" info={{ breadcrumb: "Race", breadcrumbTo: "/manage/continue" }}>
+          <Route path="/" component={RaceManagerContinue} />
+          <Route path="/new" component={RaceManagerNew} info={{ breadcrumb: "New" }} />
           <Route path="/:raceid" component={RunRace}>
             <Route path="/" component={RunRaceRedirect} />
             <Route path="/abandoned" component={RunRaceAbandoned} info={{ breadcrumb: "Abandoned" }} />
             <Route path="/:stage" component={RunRaceInProgress} info={{ breadcrumb: "Stage" }} />
           </Route>
         </Route>
+        {/* developer tools */}
+        <Route path="/dev" component={Developer} info={{ breadcrumb: "Developer" }}>
+          <Route path="/:devview?" />
+        </Route>
+        {/* 404 fallback */}
         <Route path="*404" component={Status404} info={{ breadcrumb: "OOPS!" }} />
       </Router>
     </div >

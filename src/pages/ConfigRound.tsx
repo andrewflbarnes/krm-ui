@@ -6,7 +6,7 @@ import ManageConfigRound from "../components/ManageConfigRound";
 import { useCustomRounds } from "../hooks/custom-config";
 import { raceConfig, RoundConfig } from "../kings";
 
-export default function ManageRound() {
+export default function ConfigRound() {
   const p = useParams<{ round?: string; }>()
   const selected = createSelector(() => p.round)
   const customRounds = useCustomRounds()

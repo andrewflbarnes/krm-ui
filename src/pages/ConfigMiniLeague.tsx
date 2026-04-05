@@ -6,7 +6,7 @@ import ManageConfigMiniLeague from "../components/ManageConfigMiniLeague";
 import { useCustomMinileagues } from "../hooks/custom-config";
 import { miniLeagueTemplates } from "../kings";
 
-export default function ManageMiniLeague() {
+export default function ConfigMiniLeague() {
   const p = useParams<{ ml?: string; }>()
   const selected = createSelector(() => p.ml)
   const customMls = useCustomMinileagues()

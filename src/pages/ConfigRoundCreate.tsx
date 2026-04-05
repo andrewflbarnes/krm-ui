@@ -32,7 +32,7 @@ const conf: {
   }
 }
 
-export default function CreateRoundConfig() {
+export default function ConfigRoundCreate() {
   const [stage, setStage] = createSignal<ConfigState>("stage1")
   const handleStageChange = (next: ConfigState) => {
     setStage(next)

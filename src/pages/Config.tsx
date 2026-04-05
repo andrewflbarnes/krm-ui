@@ -99,7 +99,7 @@ function SubMenu(props: { options: Option[], onSelected?: (option: Option) => vo
   )
 }
 
-export default function ManageMenu(props: ParentProps) {
+export default function Config(props: ParentProps) {
   const m = useCurrentMatches()
   const nested = () => {
     const matches = m()
