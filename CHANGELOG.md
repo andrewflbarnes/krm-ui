@@ -2,6 +2,60 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.3.0] - 2026-04-06
+
+### 🚀 Features
+
+- Refresh management/racing navigation
+- Aadd MiniLeagues component
+- Upgrade storybook to 10 and include in deployment
+- Show download/create card when no existing races
+- Improved UX around navigation on races and config
+
+### 🐛 Bug Fixes
+
+- Changing league now updates visibility of continue race button
+- Determine printable knockouts from stage, not status
+- Ensure we get download data from server, not cache
+- Github logo reacts to mui theme
+- Lock race creation during team selection
+- Race count validation on minileagues for 1 team
+- Correct playwright fixture after nav changes
+- Move back to typescript 5, disable some false oxlint rules
+- Remove storybook testing
+- Update selected league in dev data, minor formatting changes
+- Handle non-existent races better
+- State that the user should try refreshing if races not found
+- Correct navigation after renames, rename more pages
+- Pass error in rej
+- Use jotai for global state management
+
+### 📚 Documentation
+
+- Move a couple of features to done
+
+### 🧪 Testing
+
+- Add printable tests
+
+### ⚙️ Miscellaneous Tasks
+
+- Show teams alphabetically in new race select
+- Make create round config more obviously experimental
+- Use pnpm exec instead of npm to align with package manager
+- Update to node 22
+- Build command cleanup
+- Change continue button on homepage to view/continue
+- Further restrict pwa/sw creation, correct icon moves
+- Move/rename files after nav refactor
+- Remove unnecessary logic, fix a nav, fix non-existent race
+- Consistent button to load league config
+- Add retries to parallel playwright runs
+- Better visual distinction between config options
+- More ux consistency around buttons and creating new races
+- Shuffle footer around, change theme icon as required
+- Update github actions to latest versions
+
 ## [0.2.1] - 2026-03-30
 
 ### 🐛 Bug Fixes
