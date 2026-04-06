@@ -1,8 +1,9 @@
 import { useCurrentMatches, useNavigate } from "@solidjs/router";
 import { ArrowBack, Assignment, Create, DownhillSkiing, EmojiEvents, ListAlt } from "@suid/icons-material";
-import { Box, Button, Card, CardActionArea, CardContent, Typography } from "@suid/material";
+import { Box, Button, Typography } from "@suid/material";
 import { For, JSX, ParentProps, Show } from "solid-js";
 import { useFeatureFlags } from "../hooks/flags";
+import ButtonCard from "../ui/ButtonCard";
 
 const basePath = "/config"
 
@@ -83,19 +84,12 @@ function SubMenu(props: { options: Option[], label?: string, onSelected?: (optio
           const { label, description, icon, experimental } = opt
           return (
             <Show when={!experimental || flags.experimental}>
-              <Card variant="outlined">
-                <CardActionArea sx={{ height: "100%" }} onClick={[handleClick, opt]}>
-                  <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <Box color="primary.main">
-                      {icon}
-                    </Box>
-                    <Box>
-                      <Typography variant="h6">{label}</Typography>
-                      <Typography variant="body2" color="text.secondary">{description}</Typography>
-                    </Box>
-                  </CardContent>
-                </CardActionArea>
-              </Card>
+              <ButtonCard
+                label={label}
+                description={description}
+                icon={icon}
+                onClick={[handleClick, opt]}
+              />
             </Show>
           )
         }}</For>

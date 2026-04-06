@@ -1,37 +1,41 @@
-import { Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@suid/material";
+import { Box, Paper, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Typography } from "@suid/material";
 import { For, Show } from "solid-js";
 
-type MissingTeams = {
+type MissingTeam = {
   club: string;
   team: string;
   division: string;
 }[]
 
-export default function ManageNewUpdateTeams(props: { missingTeams: MissingTeams }) {
+export default function ManageNewUpdateTeams(props: { missingTeams: MissingTeam }) {
   return (
-    <Show when={Object.keys(props.missingTeams).length}>
+    <Box sx={{ display: "flex", flexDirection: "column", gap: 2, width: 1 }}>
       <Typography align="center" variant="h3">Missing teams</Typography>
-      <Typography align="center">The below teams will be added for this round</Typography>
-      <TableContainer component={Paper}>
-        <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
-          <TableHead>
-            <TableRow>
-              <TableCell>Team</TableCell>
-              <TableCell align="center">Club</TableCell>
-              <TableCell align="center">Division</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <For each={props.missingTeams}>{({ club, team, division }) => {
-              return <TableRow>
-                <TableCell>{team}</TableCell>
-                <TableCell align="center">{club}</TableCell>
-                <TableCell align="center">{division}</TableCell>
+      <Show when={Object.keys(props.missingTeams).length} fallback={(
+        <Typography align="center">None</Typography>
+      )}>
+        <Typography align="center">The below teams will be added for this round</Typography>
+        <TableContainer component={Paper}>
+          <Table sx={{ minWidth: 650 }} aria-label="simple table dense" size="small">
+            <TableHead>
+              <TableRow>
+                <TableCell>Team</TableCell>
+                <TableCell align="center">Club</TableCell>
+                <TableCell align="center">Division</TableCell>
               </TableRow>
-            }}</For>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Show >
+            </TableHead>
+            <TableBody>
+              <For each={props.missingTeams}>{({ club, team, division }) => {
+                return <TableRow>
+                  <TableCell>{team}</TableCell>
+                  <TableCell align="center">{club}</TableCell>
+                  <TableCell align="center">{division}</TableCell>
+                </TableRow>
+              }}</For>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Show >
+    </Box>
   )
 }

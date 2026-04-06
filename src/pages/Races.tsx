@@ -3,7 +3,7 @@ import krmApi, { RoundInfo } from "../api/krm";
 import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
 import notification from "../hooks/notification";
-import { Box, Typography } from "@suid/material";
+import { Box } from "@suid/material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import { useNavigate } from "@solidjs/router";
@@ -13,6 +13,29 @@ import ButtonCard from "../ui/ButtonCard";
 function getSortedRounds(league: string) {
   const unsortedRounds = krmApi.getRounds(league);
   return unsortedRounds.sort((a, b) => b.details.date.getTime() - a.details.date.getTime())
+}
+
+function StartRaceButton() {
+  const nav = useNavigate()
+  return (
+    <ButtonCard
+      label="New"
+      description="Start a new race"
+      icon={<AddCircleOutlined fontSize="large" />}
+      onClick={[nav, "/races/new"]}
+    />
+  )
+}
+
+function DownloadRoundsButton(props: { onDownload: (v: boolean) => void }) {
+  return (
+    <ButtonCard
+      label="Download"
+      description={"Download rounds from the server, this will overwrite any tracked rounds which have not been uploaded/synced"}
+      onClick={[props.onDownload, true]}
+      icon={<ArrowCircleDown fontSize="large" />}
+    />
+  )
 }
 
 export default function Races() {
@@ -72,8 +95,6 @@ function RacesInternal() {
     }
   }
 
-  const nav = useNavigate()
-
   return (
     <>
       <ModalConfirmAction
@@ -86,13 +107,6 @@ function RacesInternal() {
       <Box sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
         <Show
           when={rounds().length > 0}
-          fallback={(
-            <Box sx={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <Typography variant="h2" color="text.secondary">
-                No races found
-              </Typography>
-            </Box>
-          )}
         >
           <ManageContinueList
             rounds={rounds()}
@@ -101,19 +115,20 @@ function RacesInternal() {
             onCopyToClipboard={handleCopyToClipboard}
           />
         </Show>
-        <Box sx={{ mt: "auto", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))", gap: 1 }}>
-          <ButtonCard
-            label="New"
-            description="Start a new race"
-            icon={<AddCircleOutlined fontSize="large" />}
-            onClick={[nav, "/races/new"]}
-          />
-          <ButtonCard
-            label="Download"
-            description={"Download rounds from the server, this will overwrite any tracked rounds which have not been uploaded/synced"}
-            onClick={[setDownload, true]}
-            icon={<ArrowCircleDown fontSize="large" />}
-          />
+        <Box sx={{
+          mt: {
+            xs: rounds().length ? "auto": 0,
+            md: rounds().length ? "auto" : 5,
+          },
+          display: rounds().length ? "grid" : "flex",
+          width: rounds().length ? 1: 'fit-content',
+          flexDirection: "column",
+          gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))",
+          mx: 'auto',
+          gap: 1
+        }}>
+          <StartRaceButton />
+          <DownloadRoundsButton onDownload={setDownload} />
         </Box>
       </Box>
     </>

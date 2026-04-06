@@ -44,6 +44,12 @@ function NoData() {
       flexDirection="column"
       alignItems="center"
       gap="1em"
+      sx={{
+        mt: {
+          xs: 0,
+          md: 5,
+        }
+      }}
     >
       <ButtonCard
         label={`Load ${league()} config`}

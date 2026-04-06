@@ -92,7 +92,6 @@ function RaceNewInternal() {
       title: "Details",
       content: () => <ManageNewDetails {...details()} onDetailUpdate={handleDetailUpdate} />,
       onArrive: unlock,
-      loadConfig: true,
       validator: () => [true],
     },
     {
@@ -252,7 +251,7 @@ function RaceNewInternal() {
       <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
         <CallToLoadConfig />
       </Show>
-      <Box sx={{ flexGrow: 1 }}>
+      <Box sx={{ flexGrow: 1, display: "flex", overflow: "scroll", alignItems: "start", justifyContent: "center" }}>
         {steps[step()].content()}
       </Box>
       <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>

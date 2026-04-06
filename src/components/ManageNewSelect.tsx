@@ -1,5 +1,5 @@
 import { Add, ErrorOutlineRounded } from "@suid/icons-material"
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment } from "@suid/material"
+import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment, Box } from "@suid/material"
 import { batch, createEffect, createMemo, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
@@ -82,7 +82,7 @@ export default function ManageNewSelect(props: ComponentProps) {
   })
 
   return (
-    <>
+    <Box sx={{ width: 'fit-content' }} >
       <TableContainer
         component={Paper}
         sx={{ justifyContent: "center", display: "flex" }}
@@ -169,13 +169,15 @@ export default function ManageNewSelect(props: ComponentProps) {
         </Table>
       </TableContainer>
       <Show when={errors().length}>
-        <PopoverButton
-          title="Errors"
-          messages={errors()}
-          color="error"
-          startIcon={<ErrorOutlineRounded />}
-        />
+        <Box sx={{ mt: 2 }}>
+          <PopoverButton
+            title="Errors"
+            messages={errors()}
+            color="error"
+            startIcon={<ErrorOutlineRounded />}
+          />
+        </Box>
       </Show>
-    </>
+    </Box>
   )
 }
