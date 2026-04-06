@@ -17,7 +17,7 @@ export default function ManageNewDetails(props: Details & {
   onDetailUpdate: (details: Details) => void
 }) {
   return (
-    <Box width={1} displayRaw="flex" flexDirection="column" gap="1em">
+    <Box width={1} pt={1} displayRaw="flex" flexDirection="column" gap="1em">
       <Selector
         title="Round"
         options={rounds}

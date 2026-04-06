@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@suid/material"
+import { Box, Button, Paper, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup, Show, untrack } from "solid-js"
 const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
@@ -247,57 +247,52 @@ function RaceNewInternal() {
   }
 
   return (
-    <Stack flexDirection="column" height="100%" gap="1em">
-      <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
-        <CallToLoadConfig />
-      </Show>
-      <Box sx={{ flexGrow: 1, display: "flex", overflow: "scroll", alignItems: "start", justifyContent: "center" }}>
-        {steps[step()].content()}
-      </Box>
-      <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
-        <Show when={step() > 0}>
-          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handlePrev}>Previous</Button>
+    <Paper sx={{ height: 1, p: 1 }}>
+      <Stack flexDirection="column" height="100%" gap="1em">
+        <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
+          <CallToLoadConfig />
         </Show>
-        <Show when={step() < steps.length - 1}>
-          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleNext}>Next</Button>
-        </Show>
-        <Show when={step() == steps.length - 1}>
-          <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleDone}>Done</Button>
-        </Show>
+        <Box sx={{ flexGrow: 1, display: "flex", overflow: "scroll", alignItems: "start", justifyContent: "center" }}>
+          {steps[step()].content()}
+        </Box>
+        <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
+          <Show when={step() > 0}>
+            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handlePrev}>Previous</Button>
+          </Show>
+          <Show when={step() < steps.length - 1}>
+            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleNext}>Next</Button>
+          </Show>
+          <Show when={step() == steps.length - 1}>
+            <Button sx={{ flexBasis: 0, flexGrow: 1 }} variant="contained" fullWidth onClick={handleDone}>Done</Button>
+          </Show>
+        </Stack>
       </Stack>
-    </Stack>
+    </Paper>
   )
 }
 
 function CallToLoadConfig() {
   const [{ loadingConfig, league }, { loadConfig }] = useKings()
   return (
-    <Stack
-      displayRaw="flex"
-      flexDirection="column"
-      alignItems="center"
-      gap="1em"
-    >
-      <Stack flexDirection="row" alignItems="center" gap="0.5em">
-        <Button
-          size="small"
-          variant="outlined"
-          onClick={[loadConfig, undefined]}
-          startIcon={<Construction />}
-          disabled={loadingConfig()}
-        >
-          Load {league()} Config
-        </Button>
-        {" "}or load custom configuration from the{" "}
-        <A href="/teams" style={{ "text-decoration": "none" }}>
-          <Typography color="primary" style={{ display: "inline" }}>
-            <Stack direction="row" alignItems="center" gap="0.1em">
-              teams page
-              <OpenInNew fontSize="small" />
-            </Stack>
-          </Typography>
-        </A>
-      </Stack>
+    <Stack flexDirection="row" alignItems="center" justifyContent="center" gap="0.5em">
+      <Button
+        size="small"
+        variant="outlined"
+        onClick={[loadConfig, undefined]}
+        startIcon={<Construction />}
+        disabled={loadingConfig()}
+      >
+        Load {league()} Config
+      </Button>
+      {" "}or load custom configuration from the{" "}
+      <A href="/teams" style={{ "text-decoration": "none" }}>
+        <Typography color="primary" style={{ display: "inline" }}>
+          <Stack direction="row" alignItems="center" gap="0.1em">
+            teams page
+            <OpenInNew fontSize="small" />
+          </Stack>
+        </Typography>
+      </A>
     </Stack>
   )
 }

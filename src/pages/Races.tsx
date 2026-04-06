@@ -3,7 +3,7 @@ import krmApi, { RoundInfo } from "../api/krm";
 import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../kings";
 import notification from "../hooks/notification";
-import { Box } from "@suid/material";
+import { Box, Paper } from "@suid/material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import { useNavigate } from "@solidjs/router";
@@ -104,31 +104,41 @@ function RacesInternal() {
       >
         This will overwrite any tracked rounds which have not been uploaded/synced, are you sure?
       </ModalConfirmAction>
-      <Box sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 3 }}>
+      <Box sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
         <Show
           when={rounds().length > 0}
         >
-          <ManageContinueList
-            rounds={rounds()}
-            onDeleteRound={handleDeleteRound}
-            onUploadRound={handleUploadRound}
-            onCopyToClipboard={handleCopyToClipboard}
-          />
+          <Paper sx={{ height: 1 }}>
+            <ManageContinueList
+              rounds={rounds()}
+              onDeleteRound={handleDeleteRound}
+              onUploadRound={handleUploadRound}
+              onCopyToClipboard={handleCopyToClipboard}
+            />
+          </Paper>
         </Show>
         <Box sx={{
-          mt: {
-            xs: rounds().length ? "auto": 0,
-            md: rounds().length ? "auto" : 5,
+          width: 1,
+          px: {
+            xs: 0,
+            sm: rounds().length ? 0 : 5,
           },
-          display: rounds().length ? "grid" : "flex",
-          width: rounds().length ? 1: 'fit-content',
-          flexDirection: "column",
-          gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))",
-          mx: 'auto',
-          gap: 1
         }}>
-          <StartRaceButton />
-          <DownloadRoundsButton onDownload={setDownload} />
+          <Box sx={{
+            mt: {
+              xs: 0,
+              sm: rounds().length ? 0 : 5,
+            },
+            display: rounds().length ? "grid" : "flex",
+            width: rounds().length ? 1 : 'fit-content',
+            flexDirection: "column",
+            gridTemplateColumns: "repeat(auto-fit, minmax(20em, 1fr))",
+            mx: 'auto',
+            gap: 1
+          }}>
+            <StartRaceButton />
+            <DownloadRoundsButton onDownload={setDownload} />
+          </Box>
         </Box>
       </Box>
     </>

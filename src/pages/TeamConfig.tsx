@@ -45,9 +45,13 @@ function NoData() {
       alignItems="center"
       gap="1em"
       sx={{
+        mx: {
+          xs: 0,
+          sm: 5,
+        },
         mt: {
           xs: 0,
-          md: 5,
+          sm: 5,
         }
       }}
     >

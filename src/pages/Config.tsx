@@ -113,10 +113,21 @@ export default function Config(props: ParentProps) {
   return (
     <>
       <Show when={nested()} fallback={
-        <>
+        <Box sx={{
+          display: "flex",
+          flexDirection: "column",
+          mx: {
+            xs: 0,
+            sm: 5,
+          },
+          my: {
+            xs: 0,
+            sm: 5,
+          }
+        }}>
           <SubMenu options={configs} label="Configuration" />
           <SubMenu options={data} label="Data" />
-        </>
+        </Box>
       }>
         <Box>
           <Button startIcon={<ArrowBack />} onClick={[nav, basePath]}>
