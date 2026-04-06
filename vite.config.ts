@@ -4,6 +4,11 @@ import solidPlugin from "vite-plugin-solid";
 import { VitePWA } from "vite-plugin-pwa";
 import { ServerResponse } from "node:http";
 
+const environment = (process.env.NODE_ENV || "development") === "production"
+ ? ""
+ : "-" + process.env.NODE_ENV;
+const version = JSON.stringify(`${process.env.npm_package_version}${environment}`)
+
 export default defineConfig({
   base: "/krm-ui",
   plugins: [
@@ -94,7 +99,7 @@ export default defineConfig({
     },
   },
   define: {
-    __KRMUI_VERSION__: JSON.stringify(process.env.npm_package_version),
+    __KRMUI_VERSION__: version,
   },
   build: {
     target: "esnext",
