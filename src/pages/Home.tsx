@@ -67,6 +67,7 @@ export default function Home() {
           <Show when={hasRounds()}>
             <Button
               variant="outlined"
+              sx={{ bgcolor: "background.paper" }}
               style={{ visibility: `${hasRounds() ? "visible" : "hidden"}` }}
               onClick={() => nav("/races")}
             >
@@ -76,6 +77,7 @@ export default function Home() {
           <Button
             variant="outlined"
             color="error"
+            sx={{ bgcolor: "background.paper" }}
             onClick={[setReset, true]}
           >
             Reset data

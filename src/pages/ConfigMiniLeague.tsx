@@ -1,11 +1,10 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { DownhillSkiing } from "@suid/icons-material";
-import { createMemo, createSignal } from "solid-js";
+import { createMemo } from "solid-js";
 import ManageConfigMiniLeague from "../components/ManageConfigMiniLeague";
 import { useCustomMinileagues } from "../hooks/custom-config";
 import { miniLeagueTemplates, MiniLeagueTemplate } from "../kings";
-import ConfigLayout from "../ui/ConfigLayout";
-import ConfigSidebar, { SidebarItem, SidebarSection } from "../ui/ConfigSidebar";
+import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
 
 type StructureLabel = {
   label: string;
@@ -15,11 +14,11 @@ type StructureLabel = {
 function getStructureLabel(t: MiniLeagueTemplate): StructureLabel {
   if (t.teams <= 1) return { label: "bye", color: "default" }
   const singleElim = t.races.length === 1
-  if (singleElim) return { label: "knockout", color: "info" }
+  if (singleElim) return { label: "knockout", color: "primary" }
   const halfRobin = t.teams * (t.teams - 1) / 2
-  if (t.races.length === halfRobin) return { label: "half-robin", color: "primary" }
-  if (t.races.length === halfRobin * 2) return { label: "full-robin", color: "info" }
-  if (t.races.length === halfRobin * 3) return { label: "mega-robin", color: "info" }
+  if (t.races.length === halfRobin) return { label: "half-robin", color: "secondary" }
+  if (t.races.length === halfRobin * 2) return { label: "full-robin", color: "primary" }
+  if (t.races.length === halfRobin * 3) return { label: "mega-robin", color: "primary" }
   return { label: "custom", color: "warning" }
 }
 
@@ -56,8 +55,6 @@ export default function ConfigMiniLeague() {
   const nav = useNavigate()
   const customMls = useCustomMinileagues()
 
-  const [search, setSearch] = createSignal("")
-
   const selectedTemplate = (): MiniLeagueTemplate =>
     miniLeagueTemplates[p.ml] ?? customMls()?.configs?.find(c => c.id === p.ml)?.config
 
@@ -67,14 +64,8 @@ export default function ConfigMiniLeague() {
     nav(value, { resolve: true })
   }
 
-  const filteredStandardKeys = createMemo(() => {
-    const q = search().trim().toLowerCase()
-    if (!q) return STANDARD_KEYS
-    return STANDARD_KEYS.filter(k => k.toLowerCase().includes(q))
-  })
-
   const sections = createMemo<SidebarSection[]>(() =>
-    buildTeamGroups(filteredStandardKeys()).map(({ teamCount, keys }): SidebarSection => ({
+    buildTeamGroups(STANDARD_KEYS).map(({ teamCount, keys }): SidebarSection => ({
       label: teamCount === 1 ? "1 team" : `${teamCount} teams`,
       items: keys.map((id): SidebarItem => {
         const tmpl = miniLeagueTemplates[id]
@@ -89,40 +80,24 @@ export default function ConfigMiniLeague() {
     }))
   )
 
-  const customItems = createMemo<SidebarItem[]>(() => {
-    const q = search().trim().toLowerCase()
-    const all = customMls()?.configs ?? []
-    const filtered = q ? all.filter(c => c.id.toLowerCase().includes(q)) : all
-    return filtered.map(({ id }): SidebarItem => {
-      const tmpl = customMls()?.configs?.find(c => c.id === id)?.config
-      const structure = getStructureLabel(tmpl)
-      return {
-        id,
-        label: id,
-        chip: structure,
-        secondary: racesLabel(tmpl.races.length),
-        accentColor: "secondary",
-      }
-    })
-  })
-
-  const sidebar = (
-    <ConfigSidebar
-      search={search()}
-      onSearchChange={setSearch}
-      sections={sections()}
-      customItems={customItems()}
-      selectedId={p.ml}
-      onSelect={handleSelect}
-      footerIcon={<DownhillSkiing sx={{ fontSize: 12, color: "primary.main" }} />}
-      selectedLabel={selectedLabel()}
-    />
+  const customItems = createMemo<SidebarItem[]>(() =>
+    (customMls()?.configs ?? []).map(({ id, config: tmpl }): SidebarItem => ({
+      id,
+      label: id,
+      chip: getStructureLabel(tmpl),
+      secondary: racesLabel(tmpl.races.length),
+      accentColor: "secondary",
+    }))
   )
 
   return (
     <ConfigLayout
       selectedId={p.ml}
-      sidebar={sidebar}
+      sections={sections()}
+      customItems={customItems()}
+      onSelect={handleSelect}
+      footerIcon={<DownhillSkiing sx={{ fontSize: 12, color: "primary.main" }} />}
+      selectedLabel={selectedLabel()}
       emptyIcon={<DownhillSkiing sx={{ fontSize: 64, color: "text.disabled" }} />}
       emptyHeading="Select a minileague config"
       emptyDescription={`Choose from ${Object.keys(miniLeagueTemplates).length} standard configs on the left`}

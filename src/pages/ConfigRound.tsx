@@ -1,11 +1,10 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Tune } from "@suid/icons-material";
-import { createMemo, createSignal } from "solid-js";
+import { createMemo } from "solid-js";
 import ManageConfigRound from "../components/ManageConfigRound";
 import { useCustomRounds } from "../hooks/custom-config";
 import { raceConfig, RoundConfig } from "../kings";
-import ConfigLayout from "../ui/ConfigLayout";
-import ConfigSidebar, { SidebarItem, SidebarSection } from "../ui/ConfigSidebar";
+import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
 
 type Tier = {
   label: string;
@@ -46,8 +45,6 @@ export default function ConfigRound() {
   const nav = useNavigate()
   const customRounds = useCustomRounds()
 
-  const [search, setSearch] = createSignal("")
-
   const selectedConfig = (): RoundConfig => {
     const standardConfig = raceConfig[p.round]
     if (standardConfig) return standardConfig
@@ -67,17 +64,11 @@ export default function ConfigRound() {
     nav(value, { resolve: true })
   }
 
-  const filteredStandardKeys = createMemo(() => {
-    const q = search().trim().toLowerCase()
-    if (!q) return STANDARD_KEYS
-    return STANDARD_KEYS.filter(n => String(n).includes(q))
-  })
-
   const sections = createMemo<SidebarSection[]>(() =>
     TIERS.map(tier => ({
       label: tier.label,
       description: tier.description,
-      items: filteredStandardKeys()
+      items: STANDARD_KEYS
         .filter(n => n >= tier.min && n <= tier.max)
         .map((n): SidebarItem => {
           const cfg = raceConfig[n]
@@ -93,34 +84,22 @@ export default function ConfigRound() {
     }))
   )
 
-  const customItems = createMemo<SidebarItem[]>(() => {
-    const q = search().trim().toLowerCase()
-    const all = customRounds()?.configs ?? []
-    const filtered = q ? all.filter(c => c.id.toLowerCase().includes(q)) : all
-    return filtered.map(({ id }): SidebarItem => ({
+  const customItems = createMemo<SidebarItem[]>(() =>
+    (customRounds()?.configs ?? []).map(({ id }): SidebarItem => ({
       id,
       label: id,
       accentColor: "secondary",
     }))
-  })
-
-  const sidebar = (
-    <ConfigSidebar
-      search={search()}
-      onSearchChange={setSearch}
-      sections={sections()}
-      customItems={customItems()}
-      selectedId={p.round}
-      onSelect={handleSelect}
-      footerIcon={<Tune sx={{ fontSize: 12, color: "primary.main" }} />}
-      selectedLabel={selectedLabel()}
-    />
   )
 
   return (
     <ConfigLayout
       selectedId={p.round}
-      sidebar={sidebar}
+      sections={sections()}
+      customItems={customItems()}
+      onSelect={handleSelect}
+      footerIcon={<Tune sx={{ fontSize: 12, color: "primary.main" }} />}
+      selectedLabel={selectedLabel()}
       emptyIcon={<Tune sx={{ fontSize: 64, color: "text.disabled" }} />}
       emptyHeading="Select a round config"
       emptyDescription={`Choose from ${Object.keys(raceConfig).length} standard configs on the left`}
