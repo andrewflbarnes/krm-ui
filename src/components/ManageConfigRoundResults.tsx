@@ -1,7 +1,8 @@
 import { Box, Paper, Typography } from "@suid/material";
-import { For, Show } from "solid-js";
+import { createMemo, For, Show } from "solid-js";
 import { divisions, RoundResult } from "../kings";
 import { kingsPoints } from "../kings/utils";
+import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
 
 const DIVISION_META: Record<string, { color: string; label: string }> = {
   mixed: { color: "primary.main", label: "M" },
@@ -9,77 +10,13 @@ const DIVISION_META: Record<string, { color: string; label: string }> = {
   board: { color: "info.main", label: "B" },
 };
 
-const RANK_ACCENT: Record<number, string> = {
-  1: "#f9a825",
-  2: "#bdbdbd",
-  3: "#a1887f",
-};
-
-const RANK_GRADIENT: Record<number, string> = {
-  1: "linear-gradient(135deg, #f9a825, #f57f17)",
-  2: "linear-gradient(135deg, #bdbdbd, #757575)",
-  3: "linear-gradient(135deg, #a1887f, #6d4c41)",
-};
-
 const GRID_COLS = "56px 1fr repeat(3, 60px)";
-
-function RankBadge(props: { rank: number; rankStr: string }) {
-  return (
-    <Show
-      when={props.rank <= 3}
-      fallback={
-        <Box sx={{
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-          px: 1,
-          py: 0.25,
-          borderRadius: "10px",
-          bgcolor: "action.selected",
-        }}>
-          <Typography sx={{
-            fontSize: "0.65rem",
-            fontWeight: 700,
-            color: "text.secondary",
-            lineHeight: 1,
-            whiteSpace: "nowrap",
-          }}>
-            {props.rankStr}
-          </Typography>
-        </Box>
-      }
-    >
-      <Box sx={{
-        width: 32,
-        height: 32,
-        borderRadius: "50%",
-        background: RANK_GRADIENT[props.rank],
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        flexShrink: 0,
-        boxShadow: "0 2px 6px rgba(0,0,0,0.25)",
-      }}>
-        <Typography sx={{
-          fontSize: "0.6rem",
-          fontWeight: 800,
-          color: "white",
-          lineHeight: 1,
-          whiteSpace: "nowrap",
-          letterSpacing: "0.02em",
-        }}>
-          {props.rankStr}
-        </Typography>
-      </Box>
-    </Show>
-  );
-}
 
 export default function ManageConfigRoundResults(props: {
   results: RoundResult[];
   points?: ((division: string, rank: number) => number);
 }) {
-  const pointsAlgo = () => props.points || kingsPoints;
+  const pointsAlgo = createMemo(() => props.points || kingsPoints);
 
   return (
     <Show when={props.results?.length} fallback={
@@ -134,10 +71,10 @@ export default function ManageConfigRoundResults(props: {
             }}</For>
           </Box>
 
-          <For each={props.results}>{(result) => (
-            <For each={result.teams}>{(team, i) => {
-              const accentColor = RANK_ACCENT[result.rank] ?? "transparent";
-              return (
+          <For each={props.results}>{(result) => {
+            const accentColor = RANK_ACCENT[result.rank] ?? "transparent";
+            return (
+              <For each={result.teams}>{(team, i) => (
                 <Box sx={{
                   gridColumn: "1 / -1",
                   display: "grid",
@@ -150,10 +87,9 @@ export default function ManageConfigRoundResults(props: {
                   px: 1.5,
                   "&:last-child": { borderBottom: "none" },
                 }}>
-                  {/* badge only shown on the first row for joint-rank teams */}
                   <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                     <Show when={i() === 0}>
-                      <RankBadge rank={result.rank} rankStr={result.rankStr} />
+                      <RankBadge rank={result.rank} rankStr={result.rankStr} size={32} />
                     </Show>
                   </Box>
 
@@ -177,9 +113,9 @@ export default function ManageConfigRoundResults(props: {
                     </Box>
                   )}</For>
                 </Box>
-              );
-            }}</For>
-          )}</For>
+              )}</For>
+            );
+          }}</For>
 
         </Box>
       </Paper>

@@ -1,17 +1,25 @@
 import { ContentCopy } from "@suid/icons-material";
-import { Box, IconButton, Paper, Popover, Stack, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { Box, IconButton, Paper, Popover, Typography } from "@suid/material";
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { RoundResult, useKings } from "../kings";
 import { kingsPoints, resultsToHtml } from "../kings/utils";
-import styles from "./RunRaceResults.module.css";
 import notification from "../hooks/notification";
+import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
+
+const DIVISION_ACCENT: Record<string, "primary" | "secondary" | "info"> = {
+  mixed: "primary",
+  ladies: "secondary",
+  board: "info",
+};
+
+const GRID_COLS = "auto 1fr auto";
 
 export default function RunRaceResults(props: {
   results: Record<string, RoundResult[]>;
   points?: ((division: string, rank: number) => number);
 }) {
   const [k] = useKings()
-  const pointsAlgo = () => props.points || kingsPoints
+  const pointsAlgo = createMemo(() => props.points || kingsPoints)
   const results = createMemo(() => {
     if (!props.results) {
       return {}
@@ -28,11 +36,9 @@ export default function RunRaceResults(props: {
   })
 
   const html = createMemo(() => {
-
     if (!k.leagueConfig()) {
       return {};
     }
-
     return resultsToHtml(k.leagueConfig(), 1, results())
   })
 
@@ -58,7 +64,7 @@ export default function RunRaceResults(props: {
   }
 
   return (
-    <Typography>
+    <Box sx={{ display: "flex", flexWrap: { xs: "wrap", lg: "nowrap" }, gap: 3, alignItems: "flex-start", width: "100%" }}>
       <Popover
         anchorEl={popoverEl()}
         open={open()}
@@ -77,46 +83,146 @@ export default function RunRaceResults(props: {
         No league data loaded
       </Popover>
       <Show when={props.results} fallback="No results">
-        <Box sx={{ flexDirection: { xs: "column", md: "row" } }} style={{ display: "flex", padding: "3", gap: "2em" }}>
-          <For each={Object.entries(props.results)}>{([division, results]) => (
-            <Show when={results.length > 0}>
-              <div data-testid={`results-${division}`}>
-                <Stack direction="row" justifyContent="center" alignItems="center">
-                  <div
-                    onMouseEnter={[onMouseEnter, division]}
-                    onMouseLeave={onMouseLeave}
+        <For each={Object.entries(props.results)}>{([division, divResults]) => (
+          <Show when={divResults.length > 0}>
+            <Paper
+              data-testid={`results-${division}`}
+              elevation={2}
+              sx={{
+                flex: 1,
+                minWidth: 300,
+                borderRadius: 2,
+                overflow: "hidden",
+              }}
+            >
+              <Box sx={{
+                bgcolor: `${DIVISION_ACCENT[division] ?? "primary"}.main`,
+                px: 2,
+                py: 1.25,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 1,
+              }}>
+                <Typography
+                  variant="subtitle1"
+                  sx={{
+                    color: "white",
+                    fontWeight: 800,
+                    textTransform: "uppercase",
+                    letterSpacing: "0.12em",
+                    lineHeight: 1,
+                  }}
+                >
+                  {division.capitalize()}
+                </Typography>
+                <div
+                  onMouseEnter={[onMouseEnter, division]}
+                  onMouseLeave={onMouseLeave}
+                >
+                  <IconButton
+                    size="small"
+                    disabled={!html()[division]}
+                    onClick={[copyToClipboard, division]}
+                    sx={{
+                      color: "white",
+                      opacity: !html()[division] ? 0.4 : 0.85,
+                      "&:hover": { opacity: 1 },
+                    }}
                   >
-                    <IconButton
-                      size="small"
-                      color="primary"
-                      disabled={!html()[division]}
-                      onClick={[copyToClipboard, division]}
-                    >
-                      <ContentCopy />
-                    </IconButton>
-                  </div>
-                  <h2 style={{ "text-align": "center" }}>{division.capitalize()}</h2>
-                </Stack>
-                <TableContainer component={Paper}>
-                  <Table aria-label="simple table dense" size="small">
-                    <TableBody>
-                      <For each={results}>{result => (
-                        <For each={result.teams}>{(team, i) => (
-                          <tr>
-                            <td class={styles.td}>{i() == 0 ? result.rankStr : ""}</td>
-                            <td class={styles.td}>{pointsAlgo()(division, result.rank)}</td>
-                            <td class={styles.td}>{team}</td>
-                          </tr>
-                        )}</For>
-                      )}</For>
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </div>
-            </Show>
-          )}</For>
-        </Box>
+                    <ContentCopy fontSize="small" />
+                  </IconButton>
+                </div>
+              </Box>
+
+              <Box sx={{
+                display: "grid",
+                gridTemplateColumns: GRID_COLS,
+                bgcolor: "action.selected",
+                borderBottom: "1px solid",
+                borderColor: "divider",
+                alignItems: "center",
+                px: 1.5,
+                py: 0.75,
+                gap: 1,
+              }}>
+                <Box sx={{ width: 28 }} />
+                <Typography
+                  variant="overline"
+                  sx={{
+                    fontSize: "0.6rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.1em",
+                    color: "text.secondary",
+                    lineHeight: 1,
+                  }}
+                >
+                  Team
+                </Typography>
+                <Typography
+                  variant="overline"
+                  sx={{
+                    fontSize: "0.6rem",
+                    fontWeight: 800,
+                    letterSpacing: "0.1em",
+                    color: "text.secondary",
+                    lineHeight: 1,
+                  }}
+                >
+                  Pts
+                </Typography>
+              </Box>
+
+              <For each={divResults}>{(result) => {
+                const accentColor = RANK_ACCENT[result.rank] ?? "transparent";
+                return (
+                  <For each={result.teams}>{(team, i) => (
+                    <Box sx={{
+                      display: "grid",
+                      gridTemplateColumns: GRID_COLS,
+                      alignItems: "center",
+                      borderLeft: `3px solid ${accentColor}`,
+                      borderBottom: "1px solid",
+                      borderColor: "divider",
+                      px: 1.5,
+                      py: 0.75,
+                      gap: 1,
+                      "&:last-child": { borderBottom: "none" },
+                    }}>
+                      <Box sx={{
+                        width: 28,
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}>
+                        <Show when={i() === 0}>
+                          <RankBadge rank={result.rank} rankStr={result.rankStr} />
+                        </Show>
+                      </Box>
+
+                      <Typography
+                        variant="body2"
+                        sx={{
+                          fontWeight: result.rank <= 3 ? 600 : 400,
+                          whiteSpace: "nowrap",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        {team}
+                      </Typography>
+
+                      <Typography variant="body2" sx={{ fontWeight: 700 }}>
+                        {pointsAlgo()(division, result.rank)}
+                      </Typography>
+                    </Box>
+                  )}</For>
+                );
+              }}</For>
+            </Paper>
+          </Show>
+        )}</For>
       </Show>
-    </Typography>
+    </Box>
   )
 }
