@@ -129,12 +129,14 @@ export default function Config(props: ParentProps) {
           <SubMenu options={data} label="Data" />
         </Box>
       }>
-        <Box>
-          <Button startIcon={<ArrowBack />} onClick={[nav, basePath]}>
+        <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+          <Button sx={{ flexShrink: 0 }} startIcon={<ArrowBack />} onClick={[nav, basePath]}>
             Back
           </Button>
+          <Box sx={{ flexGrow: 1, overflow: "hidden" }}>
+            {props.children}
+          </Box>
         </Box>
-        {props.children}
       </Show>
     </>
   )
