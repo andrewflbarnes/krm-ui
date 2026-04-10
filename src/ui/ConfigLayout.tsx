@@ -257,7 +257,6 @@ type SidebarListItemProps = {
   item: SidebarItem;
   isSelected: boolean;
   onSelect: (id: string) => void;
-  /** When true renders the Settings icon prefix used for custom items. */
   isCustom?: boolean;
 };
 

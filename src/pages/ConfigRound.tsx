@@ -23,9 +23,9 @@ const TIERS: Tier[] = [
 function getComplexityLabel(config: RoundConfig): { label: string; color: "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning" } {
   const hasKnockout = !!config.knockout?.length
   const hasStage2 = !!config.stage2?.length
-  if (hasKnockout) return { label: "knockout", color: "secondary" }
-  if (hasStage2) return { label: "2-stage", color: "primary" }
-  return { label: "1-stage", color: "default" }
+  if (hasKnockout) return { label: "knockout", color: "error" }
+  if (hasStage2) return { label: "2-stage", color: "secondary" }
+  return { label: "1-stage", color: "primary" }
 }
 
 function getGroupCount(config: RoundConfig): number {
