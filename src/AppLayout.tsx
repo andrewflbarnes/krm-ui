@@ -27,7 +27,7 @@ export default function AppLayout(props: ParentProps<{
         opacity: bgOpacity(),
         pointerEvents: "none",
       }} aria-hidden="true" />
-      <Box sx={{ flexGrow: 0 }}>
+      <Box sx={{ flexGrow: 0, zIndex: 1 }}>
         <AppBar />
       </Box>
       <Box component="main" sx={{
@@ -35,10 +35,11 @@ export default function AppLayout(props: ParentProps<{
         flexGrow: 1,
         position: "relative",
         overflow: "auto",
+        zIndex: 1,
       }}>
         {props.children}
       </Box>
-      <Box sx={{ flexGrow: 0 }}>
+      <Box sx={{ flexGrow: 0, zIndex: 1 }}>
         <AppFooter onModeChange={props.onModeChange} />
       </Box>
     </Paper>
