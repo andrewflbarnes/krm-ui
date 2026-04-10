@@ -18,6 +18,7 @@ export default function AppLayout(props: ParentProps<{
       flexDirection: "column",
       position: "relative",
       overflow: "hidden",
+      borderRadius: 0,
     }}>
       <Box sx={{
         position: "absolute",

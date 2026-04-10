@@ -17,7 +17,15 @@ export default function AppFooter(props: {
   const mode = () => useTheme().palette.mode
   return (
     <Box component="footer">
-      <Paper elevation={5} sx={{ display: "flex", flexDirection: "row", px: 2, py: 0.5, m: 0, alignItems: "center" }}>
+      <Paper elevation={5} sx={{
+        display: "flex",
+        flexDirection: "row",
+        px: 2,
+        py: 0.5,
+        m: 0,
+        alignItems: "center",
+        borderRadius: 0,
+      }}>
         <Stack direction="row" gap={2} alignItems="center">
           <Link sx={{ display: "flex", alignItems: "center" }} target="_blank" rel="noopener" href="https://github.com/andrewflbarnes/krm-ui">
             <GitHub />
