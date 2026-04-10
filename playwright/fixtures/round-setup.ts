@@ -65,7 +65,7 @@ export class RoundSetup {
       .describe('Add team button')
       .click();
 
-    this.teamEntry[teamName] = this.page.getByRole('row', { name: teamName }).describe(`${teamName} team input`);
+    this.teamEntry[teamName] = this.page.getByTestId(`club-${teamName}`).describe(`${teamName} team input`);
     await expect(this.teamEntry[teamName], `${teamName} added as club`).toBeVisible();
   }
 

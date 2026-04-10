@@ -1,5 +1,5 @@
 import { Add, ErrorOutlineRounded } from "@suid/icons-material"
-import { TableContainer, Paper, Table, TableHead, TableRow, TableBody, TableCell, IconButton, TextField, InputAdornment, Box } from "@suid/material"
+import { Box, Card, CardContent, Chip, Divider, IconButton, InputAdornment, Stack, TextField, Typography } from "@suid/material"
 import { batch, createEffect, createMemo, For, Show } from "solid-js"
 import { createSignal } from "solid-js"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
@@ -82,92 +82,113 @@ export default function ManageNewSelect(props: ComponentProps) {
   })
 
   return (
-    <Box sx={{ width: 'fit-content' }} >
-      <TableContainer
-        component={Paper}
-        sx={{ justifyContent: "center", display: "flex" }}
+    <Box>
+      <Box
+        sx={{
+          display: "grid",
+          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          gap: 0.5,
+        }}
       >
-        <Table
-          sx={{ minWidth: 650, maxWidth: 1024 }}
-          aria-label="simple table dense"
-          size="small"
-        >
-          <TableHead>
-            <TableRow>
-              <TableCell>Club</TableCell>
-              <For each={divisions}>{(division) =>
-                <TableCell align="center">{division}</TableCell>
-              }</For>
-              <TableCell />
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            <For each={clubs()}>{(club) => {
-              const teams = config[club];
-              return (
-                <TableRow>
-                  <TableCell>{club}</TableCell>
+        <For each={clubs()}>{(club) => {
+          const teams = () => config[club];
+          const clubTotal = () => teams().mixed + teams().ladies + teams().board;
+          return (
+            <Card variant="outlined" data-testid={`club-${club}`}>
+              <CardContent sx={{ py: "6px !important", px: "12px !important" }}>
+                <Stack direction="row" alignItems="center" gap={1}>
+                  <Typography variant="caption" fontWeight="bold" sx={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+                    {club}
+                  </Typography>
                   <For each={divisions}>{(division) => (
-                    <TableCell
-                      align="center"
-                      sx={{ width: "1%", maxWidth: "fit-content" }}
-                    >
-                      <NumberField
-                        onChange={(e) =>
-                          updateTeams(club, division, +e.target.value >>> 0)
-                        }
-                        value={teams[division]}
-                        zeroBlank
-                      />
-                    </TableCell>
+                    <Stack alignItems="center" spacing={0}>
+                      <Typography variant="caption" color="text.secondary" sx={{ lineHeight: 1.1, fontSize: "0.6rem" }}>
+                        {division.charAt(0).toUpperCase()}
+                      </Typography>
+                      <Box sx={{ width: "40px" }}>
+                        <NumberField
+                          onChange={(e) =>
+                            updateTeams(club, division, +e.target.value >>> 0)
+                          }
+                          value={teams()[division]}
+                          zeroBlank
+                        />
+                      </Box>
+                    </Stack>
                   )}</For>
-                  <TableCell align="center">
-                    {teams.mixed + teams.ladies + teams.board}
-                  </TableCell>
-                </TableRow>
-              )
-            }}</For>
-            <TableRow>
-              <TableCell>
-                <TextField
-                  data-testid="add-team"
-                  size="small"
-                  variant="outlined"
-                  value={newTeam()}
-                  onChange={e => setNewTeam(e.target.value)}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <IconButton
-                          onClick={addTeam}
-                          disabled={!canAddNewTeam()}
-                          size="small"
-                          color="info"
-                        >
-                          <Add />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-              </TableCell>
-              <TableCell />
-              <TableCell />
-              <TableCell />
-              <TableCell />
-            </TableRow>
-            <TableRow>
-              <TableCell>Total</TableCell>
-              <TableCell align="center">{total().mixed}</TableCell>
-              <TableCell align="center">{total().ladies}</TableCell>
-              <TableCell align="center">{total().board}</TableCell>
-              <TableCell align="center">
-                {total().mixed + total().ladies + total().board}
-              </TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      </TableContainer>
+                  <Chip label={clubTotal()} size="small" sx={{ height: 18, fontSize: "0.65rem", width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
+                </Stack>
+              </CardContent>
+            </Card>
+          )
+        }}</For>
+
+        <Card
+          variant="outlined"
+          sx={{
+            borderStyle: "dashed",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            minHeight: "80px",
+          }}
+        >
+          <CardContent>
+            <TextField
+              data-testid="add-team"
+              size="small"
+              variant="outlined"
+              placeholder="Club name"
+              value={newTeam()}
+              onChange={e => setNewTeam(e.target.value)}
+              onKeyDown={e => e.key === "Enter" && canAddNewTeam() && addTeam()}
+              InputProps={{
+                endAdornment: (
+                  <InputAdornment position="end">
+                    <IconButton
+                      onClick={addTeam}
+                      disabled={!canAddNewTeam()}
+                      size="small"
+                      color="info"
+                    >
+                      <Add />
+                    </IconButton>
+                  </InputAdornment>
+                ),
+              }}
+            />
+          </CardContent>
+        </Card>
+      </Box>
+
+      <Box
+        sx={{
+          mt: 2,
+          px: 2,
+          py: 1,
+          bgcolor: "action.hover",
+          borderRadius: 1,
+          display: "flex",
+          alignItems: "center",
+          gap: 1,
+          flexWrap: "wrap",
+        }}
+      >
+        <Typography variant="body2" sx={{ mr: 0.5 }}>
+          Total
+        </Typography>
+        <For each={divisions}>{(division) => (
+          <Stack direction="row" alignItems="center" gap={0.5}>
+            <Typography variant="caption" sx={{ textTransform: "capitalize" }}>
+              {division}
+            </Typography>
+            <Chip label={total()[division]} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
+          </Stack>
+        )}</For>
+        <Divider orientation="vertical" flexItem />
+        <Chip label={total().mixed + total().ladies + total().board} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
+      </Box>
+
       <Show when={errors().length}>
         <Box sx={{ mt: 2 }}>
           <PopoverButton

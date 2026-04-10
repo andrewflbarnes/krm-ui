@@ -55,7 +55,7 @@ describe('ManageNewSelect', () => {
   })
 
   it("can add new team", async () => {
-    const { getByTestId, findByRole } = render(3);
+    const { getByTestId, findByText } = render(3);
     const addClub = getByTestId('add-team')
     const addClubText = within(addClub).getByRole('textbox');
     const addClubButton = within(addClub).getByRole('button');
@@ -64,11 +64,10 @@ describe('ManageNewSelect', () => {
     expect(addClubButton).toBeVisible();
 
     await userEvent.click(addClubText);
-    await userEvent.type(addClubText, 'Test');
+    await userEvent.type(addClubText, 'My New Team');
     await userEvent.click(addClubButton);
 
-
-    expect(await findByRole('cell', { name: 'Test' })).toBeInTheDocument();
-    expect(within(addClub).queryByText('Test')).not.toBeInTheDocument();
+    expect(await findByText('My New Team')).toBeInTheDocument();
+    expect(within(addClub).queryByText('My New Team')).not.toBeInTheDocument();
   })
 })
