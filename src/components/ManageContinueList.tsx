@@ -6,6 +6,7 @@ import krmApi from "../api/krm"
 import { useAuth } from "../hooks/auth";
 import ModalRoundInfo from "../ui/ModalRoundInfo";
 import RoundInfoList from "../ui/RoundInfoList";
+import { Box } from "@suid/material";
 
 type ManageContinueListProps = {
   rounds: RoundInfo[];
@@ -32,7 +33,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
   const [info, setInfo] = createSignal<RoundInfo | null>();
 
   return (
-    <div>
+    <Box>
       <ModalConfirmAction
         open={!!deleteRound()}
         onDiscard={() => setDeleteRound()}
@@ -58,6 +59,6 @@ export default function ManageContinueList(props: ManageContinueListProps) {
         canUpload={authenticated()}
         userId={userId()}
       />
-    </div>
+    </Box>
   )
 }

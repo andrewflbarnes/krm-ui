@@ -89,10 +89,30 @@ function HydratedAppLayout(props: ParentProps) {
   const [mode, setMode] = createSignal<"light" | "dark">(savedMode);
 
   const palette = createMemo(() => {
-    return createPalette({ mode: mode() });
+    return createPalette({
+      mode: mode(),
+      primary: { main: "#1565c0" },
+      secondary: { main: "#e65100" },
+    });
   });
 
-  const theme = createTheme({ palette: palette });
+  const theme = createTheme({
+    palette: palette,
+    shape: { borderRadius: 10 },
+    typography: {
+      h1: { fontWeight: 700, letterSpacing: "-1px" },
+      h4: { fontWeight: 600 },
+      h6: { fontWeight: 600 },
+      button: { textTransform: "none", fontWeight: 600 },
+    },
+    components: {
+      MuiButton: {
+        defaultProps: {
+          disableElevation: true,
+        },
+      },
+    },
+  });
 
   const handleModeChange = () => setMode(m => {
     const newMode = m === "light" ? "dark" : "light"

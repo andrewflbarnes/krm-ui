@@ -3,7 +3,7 @@ import RunRaceInProgressStage from "../components/RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RunRaceInProgressHeader from "../components/RunRaceInProgressHeader";
 import RunRaceResults from "../components/RunRaceResults";
-import { Alert, Button, Card, Typography } from "@suid/material";
+import { Alert, Box, Button, Card, Typography } from "@suid/material";
 import { stages, useRaceOptions } from "../hooks/results";
 import { isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
@@ -34,7 +34,7 @@ function RaceInProgressInternal() {
   const readonly = () => round().status != stage() || (round().owner != userId() && round().owner != "local")
 
   return (
-    <div style={{ height: "100%", display: "flex", "flex-direction": "column" }}>
+    <Box sx={{ height: 1, display: "flex", flexDirection: "column" }}>
       <RunRaceInProgressHeader round={round()} />
 
       <Switch>
@@ -77,10 +77,10 @@ function RaceInProgressInternal() {
           </Show>
         </Match>
         <Match when={true}>
-          <div>Unknown stage: {stage()}</div>
+          <Typography>Unknown stage: {stage()}</Typography>
         </Match>
       </Switch>
-    </div>
+    </Box>
   )
 }
 

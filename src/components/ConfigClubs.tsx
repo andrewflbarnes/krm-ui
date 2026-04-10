@@ -1,4 +1,4 @@
-import { Box, List, ListItem, ListItemButton, ListItemText, Modal, Paper } from "@suid/material";
+import { Box, Divider, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Typography } from "@suid/material";
 import { createComputed, createSignal, For, on, ParentProps, Show } from "solid-js";
 import { LeagueData, Result } from "../kings";
 import { parseResults } from "../kings/utils";
@@ -53,16 +53,22 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
     <Box sx={{
       display: "flex",
       flexDirection: "row",
-      gap: "8px",
+      gap: 1,
       height: "100%",
     }}>
-      <Paper sx={{ width: "fit-content", height: "fit-content" }} >
+      <Paper sx={{ minWidth: "10em", height: "100%", overflow: "auto" }}>
+        <Box sx={{ px: 1, pt: 1.5, pb: 0.5 }}>
+          <Typography variant="overline" color="text.disabled" sx={{ lineHeight: 1 }}>
+            Clubs
+          </Typography>
+        </Box>
         <List disablePadding>
           <ListItem disablePadding>
             <ListItemButton selected={club() == "all"} onClick={[setClub, "all"]}>
               <ListItemText primary={"All"} />
             </ListItemButton>
           </ListItem>
+          <Divider />
           <For each={clubs()}>{(c) => (
             <ListItem disablePadding>
               <ListItemButton selected={club() == c} onClick={[setClub, c]}>
@@ -74,7 +80,7 @@ export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
         </List>
       </Paper>
       <Show when={club()}>
-        <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "scroll" }}>
+        <Paper sx={{ flexGrow: 1, height: "100%", padding: "8px", overflow: "auto" }}>
           <DivisionResultsAll results={clubData()} editable onEdit={handleEdit} />
         </Paper>
       </Show>

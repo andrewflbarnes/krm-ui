@@ -1,4 +1,4 @@
-import { Box, Button, Stack, Typography } from "@suid/material";
+import { Box, Button, Divider, Stack, Typography } from "@suid/material";
 import { useKings } from "../kings";
 import krm from "../api/krm";
 import { useNavigate } from "@solidjs/router";
@@ -40,11 +40,11 @@ export default function Home() {
   const nav = useNavigate()
   const [reset, setReset] = createSignal(false)
   return (
-    <div style={{
+    <Box sx={{
       display: "grid",
       height: "100%",
       width: "100%",
-      "place-items": "center",
+      placeItems: "center",
     }}>
       <ModalConfirmAction
         open={reset()}
@@ -55,38 +55,28 @@ export default function Home() {
       </ModalConfirmAction>
       <Box>
         <Typography align="center" variant="h1"><strong>[ K ]</strong></Typography>
-        <Typography align="center">Welcome to the Kings Race Manager</Typography>
-        <Stack gap="1em" marginTop="1em">
+        <Typography align="center" color="text.secondary">Welcome to the Kings Race Manager</Typography>
+        <Divider sx={{ my: 2 }} />
+        <Stack gap={1.5}>
           <Button
-            variant="outlined"
-            color="inherit"
+            variant="contained"
             onClick={() => nav("/races/new")}
-            sx={{
-              backgroundColor: "background.default",
-            }}
           >
             Start a new race
           </Button>
           <Show when={hasRounds()}>
             <Button
               variant="outlined"
-              color="inherit"
               style={{ visibility: `${hasRounds() ? "visible" : "hidden"}` }}
               onClick={() => nav("/races")}
-              sx={{
-                backgroundColor: "background.default",
-              }}
             >
               View/Continue a race
             </Button>
           </Show>
           <Button
             variant="outlined"
-            color="inherit"
+            color="error"
             onClick={[setReset, true]}
-            sx={{
-              backgroundColor: "background.default",
-            }}
           >
             Reset data
           </Button>
@@ -97,6 +87,6 @@ export default function Home() {
           </Show>
         </Stack>
       </Box>
-    </div >
+    </Box>
   )
 }

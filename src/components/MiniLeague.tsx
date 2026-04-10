@@ -1,12 +1,9 @@
-import { Menu, MenuItem, Typography } from "@suid/material";
+import { Menu, MenuItem, Typography, useTheme } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
 import { calcTeamResults, collapseRaces } from "../kings/utils";
 import RaceResultIcon from "../ui/RaceResultIcon";
 import Selector from "../ui/Selector";
-
-const borderColour = "dimgray"
-const highlightColour = "lightgreen"
 const borderStyle = "2px solid"
 const checkSize = "2em"
 // The below can be used to control dimming all races except the hovered one,
@@ -33,6 +30,9 @@ type MiniLeagueProps = {
 }
 
 export default function MiniLeague(props: MiniLeagueProps) {
+  const theme = useTheme()
+  const borderColour = () => theme.palette.divider
+  const highlightColour = () => theme.palette.success.main
   const [highlight, setHighlight] = createSignal<number | null>(null);
   const highlightRace = createSelector(highlight)
   const collapsedRaces = createMemo(() => collapseRaces(props.races, props.collapsed))
@@ -165,10 +165,10 @@ export default function MiniLeague(props: MiniLeagueProps) {
                           onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
                           style={{
                             cursor: props.readonly ? "inherit" : "pointer",
-                            "border-top": topBorder ? `${borderStyle} ${borderColour}` : "",
-                            "border-bottom": botBorder ? `${borderStyle} ${borderColour}` : "",
-                            "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
-                            "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour}` : `${borderStyle} ${borderColour}`,
+                            "border-top": topBorder ? `${borderStyle} ${borderColour()}` : "",
+                            "border-bottom": botBorder ? `${borderStyle} ${borderColour()}` : "",
+                            "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour()}` : `${borderStyle} ${borderColour()}`,
+                            "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour()}` : `${borderStyle} ${borderColour()}`,
                             position: "relative",
                             height: checkSize,
                             width: checkSize,
@@ -195,7 +195,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       )
                     }}</Match>
                     <Match when={!raceDetails}>
-                      <td style={{ background: borderColour }} />
+                      <td style={{ background: borderColour() }} />
                     </Match>
                   </Switch>
                 )

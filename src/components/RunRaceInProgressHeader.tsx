@@ -1,4 +1,4 @@
-import { Button, Card, CardContent, FormControlLabel, Modal, Switch as InputSwitch } from "@suid/material";
+import { Box, Button, Card, CardContent, FormControlLabel, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { GroupRaces, RaceStage, Round, Stage } from "../kings";
@@ -91,7 +91,7 @@ export default function RunRaceInProgressHeader(props: {
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
         <Card sx={{ width: "50%" }}>
           <CardContent>
-            <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
+            <Stack alignItems="center">
               <FormControlLabel
                 control={<InputSwitch checked={northern()} onChange={switchNorthern} />}
                 label="Race list: northern style"
@@ -104,11 +104,11 @@ export default function RunRaceInProgressHeader(props: {
                 control={<InputSwitch checked={live()} onChange={switchLive} />}
                 label="Minileague: live resuts"
               />
-            </div>
+            </Stack>
           </CardContent>
         </Card>
       </Modal>
-      <div style={{ "padding": "1em", gap: "1em", display: "flex", "align-items": "center", "justify-content": "start" }}>
+      <Box sx={{ p: 1, gap: 1, display: "flex", alignItems: "center" }}>
         <Selector
           containerProps={{ style: { "min-width": "10em" } }}
           title="Stage"
@@ -127,7 +127,7 @@ export default function RunRaceInProgressHeader(props: {
             defaultBackground
           />
         </Show>
-        <div style={{ "margin-left": "auto", display: "flex", gap: "1em" }}>
+        <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
           <Show when={isStage(stage())} keyed>{s => (
             <>
               <Show when={errors().length}>
@@ -157,8 +157,8 @@ export default function RunRaceInProgressHeader(props: {
               </Button>
             </>
           )}</Show>
-        </div>
-      </div>
+        </Box>
+      </Box>
     </>
   )
 }

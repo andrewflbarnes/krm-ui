@@ -20,11 +20,11 @@ function Link(props: ParentProps<{ href: string }>) {
     <A
       style={{
         color: "inherit",
-        "text-decoration": "inherit",
+        "text-decoration": "none",
       }}
       href={props.href + search()}
     >
-      <Typography>
+      <Typography fontWeight={500}>
         {props.children}
       </Typography>
     </A>
@@ -40,11 +40,9 @@ export default function KrmAppBar() {
           <Toolbar>
             <Box
               as={"nav"}
-              style={{
+              sx={{
                 display: "grid",
                 width: "100%",
-              }}
-              sx={{
                 gridTemplateColumns: {
                   xs: "1fr 1fr",
                   md: "1fr 1fr 1fr",
@@ -99,19 +97,20 @@ export default function KrmAppBar() {
                   </SignedIn>
                   <SignedOut>
                     <SignInButton style={{ color: "inherit", cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
-                      <div>
+                      <Box>
                         <Typography
                           sx={{
                             display: { xs: "none", sm: "flex" },
                           }}
                           noWrap
+                          fontWeight={500}
                         >
                           Sign In
                         </Typography>
                         <AccountCircle sx={{
                           display: { xs: "block", sm: "none" },
                         }} />
-                      </div>
+                      </Box>
                     </SignInButton>
                   </SignedOut>
                 </ClerkLoaded>

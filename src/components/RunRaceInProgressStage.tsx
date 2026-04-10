@@ -1,4 +1,4 @@
-import { Card, Stack } from "@suid/material";
+import { Box, Card, Stack } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, createEffect, createMemo, on } from "solid-js";
 import { Race, Round, StageRaces } from "../kings";
@@ -147,17 +147,17 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const showMiniLeagues = () => view() === "mini" || view() === "side-by-side"
   const showSideBySide = () => view() === "side-by-side"
   return (
-    <div style={{ "overflow-y": "scroll", "margin-top": "1em" }}>
-      <Stack direction="row" gap="1em" style={{ "justify-content": "center" }}>
+    <Box sx={{ overflowY: "auto", mt: 1 }}>
+      <Stack direction="row" gap={1} sx={{ justifyContent: "center" }}>
         <Show when={showList()}>
-          <Card sx={{ p: 3 }} style={{ "overflow-x": "auto", height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
+          <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
             <Stack width="100%">
               <RaceList knockout={props.stage == "knockout"} orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={props.readonly} />
             </Stack>
           </Card>
         </Show>
         <Show when={showMiniLeagues()}>
-          <Card sx={{ p: 3 }} style={{ "overflow-x": "auto", height: "100%", display: "flex", "align-items": "start", "justify-content": showSideBySide() ? "space-around" : "center" }}>
+          <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
             <MiniLeagues
               live={live()}
               collapse={collapse()}
@@ -168,15 +168,15 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
           </Card>
         </Show>
       </Stack>
-      <div style={{ display: view() === "printable" ? "inherit" : "none" }}>
-        <div ref={ref}>
+      <Box sx={{ display: view() === "printable" ? "inherit" : "none" }}>
+        <Box ref={ref}>
           <RaceListPrintable
             knockouts={props.stage === "knockout"}
             races={orderedRaces()}
             subtitle={`${props.round.league} ${props.stage}`}
           />
-        </div>
-      </div>
-    </div >
+        </Box>
+      </Box>
+    </Box>
   )
 }

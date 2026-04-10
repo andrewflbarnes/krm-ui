@@ -27,8 +27,18 @@ export default function DivisionResultsAll(props: Props) {
         <For each={results()}>{([division, divisionResults]) => {
           const handleEdit = (row: Result) => props.onEdit?.(division, row)
           return (
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Typography mb="1rem" textAlign="center" variant="h4">
+            <Box sx={{ display: "flex", flexDirection: "column", mb: "2rem" }}>
+              <Typography
+                textAlign="center"
+                variant="h4"
+                sx={{
+                  top: 0,
+                  zIndex: 2,
+                  bgcolor: "background.paper",
+                  py: "0.375rem",
+                  mb: "0.25rem",
+                }}
+              >
                 {division.capitalize()}
               </Typography>
               <DivisionResults results={divisionResults} editable={props.editable} onEdit={handleEdit} />
