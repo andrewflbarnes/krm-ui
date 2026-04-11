@@ -1,16 +1,13 @@
-import { Menu, MenuItem, Typography, useTheme } from "@suid/material";
+import { Box, Chip, Menu, MenuItem, Typography, useTheme } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
 import { Race } from "../kings";
 import { calcTeamResults, collapseRaces } from "../kings/utils";
 import RaceResultIcon from "../ui/RaceResultIcon";
+import { RANK_GRADIENT } from "../ui/RankBadge";
 import Selector from "../ui/Selector";
-const borderStyle = "2px solid"
-const checkSize = "2em"
-// The below can be used to control dimming all races except the hovered one,
-// though it can be a little janky
-const dimOpacity = 1  // opacity to dim to
-const dimDelay = "0s" // delay before dimming starts
-const dimIn = "0s"    // transition time for dimming
+
+const CELL_SIZE = "2em";
+const BORDER = "2px solid";
 
 type MiniLeagueProps = {
   name?: string;
@@ -22,7 +19,7 @@ type MiniLeagueProps = {
   onResultChange?: (race: Race) => void;
   readonly?: boolean;
   // Selectable allows a user to modify the team/seed in each position, in this
-  // cacse the teams props is a superset of the actual teams in this minileague
+  // case the teams prop is a superset of the actual teams in this minileague
   // and the races are expected to be synthetic
   selectable?: string[];
   initialSelected?: string[];
@@ -32,7 +29,7 @@ type MiniLeagueProps = {
 export default function MiniLeague(props: MiniLeagueProps) {
   const theme = useTheme()
   const borderColour = () => theme.palette.divider
-  const highlightColour = () => theme.palette.success.main
+  const highlightColour = () => theme.palette.primary.main
   const [highlight, setHighlight] = createSignal<number | null>(null);
   const highlightRace = createSelector(highlight)
   const collapsedRaces = createMemo(() => collapseRaces(props.races, props.collapsed))
@@ -42,13 +39,10 @@ export default function MiniLeague(props: MiniLeagueProps) {
   const teamOptions = createMemo(() => props.teams.map(t => ({ value: t, label: t })))
 
   const highlightTeams = createMemo(() => {
-    if (highlight() == null) {
-      return []
-    }
+    if (highlight() == null) return []
     const race = props.races[highlight()]
-    return [teams()[race[0]], teams()[race[1]]]
+    return [race.team1, race.team2]
   })
-
 
   const teamPositions = createMemo(() => calcTeamResults(teams(), props.races))
 
@@ -70,19 +64,40 @@ export default function MiniLeague(props: MiniLeagueProps) {
         team={ctxRace()?.team}
         onResultChange={props.onResultChange}
       />
-      <table style={{ "border-spacing": "3px 0" }}>
+      <table style={{ "border-spacing": "4px 0" }}>
         <Show when={!props.noResults || props.name}>
           <thead>
             <tr>
               <td colspan={collapsedRaces().length + 2}>
-                <Typography variant="h4">
-                  {props.name}
-                </Typography>
+                <Show when={props.name}>
+                  <Typography
+                    variant="overline"
+                    sx={{
+                      fontWeight: 800,
+                      fontSize: "0.65rem",
+                      letterSpacing: "0.12em",
+                      color: "text.secondary",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {props.name}
+                  </Typography>
+                </Show>
               </td>
               <Show when={!props.noResults}>
                 <td colspan={1}>
-                  <Show when={props.races.every(({ winner }) => !!winner)}>
-                    <Typography variant="caption" color="success.main">Complete</Typography>
+                  <Show when={finished()}>
+                    <Chip
+                      label="Complete"
+                      size="small"
+                      color="success"
+                      sx={{
+                        height: 18,
+                        fontSize: "0.6rem",
+                        fontWeight: 700,
+                        "& .MuiChip-label": { px: 1 },
+                      }}
+                    />
                   </Show>
                 </td>
               </Show>
@@ -90,45 +105,56 @@ export default function MiniLeague(props: MiniLeagueProps) {
           </thead>
         </Show>
         <For each={teams()}>{(team, i) => {
+          const dimmed = () => highlightTeams().length > 0 && !highlightTeams().includes(team);
           return (
             <tr>
-              <th style={{ "text-align": "left", position: "relative", height: "2em", "white-space": "nowrap" }} scope="row">
-                <div
-                  style={{
-                    opacity: highlightTeams().length === 0 || highlightTeams().includes(team) ? 1 : dimOpacity,
-                    transition: highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimIn,
-                    "transition-delay": highlightTeams().length === 0 || highlightTeams().includes(team) ? "0s" : dimDelay,
-                    "padding-right": "1em",
-                  }}
-                >
-                  <Show when={props.selectable} fallback={<Typography>{team}</Typography>}>{(selectable) => {
-                    const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
-                    const handleTeamSelected = (v: string, i: number) => {
-                      setSelected(v)
-                      props.onTeamSelected(v, i)
+              <th
+                style={{
+                  "text-align": "left",
+                  position: "relative",
+                  height: CELL_SIZE,
+                  "white-space": "nowrap",
+                  "padding-right": "12px",
+                  opacity: dimmed() ? 0.3 : 1,
+                  transition: "opacity 0.15s ease",
+                }}
+                scope="row"
+              >
+                <Show when={props.selectable} fallback={
+                  <Typography
+                    variant="body2"
+                    sx={{
+                      fontWeight: 600,
+                      transition: "color 0.15s ease",
+                    }}
+                  >
+                    {team}
+                  </Typography>
+                }>{(selectable) => {
+                  const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
+                  const handleTeamSelected = (v: string, idx: number) => {
+                    setSelected(v)
+                    props.onTeamSelected(v, idx)
+                  }
+                  const theseOptions = () => {
+                    const s = selected()
+                    const opts = teamOptions().filter(o => selectable().includes(o.value))
+                    opts.unshift({ value: "", label: "-" })
+                    if (s.length) {
+                      opts.unshift({ value: s, label: s })
                     }
-                    const theseOptions = () => {
-                      const s = selected()
-                      const opts = teamOptions().filter(o => selectable().includes(o.value))
-                      opts.unshift({ value: "", label: "-" })
-                      if (s.length) {
-                        opts.unshift({ value: s, label: s })
-                      }
-                      return opts
-                    }
-                    return (
-                      <Selector
-                        current={selected()}
-                        options={theseOptions()}
-                        containerProps={{
-                          style: { "min-width": "10em" },
-                        }}
-                        small
-                        onClose={(v) => handleTeamSelected(v, i())}
-                      />
-                    )
-                  }}</Show>
-                </div>
+                    return opts
+                  }
+                  return (
+                    <Selector
+                      current={selected()}
+                      options={theseOptions()}
+                      containerProps={{ style: { "min-width": "10em" } }}
+                      small
+                      onClose={(v) => handleTeamSelected(v, i())}
+                    />
+                  )
+                }}</Show>
               </th>
               <For each={collapsedRaces()}>{(races) => {
                 const raceDetails = races.find(r => r.team1 == team || r.team2 == team)
@@ -155,8 +181,9 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       }
                       const ti = team1 == team ? 1 : 2
                       const dsq = ti == 1 ? raceDetails.team1Dsq : raceDetails.team2Dsq
-                      const dim = () => highlight() != null && !highlightRace(raceDetails?.groupRace)
+                      const isHighlighted = () => highlightRace(raceDetails?.groupRace)
                       const teamOrdinal = (ti == 1 && t1idx < t2idx) || (ti == 2 && t2idx < t1idx) ? 1 : 2
+                      const activeBorderColor = () => isHighlighted() ? highlightColour() : borderColour()
                       return (
                         <td
                           role="button"
@@ -165,25 +192,24 @@ export default function MiniLeague(props: MiniLeagueProps) {
                           onMouseLeave={() => setHighlight(prev => prev == raceDetails.groupRace ? null : prev)}
                           style={{
                             cursor: props.readonly ? "inherit" : "pointer",
-                            "border-top": topBorder ? `${borderStyle} ${borderColour()}` : "",
-                            "border-bottom": botBorder ? `${borderStyle} ${borderColour()}` : "",
-                            "border-left": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour()}` : `${borderStyle} ${borderColour()}`,
-                            "border-right": highlightRace(raceDetails.groupRace) ? `${borderStyle} ${highlightColour()}` : `${borderStyle} ${borderColour()}`,
+                            "border-top": topBorder ? `${BORDER} ${activeBorderColor()}` : "",
+                            "border-bottom": botBorder ? `${BORDER} ${activeBorderColor()}` : "",
+                            "border-left": `${BORDER} ${activeBorderColor()}`,
+                            "border-right": `${BORDER} ${activeBorderColor()}`,
                             position: "relative",
-                            height: checkSize,
-                            width: checkSize,
-                            opacity: dim() ? dimOpacity : 1,
-                            transition: `opacity ${dim() ? dimIn : "0s"}`,
-                            "transition-delay": dim() ? dimDelay : "0s",
+                            height: CELL_SIZE,
+                            width: CELL_SIZE,
+                            background: isHighlighted() ? `${highlightColour()}20` : "transparent",
+                            transition: "border-color 0.12s ease, background 0.12s ease",
                           }}
                           onContextMenu={props.readonly ? null : [handleContext, { race: raceDetails, team }]}
-                          onClick={() => !props.readonly && !raceDetails.winner && props.onResultChange({ ...raceDetails, winner: ti })}
+                          onClick={() => !props.readonly && !raceDetails.winner && props.onResultChange?.({ ...raceDetails, winner: ti })}
                         >
                           <div style={{
                             display: "flex",
-                            "flex-direction": "row",
                             "align-items": "center",
                             "justify-content": "center",
+                            height: "100%",
                           }}>
                             <RaceResultIcon
                               won={raceDetails.winner == ti}
@@ -195,7 +221,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       )
                     }}</Match>
                     <Match when={!raceDetails}>
-                      <td style={{ background: borderColour() }} />
+                      <td style={{ width: "3px", background: borderColour(), opacity: 0.35 }} />
                     </Match>
                   </Switch>
                 )
@@ -205,50 +231,82 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
                 const posInfo = () => {
                   const p = pos()
-                  if (teamPositions().pos[p].length == teams().length) {
+                  if (teamPositions().pos[p]?.length == teams().length) {
                     if (!props.races.some(r => r.winner)) {
-                      return ""
+                      return null
                     }
                   }
-                  const joint = teamPositions().pos[p].length > 1 ? "joint " : ""
+                  const joint = teamPositions().pos[p]?.length > 1
                   switch (p) {
-                    case 0:
-                      return [`${joint}1st`, "🥇"]
-                    case 1:
-                      return [`${joint}2nd`, "🥈"]
-                    case 2:
-                      return [`${joint}3rd`, "🥉"]
-                    default:
-                      return [`${joint}${p + 1}th`, ""]
+                    case 0: return { text: `${joint ? "=" : ""}1st`, rank: 1 }
+                    case 1: return { text: `${joint ? "=" : ""}2nd`, rank: 2 }
+                    case 2: return { text: `${joint ? "=" : ""}3rd`, rank: 3 }
+                    default: return { text: `${joint ? "=" : ""}${p + 1}th`, rank: p + 1 }
                   }
                 }
                 return (
                   <>
-                    <td
-                      style={{
-                        height: checkSize,
-                        width: checkSize,
-                      }}
-                    >
-                      <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "center" }}>
-                        <Typography>
-                          {wins()}
-                        </Typography>
-                      </div>
-                    </td>
-                    <td style={{ width: "3em" }}>
-                      <Typography>
-                        <div style={{ "white-space": "nowrap", display: "flex", "justify-content": "space-between", "align-items": "center" }}>
-                          <Show when={finished() || props.live}>
-                            <div>
-                              {posInfo()[0]}
-                            </div>
-                            <div>
-                              {posInfo()[1]}
-                            </div>
-                          </Show>
-                        </div>
+                    <td style={{
+                      height: CELL_SIZE,
+                      width: CELL_SIZE,
+                      "text-align": "center",
+                      opacity: dimmed() ? 0.3 : 1,
+                      transition: "opacity 0.15s ease",
+                    }}>
+                      <Typography variant="body2" sx={{ fontWeight: 700, color: "text.disabled" }}>
+                        {wins()}
                       </Typography>
+                    </td>
+                    <td style={{ "width": "3em" }}>
+                      <Show when={(finished() || props.live) && posInfo()}>
+                        {(info) => (
+                          <Show
+                            when={info().rank <= 3}
+                            fallback={
+                              <Box sx={{
+                                display: "inline-flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                px: 1,
+                                py: 0.25,
+                                borderRadius: "10px",
+                                bgcolor: "action.selected",
+                              }}>
+                                <Typography sx={{
+                                  fontSize: "0.65rem",
+                                  fontWeight: 700,
+                                  color: "text.secondary",
+                                  lineHeight: 1,
+                                  whiteSpace: "nowrap",
+                                }}>
+                                  {info().text}
+                                </Typography>
+                              </Box>
+                            }
+                          >
+                            <Box sx={{
+                              display: "inline-flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                              px: 1,
+                              py: 0.25,
+                              borderRadius: "10px",
+                              background: RANK_GRADIENT[info().rank],
+                              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                            }}>
+                              <Typography sx={{
+                                fontSize: "0.65rem",
+                                fontWeight: 800,
+                                color: "white",
+                                lineHeight: 1,
+                                whiteSpace: "nowrap",
+                              }}>
+                                {info().text}
+                              </Typography>
+                            </Box>
+                          </Show>
+                        )}
+                      </Show>
                     </td>
                   </>
                 )
@@ -276,21 +334,17 @@ function ContextMenu(props: {
       return (
         <Menu
           container={props.anchor}
-          //id="league-selector-menu"
           anchorEl={props.anchor}
           open={!!props.anchor}
           onClose={(e) => {
             e.stopPropagation?.()
             props.onClose()
           }}
-        //MenuListProps={{ "aria-labelledby": "league-selector-button" }}
         >
           <MenuItem onClick={(e) => {
             e.stopPropagation()
             props.onClose()
-            const update: Race = {
-              ...race(),
-            }
+            const update: Race = { ...race() }
             update.winner = update.team1 == props.team ? 1 : 2
             props.onResultChange(update)
           }}>winner</MenuItem>
@@ -298,9 +352,7 @@ function ContextMenu(props: {
             <MenuItem onClick={(e) => {
               e.stopPropagation()
               props.onClose()
-              const update = {
-                ...race(),
-              }
+              const update = { ...race() }
               update[dsqField()] = !update[dsqField()]
               props.onResultChange(update)
             }}>{race()[dsqField()] && "clear "}dsq</MenuItem>
@@ -326,14 +378,13 @@ function ContextMenu(props: {
           <MenuItem onClick={(e) => {
             e.stopPropagation()
             props.onClose()
-            const update: Race = {
+            props.onResultChange({
               ...race(),
               team1Dsq: false,
               team2Dsq: false,
               winner: undefined,
               indicators: undefined,
-            }
-            props.onResultChange(update)
+            })
           }}>reset</MenuItem>
         </Menu>
       )
