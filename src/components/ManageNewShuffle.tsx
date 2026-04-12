@@ -1,4 +1,4 @@
-import { SwapCalls } from "@suid/icons-material";
+import { DragIndicator } from "@suid/icons-material";
 import { Box, Chip, Divider, List, ListItem, ListItemText, ListSubheader, Paper, Typography } from "@suid/material";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, transformStyle, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { For, Show } from "solid-js";
@@ -123,7 +123,7 @@ function Team(props: {
     <ListItem sx={{ display: "flex", gap: "1em", opacity: props.defocus ? 0.5 : 1 }}>
       <Show when={!props.disabled}>
         <div style={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", "align-items": "center" }}>
-          <SwapCalls fontSize="small" {...props.dragActivators} color="secondary" />
+          <DragIndicator fontSize="small" {...props.dragActivators} color="secondary" />
         </div>
         <Divider orientation="vertical" flexItem />
       </Show>
