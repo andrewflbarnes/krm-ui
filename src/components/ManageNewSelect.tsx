@@ -177,6 +177,8 @@ export default function ManageNewSelect(props: ComponentProps) {
         <Typography variant="body2" sx={{ mr: 0.5 }}>
           Total
         </Typography>
+        <Chip label={total().mixed + total().ladies + total().board} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
+        <Divider orientation="vertical" flexItem />
         <For each={divisions}>{(division) => (
           <Stack direction="row" alignItems="center" gap={0.5}>
             <Typography variant="caption" sx={{ textTransform: "capitalize" }}>
@@ -185,8 +187,6 @@ export default function ManageNewSelect(props: ComponentProps) {
             <Chip label={total()[division]} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
           </Stack>
         )}</For>
-        <Divider orientation="vertical" flexItem />
-        <Chip label={total().mixed + total().ladies + total().board} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
       </Box>
 
       <Show when={errors().length}>
