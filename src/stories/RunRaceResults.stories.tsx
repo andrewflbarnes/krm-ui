@@ -20,7 +20,7 @@ const results: Round["results"] = {
     { rank: 3, rankStr: "3rd", teams: ["Plymouth 1"] },
     { rank: 4, rankStr: "4th", teams: ["Aberystwyth 1"] },
     { rank: 5, rankStr: "5th", teams: ["Bath 2"] },
-    { rank: 6, rankStr: "Joint 6th", teams: ["Plymouth 2", "Bath 3"] },
+    { rank: 6, rankStr: "= 6th", teams: ["Plymouth 2", "Bath 3"] },
     { rank: 8, rankStr: "8th", teams: ["Aberystwyth 2"] },
   ],
   "ladies": [
@@ -29,7 +29,7 @@ const results: Round["results"] = {
     { rank: 3, rankStr: "3rd", teams: ["Plymouth 1"] },
     { rank: 4, rankStr: "4th", teams: ["Aberystwyth 1"] },
     { rank: 5, rankStr: "5th", teams: ["Bath 2"] },
-    { rank: 6, rankStr: "Joint 6th", teams: ["Plymouth 2", "Bath 3"] },
+    { rank: 6, rankStr: "= 6th", teams: ["Plymouth 2", "Bath 3"] },
     { rank: 8, rankStr: "8th", teams: ["Aberystwyth 2"] },
     { rank: 9, rankStr: "9th", teams: ["Aberystwyth 3"] },
   ],

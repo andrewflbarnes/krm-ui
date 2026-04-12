@@ -1,7 +1,7 @@
 import { ContentCopy } from "@suid/icons-material";
 import { Box, IconButton, Paper, Popover, Typography } from "@suid/material";
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { RoundResult, useKings } from "../kings";
+import { LeagueData, RoundResult } from "../kings";
 import { kingsPoints, resultsToHtml } from "../kings/utils";
 import notification from "../hooks/notification";
 import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
@@ -17,8 +17,8 @@ const GRID_COLS = "auto 1fr auto";
 export default function RunRaceResults(props: {
   results: Record<string, RoundResult[]>;
   points?: ((division: string, rank: number) => number);
+  leagueConfig?: LeagueData;
 }) {
-  const [k] = useKings()
   const pointsAlgo = createMemo(() => props.points || kingsPoints)
   const results = createMemo(() => {
     if (!props.results) {
@@ -36,10 +36,10 @@ export default function RunRaceResults(props: {
   })
 
   const html = createMemo(() => {
-    if (!k.leagueConfig()) {
+    if (!props.leagueConfig) {
       return {};
     }
-    return resultsToHtml(k.leagueConfig(), 1, results())
+    return resultsToHtml(props.leagueConfig, 1, results())
   })
 
   const copyToClipboard = (division: string) => {

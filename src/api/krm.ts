@@ -153,7 +153,7 @@ export default (function krmApiLocalStorage(): KrmApi {
             teams: [],
           }
         } else if (rankResult.teams.length < 2) {
-          rankResult.rankStr = "Joint " + rankResult.rankStr
+          rankResult.rankStr = "= " + rankResult.rankStr
         }
         const team = round.races[stage]?.[division]?.[group]?.results?.[position]?.[0]
         if (!team) {
