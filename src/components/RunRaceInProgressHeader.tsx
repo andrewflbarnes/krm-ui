@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardContent, FormControlLabel, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
-import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, For, on, Show } from "solid-js";
 import { GroupRaces, RaceStage, Round, Stage } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
@@ -36,14 +36,6 @@ export default function RunRaceInProgressHeader(props: {
   const handleClose = () => {
     setActionsOpen(false)
   }
-  const stageFilter = () => {
-    const idx = Object.keys(stages).indexOf(props.round.status)
-    return (idx > -1 ? idx : Object.keys(stages).length) + 1
-  }
-  const stageOptions = () => Object.entries(stages).slice(0, stageFilter())
-    .filter(([s]) => keepValidStages(s, props.round))
-    .map(([value, label]) => ({ value, label }))
-
   const errors = createMemo(() => {
     return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
@@ -108,55 +100,56 @@ export default function RunRaceInProgressHeader(props: {
           </CardContent>
         </Card>
       </Modal>
-      <Box sx={{ p: 1, gap: 1, display: "flex", alignItems: "center" }}>
-        <Selector
-          containerProps={{ style: { "min-width": "10em" } }}
-          title="Stage"
-          current={stage()}
-          onClose={(v: Stage) => setStage(v)}
-          options={stageOptions()}
-          defaultBackground
-        />
-        <Show when={stage() != "complete"}>
-          <Selector
-            containerProps={{ style: { "min-width": "10em" } }}
-            title="View"
-            current={view()}
-            onClose={(v: View) => setView(current => v ?? current)}
-            options={options}
-            defaultBackground
+      <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+          <StageStepper
+            round={props.round}
+            selected={stage() as Stage}
+            onSelect={setStage}
           />
-        </Show>
-        <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
-          <Show when={isStage(stage())} keyed>{s => (
-            <>
-              <Show when={errors().length}>
-                <PopoverButton
-                  title="Errors"
-                  messages={errors()}
-                  color="error"
-                  startIcon={<ErrorOutlineRounded />}
-                />
-              </Show>
-              <Show when={canReopen()}>
-                <ReopenButton id={props.round.id} stage={s} />
-              </Show>
-              <Show when={proceed()}>
-                <ProgressButton round={props.round} />
-              </Show>
-              <Button
-                disabled={print()}
-                onClick={() => setPrint(true)}
-              >
-                Print
-              </Button>
-              <Button
-                onClick={[setActionsOpen, true]}
-              >
-                Options
-              </Button>
-            </>
-          )}</Show>
+        </Box>
+        <Box sx={{ display: "flex", alignItems: "center", gap: 1, pt: 1 }}>
+          <Show when={stage() != "complete"}>
+            <Selector
+              containerProps={{ style: { "min-width": "10em" } }}
+              title="View"
+              current={view()}
+              onClose={(v: View) => setView(current => v ?? current)}
+              options={options}
+              defaultBackground
+            />
+          </Show>
+          <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
+            <Show when={isStage(stage())} keyed>{s => (
+              <>
+                <Show when={errors().length}>
+                  <PopoverButton
+                    title="Errors"
+                    messages={errors()}
+                    color="error"
+                    startIcon={<ErrorOutlineRounded />}
+                  />
+                </Show>
+                <Show when={canReopen()}>
+                  <ReopenButton id={props.round.id} stage={s} />
+                </Show>
+                <Show when={proceed()}>
+                  <ProgressButton round={props.round} />
+                </Show>
+                <Button
+                  disabled={print()}
+                  onClick={() => setPrint(true)}
+                >
+                  Print
+                </Button>
+                <Button
+                  onClick={[setActionsOpen, true]}
+                >
+                  Options
+                </Button>
+              </>
+            )}</Show>
+          </Box>
         </Box>
       </Box>
     </>
@@ -232,6 +225,74 @@ function ProgressButton(props: {
       </ModalConfirmAction>
     </>
   )
+}
+
+function StageStepper(props: {
+  round: Round;
+  selected: Stage | undefined;
+  onSelect: (s: Stage) => void;
+}) {
+  const stageOrder = Object.keys(stages) as Stage[];
+
+  const allStages = () => (Object.entries(stages) as [Stage, string][])
+    .filter(([s]) => s === "complete" || Object.values(props.round.config).some(c => c[s]));
+
+  const statusIdx = () => {
+    const idx = stageOrder.indexOf(props.round.status as Stage);
+    return idx === -1 ? stageOrder.length : idx;
+  };
+
+  const isAccessible = (s: Stage) => stageOrder.indexOf(s) <= statusIdx();
+  const isCurrent = (s: Stage) => s === props.round.status;
+  const isSelected = (s: Stage) => s === props.selected;
+
+  return (
+    <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
+      <For each={allStages()}>
+        {([s, label], idx) => (
+          <>
+            <Show when={idx() > 0}>
+              <Box sx={{
+                flex: 1,
+                height: "2px",
+                bgcolor: isAccessible(s) ? "divider" : "action.disabledBackground",
+              }} />
+            </Show>
+            <Box
+              onClick={() => { if (isAccessible(s)) props.onSelect(s) }}
+              sx={{
+                px: 1.5,
+                py: 0.5,
+                borderRadius: "16px",
+                cursor: isAccessible(s) ? "pointer" : "default",
+                bgcolor: isCurrent(s) ? "primary.main" : "transparent",
+                color: isCurrent(s)
+                  ? "primary.contrastText"
+                  : isAccessible(s)
+                    ? "text.primary"
+                    : "text.disabled",
+                border: "2px solid",
+                borderColor: isSelected(s)
+                  ? (isCurrent(s) ? "primary.light" : "primary.main")
+                  : "transparent",
+                fontWeight: isSelected(s) ? 700 : 400,
+                fontSize: "0.875rem",
+                lineHeight: 1.5,
+                whiteSpace: "nowrap",
+                userSelect: "none",
+                transition: "background-color 0.15s, color 0.15s",
+                "&:hover": isAccessible(s) ? {
+                  bgcolor: isCurrent(s) ? "primary.dark" : "action.hover",
+                } : {},
+              }}
+            >
+              {label}
+            </Box>
+          </>
+        )}
+      </For>
+    </Stack>
+  );
 }
 
 function ReopenButton(props: {
