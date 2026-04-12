@@ -16,7 +16,7 @@
   "dependencies": {
     "@netlify/functions": "^3.0.0",
     "@types/node": "^22.0.0",
-    "axios": "^1.8.1",
+    "axios": "^1.15.0",
     "cheerio": "^1.0.0",
     "typescript": "^4.0.0"
   }
