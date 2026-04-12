@@ -101,10 +101,30 @@ function DndTeam(props: { disabled?: boolean, seed: string, division: Division, 
     }
     return (!props.inGroupSwaps || dnd.active.draggable.data?.team == props.team)
   }
+  const highlight = () => {
+    if (!dnd.active.droppable) {
+      return false
+    }
+    if (dnd.active.droppable.data?.team != props.team) {
+      return false
+    }
+    if (dnd.active.draggable.data?.team == props.team) {
+      return false
+    }
+    return props.inGroupSwaps || dnd.active.draggable.data?.group != props.group
+  }
   return (
     <div use:droppable={!!droppable}>
       <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform), "touch-action": "none" }}>
-        <Team disabled={props.disabled} defocus={defocus()} seed={props.seed} team={props.team} moved={props.moved} dragActivators={draggable.dragActivators} />
+        <Team
+          disabled={props.disabled}
+          defocus={defocus()}
+          highlight={highlight()}
+          seed={props.seed}
+          team={props.team}
+          moved={props.moved}
+          dragActivators={draggable.dragActivators}
+        />
       </div>
     </div>
   )
@@ -113,6 +133,7 @@ function DndTeam(props: { disabled?: boolean, seed: string, division: Division, 
 function Team(props: {
   disabled?: boolean;
   defocus?: boolean;
+  highlight?: boolean;
   overlay?: boolean;
   seed: string;
   team: string;
@@ -120,7 +141,18 @@ function Team(props: {
   dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>; // solid-dnd Listeners
 }) {
   return (
-    <ListItem sx={{ display: "flex", gap: "1em", opacity: props.defocus ? 0.5 : 1 }}>
+    <ListItem sx={{
+      display: "flex",
+      gap: "1em",
+      opacity: props.defocus ? 0.5 : 1,
+      borderRadius: 1,
+      transition: "box-shadow 0.15s ease, background-color 0.15s ease, transform 0.12s ease",
+      boxShadow: props.highlight
+        ? (theme: any) => `0 0 0 2px ${theme.palette.primary.main}, 0 4px 16px ${theme.palette.primary.main}40`
+        : "none",
+      bgcolor: props.highlight ? "action.selected" : "transparent",
+      transform: props.highlight ? "scale(1.015)" : "scale(1)",
+    }}>
       <Show when={!props.disabled}>
         <div style={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", "align-items": "center" }}>
           <DragIndicator fontSize="small" {...props.dragActivators} color="secondary" />
