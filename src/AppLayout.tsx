@@ -14,11 +14,8 @@ export default function AppLayout(props: ParentProps<{
     <Paper elevation={0} sx={{
       height: "100%",
       width: "100%",
-      display: "flex",
-      flexDirection: "column",
       position: "relative",
       overflow: "hidden",
-      borderRadius: 0,
     }}>
       <Box sx={{
         position: "absolute",
@@ -27,20 +24,27 @@ export default function AppLayout(props: ParentProps<{
         opacity: bgOpacity(),
         pointerEvents: "none",
       }} aria-hidden="true" />
-      <Box sx={{ flexGrow: 0, zIndex: 1 }}>
-        <AppBar />
-      </Box>
-      <Box component="main" sx={{
-        m: 1,
-        flexGrow: 1,
+      <Box sx={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        flexDirection: "column",
         position: "relative",
-        overflow: "auto",
-        zIndex: 1,
       }}>
-        {props.children}
-      </Box>
-      <Box sx={{ flexGrow: 0, zIndex: 1 }}>
-        <AppFooter onModeChange={props.onModeChange} />
+        <Box sx={{ flexGrow: 0 }}>
+          <AppBar />
+        </Box>
+        <Box component="main" sx={{
+          m: 1,
+          flexGrow: 1,
+          position: "relative",
+          overflow: "auto",
+        }}>
+          {props.children}
+        </Box>
+        <Box sx={{ flexGrow: 0 }}>
+          <AppFooter onModeChange={props.onModeChange} />
+        </Box>
       </Box>
     </Paper>
   )
