@@ -40,6 +40,7 @@
 - [x] Don't require config to be loaded to start a race
 - [x] Generate results HTML
 - [x] Reduce number of clicks to load config from /manage/new
+- [x] Use theme colors for minileague highlighting
 
 ## Must
 
@@ -72,7 +73,6 @@
 
 ## Could
 
-- [ ] Use theme colors for minileague highlighting
 - [ ] Preserve valid future stage results when progressing following a re-open
 - [ ] Push results to Google Sheets
 - [ ] Push results to website

@@ -10,16 +10,16 @@
 - [x] Protect sensitive variables with serverless function calls
 - [x] Playwright tests for all round configurations
 - [x] ManageNewSelect should be uncontrolled with event emits - reduce duplice update implementations
+- [x] REJECT(global signals not a thing, use jotai if necessary) Replace KingsContext with global signals - maybe bad idea as "computations created outside a `createRoot` or `render` will never be disposed"
+- [x] Service worker for offline use
 
 ## Must
 
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
-- [ ] Replace KingsContext with global signals - maybe bad idea as "computations created outside a `createRoot` or `render` will never be disposed"
 - [ ] Transition all "api" interactions to tanstack query and async
 - [ ] Align how RoundConfigs are passed to create/progress/complete
 - [ ] Verify stage 2 should always have same number of teams as stage 1
 - [ ] Validation checks when re-opening a stage
-- [ ] Service worker for offline use
 - [ ] Responsive layout
 - [ ] Place some sensible error boundaries in, at least at a page level
 
