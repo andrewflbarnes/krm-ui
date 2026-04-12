@@ -79,7 +79,7 @@ export default function RunRaceInProgressHeader(props: {
 
   const [print, setPrint] = usePrint()
 
-  const roundStages = () => {
+  const roundStages = createMemo(() => {
     const roundConfigs = Object.values(props.round.config)
     const roundKeys = Object.keys(stages)
     const currentIdx = roundKeys.indexOf(props.round.status)
@@ -94,7 +94,7 @@ export default function RunRaceInProgressHeader(props: {
           enabled,
         }
       })
-  }
+  })
 
   return (
     <>

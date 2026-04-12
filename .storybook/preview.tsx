@@ -19,13 +19,9 @@ const preview: Preview = {
   ],
   decorators: [
     createJSXDecorator((Story, context) => {
-      const {
-        theme,
-        setMode,
-      } = useKingsTheme(context.globals.backgrounds?.value === "dark" ? "dark" : "light")
-      createEffect(() => {
-        setMode(context.globals.backgrounds?.value === "dark" ? "dark" : "light")
-      })
+      const bgMode = () => context.globals.backgrounds?.value === "dark" ? "dark" : "light" as const
+      const { theme, setMode } = useKingsTheme(bgMode())
+      createEffect(() => setMode(bgMode()))
 
       return (
         <ThemeProvider theme={theme}>
