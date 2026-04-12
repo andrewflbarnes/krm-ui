@@ -1,8 +1,10 @@
 import { DragIndicator } from "@suid/icons-material";
-import { Box, Chip, Divider, List, ListItem, ListItemText, ListSubheader, Paper, Typography } from "@suid/material";
+import { Box, Chip, Paper, Theme, Typography } from "@suid/material";
+import NumberBadge from "../ui/NumberBadge";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, transformStyle, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
+import GroupCard from "../ui/GroupCard";
 
 type ManageNewShuffleProps = {
   round: Round;
@@ -50,21 +52,19 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
           })
         }
         return (
-          <div style={{ display: "flex", "flex-direction": "column", "align-items": "center" }}>
-            <div>
-              <Typography variant="h4" textAlign="center">
+          <Box sx={{ display: "flex", flexDirection: "column" }}>
+            <Box sx={{ px: 4, py: 2, borderBottom: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", mb: 2 }}>
+              <Typography variant="h4" sx={{ fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                 {division.capitalize()}
               </Typography>
-              <DragDropProvider onDragEnd={dndHandler}>
-                <DragDropSensors />
-                <DragOverlayTeam />
+            </Box>
+            <DragDropProvider onDragEnd={dndHandler}>
+              <DragDropSensors />
+              <DragOverlayTeam />
+              <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                 <For each={config.stage1}>{(group) => {
                   return (
-                    <List
-                      dense
-                      aria-labelledby={`${division}-${group.name}`}
-                      subheader={<ListSubheader disableSticky id={`${division}-${group.name}`}>Group {group.name}</ListSubheader>}
-                    >
+                    <GroupCard name={group.name} accent="primary">
                       <For each={group.seeds}>{(seed) => {
                         const team = seeds()[seed.position]
                         const originalPosition = props.seeding[division].indexOf(team)
@@ -75,12 +75,12 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                           <DndTeam disabled={config.stage1.length < 2 && !props.inGroupSwaps} seed={originalSeed} division={division} group={group.name} team={team} moved={moved} inGroupSwaps={props.inGroupSwaps} />
                         )
                       }}</For>
-                    </List>
+                    </GroupCard>
                   )
                 }}</For>
-              </DragDropProvider>
-            </div>
-          </div>
+              </Box>
+            </DragDropProvider>
+          </Box>
         )
       }}</For>
     </Box>
@@ -138,36 +138,35 @@ function Team(props: {
   seed: string;
   team: string;
   moved: string;
-  dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>; // solid-dnd Listeners
+  dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>;
 }) {
   return (
-    <ListItem sx={{
+    <Box sx={{
       display: "flex",
-      gap: "1em",
+      alignItems: "center",
+      gap: 1,
+      px: 0.5,
+      py: 0.5,
       opacity: props.defocus ? 0.5 : 1,
       borderRadius: 1,
       transition: "box-shadow 0.15s ease, background-color 0.15s ease, transform 0.12s ease",
       boxShadow: props.highlight
-        ? (theme: any) => `0 0 0 2px ${theme.palette.primary.main}, 0 4px 16px ${theme.palette.primary.main}40`
+        ? (theme: Theme) => `0 0 0 2px ${theme.palette.primary.main}, 0 4px 16px ${theme.palette.primary.main}40`
         : "none",
       bgcolor: props.highlight ? "action.selected" : "transparent",
       transform: props.highlight ? "scale(1.015)" : "scale(1)",
     }}>
       <Show when={!props.disabled}>
-        <div style={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", "align-items": "center" }}>
-          <DragIndicator fontSize="small" {...props.dragActivators} color="secondary" />
-        </div>
-        <Divider orientation="vertical" flexItem />
+        <Box sx={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", alignItems: "center" }}>
+          <DragIndicator fontSize="small" {...props.dragActivators} sx={{ color: "text.disabled" }} />
+        </Box>
       </Show>
-      <Typography sx={{ maxWidth: "1em", textAlign: "center" }}>
-        {props.seed}
+      <NumberBadge value={props.seed} />
+      <Typography variant="body2" sx={{ fontSize: "0.75rem", flex: 1, whiteSpace: "nowrap" }}>
+        {props.team}
       </Typography>
-      <Divider orientation="vertical" flexItem />
-      <ListItemText primary={props.team} sx={{ whiteSpace: "nowrap" }} />
-      <div style={{ width: "2em", visibility: props.moved ? "visible" : "hidden" }}>
-        <Chip label={props.moved} color="warning" size="small" variant="outlined" />
-      </div>
-    </ListItem>
+      <Chip label={props.moved} color="warning" size="small" variant="outlined" sx={{ height: 18, fontSize: "0.6rem", visibility: props.moved ? "visible" : "hidden" }} />
+    </Box>
   )
 }
 
@@ -178,7 +177,7 @@ function DragOverlayTeam() {
     <Show when={dnd.active.draggable}>{draggable =>
       <DragOverlay>
         <div style={{ "z-index": 100 }}>
-          <Paper>
+          <Paper sx={{ px: 1, py: 0.5 }}>
             {/* @ts-expect-error draggable data untyped */}
             <Team overlay {...draggable().data} />
           </Paper>

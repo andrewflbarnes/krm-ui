@@ -2,6 +2,7 @@ import { Box, Paper, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
 import { MiniLeagueTemplate } from "../kings";
 import { minileagueRaces } from "../kings/utils";
+import NumberBadge from "../ui/NumberBadge";
 import ValidIcon from "../ui/ValidIcon";
 import MiniLeague from "./MiniLeague";
 
@@ -193,20 +194,7 @@ function Content(props: Props) {
           }}>
             <For each={props.template.races}>{(r, i) => (
               <Box sx={{ display: "flex", alignItems: "center", justifyContent: "center", gap: 0.75, py: 0.4 }}>
-                <Box sx={{
-                  width: 18,
-                  height: 18,
-                  borderRadius: "50%",
-                  bgcolor: "action.selected",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  flexShrink: 0,
-                }}>
-                  <Typography sx={{ fontSize: "0.6rem", fontWeight: 700, color: "text.secondary", lineHeight: 1 }}>
-                    {i() + 1}
-                  </Typography>
-                </Box>
+                <NumberBadge value={i() + 1} size={18} bgcolor="action.selected" color="text.secondary" />
                 <Typography variant="body2" sx={{ fontSize: "0.75rem", whiteSpace: "nowrap" }}>
                   Team {r[0] + 1}
                 </Typography>
