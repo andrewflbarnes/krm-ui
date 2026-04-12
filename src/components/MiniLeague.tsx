@@ -53,7 +53,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
     setAnchorEl(e.currentTarget as HTMLTableColElement)
     setCtxRace(ctx)
   }
-  const finished = () => props.races.every(({ winner }) => !!winner)
+  const finished = createMemo(() => props.races.every(({ winner }) => !!winner))
 
   return (
     <>
@@ -85,7 +85,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 </Show>
               </td>
               <Show when={!props.noResults}>
-                <td colspan={1}>
+                <td>
                   <Show when={finished()}>
                     <Chip
                       label="Complete"
@@ -105,7 +105,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
           </thead>
         </Show>
         <For each={teams()}>{(team, i) => {
-          const dimmed = () => highlightTeams().length > 0 && !highlightTeams().includes(team);
+          const dimmed = createMemo(() => { const ht = highlightTeams(); return ht.length > 0 && !ht.includes(team) })
           return (
             <tr>
               <th
@@ -125,7 +125,6 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     variant="body2"
                     sx={{
                       fontWeight: 600,
-                      transition: "color 0.15s ease",
                     }}
                   >
                     {team}
@@ -231,12 +230,13 @@ export default function MiniLeague(props: MiniLeagueProps) {
                 const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
                 const posInfo = () => {
                   const p = pos()
-                  if (teamPositions().pos[p]?.length == teams().length) {
+                  const posLen = teamPositions().pos[p]?.length
+                  if (posLen == teams().length) {
                     if (!props.races.some(r => r.winner)) {
                       return null
                     }
                   }
-                  const joint = teamPositions().pos[p]?.length > 1
+                  const joint = posLen > 1
                   switch (p) {
                     case 0: return { text: `${joint ? "=" : ""}1st`, rank: 1 }
                     case 1: return { text: `${joint ? "=" : ""}2nd`, rank: 2 }
@@ -260,51 +260,27 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     <td style={{ "width": "3em" }}>
                       <Show when={(finished() || props.live) && posInfo()}>
                         {(info) => (
-                          <Show
-                            when={info().rank <= 3}
-                            fallback={
-                              <Box sx={{
-                                display: "inline-flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                px: 1,
-                                py: 0.25,
-                                borderRadius: "10px",
-                                bgcolor: "action.selected",
-                              }}>
-                                <Typography sx={{
-                                  fontSize: "0.65rem",
-                                  fontWeight: 700,
-                                  color: "text.secondary",
-                                  lineHeight: 1,
-                                  whiteSpace: "nowrap",
-                                }}>
-                                  {info().text}
-                                </Typography>
-                              </Box>
-                            }
-                          >
-                            <Box sx={{
-                              display: "inline-flex",
-                              alignItems: "center",
-                              justifyContent: "center",
-                              px: 1,
-                              py: 0.25,
-                              borderRadius: "10px",
-                              background: RANK_GRADIENT[info().rank],
-                              boxShadow: "0 2px 4px rgba(0,0,0,0.2)",
+                          <Box sx={{
+                            display: "inline-flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            px: 1,
+                            py: 0.25,
+                            borderRadius: "10px",
+                            background: info().rank <= 3 ? RANK_GRADIENT[info().rank] : undefined,
+                            bgcolor: info().rank <= 3 ? undefined : "action.selected",
+                            boxShadow: info().rank <= 3 ? "0 2px 4px rgba(0,0,0,0.2)" : undefined,
+                          }}>
+                            <Typography sx={{
+                              fontSize: "0.65rem",
+                              fontWeight: info().rank <= 3 ? 800 : 700,
+                              color: info().rank <= 3 ? "white" : "text.secondary",
+                              lineHeight: 1,
+                              whiteSpace: "nowrap",
                             }}>
-                              <Typography sx={{
-                                fontSize: "0.65rem",
-                                fontWeight: 800,
-                                color: "white",
-                                lineHeight: 1,
-                                whiteSpace: "nowrap",
-                              }}>
-                                {info().text}
-                              </Typography>
-                            </Box>
-                          </Show>
+                              {info().text}
+                            </Typography>
+                          </Box>
                         )}
                       </Show>
                     </td>
