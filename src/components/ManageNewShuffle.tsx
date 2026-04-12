@@ -132,7 +132,7 @@ function Team(props: {
       </Typography>
       <Divider orientation="vertical" flexItem />
       <ListItemText primary={props.team} sx={{ whiteSpace: "nowrap" }} />
-      <div style={{ visibility: props.moved ? "visible" : "hidden" }}>
+      <div style={{ width: "2em", visibility: props.moved ? "visible" : "hidden" }}>
         <Chip label={props.moved} color="warning" size="small" variant="outlined" />
       </div>
     </ListItem>
