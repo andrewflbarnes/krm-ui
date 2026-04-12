@@ -130,11 +130,11 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   createEffect(() => {
     if (print()) {
       const printwindow = window.open('', 'PRINT', 'height=800,width=1000');
-      printwindow.document.write('<html><head>')
-      printwindow.document.write(`<title>Kings Results Manager</title>`)
-      printwindow.document.write('</head><body>')
-      printwindow.document.write(ref.innerHTML)
-      printwindow.document.write('</body></html>')
+      printwindow.document.writeln('<html><head>')
+      printwindow.document.writeln(`<title>Kings Results Manager</title>`)
+      printwindow.document.writeln('</head><body>')
+      printwindow.document.writeln(ref.innerHTML)
+      printwindow.document.writeln('</body></html>')
       printwindow.document.close(); // necessary for IE >= 10
       printwindow.focus(); // necessary for IE >= 10*/
       printwindow.print();
