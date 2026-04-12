@@ -147,7 +147,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const showMiniLeagues = () => view() === "mini" || view() === "side-by-side"
   const showSideBySide = () => view() === "side-by-side"
   return (
-    <Box sx={{ overflowY: "auto", mt: 1 }}>
+    <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
       <Stack direction="row" gap={1} sx={{ justifyContent: "center" }}>
         <Show when={showList()}>
           <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
@@ -169,13 +169,13 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
         </Show>
       </Stack>
       <Box sx={{ display: view() === "printable" ? "inherit" : "none" }}>
-        <Box ref={ref}>
+        <Card ref={ref} sx={{ display: "flex", flexDirection: "column", p: 3, alignItems: "center", width: "fit-content", mx: "auto" }}>
           <RaceListPrintable
             knockouts={props.stage === "knockout"}
             races={orderedRaces()}
             subtitle={`${props.round.league} ${props.stage}`}
           />
-        </Box>
+        </Card>
       </Box>
     </Box>
   )

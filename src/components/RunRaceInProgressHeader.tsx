@@ -1,7 +1,7 @@
 import { Box, Button, Card, CardContent, FormControlLabel, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
-import { createEffect, createMemo, createSignal, For, on, Show } from "solid-js";
-import { GroupRaces, RaceStage, Round, Stage } from "../kings";
+import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
+import { GroupRaces, RaceStage, Round } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
 import krmApi, { ProgressionStage } from "../api/krm";

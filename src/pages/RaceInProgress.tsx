@@ -3,7 +3,7 @@ import RunRaceInProgressStage from "../components/RunRaceInProgressStage";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RunRaceInProgressHeader from "../components/RunRaceInProgressHeader";
 import RunRaceResults from "../components/RunRaceResults";
-import { Alert, Box, Button, Card, Typography } from "@suid/material";
+import { Alert, Box, Button, Typography } from "@suid/material";
 import { stages, useRaceOptions } from "../hooks/results";
 import { isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
@@ -55,9 +55,9 @@ function RaceInProgressInternal() {
           </Show>
         }</Match>
         <Match when={stage() == "complete"}>
-          <Card style={{ display: "flex", "justify-content": "center", padding: "2em", "overflow-y": "auto", height: "100%", width: "100%" }}>
+          <Box style={{ display: "flex", "justify-content": "center", padding: "2em", "overflow-y": "auto", height: "100%", width: "100%" }}>
             <RunRaceResults results={round().results} leagueConfig={k.leagueConfig()} />
-          </Card>
+          </Box>
           <Show when={!k.leagueConfig()}>
             <Alert
               severity="warning"
