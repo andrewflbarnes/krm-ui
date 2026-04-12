@@ -24,7 +24,6 @@ export class RoundSetup {
 
     // Add teams step
     // Add new test club with 7, 8 and 9 teams
-    this.next();
     for (const [club, counts] of Object.entries(clubs)) {
       await this.createTeam(club);
       await this.addMixed(club, counts.mixed);

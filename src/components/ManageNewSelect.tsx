@@ -86,7 +86,7 @@ export default function ManageNewSelect(props: ComponentProps) {
       <Box
         sx={{
           display: "grid",
-          gridTemplateColumns: "repeat(auto-fill, minmax(220px, 1fr))",
+          gridTemplateColumns: "1fr",
           gap: 0.5,
         }}
       >

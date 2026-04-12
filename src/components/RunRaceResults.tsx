@@ -177,7 +177,7 @@ export default function RunRaceResults(props: {
                 const accentColor = RANK_ACCENT[result.rank] ?? "transparent";
                 return (
                   <For each={result.teams}>{(team, i) => (
-                    <Box sx={{
+                    <Box role="row" sx={{
                       display: "grid",
                       gridTemplateColumns: GRID_COLS,
                       alignItems: "center",

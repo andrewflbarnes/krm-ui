@@ -1,6 +1,5 @@
 import { Box, Button, Paper, Stack, Typography } from "@suid/material"
-import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup, Show, untrack } from "solid-js"
-const ManageNewSelect = lazy(() => import("../components/ManageNewSelect"))
+import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
 const ManageNewShuffle = lazy(() => import("../components/ManageNewShuffle"))
@@ -10,7 +9,7 @@ import notification from "../hooks/notification"
 import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
-import ManageNewDetails from "../components/ManageNewDetails"
+const ManageNewSetup = lazy(() => import("../components/ManageNewSetup"))
 import { Construction, OpenInNew } from "@suid/icons-material"
 
 const raceConfigs = raceConfig
@@ -38,7 +37,18 @@ function RaceNewInternal() {
   const [k, { addLeagueTeams, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
-  const [numTeams, setNumTeams] = createSignal<ClubSeeding>({})
+  const [numTeams, setNumTeams] = createSignal<ClubSeeding>(initConfig(k.leagueConfig()))
+  createEffect(on(k.leagueConfig, (newConfig) => {
+    setNumTeams(numTeams => {
+      const newNumTeams = initConfig(newConfig)
+      Object.entries(numTeams).forEach(([club, teams]) => {
+        if (newNumTeams[club]) {
+          newNumTeams[club] = teams
+        }
+      })
+      return newNumTeams
+    })
+  }, { defer: true }))
 
   const handleTeamNumsUpdate = (config: ClubSeeding) => {
     setNumTeams(config);
@@ -89,27 +99,19 @@ function RaceNewInternal() {
 
   const steps: Step[] = [
     {
-      title: "Details",
-      content: () => <ManageNewDetails {...details()} onDetailUpdate={handleDetailUpdate} />,
-      onArrive: unlock,
-      validator: () => [true],
-    },
-    {
-      title: "Select Teams",
+      title: "Setup",
       content: () => {
-        const leagueConfig = createMemo(() => ({
-          ...initConfig(k.leagueConfig()),
-          ...untrack(numTeams),
-        }))
         return (
-          <ManageNewSelect
-            config={leagueConfig()}
+          <ManageNewSetup
+            details={details()}
+            onDetailUpdate={handleDetailUpdate}
+            config={numTeams()}
             onUpdate={handleTeamNumsUpdate}
             onErrorUpdate={setTeamSelectErrors}
           />
         )
       },
-      onArrive: lock,
+      onArrive: unlock,
       loadConfig: true,
       validator: () => {
         if (teamSelectErrors().length > 0) {
@@ -151,6 +153,7 @@ function RaceNewInternal() {
     {
       title: "Update teams",
       content: () => <ManageNewUpdateTeams missingTeams={missingTeams()} />,
+      onArrive: lock,
       skip: () => missingTeams().length < 1,
       validator: () => {
         if (missingTeams().length > 0) {
