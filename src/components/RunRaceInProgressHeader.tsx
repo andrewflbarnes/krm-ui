@@ -12,6 +12,7 @@ import { usePrint } from "../hooks/print";
 import { stages, useRaceOptions, View, views } from "../hooks/results";
 import { checkStage, isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
+import Stepper from "../ui/Stepper";
 
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 
@@ -78,6 +79,23 @@ export default function RunRaceInProgressHeader(props: {
 
   const [print, setPrint] = usePrint()
 
+  const roundStages = () => {
+    const roundConfigs = Object.values(props.round.config)
+    const roundKeys = Object.keys(stages)
+    const currentIdx = roundKeys.indexOf(props.round.status)
+    return Object.entries(stages)
+      .filter(([s]) => s === "complete" || roundConfigs.some(c => c[s]))
+      .map(([key, label]) => {
+        const idx = roundKeys.indexOf(key);
+        const enabled = idx <= currentIdx
+        return {
+          key,
+          label,
+          enabled,
+        }
+      })
+  }
+
   return (
     <>
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
@@ -100,12 +118,13 @@ export default function RunRaceInProgressHeader(props: {
           </CardContent>
         </Card>
       </Modal>
-      <Box sx={{ p: 1, display: "flex", flexDirection: "column", gap: 1 }}>
+      <Card sx={{ p: 1, pb: 3, display: "flex", flexDirection: "column", gap: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-          <StageStepper
-            round={props.round}
-            selected={stage() as Stage}
+          <Stepper
+            steps={roundStages()}
+            selected={stage()}
             onSelect={setStage}
+            current={props.round.status}
           />
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, pt: 1 }}>
@@ -151,7 +170,7 @@ export default function RunRaceInProgressHeader(props: {
             )}</Show>
           </Box>
         </Box>
-      </Box>
+      </Card>
     </>
   )
 }
@@ -225,74 +244,6 @@ function ProgressButton(props: {
       </ModalConfirmAction>
     </>
   )
-}
-
-function StageStepper(props: {
-  round: Round;
-  selected: Stage | undefined;
-  onSelect: (s: Stage) => void;
-}) {
-  const stageOrder = Object.keys(stages) as Stage[];
-
-  const allStages = () => (Object.entries(stages) as [Stage, string][])
-    .filter(([s]) => s === "complete" || Object.values(props.round.config).some(c => c[s]));
-
-  const statusIdx = () => {
-    const idx = stageOrder.indexOf(props.round.status as Stage);
-    return idx === -1 ? stageOrder.length : idx;
-  };
-
-  const isAccessible = (s: Stage) => stageOrder.indexOf(s) <= statusIdx();
-  const isCurrent = (s: Stage) => s === props.round.status;
-  const isSelected = (s: Stage) => s === props.selected;
-
-  return (
-    <Stack direction="row" alignItems="center" sx={{ flex: 1 }}>
-      <For each={allStages()}>
-        {([s, label], idx) => (
-          <>
-            <Show when={idx() > 0}>
-              <Box sx={{
-                flex: 1,
-                height: "2px",
-                bgcolor: isAccessible(s) ? "divider" : "action.disabledBackground",
-              }} />
-            </Show>
-            <Box
-              onClick={() => { if (isAccessible(s)) props.onSelect(s) }}
-              sx={{
-                px: 1.5,
-                py: 0.5,
-                borderRadius: "16px",
-                cursor: isAccessible(s) ? "pointer" : "default",
-                bgcolor: isCurrent(s) ? "primary.main" : "transparent",
-                color: isCurrent(s)
-                  ? "primary.contrastText"
-                  : isAccessible(s)
-                    ? "text.primary"
-                    : "text.disabled",
-                border: "2px solid",
-                borderColor: isSelected(s)
-                  ? (isCurrent(s) ? "primary.light" : "primary.main")
-                  : "transparent",
-                fontWeight: isSelected(s) ? 700 : 400,
-                fontSize: "0.875rem",
-                lineHeight: 1.5,
-                whiteSpace: "nowrap",
-                userSelect: "none",
-                transition: "background-color 0.15s, color 0.15s",
-                "&:hover": isAccessible(s) ? {
-                  bgcolor: isCurrent(s) ? "primary.dark" : "action.hover",
-                } : {},
-              }}
-            >
-              {label}
-            </Box>
-          </>
-        )}
-      </For>
-    </Stack>
-  );
 }
 
 function ReopenButton(props: {

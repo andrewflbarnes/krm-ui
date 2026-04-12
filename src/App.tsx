@@ -2,8 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
 import { BreadcrumberProvider } from "./hooks/breadcrumb";
 import { KingsProvider } from "./kings";
 import { Route, Router } from "@solidjs/router";
-import { createMemo, createSignal, lazy, ParentProps } from "solid-js";
-import { createPalette, createTheme, ThemeProvider } from "@suid/material";
+import { lazy, ParentProps } from "solid-js";
+import { ThemeProvider } from "@suid/material";
 import AppLayout from "./AppLayout";
 const Home = lazy(() => import("./pages/Home"));
 const Config = lazy(() => import("./pages/Config"));
@@ -24,6 +24,7 @@ const Status404 = lazy(() => import("./pages/Status404"));
 import { Toaster } from "solid-toast";
 import "./utils/stringutils";
 import { AuthProvider } from "./hooks/auth";
+import { useKingsTheme } from "./theme";
 
 const queryClient = new QueryClient()
 
@@ -86,33 +87,10 @@ function HydratedAppLayout(props: ParentProps) {
     }
   })()
 
-  const [mode, setMode] = createSignal<"light" | "dark">(savedMode);
-
-  const palette = createMemo(() => {
-    return createPalette({
-      mode: mode(),
-      primary: { main: "#1565c0" },
-      secondary: { main: "#e65100" },
-    });
-  });
-
-  const theme = createTheme({
-    palette: palette,
-    shape: { borderRadius: 10 },
-    typography: {
-      h1: { fontWeight: 700, letterSpacing: "-1px" },
-      h4: { fontWeight: 600 },
-      h6: { fontWeight: 600 },
-      button: { textTransform: "none", fontWeight: 600 },
-    },
-    components: {
-      MuiButton: {
-        defaultProps: {
-          disableElevation: true,
-        },
-      },
-    },
-  });
+  const {
+    setMode,
+    theme,
+  } = useKingsTheme(savedMode)
 
   const handleModeChange = () => setMode(m => {
     const newMode = m === "light" ? "dark" : "light"

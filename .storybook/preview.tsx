@@ -1,15 +1,8 @@
-import { Button, createPalette, createTheme, Paper, ThemeProvider } from '@suid/material';
-import { createMemo, createSignal } from 'solid-js';
+import { ThemeProvider } from '@suid/material';
+import { createEffect } from 'solid-js';
 import { createJSXDecorator, Preview } from 'storybook-solidjs-vite';
 import "../src/utils/stringutils"
-
-const [mode, setMode] = createSignal<"light" | "dark">("light");
-
-const palette = createMemo(() => {
-  return createPalette({ mode: mode() });
-});
-
-const theme = createTheme({ palette: palette });
+import { useKingsTheme } from '../src/theme';
 
 const preview: Preview = {
   parameters: {
@@ -24,41 +17,20 @@ const preview: Preview = {
   tags: [
     "autodocs",
   ],
-  // not working in non docs, maybe see https://github.com/storybookjs/storybook/issues/30058
-  //globalTypes: {
-  //  theme: {
-  //    description: 'Global theme for components',
-  //    toolbar: {
-  //      title: "Theme",
-  //      icon: 'circlehollow',
-  //      items: [
-  //        "light",
-  //        "dark",
-  //      ],
-  //      //items: [
-  //      //  { value: 'light', icon: 'circlehollow', title: 'light' },
-  //      //  { value: 'dark', icon: 'circle', title: 'dark' },
-  //      //],
-  //      dynamicTitle: true,
-  //    },
-  //  },
-  //},
-  //initialGlobals: {
-  //  theme: "light",
-  //},
   decorators: [
-    createJSXDecorator((Story) => {
+    createJSXDecorator((Story, context) => {
+      const {
+        theme,
+        setMode,
+      } = useKingsTheme(context.globals.backgrounds?.value === "dark" ? "dark" : "light")
+      createEffect(() => {
+        setMode(context.globals.backgrounds?.value === "dark" ? "dark" : "light")
+      })
+
       return (
         <ThemeProvider theme={theme}>
-          <div style={{ display: "flex", "flex-direction": "column", gap: "1rem" }}>
-            <div>
-              <Button variant="contained" color="primary" onClick={() => setMode(mode() === "light" ? "dark" : "light")}>mode: {mode()}</Button>
-            </div>
-            <div style={{ margin: "auto" }}>
-              <Paper>
-                <Story />
-              </Paper>
-            </div>
+          <div style={{ display: "flex", "justify-content": "center", "align-items": "center", padding: "2em" }}>
+            <Story />
           </div>
         </ThemeProvider >
       )

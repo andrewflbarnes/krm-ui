@@ -18,7 +18,7 @@ export class ResultsHelper {
   }
 
   async startStage1() {
-    await expect(this.page.getByLabel('Stage 1'), 'Running stage 1').toContainText('Stage 1');
+    await this.page.waitForSelector('[data-step-selected=stage1]');
   }
 
   async startStage2() {
@@ -29,7 +29,7 @@ export class ResultsHelper {
     await this.page.getByText('Yes')
       .describe('Confirm start button')
       .click();
-    await expect(this.page.getByLabel('Stage 2'), 'Running stage 2').toContainText('Stage 2');
+    await this.page.waitForSelector('[data-step-selected=stage2]');
   }
 
   async startKnockouts() {
@@ -40,7 +40,7 @@ export class ResultsHelper {
     await this.page.getByText('Yes')
       .describe('Confirm start button')
       .click();
-    await expect(this.page.getByLabel('Knockouts'), 'Running knockouts').toContainText('Knockouts');
+    await this.page.waitForSelector('[data-step-selected=knockout]');
   }
 
   async finishRaces() {
@@ -51,7 +51,7 @@ export class ResultsHelper {
     await this.page.getByText('Yes')
       .describe('Confirm finish button')
       .click();
-    await expect(this.page.getByLabel('Results'), 'Results displayed').toContainText('Results');
+    await this.page.waitForSelector('[data-step-selected=complete]');
   }
 
   async viewMiniLeagues() {
