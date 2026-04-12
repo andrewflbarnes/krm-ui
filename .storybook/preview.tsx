@@ -1,4 +1,4 @@
-import { ThemeProvider } from '@suid/material';
+import { Paper, ThemeProvider } from '@suid/material';
 import { createEffect } from 'solid-js';
 import { createJSXDecorator, Preview } from 'storybook-solidjs-vite';
 import "../src/utils/stringutils"
@@ -29,9 +29,9 @@ const preview: Preview = {
 
       return (
         <ThemeProvider theme={theme}>
-          <div style={{ display: "flex", "justify-content": "center", "align-items": "center", padding: "2em" }}>
+          <Paper style={{ display: "flex", "justify-content": "center", "align-items": "center", padding: "2em", height: "100%" }}>
             <Story />
-          </div>
+          </Paper>
         </ThemeProvider >
       )
     })
