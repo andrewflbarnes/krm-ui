@@ -49,6 +49,7 @@ export default function Tracker() {
         position: "relative",
         height: "100%",
         width: "100%",
+        p: 1,
       }}>
         <Suspense fallback={<Loading />}>
           <Link sx={{ position: "absolute", right: 0 }} target="_blank" rel="noopener" href={`https://www.kingsski.club/${league().toLowerCase()}`}>

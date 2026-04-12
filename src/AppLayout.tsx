@@ -16,6 +16,7 @@ export default function AppLayout(props: ParentProps<{
       width: "100%",
       position: "relative",
       overflow: "hidden",
+      borderRadius: 0,
     }}>
       <Box sx={{
         position: "absolute",
