@@ -1,6 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
-const baseURL = process.env.PLAYWRIGHT_TARGET || "http://localhost:5174";
+// locally go through the netlify
+const baseURL = process.env.PLAYWRIGHT_TARGET || "http://localhost:5173"
 
 /**
  * See https://playwright.dev/docs/test-configuration.
@@ -66,9 +67,9 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  // webServer: {
-  //   command: 'npm run start',
-  //   url: 'http://127.0.0.1:3000',
-  //   reuseExistingServer: !process.env.CI,
-  // },
+  webServer: {
+    command: 'pnpm start --host',
+    url: baseURL,
+    reuseExistingServer: !process.env.CI,
+  }
 });

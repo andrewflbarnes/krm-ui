@@ -31,6 +31,16 @@ export default function Developer() {
           }</For>
           <Button endIcon={<OpenInNew fontSize="small" />}>
             <Link
+              href="/krm-ui-playwright"
+              target="_blank"
+              rel="noopener noreferrer"
+              variant="inherit"
+            >
+              Playwright
+            </Link>
+          </Button>
+          <Button endIcon={<OpenInNew fontSize="small" />}>
+            <Link
               href="/krm-ui-storybook"
               target="_blank"
               rel="noopener noreferrer"

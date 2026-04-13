@@ -51,6 +51,51 @@ export default defineConfig({
   server: {
     allowedHosts: ["localhost", "learning-immortal-griffon.ngrok-free.app"],
     proxy: {
+      '^/krm-ui-playwright(/.*)?': {
+        target: "http://localhost:9323",
+        rewrite: (path) => path.replace(/^\/krm-ui-playwright/, ""),
+        selfHandleResponse: true,
+        configure: (proxy) => {
+          const handleError = (res: ServerResponse, reason?: string | number) => {
+            const message  = reason != "" && reason ? `: ${reason}` : "";
+            console.error(`Error in proxy response${message}`);
+            res.statusCode = 503;
+            res.statusMessage = "Service Unavailable";
+            res.end(`
+              <html>
+                <head>
+                  <title>Playwright Unavailable</title>
+                </head>
+                <body>
+                  <main>
+                    <p>
+                      Unable to reach playwright server${message}
+                    <p>
+                    <p>
+                      To start the playwright server, run
+                      <pre>pnpm e2e:report</pre>
+                    <p>
+                  </main>
+                </body>
+              </html>
+            `)
+          }
+          proxy.on("error", (err, _req, res) => {
+            handleError(res, err.message);
+          })
+          proxy.on("proxyRes", (proxyRes, req, res) => {
+            if (proxyRes.statusCode > 399) {
+              handleError(res, proxyRes.statusMessage || proxyRes.statusCode);
+            } else {
+              console.log("Proxying request to playwright:", req.url);
+              res.setHeader("Location", "http://localhost:9323" + req.url);
+              res.statusCode = 302;
+              res.statusMessage = "Found";
+              res.end();
+            }
+          })
+        },
+      },
       '^/krm-ui-storybook(/.*)?': {
         target: "http://localhost:6006",
         rewrite: (path) => path.replace(/^\/krm-ui-storybook/, ""),

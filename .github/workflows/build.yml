@@ -17,6 +17,23 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  smoke:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v6
+    - name: Setup
+      uses: ./.github/actions/setup
+    - name: Install Playwright Browsers
+      run: pnpm exec playwright install chromium --with-deps --only-shell
+    - name: Run Playwright tests
+      run: pnpm e2e --grep " 10 " --trace on
+    - uses: actions/upload-artifact@v6
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
   test:
     runs-on: ubuntu-latest
     steps:
@@ -38,7 +55,7 @@ jobs:
       - name: Check ESLint violations
         run: pnpm lint
   deploy:
-    needs: [test, check]
+    needs: [test, check, smoke]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -49,6 +66,11 @@ jobs:
         run: .github/update_version.sh
       - name: Install netlify
         run: pnpm install -g netlify-cli
+      - name: Download Playwright report
+        uses: actions/download-artifact@v8
+        with:
+          name: playwright-report
+          path: dist/krm-ui-playwright
       - name: Build and deploy to Netlify
         env:
           NODE_ENV: production

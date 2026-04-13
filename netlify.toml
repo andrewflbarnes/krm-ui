@@ -50,6 +50,16 @@
   status = 200
 
 [[redirects]]
+  from = "/krm-ui-playwright"
+  to = "/krm-ui-playwright"
+  status = 200
+
+[[redirects]]
+  from = "/krm-ui-playwright/*"
+  to = "/krm-ui-playwright/:splat"
+  status = 200
+
+[[redirects]]
   from = "/krm-ui-storybook"
   to = "/krm-ui-storybook"
   status = 200
