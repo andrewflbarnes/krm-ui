@@ -55,11 +55,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
             xs: "flex",
             md: "grid",
           },
-          width: {
-            xs: "100%",
-            sm: "80%",
-            md: "100%",
-          },
+          width: "100%",
           mx: {
             xs: undefined,
             sm: "auto",
@@ -93,7 +89,17 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
           }
           return (
             <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Box sx={{ px: 4, py: 2, borderBottom: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", justifyContent: "center", mb: 2, position: "relative" }}>
+              <Box sx={{
+                px: 4,
+                py: 2,
+                borderBottom: "1px solid",
+                borderColor: "divider",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                mb: 2,
+                position: "relative"
+              }}>
                 <Typography variant="h4" sx={{ fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.1em" }}>
                   {division.capitalize()}
                 </Typography>
@@ -110,7 +116,17 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
               <DragDropProvider onDragEnd={dndHandler}>
                 <DragDropSensors />
                 <DragOverlayTeam />
-                <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
+                <Box sx={{
+                  display: "grid",
+                  flexDirection: "column",
+                  gridTemplateColumns: {
+                    xs: "1fr",
+                    sm: "1fr 1fr",
+                    md: "1fr",
+                    xl: "1fr 1fr",
+                  },
+                  gap: 1.5
+                }}>
                   <For each={config.stage1}>{(group) => {
                     return (
                       <GroupCard name={group.name} accent={DIVISION_ACCENT[division].text ?? "primary"}>
