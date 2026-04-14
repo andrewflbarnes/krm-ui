@@ -2,7 +2,6 @@ import { describe, expect, it, vi } from 'vitest';
 import { render as renderBase, within } from '@solidjs/testing-library'
 import ManageNewSelect from './ManageNewSelect';
 import { ClubSeeding } from '../kings';
-import { createSignal } from 'solid-js';
 import userEvent from '@testing-library/user-event';
 
 const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].reduce((acc, club) => {
@@ -16,17 +15,11 @@ const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol',
 
 
 const render = (numTeams: number = 0) => {
-  const [config, setConfig] = createSignal<ClubSeeding>(initialConfig(numTeams));
   const onUpdate = vi.fn();
-  const handleUpdate = (newConfig: ClubSeeding) => {
-    setConfig(newConfig);
-    onUpdate(newConfig);
-  }
-  const queries = renderBase(() => <ManageNewSelect onUpdate={handleUpdate} config={config()} />);
+  const queries = renderBase(() => <ManageNewSelect onUpdate={onUpdate} config={initialConfig(numTeams)} />);
 
   return {
     ...queries,
-    config,
     onUpdate,
   }
 }
@@ -55,7 +48,7 @@ describe('ManageNewSelect', () => {
   })
 
   it("can add new team", async () => {
-    const { getByTestId, findByText } = render(3);
+    const { getByTestId, onUpdate } = render(3);
     const addClub = getByTestId('add-team')
     const addClubText = within(addClub).getByRole('textbox');
     const addClubButton = within(addClub).getByRole('button');
@@ -67,7 +60,9 @@ describe('ManageNewSelect', () => {
     await userEvent.type(addClubText, 'My New Team');
     await userEvent.click(addClubButton);
 
-    expect(await findByText('My New Team')).toBeInTheDocument();
-    expect(within(addClub).queryByText('My New Team')).not.toBeInTheDocument();
+    expect(onUpdate).toHaveBeenCalledTimes(3);
+    expect(onUpdate).toHaveBeenCalledWith('My New Team', 'mixed', 0);
+    expect(onUpdate).toHaveBeenCalledWith('My New Team', 'ladies', 0);
+    expect(onUpdate).toHaveBeenCalledWith('My New Team', 'board', 0);
   })
 })

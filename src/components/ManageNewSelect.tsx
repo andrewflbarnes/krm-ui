@@ -5,36 +5,17 @@ import { createSignal } from "solid-js"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
 import NumberField from "../ui/NumberField"
 import PopoverButton from "../ui/PopoverButton"
-import { createStore, produce } from "solid-js/store";
 
 type ComponentProps = {
   config: ClubSeeding;
-  onUpdate: (config: ClubSeeding) => void;
+  onUpdate: (club: string, division: Division, num: number) => void;
   onErrorUpdate?: (errors: string[]) => void;
 };
 
 export default function ManageNewSelect(props: ComponentProps) {
-  const [config, setConfig] = createStore<ClubSeeding>({});
-  const clubs = () => Object.keys(config).sort((a, b) => a.localeCompare(b));
+  const clubs = () => Object.keys(props.config).sort((a, b) => a.localeCompare(b));
 
-  createEffect(() => {
-    setConfig(produce((store) => {
-      Object.entries(props.config).forEach(([club, teams]) => {
-        if (!store[club]) {
-          store[club] = {
-            ...teams,
-          }
-        }
-      })
-    }))
-  });
-
-  const updateTeams = (club: string, division: Division, num: number) => {
-    setConfig(club, produce(clubTeams => clubTeams[division] = num));
-    props.onUpdate(config);
-  };
-
-  const total = createMemo(() => Object.values(config).reduce((acc, club) => {
+  const total = createMemo(() => Object.values(props.config).reduce((acc, club) => {
     acc.mixed += club.mixed
     acc.ladies += club.ladies
     acc.board += club.board
@@ -47,18 +28,11 @@ export default function ManageNewSelect(props: ComponentProps) {
 
   const [newTeam, setNewTeam] = createSignal("");
   const canAddNewTeam = createMemo(() =>
-    newTeam().length > 0 && !config[newTeam()]
+    newTeam().length > 0 && !props.config[newTeam()]
   )
   const addTeam = () =>
     batch(() => {
-      if (!config[newTeam()]) {
-        setConfig(newTeam(), {
-          mixed: 0,
-          ladies: 0,
-          board: 0,
-        });
-      }
-      props.onUpdate(config);
+      divisions.forEach(division => props.onUpdate(newTeam(), division, 0))
       setNewTeam("");
     });
 
@@ -82,7 +56,13 @@ export default function ManageNewSelect(props: ComponentProps) {
   })
 
   return (
-    <Box>
+    <Box
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        gap: 2,
+      }}
+    >
       <Box
         sx={{
           display: "grid",
@@ -91,10 +71,10 @@ export default function ManageNewSelect(props: ComponentProps) {
         }}
       >
         <For each={clubs()}>{(club) => {
-          const teams = () => config[club];
+          const teams = () => props.config[club];
           const clubTotal = () => teams().mixed + teams().ladies + teams().board;
           return (
-            <Card variant="outlined" data-testid={`club-${club}`}>
+            <Card data-testid={`club-${club}`}>
               <CardContent sx={{ py: "6px !important", px: "12px !important" }}>
                 <Stack direction="row" alignItems="center" gap={1}>
                   <Typography variant="caption" fontWeight="bold" sx={{ flex: 1, minWidth: 0, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
@@ -108,7 +88,7 @@ export default function ManageNewSelect(props: ComponentProps) {
                       <Box sx={{ width: "40px" }}>
                         <NumberField
                           onChange={(e) =>
-                            updateTeams(club, division, +e.target.value >>> 0)
+                            props.onUpdate(club, division, +e.target.value >>> 0)
                           }
                           value={teams()[division]}
                           zeroBlank
@@ -122,48 +102,47 @@ export default function ManageNewSelect(props: ComponentProps) {
             </Card>
           )
         }}</For>
-
-        <Card
-          variant="outlined"
-          sx={{
-            borderStyle: "dashed",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            minHeight: "80px",
-          }}
-        >
-          <CardContent>
-            <TextField
-              data-testid="add-team"
-              size="small"
-              variant="outlined"
-              placeholder="Club name"
-              value={newTeam()}
-              onChange={e => setNewTeam(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && canAddNewTeam() && addTeam()}
-              InputProps={{
-                endAdornment: (
-                  <InputAdornment position="end">
-                    <IconButton
-                      onClick={addTeam}
-                      disabled={!canAddNewTeam()}
-                      size="small"
-                      color="info"
-                    >
-                      <Add />
-                    </IconButton>
-                  </InputAdornment>
-                ),
-              }}
-            />
-          </CardContent>
-        </Card>
       </Box>
+
+      <Card
+        variant="outlined"
+        sx={{
+          borderStyle: "dashed",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minHeight: "80px",
+        }}
+      >
+        <CardContent>
+          <TextField
+            data-testid="add-team"
+            size="small"
+            variant="outlined"
+            placeholder="Club name"
+            value={newTeam()}
+            onChange={e => setNewTeam(e.target.value)}
+            onKeyDown={e => e.key === "Enter" && canAddNewTeam() && addTeam()}
+            InputProps={{
+              endAdornment: (
+                <InputAdornment position="end">
+                  <IconButton
+                    onClick={addTeam}
+                    disabled={!canAddNewTeam()}
+                    size="small"
+                    color="info"
+                  >
+                    <Add />
+                  </IconButton>
+                </InputAdornment>
+              ),
+            }}
+          />
+        </CardContent>
+      </Card>
 
       <Box
         sx={{
-          mt: 2,
           px: 2,
           py: 1,
           bgcolor: "action.hover",

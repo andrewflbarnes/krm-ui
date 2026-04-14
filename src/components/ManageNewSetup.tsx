@@ -1,13 +1,13 @@
 import { Box } from "@suid/material"
 import ManageNewSelect from "./ManageNewSelect"
-import { ClubSeeding } from "../kings"
+import { ClubSeeding, Division } from "../kings"
 import ManageNewDetail, { Details } from "./ManageNewDetail"
 
 type ComponentProps = {
   details: Details;
   onDetailUpdate: (details: Details) => void;
   config: ClubSeeding;
-  onUpdate: (config: ClubSeeding) => void;
+  onUpdate: (club: string, division: Division, num: number) => void;
   onErrorUpdate?: (errors: string[]) => void;
 }
 

@@ -50,8 +50,17 @@ function RaceNewInternal() {
     })
   }, { defer: true }))
 
-  const handleTeamNumsUpdate = (config: ClubSeeding) => {
-    setNumTeams(config);
+  const handleTeamNumsUpdate = (club: string, division: Division, num: number) => {
+    setNumTeams(config => {
+      const clubConfig = config[club] || { mixed: 0, ladies: 0, board: 0 }
+      return {
+        ...config,
+        [club]: {
+          ...clubConfig,
+          [division]: num,
+        }
+      }
+    });
   }
 
   const [teamSelectErrors, setTeamSelectErrors] = createSignal<string[]>([]);
