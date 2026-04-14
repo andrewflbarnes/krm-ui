@@ -37,3 +37,18 @@ export const useKingsTheme = (initialMode?: "light" | "dark") => {
     setMode,
   }
 }
+
+export const DIVISION_ACCENT = {
+  mixed: {
+    text: "primary",
+    background: "primary.main",
+  },
+  ladies: {
+    text: "secondary",
+    background: "secondary.main",
+  },
+  board: {
+    text: "info",
+    background: "info.main",
+  }
+} as const;

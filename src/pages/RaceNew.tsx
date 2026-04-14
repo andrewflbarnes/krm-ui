@@ -1,4 +1,4 @@
-import { Box, Button, Paper, Stack, Typography } from "@suid/material"
+import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
@@ -259,7 +259,7 @@ function RaceNewInternal() {
   }
 
   return (
-    <Paper sx={{ height: 1, p: 1 }}>
+    <Box sx={{ height: 1, p: 1 }}>
       <Stack flexDirection="column" height="100%" gap="1em">
         <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
           <CallToLoadConfig />
@@ -279,7 +279,7 @@ function RaceNewInternal() {
           </Show>
         </Stack>
       </Stack>
-    </Paper>
+    </Box>
   )
 }
 

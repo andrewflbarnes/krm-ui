@@ -3,11 +3,12 @@ import { createMemo, For, Show } from "solid-js";
 import { divisions, RoundResult } from "../kings";
 import { kingsPoints } from "../kings/utils";
 import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
+import { DIVISION_ACCENT } from "../theme";
 
 const DIVISION_META: Record<string, { color: string; label: string }> = {
-  mixed: { color: "primary.main", label: "M" },
-  ladies: { color: "secondary.main", label: "L" },
-  board: { color: "info.main", label: "B" },
+  mixed: { color: DIVISION_ACCENT.mixed.background, label: "M" },
+  ladies: { color: DIVISION_ACCENT.ladies.background, label: "L" },
+  board: { color: DIVISION_ACCENT.board.background, label: "B" },
 };
 
 const GRID_COLS = "56px 1fr repeat(3, 60px)";

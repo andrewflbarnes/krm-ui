@@ -104,11 +104,11 @@ function RacesInternal() {
       >
         This will overwrite any tracked rounds which have not been uploaded/synced, are you sure?
       </ModalConfirmAction>
-      <Box sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 1 }}>
+      <Box sx={{ height: "100%", display: "flex", flexDirection: "column", gap: 1, justifyContent: "space-between" }}>
         <Show
           when={rounds().length > 0}
         >
-          <Paper sx={{ height: 1 }}>
+          <Paper sx={{ p: 2 }}>
             <ManageContinueList
               rounds={rounds()}
               onDeleteRound={handleDeleteRound}

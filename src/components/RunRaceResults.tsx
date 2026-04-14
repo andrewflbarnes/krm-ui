@@ -5,12 +5,7 @@ import { LeagueData, RoundResult } from "../kings";
 import { kingsPoints, resultsToHtml } from "../kings/utils";
 import notification from "../hooks/notification";
 import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
-
-const DIVISION_ACCENT: Record<string, "primary" | "secondary" | "info"> = {
-  mixed: "primary",
-  ladies: "secondary",
-  board: "info",
-};
+import { DIVISION_ACCENT } from "../theme";
 
 const GRID_COLS = "auto 1fr auto";
 
@@ -96,7 +91,7 @@ export default function RunRaceResults(props: {
               }}
             >
               <Box sx={{
-                bgcolor: `${DIVISION_ACCENT[division] ?? "primary"}.main`,
+                bgcolor: DIVISION_ACCENT[division].background ?? "primary.main",
                 px: 2,
                 py: 1.25,
                 display: "flex",

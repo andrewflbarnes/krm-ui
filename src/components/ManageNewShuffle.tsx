@@ -6,6 +6,7 @@ import { createSignal, For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 import GroupCard from "../ui/GroupCard";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
+import { DIVISION_ACCENT } from "../theme";
 
 type ManageNewShuffleProps = {
   round: Round;
@@ -49,12 +50,24 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
         Reset {resetDivision()} seedings to their original positions?
       </ModalConfirmAction>
       <Box
-        style={{ "grid-template-columns": gtr(), gap: "1rem", "justify-content": "space-between", "flex-direction": "column" }}
         sx={{
           display: {
             xs: "flex",
             md: "grid",
           },
+          width: {
+            xs: "100%",
+            sm: "80%",
+            md: "100%",
+          },
+          mx: {
+            xs: undefined,
+            sm: "auto",
+          },
+          gridTemplateColumns: gtr(),
+          gap: "1rem",
+          justifyContent: "space-between",
+          flexDirection: "column",
         }}
       >
         <For each={Object.entries(props.round.config)}>{([division, config]: [Division, RoundConfig]) => {
@@ -100,7 +113,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                 <Box sx={{ display: "flex", flexDirection: "column", gap: 1.5 }}>
                   <For each={config.stage1}>{(group) => {
                     return (
-                      <GroupCard name={group.name} accent="primary">
+                      <GroupCard name={group.name} accent={DIVISION_ACCENT[division].text ?? "primary"}>
                         <For each={group.seeds}>{(seed) => {
                           const team = seeds()[seed.position]
                           const originalPosition = props.seeding[division].indexOf(team)
@@ -165,6 +178,7 @@ function DndTeam(props: { disabled?: boolean, seed: string, division: Division, 
           disabled={props.disabled}
           defocus={defocus()}
           highlight={highlight()}
+          division={props.division}
           seed={props.seed}
           team={props.team}
           moved={props.moved}
@@ -180,11 +194,13 @@ function Team(props: {
   defocus?: boolean;
   highlight?: boolean;
   overlay?: boolean;
+  division: Division;
   seed: string;
   team: string;
   moved: string;
   dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>;
 }) {
+  const badgeColor = () => DIVISION_ACCENT[props.division].background
   return (
     <Box sx={{
       display: "flex",
@@ -206,7 +222,7 @@ function Team(props: {
           <DragIndicator fontSize="small" {...props.dragActivators} sx={{ color: "text.disabled" }} />
         </Box>
       </Show>
-      <NumberBadge value={props.seed} />
+      <NumberBadge value={props.seed} bgcolor={badgeColor()} />
       <Typography variant="body2" sx={{ fontSize: "0.75rem", flex: 1, whiteSpace: "nowrap" }}>
         {props.team}
       </Typography>

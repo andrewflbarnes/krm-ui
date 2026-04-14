@@ -203,9 +203,9 @@ export default function ConfigLayout(props: ConfigLayoutProps) {
           </Box>
         }
       >
-        <Paper sx={{ flexGrow: 1, overflow: "auto" }}>
+        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
           {props.children}
-        </Paper>
+        </Box>
       </Show>
     </Box>
   );
