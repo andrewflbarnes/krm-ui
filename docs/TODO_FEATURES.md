@@ -41,10 +41,10 @@
 - [x] Generate results HTML
 - [x] Reduce number of clicks to load config from /manage/new
 - [x] Use theme colors for minileague highlighting
+- [x] Loading/updating league config should preserve manually added teams
 
 ## Must
 
-- [ ] Loading/updating league config should preserve manually added teams
 - [ ] Results HTML should pin to correct season
 - [ ] Modify configuration presets for mini leagues
 - [ ] Modify configuration presets for rounds

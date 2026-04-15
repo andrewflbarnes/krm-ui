@@ -34,21 +34,23 @@ export default function RaceNew() {
 }
 
 function RaceNewInternal() {
-  const [k, { addLeagueTeams, lock, unlock }] = useKings()
+  const [k, { addLeagueTeams, isConfigLoaded, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
   const [numTeams, setNumTeams] = createSignal<ClubSeeding>(initConfig(k.leagueConfig()))
-  createEffect(on(k.leagueConfig, (newConfig) => {
+  createEffect(on([k.leagueConfig, k.league], ([newConfig, newLeague], _, prevLeague) => {
     setNumTeams(numTeams => {
       const newNumTeams = initConfig(newConfig)
       Object.entries(numTeams).forEach(([club, teams]) => {
-        if (newNumTeams[club]) {
+        if (newLeague == prevLeague) {
           newNumTeams[club] = teams
         }
       })
       return newNumTeams
     })
-  }, { defer: true }))
+
+    return newLeague
+  }, { defer: true }), k.league())
 
   const handleTeamNumsUpdate = (club: string, division: Division, num: number) => {
     setNumTeams(config => {
@@ -261,7 +263,7 @@ function RaceNewInternal() {
   return (
     <Box sx={{ height: 1, p: 1 }}>
       <Stack flexDirection="column" height="100%" gap="1em">
-        <Show when={!k.leagueConfig() && steps[step()].loadConfig} >
+        <Show when={!isConfigLoaded(k.league()) && steps[step()].loadConfig} >
           <CallToLoadConfig />
         </Show>
         <Box sx={{ flexGrow: 1, display: "flex", overflow: "scroll", alignItems: "start", justifyContent: "center" }}>
