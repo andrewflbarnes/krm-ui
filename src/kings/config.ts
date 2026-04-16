@@ -19,15 +19,13 @@ export default {
     name: "Midlands",
     venues: [
       "Ackers",
-      "Pembrey",
-      "Plymouth",
     ],
   },
   northern: {
     name: "Northern",
     venues: [
       "Rossendale",
-      "Suderland",
+      "Sunderland",
     ],
   },
   southern: {
@@ -41,9 +39,9 @@ export default {
   scotland: {
     name: "Scotland",
     venues: [
-      "Haggiss",
-      "Hillend",
-      "Jamie's House",
+      "Bearsdem",
+      "Bellahouston",
+      "Garthdee",
     ],
   },
 } as const satisfies Record<League, LeagueConfig> as Record<League, LeagueConfig>
