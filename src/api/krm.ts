@@ -20,6 +20,7 @@ export type RoundDetails = {
   league: League;
   round: string;
   venue: string;
+  season: string;
   description: string;
 }
 export type KrmApi = {

@@ -4,7 +4,7 @@ const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTea
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
 const ManageNewShuffle = lazy(() => import("../components/ManageNewShuffle"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding, useKings } from "../kings"
-import krmApi from "../api/krm"
+import krmApi, { RoundDetails } from "../api/krm"
 import notification from "../hooks/notification"
 import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
@@ -39,14 +39,22 @@ function RaceNewInternal() {
 
   const [numTeams, setNumTeams] = createSignal<ClubSeeding>(initConfig(k.leagueConfig()))
   createEffect(on([k.leagueConfig, k.league], ([newConfig, newLeague], _, prevLeague) => {
-    setNumTeams(numTeams => {
-      const newNumTeams = initConfig(newConfig)
-      Object.entries(numTeams).forEach(([club, teams]) => {
-        if (newLeague == prevLeague) {
-          newNumTeams[club] = teams
-        }
+    batch(() => {
+      setNumTeams(numTeams => {
+        const newNumTeams = initConfig(newConfig)
+        Object.entries(numTeams).forEach(([club, teams]) => {
+          if (newLeague == prevLeague) {
+            newNumTeams[club] = teams
+          }
+        })
+        return newNumTeams
       })
-      return newNumTeams
+      if (newLeague != prevLeague) {
+        setDetails(details => ({
+          ...details,
+          venue: "",
+        }))
+      }
     })
 
     return newLeague
@@ -82,18 +90,14 @@ function RaceNewInternal() {
     return `${fmt(y1)}/${fmt(y2)}`
   })()
 
-  const [details, setDetails] = createSignal<{
-    description: string;
-    venue: string;
-    round: string;
-    season: string;
-  }>({
+  const [details, setDetails] = createSignal<Omit<RoundDetails, 'league'>>({
     venue: "",
     description: "",
     round: "1",
     season: defaultSeason,
   })
-  const roundDetails = () => ({
+
+  const roundDetails = (): RoundDetails => ({
     ...details(),
     league: k.league(),
   })

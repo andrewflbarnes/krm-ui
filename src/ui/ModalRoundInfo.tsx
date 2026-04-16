@@ -40,11 +40,17 @@ export default function ModalRoundInfo(props: ModalRoundInfoProps) {
       <CardHeader title="Round information" subheader={props.round.status} />
       <CardContent>
         <Typography>
-          <p>
+          <p style={{ "text-transform": "capitalize" }}>
+            League: {props.round.league}
+          </p>
+          <p style={{ "text-transform": "capitalize" }}>
             Venue: {props.round.details.venue}
           </p>
           <p>
             Round: {props.round.details.round}
+          </p>
+          <p>
+            Season: {props.round.details.season}
           </p>
           <p>
             Description: {props.round.details.description}

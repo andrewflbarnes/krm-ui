@@ -150,6 +150,8 @@ export type Round = {
     description: string;
     /** The location of the round */
     venue: string;
+    /** The season the round took place in */
+    season: string;
     /** The date the round took place */
     date: Date;
   };

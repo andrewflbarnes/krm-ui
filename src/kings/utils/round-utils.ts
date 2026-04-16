@@ -203,6 +203,7 @@ export function createRound(
     league: League;
     round: string;
     description: string;
+    season: string;
     venue: string;
   },
   teams: RoundSeeding,
