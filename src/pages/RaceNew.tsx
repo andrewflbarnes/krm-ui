@@ -302,25 +302,6 @@ function RaceNewInternal() {
 
 function CallToLoadConfig() {
   const [{ loadingConfig, league }, { loadConfig }] = useKings()
-  /*
-    const nav = useNavigate()
-    <Box sx={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 1 }}>
-      <ButtonCard
-        label={`Load ${league().capitalize()} config`}
-        description="Or click the settings icon in the top right to load custom config"
-        icon={<Construction fontSize="large" />}
-        onClick={[loadConfig, undefined]}
-        disabled={loadingConfig()}
-      />
-      <ButtonCard
-        label={`Load custom ${league().capitalize()} config`}
-        description="Load custom config from the teams page"
-        icon={<OpenInNew fontSize="large" />}
-        onClick={[nav, "/teams"]}
-        disabled={loadingConfig()}
-      />
-    </Box>
-  */
   return (
     <Stack flexDirection="row" alignItems="center" justifyContent="center" gap="0.5em">
       <Button
