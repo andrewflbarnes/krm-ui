@@ -132,8 +132,8 @@ function VenueSelect(props: {
   venues: readonly string[],
   onVenueUpdate: (venue: string) => void,
 }) {
-  let venueAnchorRef!: HTMLDivElement;
-  let searchRef!: HTMLDivElement;
+  let venueAnchorRef!: HTMLDivElement; // oxlint-disable-line no-unassigned-vars
+  let searchRef!: HTMLDivElement; // oxlint-disable-line no-unassigned-vars
 
   const [venueOpen, setVenueOpen] = createSignal(false);
   const [venueSearch, setVenueSearch] = createSignal("");

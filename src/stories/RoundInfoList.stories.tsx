@@ -42,6 +42,7 @@ const exampleRound: RoundInfo = {
   status: "complete",
   details: {
     venue: "Gloucester",
+    season: "25/26",
     description: "This is a local round with a lengthy description for the round",
     date: new Date(),
     round: "1"
