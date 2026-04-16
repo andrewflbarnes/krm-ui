@@ -22,6 +22,8 @@ const localStorageContext = {
   },
 }
 
+const configLoadedAtom = atomWithStorage<League[]>('krm-config-loaded', [])
+
 const makeContext = (initLeague?: League) => {
   let league = initLeague
   if (!kings[league]) {
@@ -43,11 +45,24 @@ const makeContext = (initLeague?: League) => {
       setConfig(newConfig)
     })
   }
-  const clearLocalData = () => {
-    krmApi.clearLocalData()
-    const resetConfig = krmApi.getLeagueConfig(selectedLeague())
-    setLeagueConfig(resetConfig)
+  const [internalConfigLoaded, internalSetConfigLoaded] = useAtom(configLoadedAtom)
+  const setConfigLoaded = (inLeague: League) => {
+    const league = inLeague ?? selectedLeague()
+    if (internalConfigLoaded().includes(league)) {
+      return
+    }
+    internalSetConfigLoaded((prev) => [...prev, league])
   }
+  const isConfigLoaded = (league?: League) => internalConfigLoaded().includes(league ?? selectedLeague())
+  const clearLocalData = () => {
+    batch(() => {
+      krmApi.clearLocalData()
+      internalSetConfigLoaded([])
+      const resetConfig = krmApi.getLeagueConfig(selectedLeague())
+      setLeagueConfig(resetConfig)
+    })
+  }
+
   return [
     {
       league: selectedLeague,
@@ -60,6 +75,8 @@ const makeContext = (initLeague?: League) => {
       setLeague,
       setLeagueConfig,
       clearLocalData,
+      isConfigLoaded,
+      setConfigLoaded,
     }
   ] as const
 }
@@ -82,20 +99,9 @@ export function KingsProvider(props: ParentProps) {
     </KingsContext.Provider>
   )
 }
-const configLoadedAtom = atomWithStorage<League[]>('krm-config-loaded', [])
 
 export function useKings() {
   const [state, actions] = useContext(KingsContext)
-
-  const [internalConfigLoaded, internalSetConfigLoaded] = useAtom(configLoadedAtom)
-  const setConfigLoaded = (inLeague: League) => {
-    const league = inLeague ?? state.league()
-    if (internalConfigLoaded().includes(league)) {
-      return
-    }
-    internalSetConfigLoaded((prev) => [...prev, league])
-  }
-  const isConfigLoaded = (league?: League) => internalConfigLoaded().includes(league ?? state.league())
 
   const [, setSearchParams] = useSearchParams()
   const setLeagueEnhanced = (league: League) => {
@@ -128,7 +134,7 @@ export function useKings() {
     tracker.getLeagueData(league, trackingUrl)
       .then(data => {
         setLeagueConfigEnhanced(data)
-        setConfigLoaded(league)
+        actions.setConfigLoaded(league)
         notification.success(`Config loaded for ${league} league`)
       })
       .catch(e => {
@@ -172,7 +178,6 @@ export function useKings() {
     setLeagueConfig: setLeagueConfigEnhanced,
     addLeagueTeams,
     loadConfig,
-    isConfigLoaded,
   }
   const enhancedState = {
     ...state,
