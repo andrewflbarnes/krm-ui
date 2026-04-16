@@ -3,28 +3,50 @@ import { asKnockoutPosition } from "./utils";
 
 export type LeagueConfig = {
   name: string;
+  venues: readonly string[];
 }
 
-const config = {
+export default {
   western: {
     name: "Western",
+    venues: [
+      "Gloucester",
+      "Pembrey",
+      "Plymouth",
+    ],
   },
   midlands: {
     name: "Midlands",
+    venues: [
+      "Ackers",
+      "Pembrey",
+      "Plymouth",
+    ],
   },
   northern: {
     name: "Northern",
+    venues: [
+      "Rossendale",
+      "Suderland",
+    ],
   },
   southern: {
     name: "Southern",
+    venues: [
+      "Aldershot",
+      "Brentwood",
+      "Southampton",
+    ],
   },
   scotland: {
     name: "Scotland",
+    venues: [
+      "Haggiss",
+      "Hillend",
+      "Jamie's House",
+    ],
   },
-} as const
-
-const typedConfig: Record<League, LeagueConfig> = config
-export default typedConfig
+} as const satisfies Record<League, LeagueConfig> as Record<League, LeagueConfig>
 
 // Naming convention is <type><number of teams>
 // - type: mini - a normal mini league

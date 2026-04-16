@@ -73,14 +73,25 @@ function RaceNewInternal() {
     division: string
   }[]>();
 
+  const defaultSeason = (() => {
+    const now = new Date()
+    const year = now.getFullYear()
+    const month = now.getMonth() + 1
+    const [y1, y2] = month <= 8 ? [year - 1, year] : [year, year + 1]
+    const fmt = (y: number) => String(y).slice(-2)
+    return `${fmt(y1)}/${fmt(y2)}`
+  })()
+
   const [details, setDetails] = createSignal<{
     description: string;
     venue: string;
     round: string;
+    season: string;
   }>({
     venue: "",
     description: "",
     round: "1",
+    season: defaultSeason,
   })
   const roundDetails = () => ({
     ...details(),
