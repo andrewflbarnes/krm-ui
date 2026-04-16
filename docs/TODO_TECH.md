@@ -17,6 +17,7 @@
 
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
 - [ ] Transition all "api" interactions to tanstack query and async
+- [ ] Transition all state caching to jotai
 - [ ] Align how RoundConfigs are passed to create/progress/complete
 - [ ] Verify stage 2 should always have same number of teams as stage 1
 - [ ] Validation checks when re-opening a stage
