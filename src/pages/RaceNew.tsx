@@ -281,7 +281,7 @@ function RaceNewInternal() {
         <Show when={!isConfigLoaded(k.league()) && steps[step()].loadConfig} >
           <CallToLoadConfig />
         </Show>
-        <Box sx={{ flexGrow: 1, display: "flex", overflow: "scroll", alignItems: "start", justifyContent: "center" }}>
+        <Box sx={{ flexGrow: 1, display: "flex", overflow: "auto", alignItems: "start", justifyContent: "center" }}>
           {steps[step()].content()}
         </Box>
         <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>

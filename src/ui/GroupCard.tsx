@@ -1,9 +1,10 @@
 import { Box, Card, Typography } from "@suid/material";
 import { JSX } from "solid-js";
+import { BaseColor } from "../theme";
 
 type GroupCardProps = {
   name: string;
-  accent: "primary" | "secondary" | "error" | "info";
+  accent: BaseColor;
   children: JSX.Element;
 }
 

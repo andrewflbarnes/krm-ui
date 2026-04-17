@@ -12,10 +12,11 @@ import {
 } from "@suid/material";
 import { Search, Settings } from "@suid/icons-material";
 import { createMemo, createSignal, For, JSX, ParentProps, Show } from "solid-js";
+import { BaseColor } from "../theme";
 
 export type SidebarChip = {
   label: string;
-  color: "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning";
+  color: BaseColor;
 };
 
 export type SidebarItem = {

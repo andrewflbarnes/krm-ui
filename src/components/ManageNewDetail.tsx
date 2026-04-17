@@ -1,5 +1,5 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Card, CardContent, Divider, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography } from "@suid/material";
+import { Box, Card, CardContent, Divider, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery } from "@suid/material";
 import { LocationOn, Notes } from "@suid/icons-material";
 import { useKings } from "../kings";
 
@@ -75,6 +75,7 @@ function RoundSelect(props: { round: string, onRoundUpdate: (round: string) => v
       <ToggleButtonGroup
         value={props.round}
         exclusive
+        color="secondary"
         onChange={(_, value) => value && props.onRoundUpdate(value)}
         sx={{ width: "100%", mt: 0.5 }}
       >
@@ -173,7 +174,7 @@ function VenueSelect(props: {
           InputProps={{
             startAdornment: (
               <InputAdornment position="start">
-                <LocationOn color="action" fontSize="small" />
+                <LocationOn fontSize="small" />
               </InputAdornment>
             ),
             sx: { cursor: "pointer" },
@@ -228,6 +229,8 @@ function VenueSelect(props: {
 }
 
 function DescriptionInput(props: { description: string, onDescriptionUpdate: (desc: string) => void }) {
+  const theme = useTheme();
+  const small = useMediaQuery(theme.breakpoints.down("md"));
   return (
     <TextField
       label="Description"
@@ -235,7 +238,7 @@ function DescriptionInput(props: { description: string, onDescriptionUpdate: (de
       fullWidth
       size="small"
       multiline
-      minRows={3}
+      minRows={small() ? 1 : 3}
       onChange={e => props.onDescriptionUpdate(e.currentTarget.value)}
       InputProps={{
         startAdornment: (

@@ -5,6 +5,7 @@ import { asPosition, minileagueRaces } from "../kings/utils";
 import GroupCardShell from "../ui/GroupCard";
 import NumberBadge from "../ui/NumberBadge";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
+import { BaseColor, baseColors } from "../theme";
 
 const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => minileagueRaces(template, teams, name, "stage1", "mixed")
 
@@ -74,12 +75,12 @@ function Content(props: Props) {
         gap: 3,
         p: 4,
       }}>
-        <StageCard title="Stage 1" config={props.config.stage1} seeds accent="primary" />
+        <StageCard title="Stage 1" config={props.config.stage1} seeds accent={baseColors.primary.text} />
         <Show when={props.config.stage2}>{(stage2) => (
-          <StageCard title="Stage 2" config={stage2()} accent="secondary" />
+          <StageCard title="Stage 2" config={stage2()} accent={baseColors.secondary.text} />
         )}</Show>
         <Show when={props.config.knockout}>{(ko) => (
-          <StageCard title="Knockouts" config={ko()} knockout accent="error" />
+          <StageCard title="Knockouts" config={ko()} knockout accent={baseColors.teriary.text} />
         )}</Show>
       </Box>
 
@@ -118,7 +119,7 @@ type StageCardProps = {
   config: readonly MiniLeagueConfig[];
   seeds?: boolean;
   knockout?: boolean;
-  accent: "primary" | "secondary" | "error";
+  accent: BaseColor;
 };
 
 function StageCard(props: StageCardProps) {
@@ -194,7 +195,7 @@ type GroupCardProps = {
   teams: string[];
   races: Race[];
   knockout?: boolean;
-  accent: "primary" | "secondary" | "error";
+  accent: BaseColor;
 };
 
 function GroupCard(props: GroupCardProps) {

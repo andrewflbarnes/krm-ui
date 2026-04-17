@@ -5,6 +5,7 @@ import ManageConfigRound from "../components/ManageConfigRound";
 import { useCustomRounds } from "../hooks/custom-config";
 import { raceConfig, RoundConfig } from "../kings";
 import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
+import { BaseColor, baseColors } from "../theme";
 
 type Tier = {
   label: string;
@@ -20,12 +21,12 @@ const TIERS: Tier[] = [
   { label: "Large", min: 17, max: 32, description: "17 – 32 teams" },
 ]
 
-function getComplexityLabel(config: RoundConfig): { label: string; color: "default" | "primary" | "secondary" | "error" | "info" | "success" | "warning" } {
+function getComplexityLabel(config: RoundConfig): { label: string; color: BaseColor } {
   const hasKnockout = !!config.knockout?.length
   const hasStage2 = !!config.stage2?.length
-  if (hasKnockout) return { label: "knockout", color: "error" }
-  if (hasStage2) return { label: "2-stage", color: "secondary" }
-  return { label: "1-stage", color: "primary" }
+  if (hasKnockout) return { label: "knockout", color: baseColors.teriary.text }
+  if (hasStage2) return { label: "2-stage", color: baseColors.secondary.text }
+  return { label: "1-stage", color: baseColors.primary.text }
 }
 
 function getGroupCount(config: RoundConfig): number {

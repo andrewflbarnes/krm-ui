@@ -38,17 +38,31 @@ export const useKingsTheme = (initialMode?: "light" | "dark") => {
   }
 }
 
-export const DIVISION_ACCENT = {
-  mixed: {
+export type BaseColor = 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | 'default';
+
+export const baseColors = {
+  primary: {
     text: "primary",
     background: "primary.main",
   },
-  ladies: {
+  secondary: {
     text: "secondary",
     background: "secondary.main",
   },
-  board: {
-    text: "info",
-    background: "info.main",
+  teriary: {
+    text: "error",
+    background: "error.main",
   }
+} as const
+
+export const STAGE_ACCENT = {
+  stage1: baseColors.primary,
+  stage2: baseColors.secondary,
+  knockout: baseColors.teriary,
+} as const;
+
+export const DIVISION_ACCENT = {
+  mixed: baseColors.primary,
+  ladies: baseColors.secondary,
+  board: baseColors.teriary,
 } as const;
