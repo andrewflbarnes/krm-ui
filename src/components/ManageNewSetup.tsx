@@ -1,5 +1,5 @@
 import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Chip, Divider, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@suid/material"
+import { Box, Chip, Divider, IconButton, InputAdornment, Paper, Stack, TextField, Typography, useMediaQuery, useTheme } from "@suid/material"
 import ManageNewSelect from "./ManageNewSelect"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
 import ManageNewDetail, { Details } from "./ManageNewDetail"
@@ -16,6 +16,8 @@ type ComponentProps = {
 }
 
 export default function ManageNewSetup(props: ComponentProps) {
+  const theme = useTheme();
+  const small = useMediaQuery(theme.breakpoints.down("md"));
 
   return (
     <Box
@@ -25,7 +27,7 @@ export default function ManageNewSetup(props: ComponentProps) {
           md: "grid",
         },
         flexDirection: "column",
-        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
+        gridTemplateColumns: "1fr 1fr",
         gap: 2,
         width: "100%",
         height: "100%",
@@ -43,19 +45,17 @@ export default function ManageNewSetup(props: ComponentProps) {
           onDetailUpdate={props.onDetailUpdate}
         />
 
-        <Box sx={{
-          display: {
-            xs: "block",
-            md: "none",
-          },
-          mt: 2,
-        }}>
-          <ManageNewSelect
-            config={props.config}
-            onUpdate={props.onUpdate}
-            onErrorUpdate={props.onErrorUpdate}
-          />
-        </Box>
+        <Show when={small()}>
+          <Box sx={{
+            mt: 2,
+          }}>
+            <ManageNewSelect
+              config={props.config}
+              onUpdate={props.onUpdate}
+              onErrorUpdate={props.onErrorUpdate}
+            />
+          </Box>
+        </Show>
       </Box>
 
       <Box sx={{
@@ -70,20 +70,18 @@ export default function ManageNewSetup(props: ComponentProps) {
           md: "auto"
         },
       }}>
-        <Box sx={{
-          flexGrow: 1,
-          overflow: "scroll",
-          display: {
-            xs: "none",
-            md: "block",
-          }
-        }}>
-          <ManageNewSelect
-            config={props.config}
-            onUpdate={props.onUpdate}
-            onErrorUpdate={props.onErrorUpdate}
-          />
-        </Box>
+        <Show when={!small()}>
+          <Box sx={{
+            flexGrow: 1,
+            overflow: "scroll",
+          }}>
+            <ManageNewSelect
+              config={props.config}
+              onUpdate={props.onUpdate}
+              onErrorUpdate={props.onErrorUpdate}
+            />
+          </Box>
+        </Show>
 
         <ManageNewSelectFooter
           config={props.config}
