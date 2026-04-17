@@ -1,102 +1,11 @@
 import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { Box, Chip, Divider, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@suid/material"
-import ManageNewSelect from "./ManageNewSelect"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
-import ManageNewDetail, { Details } from "./ManageNewDetail"
 import { DIVISION_ACCENT } from "../theme";
 import PopoverButton from "../ui/PopoverButton";
 import { Add, ErrorOutlineRounded } from "@suid/icons-material";
 
-type ComponentProps = {
-  details: Details;
-  onDetailUpdate: (details: Details) => void;
-  config: ClubSeeding;
-  onUpdate: (club: string, division: Division, num: number) => void;
-  onErrorUpdate?: (errors: string[]) => void;
-}
-
-export default function ManageNewSetup(props: ComponentProps) {
-
-  return (
-    <Box
-      sx={{
-        display: {
-          xs: "flex",
-          md: "grid",
-        },
-        flexDirection: "column",
-        gridTemplateColumns: { xs: "1fr", md: "1fr 1fr" },
-        gap: 2,
-        width: "100%",
-        height: "100%",
-        alignItems: "start",
-      }}
-    >
-
-      <Box sx={{
-        flexGrow: 1,
-        overflow: "scroll",
-        width: "100%",
-      }}>
-        <ManageNewDetail
-          details={props.details}
-          onDetailUpdate={props.onDetailUpdate}
-        />
-
-        <Box sx={{
-          display: {
-            xs: "block",
-            md: "none",
-          },
-          mt: 2,
-        }}>
-          <ManageNewSelect
-            config={props.config}
-            onUpdate={props.onUpdate}
-            onErrorUpdate={props.onErrorUpdate}
-          />
-        </Box>
-      </Box>
-
-      <Box sx={{
-        width: "100%",
-        height: {
-          md: "100%"
-        },
-        display: "flex",
-        flexDirection: "column",
-        gap: 2,
-        overflow: {
-          md: "auto"
-        },
-      }}>
-        <Box sx={{
-          flexGrow: 1,
-          overflow: "scroll",
-          display: {
-            xs: "none",
-            md: "block",
-          }
-        }}>
-          <ManageNewSelect
-            config={props.config}
-            onUpdate={props.onUpdate}
-            onErrorUpdate={props.onErrorUpdate}
-          />
-        </Box>
-
-        <ManageNewSelectFooter
-          config={props.config}
-          onUpdate={props.onUpdate}
-          onErrorUpdate={props.onErrorUpdate}
-        />
-
-      </Box>
-    </Box>
-  )
-}
-
-function ManageNewSelectFooter(props: {
+export default function ManageNewSelectFooter(props: {
   config: ClubSeeding,
   onUpdate: (club: string, division: Division, num: number) => void,
   onErrorUpdate?: (errors: string[]) => void,
