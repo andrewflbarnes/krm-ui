@@ -189,7 +189,7 @@ function DndTeam(props: { disabled?: boolean, seed: string, division: Division, 
   }
   return (
     <div use:droppable={!!droppable}>
-      <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform), "touch-action": "none" }}>
+      <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform) }}>
         <Team
           disabled={props.disabled}
           defocus={defocus()}
@@ -234,7 +234,7 @@ function Team(props: {
       transform: props.highlight ? "scale(1.015)" : "scale(1)",
     }}>
       <Show when={!props.disabled}>
-        <Box sx={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", alignItems: "center" }}>
+        <Box sx={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", alignItems: "center", touchAction: "none" }}>
           <DragIndicator fontSize="small" {...props.dragActivators} sx={{ color: "text.disabled" }} />
         </Box>
       </Show>
