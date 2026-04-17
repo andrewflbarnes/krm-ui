@@ -1,5 +1,5 @@
 import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Chip, Divider, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@suid/material"
+import { Box, Chip, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@suid/material"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
 import { DIVISION_ACCENT } from "../theme";
 import PopoverButton from "../ui/PopoverButton";

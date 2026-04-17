@@ -1,11 +1,8 @@
-import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Chip, Divider, IconButton, InputAdornment, Paper, Stack, TextField, Typography, useMediaQuery, useTheme } from "@suid/material"
+import { Show } from "solid-js";
+import { Box, useMediaQuery, useTheme } from "@suid/material"
 import ManageNewSelect from "./ManageNewSelect"
-import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
+import { ClubSeeding, Division } from "../kings"
 import ManageNewDetail, { Details } from "./ManageNewDetail"
-import { DIVISION_ACCENT } from "../theme";
-import PopoverButton from "../ui/PopoverButton";
-import { Add, ErrorOutlineRounded } from "@suid/icons-material";
 import ManageNewSelectFooter from "./ManageNewSelectFooter";
 
 type ComponentProps = {
