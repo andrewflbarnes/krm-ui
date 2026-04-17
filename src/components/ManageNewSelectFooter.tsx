@@ -111,11 +111,6 @@ export default function ManageNewSelectFooter(props: {
             gap: 1,
           }}
         >
-          <Typography variant="body2" sx={{ mr: 0.5 }}>
-            Total
-          </Typography>
-          <Chip label={total().mixed + total().ladies + total().board} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
-          <Divider orientation="vertical" flexItem />
           <For each={divisions}>{(division) => (
             <Stack direction="row" alignItems="center" gap={0.5}>
               <Typography variant="caption" sx={{ textTransform: "capitalize" }}>
