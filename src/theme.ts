@@ -1,14 +1,18 @@
 import { createPalette, createTheme } from "@suid/material";
 import { createMemo, createSignal } from "solid-js";
+import { lightBlue } from "@suid/material/colors";
 
 export const useKingsTheme = (initialMode?: "light" | "dark") => {
   const [mode, setMode] = createSignal<"light" | "dark">(initialMode);
 
+  const dark = () => mode() === "dark";
+
   const palette = createMemo(() => {
     return createPalette({
       mode: mode(),
-      primary: { main: "#1565c0" },
-      secondary: { main: "#e65100" },
+      primary: {
+        main: lightBlue[dark() ? 300 : 900],
+      },
     });
   });
 
