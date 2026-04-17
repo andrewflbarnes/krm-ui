@@ -31,7 +31,7 @@ const queryClient = new QueryClient()
 export default function App() {
   return (
     <div style={{
-      height: "100vh",
+      height: "100dvh",
       width: "100vw",
     }}>
       <Toaster position="bottom-right" />
