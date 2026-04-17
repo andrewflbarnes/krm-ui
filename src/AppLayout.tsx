@@ -8,7 +8,7 @@ export default function AppLayout(props: ParentProps<{
   onModeChange: () => void;
 }>) {
   const theme = useTheme()
-  const bgOpacity = () => theme.palette.mode === "dark" ? 1 : 0.5
+  const bgOpacity = () => theme.palette.mode === "dark" ? 1 : 0.3
 
   return (
     <Paper elevation={0} sx={{
