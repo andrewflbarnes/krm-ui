@@ -1,5 +1,5 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Card, CardContent, Divider, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery } from "@suid/material";
+import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery } from "@suid/material";
 import { LocationOn, Notes } from "@suid/icons-material";
 import { useKings } from "../kings";
 
@@ -25,13 +25,6 @@ export default function ManageNewDetail(props: ManageNewDetailProps) {
       }}
     >
       <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-        <Box>
-          <Typography variant="h6" fontWeight={700} letterSpacing={-0.5}>
-            Race Details
-          </Typography>
-          <Divider sx={{ mt: 1 }} />
-        </Box>
-
         <RoundSelect
           round={props.details.round}
           onRoundUpdate={round =>
