@@ -1,27 +1,33 @@
 import Stack from "@suid/material/Stack";
 import { For } from "solid-js";
-import { Race, StageRaces } from "../kings";
+import { GroupRaces, Race } from "../kings";
 import MiniLeague from "./MiniLeague";
 
 type MiniLeaguesProps = {
   readonly: boolean;
   collapse: boolean;
   live: boolean;
-  races: StageRaces;
+  races: {
+    division: string;
+    groups: {
+      group: string;
+      races: GroupRaces;
+    }[]
+  }[];
   onRaceUpdate: (race: Race) => void;
 }
 
 export default function MiniLeagues(props: MiniLeaguesProps) {
   return (
     <Stack gap="2em" width="100%">
-      <For each={Object.entries(props.races)}>{([div, divRaces]) => (
-        <For each={Object.entries(divRaces)}>{([name, { races, teams }]) => (
+      <For each={props.races}>{({ division, groups }) => (
+        <For each={groups}>{({ group, races }) => (
           <MiniLeague
             live={props.live}
             collapsed={props.collapse}
-            name={div.capitalize() + " " + name}
-            races={races}
-            teams={teams}
+            name={division.capitalize() + " " + group}
+            races={races.races}
+            teams={races.teams}
             onResultChange={props.onRaceUpdate}
             readonly={props.readonly}
           />

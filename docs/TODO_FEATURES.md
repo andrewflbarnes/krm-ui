@@ -59,6 +59,7 @@
 
 ## Should
 
+- [ ] Minileague ordering should always be correct e.g. group IX after VIII
 - [ ] Don't show empty mini leagues or divisions (0/1 team) as appropriate
 - [ ] Split 30 races (all mini5) into 5 segments
 - [ ] More general solution for configuring 10 races/5 team league race splits

@@ -1,7 +1,7 @@
 import { Box, Card, Stack } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, createEffect, createMemo, on } from "solid-js";
-import { Race, Round, StageRaces } from "../kings";
+import { divisions, Race, Round, StageRaces } from "../kings";
 import RaceList from "./RaceList";
 import krmApi from "../api/krm";
 import notification from "../hooks/notification";
@@ -125,6 +125,23 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     return orderRaces(props.round.races[props.stage], northern())
   })
 
+  // Ensure mini leagues are ordered by division, then group
+  const orderedMiniLeagueRaces = createMemo(() =>
+    divisions.map(division => {
+      const races = props.round.races[props.stage][division] ?? {}
+      const ordered = Object.entries(races)
+        .sort(([groupA], [groupB]) => groupA.localeCompare(groupB))
+        .map(([group, races]) => ({
+          group,
+          races,
+        }))
+      return {
+        division,
+        groups: ordered,
+      }
+    })
+  )
+
   const [print, setPrint] = usePrint()
   let ref!: HTMLDivElement; // oxlint-disable-line no-unassigned-vars
   createEffect(() => {
@@ -146,13 +163,19 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const showList = () => view() === "list" || view() === "side-by-side"
   const showMiniLeagues = () => view() === "mini" || view() === "side-by-side"
   const showSideBySide = () => view() === "side-by-side"
+
   return (
     <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
       <Stack direction="row" gap={1} sx={{ justifyContent: "center" }}>
         <Show when={showList()}>
           <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
             <Stack width="100%">
-              <RaceList knockout={props.stage == "knockout"} orderedRaces={orderedRaces()} onRaceUpdate={handleRaceUpdate} readonly={props.readonly} />
+              <RaceList
+                knockout={props.stage == "knockout"}
+                orderedRaces={orderedRaces()}
+                onRaceUpdate={handleRaceUpdate}
+                readonly={props.readonly}
+              />
             </Stack>
           </Card>
         </Show>
@@ -161,7 +184,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
             <MiniLeagues
               live={live()}
               collapse={collapse()}
-              races={props.round.races[props.stage]}
+              races={orderedMiniLeagueRaces()}
               onRaceUpdate={handleRaceUpdate}
               readonly={props.readonly}
             />

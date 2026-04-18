@@ -17,16 +17,19 @@ export default function RunRaceResults(props: {
   const pointsAlgo = createMemo(() => props.points || kingsPoints)
   const results = createMemo(() => {
     if (!props.results) {
-      return {}
+      return null
     }
+
     return Object.fromEntries(
-      Object.entries(props.results).map(([division, results]) => [
-        division,
-        results.map(result => ({
-          ...result,
-          points: pointsAlgo()(division, result.rank),
-        }))
-      ])
+      Object.entries(props.results)
+        .sort(([divA], [divB]) => divB.localeCompare(divA))
+        .map(([division, results]) => [
+          division,
+          results.map(result => ({
+            ...result,
+            points: pointsAlgo()(division, result.rank),
+          }))
+        ])
     )
   })
 
@@ -34,7 +37,7 @@ export default function RunRaceResults(props: {
     if (!props.leagueConfig) {
       return {};
     }
-    return resultsToHtml(props.leagueConfig, 1, results())
+    return resultsToHtml(props.leagueConfig, 1, results() ?? {})
   })
 
   const copyToClipboard = (division: string) => {
@@ -77,8 +80,8 @@ export default function RunRaceResults(props: {
       >
         No league data loaded
       </Popover>
-      <Show when={props.results} fallback="No results">
-        <For each={Object.entries(props.results)}>{([division, divResults]) => (
+      <Show when={results()} fallback="No results">
+        <For each={Object.entries(results())}>{([division, divResults]) => (
           <Show when={divResults.length > 0}>
             <Paper
               data-testid={`results-${division}`}
