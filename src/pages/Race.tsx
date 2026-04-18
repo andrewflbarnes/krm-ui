@@ -3,6 +3,7 @@ import { useKings } from "../kings"
 import { useRaceOptions } from "../hooks/results"
 import { Box, Card, CardContent, CircularProgress, Typography } from "@suid/material"
 import { SearchOff } from "@suid/icons-material"
+import ErrorCard from "../ui/ErrorCard"
 
 function StateCard(props: { icon: JSXElement, title: string, body: string }) {
   return (
@@ -29,7 +30,7 @@ export default function Race(props: ParentProps) {
   const query = useRound()
 
   return (
-    <ErrorBoundary fallback={e => e}>
+    <ErrorBoundary fallback={e => <ErrorCard error={e} />}>
       <Suspense fallback="Loading...">
         <Switch>
           <Match when={query.isSuccess && query.data}>
@@ -48,6 +49,9 @@ export default function Race(props: ParentProps) {
               title="Loading races"
               body="Please wait while race data is being fetched..."
             />
+          </Match>
+          <Match when={query.isError}>
+            <ErrorCard error={query.error} />
           </Match>
         </Switch>
       </Suspense>
