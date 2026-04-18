@@ -11,6 +11,7 @@ const GRID_COLS = "auto 1fr auto";
 
 export default function RunRaceResults(props: {
   results: Record<string, RoundResult[]>;
+  round: string;
   points?: ((division: string, rank: number) => number);
   leagueConfig?: LeagueData;
 }) {
@@ -37,7 +38,11 @@ export default function RunRaceResults(props: {
     if (!props.leagueConfig) {
       return {};
     }
-    return resultsToHtml(props.leagueConfig, 1, results() ?? {})
+    let roundNum = props.round == 'finals' ? 9999 : parseInt(props.round)
+    if (isNaN(roundNum)) {
+      roundNum = 9999;
+    }
+    return resultsToHtml(props.leagueConfig, roundNum, results() ?? {})
   })
 
   const copyToClipboard = (division: string) => {

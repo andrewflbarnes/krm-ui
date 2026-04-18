@@ -56,7 +56,7 @@ function RaceInProgressInternal() {
         }</Match>
         <Match when={stage() == "complete"}>
           <Box style={{ display: "flex", "justify-content": "center", padding: "2em", "overflow-y": "auto", height: "100%", width: "100%" }}>
-            <RunRaceResults results={round().results} leagueConfig={k.leagueConfig()} />
+            <RunRaceResults results={round().results} round={round().details.round} leagueConfig={k.leagueConfig()} />
           </Box>
           <Show when={!k.leagueConfig()}>
             <Alert

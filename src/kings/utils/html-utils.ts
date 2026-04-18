@@ -88,11 +88,18 @@ export function combineResults(leagueData: LeagueData, round: number, results: R
   // create mutable copy...
   const combined = Object.entries(leagueData).reduce((acc: AccResults, [club, clubData]) => {
     acc[club] = Object.entries(clubData.teams).reduce((clubAcc: AccResults[string], [div, divTeams]) => {
+      const flatDivResults = flatResults[div]
+      if (round == 1 && !flatDivResults) {
+        return clubAcc
+      }
       clubAcc[div] = Object.entries(divTeams).reduce((teamAcc: AccResults[string][string], [team, teamData]) => {
-        const [r1place = 0, r1 = 0] = teamData.results?.[0] ?? [0, 0]
-        const [r2place = 0, r2 = 0] = teamData.results?.[1] ?? [0, 0]
-        const [r3place = 0, r3 = 0] = teamData.results?.[2] ?? [0, 0]
-        const [r4place = 0, r4 = 0] = teamData.results?.[3] ?? [0, 0]
+        if (round == 1 && !flatDivResults[team]) {
+          return teamAcc
+        }
+        const [r1place = 0, r1 = 0] = (round > 1 ? teamData.results?.[0] : null) ?? [0, 0]
+        const [r2place = 0, r2 = 0] = (round > 2 ? teamData.results?.[1] : null) ?? [0, 0]
+        const [r3place = 0, r3 = 0] = (round > 3 ? teamData.results?.[2] : null) ?? [0, 0]
+        const [r4place = 0, r4 = 0] = (round > 4 ? teamData.results?.[3] : null) ?? [0, 0]
         teamAcc[team] = {
           club,
           name: team,
@@ -104,26 +111,40 @@ export function combineResults(leagueData: LeagueData, round: number, results: R
           r3,
           r4place,
           r4,
-          total: teamData.total,
+          total: r1 + r2 + r3 + r4,
         }
         const teamResult = flatResults[div]?.[team]
         if (teamResult) {
-          const result = teamAcc[team]
+          const newResult = {
+            ...teamAcc[team]
+          }
           const { points, rank } = teamResult
-          const placeKey = `r${round}place`
-          const pointKey = `r${round}`
+          let total = points
           switch (round) {
             case 1:
+              newResult.r1place = rank
+              newResult.r1 = points
+              break
             case 2:
+              newResult.r2place = rank
+              newResult.r2 = points
+              total += newResult.r1
+              break
             case 3:
+              newResult.r3place = rank
+              newResult.r3 = points
+              total += newResult.r1 + newResult.r2
+              break
             case 4:
-              result[placeKey] = rank
-              result[pointKey] = points
+              newResult.r4place = rank
+              newResult.r4 = points
+              total += newResult.r1 + newResult.r2 + newResult.r3
               break
             default:
             // TODO
           }
-          result.total = result.r1 + result.r2 + result.r3 + result.r4
+          newResult.total = total ?? 0
+          teamAcc[team] = newResult
         }
         return teamAcc
       }, {})

@@ -3,6 +3,17 @@ import { describe, expect, it } from 'vitest';
 import { AccResult, combineResults, Results } from './html-utils';
 import { LeagueData } from '../types';
 
+const zeroes = {
+  r1: 0,
+  r1place: 0,
+  r2: 0,
+  r2place: 0,
+  r3: 0,
+  r3place: 0,
+  r4: 0,
+  r4place: 0,
+}
+
 describe("combineResults", () => {
   const leagueData: LeagueData = {
     club1: {
@@ -216,43 +227,6 @@ describe("combineResults", () => {
         }
       },
       {
-        title: "overrides results correctly",
-        round: 1,
-        results: {
-          mixed: [
-            {
-              rank: 4,
-              points: 35,
-              teams: ["club1 mixed 1"]
-            }
-          ]
-        },
-        expected: {
-          mixed: [
-            {
-              club: "club1",
-              name: "club1 mixed 1",
-              r1: 35,
-              r1place: 4,
-              r2: 40,
-              r2place: 1,
-              r3: 40,
-              r3place: 1,
-              r4: 0,
-              r4place: 0,
-              total: 115,
-            },
-            baseExpected.mixed['club1 mixed 2'],
-            baseExpected.mixed["club2 mixed 1"],
-            baseExpected.mixed["club2 mixed 2"],
-          ],
-          ladies: [
-            baseExpected.ladies["club1 ladies 1"],
-            baseExpected.ladies["club2 ladies 1"],
-          ]
-        }
-      },
-      {
         title: "combines a later result on multiple teams",
         round: 4,
         results: {
@@ -302,7 +276,45 @@ describe("combineResults", () => {
         }
       },
       {
-        title: "overrides results correctly on multiple teams",
+        title: "ignore previous rounds on round 1",
+        round: 1,
+        results: {
+          mixed: [
+            {
+              rank: 1,
+              points: 30,
+              teams: ["club1 mixed 1"]
+            },
+            {
+              rank: 2,
+              points: 28,
+              teams: ["club2 mixed 2"]
+            },
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 30,
+              r1place: 1,
+              total: 30,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 28,
+              r1place: 2,
+              total: 28,
+            },
+          ],
+        }
+      },
+      {
+        title: "ignore previous rounds on round 1 - drawn teams",
         round: 1,
         results: {
           mixed: [
@@ -315,38 +327,535 @@ describe("combineResults", () => {
         },
         expected: {
           mixed: [
-            baseExpected.mixed['club1 mixed 2'],
-            baseExpected.mixed["club2 mixed 2"],
             {
+              ...zeroes,
               club: "club1",
               name: "club1 mixed 1",
               r1: 15,
               r1place: 24,
+              total: 15,
+            },
+            {
+              ...zeroes,
+              club: "club2",
+              name: "club2 mixed 1",
+              r1: 15,
+              r1place: 24,
+              total: 15,
+            },
+          ],
+        }
+      },
+      {
+        title: "ignore previous rounds on round 2",
+        round: 2,
+        results: {
+          mixed: [
+            {
+              rank: 1,
+              points: 40,
+              teams: ["club2 mixed 2"]
+            },
+            {
+              rank: 2,
+              points: 38,
+              teams: ["club1 mixed 1"]
+            },
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 40,
+              r1place: 1,
+              r2: 38,
+              r2place: 2,
+              total: 78,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 34,
+              r1place: 5,
               r2: 40,
               r2place: 1,
+              total: 74,
+            },
+            {
+              club: "club1",
+              name: "club1 mixed 2",
+              ...zeroes,
+              r1: 38,
+              r1place: 2,
+              total: 38,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 1",
+              ...zeroes,
+              r1: 35,
+              r1place: 4,
+              total: 35,
+            },
+          ],
+          ladies: [
+            {
+              club: "club1",
+              name: "club1 ladies 1",
+              ...zeroes,
+              r1: 36,
+              r1place: 3,
+              total: 36,
+            },
+            {
+              club: "club2",
+              name: "club2 ladies 1",
+              ...zeroes,
+              r1: 33,
+              r1place: 6,
+              total: 33,
+            }
+          ]
+        }
+      },
+      {
+        title: "ignore previous rounds on round 2 - drawn teams",
+        round: 2,
+        results: {
+          mixed: [
+            {
+              rank: 24,
+              points: 15,
+              teams: ["club1 mixed 1", "club2 mixed 1"]
+            }
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 40,
+              r1place: 1,
+              r2: 15,
+              r2place: 24,
+              total: 55,
+            },
+            {
+              ...zeroes,
+              club: "club2",
+              name: "club2 mixed 1",
+              r1: 35,
+              r1place: 4,
+              r2: 15,
+              r2place: 24,
+              total: 50,
+            },
+            {
+              club: "club1",
+              name: "club1 mixed 2",
+              ...zeroes,
+              r1: 38,
+              r1place: 2,
+              total: 38,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 34,
+              r1place: 5,
+              total: 34,
+            },
+          ],
+          ladies: [
+            {
+              club: "club1",
+              name: "club1 ladies 1",
+              ...zeroes,
+              r1: 36,
+              r1place: 3,
+              total: 36,
+            },
+            {
+              club: "club2",
+              name: "club2 ladies 1",
+              ...zeroes,
+              r1: 33,
+              r1place: 6,
+              total: 33,
+            }
+          ]
+        }
+      },
+      {
+        title: "ignore previous rounds on round 3",
+        round: 3,
+        results: {
+          mixed: [
+            {
+              rank: 1,
+              points: 40,
+              teams: ["club2 mixed 2"]
+            },
+            {
+              rank: 2,
+              points: 38,
+              teams: ["club1 mixed 1"]
+            },
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 40,
+              r1place: 1,
+              r2: 40,
+              r2place: 1,
+              r3: 38,
+              r3place: 2,
+              total: 118,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 34,
+              r1place: 5,
+              r2: 34,
+              r2place: 5,
               r3: 40,
               r3place: 1,
-              r4: 0,
-              r4place: 0,
+              total: 108,
+            },
+            {
+              club: "club1",
+              name: "club1 mixed 2",
+              ...zeroes,
+              r1: 38,
+              r1place: 2,
+              r2: 38,
+              r2place: 2,
+              total: 76,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 1",
+              ...zeroes,
+              r1: 35,
+              r1place: 4,
+              r2: 35,
+              r2place: 4,
+              total: 70,
+            },
+          ],
+          ladies: [
+            {
+              club: "club1",
+              name: "club1 ladies 1",
+              ...zeroes,
+              r1: 36,
+              r1place: 3,
+              r2: 36,
+              r2place: 3,
+              total: 72,
+            },
+            {
+              club: "club2",
+              name: "club2 ladies 1",
+              ...zeroes,
+              r1: 33,
+              r1place: 6,
+              r2: 33,
+              r2place: 6,
+              total: 66,
+            }
+          ]
+        }
+      },
+      {
+        title: "ignore previous rounds on round 3 - drawn teams",
+        round: 3,
+        results: {
+          mixed: [
+            {
+              rank: 24,
+              points: 15,
+              teams: ["club1 mixed 1", "club2 mixed 1"]
+            }
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 40,
+              r1place: 1,
+              r2: 40,
+              r2place: 1,
+              r3: 15,
+              r3place: 24,
               total: 95,
             },
             {
               club: "club2",
               name: "club2 mixed 1",
-              r1: 15,
-              r1place: 24,
+              ...zeroes,
+              r1: 35,
+              r1place: 4,
+              r2: 35,
+              r2place: 4,
+              r3: 15,
+              r3place: 24,
+              total: 85,
+            },
+            {
+              club: "club1",
+              name: "club1 mixed 2",
+              ...zeroes,
+              r1: 38,
+              r1place: 2,
+              r2: 38,
+              r2place: 2,
+              total: 76,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 34,
+              r1place: 5,
+              r2: 34,
+              r2place: 5,
+              total: 68,
+            },
+          ],
+          ladies: [
+            {
+              club: "club1",
+              name: "club1 ladies 1",
+              ...zeroes,
+              r1: 36,
+              r1place: 3,
+              r2: 36,
+              r2place: 3,
+              total: 72,
+            },
+            {
+              club: "club2",
+              name: "club2 ladies 1",
+              ...zeroes,
+              r1: 33,
+              r1place: 6,
+              r2: 33,
+              r2place: 6,
+              total: 66,
+            }
+          ]
+        }
+      },
+      {
+        title: "ignore previous rounds on round 4",
+        round: 4,
+        results: {
+          mixed: [
+            {
+              rank: 1,
+              points: 40,
+              teams: ["club2 mixed 2"]
+            },
+            {
+              rank: 2,
+              points: 38,
+              teams: ["club1 mixed 1"]
+            },
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 40,
+              r1place: 1,
+              r2: 40,
+              r2place: 1,
+              r3: 40,
+              r3place: 1,
+              r4: 38,
+              r4place: 2,
+              total: 158,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 34,
+              r1place: 5,
+              r2: 34,
+              r2place: 5,
+              r3: 34,
+              r3place: 5,
+              r4: 40,
+              r4place: 1,
+              total: 142,
+            },
+            {
+              club: "club1",
+              name: "club1 mixed 2",
+              ...zeroes,
+              r1: 38,
+              r1place: 2,
+              r2: 38,
+              r2place: 2,
+              r3: 38,
+              r3place: 2,
+              total: 114,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 1",
+              ...zeroes,
+              r1: 35,
+              r1place: 4,
               r2: 35,
               r2place: 4,
               r3: 35,
               r3place: 4,
-              r4: 0,
-              r4place: 0,
-              total: 85,
+              total: 105,
             },
           ],
           ladies: [
-            baseExpected.ladies["club1 ladies 1"],
-            baseExpected.ladies["club2 ladies 1"],
+            {
+              club: "club1",
+              name: "club1 ladies 1",
+              ...zeroes,
+              r1: 36,
+              r1place: 3,
+              r2: 36,
+              r2place: 3,
+              r3: 36,
+              r3place: 3,
+              total: 108,
+            },
+            {
+              club: "club2",
+              name: "club2 ladies 1",
+              ...zeroes,
+              r1: 33,
+              r1place: 6,
+              r2: 33,
+              r2place: 6,
+              r3: 33,
+              r3place: 6,
+              total: 99,
+            }
+          ]
+        }
+      },
+      {
+        title: "ignore previous rounds on round 4 - drawn teams",
+        round: 4,
+        results: {
+          mixed: [
+            {
+              rank: 24,
+              points: 15,
+              teams: ["club1 mixed 1", "club2 mixed 1"]
+            }
+          ]
+        },
+        expected: {
+          mixed: [
+            {
+              ...zeroes,
+              club: "club1",
+              name: "club1 mixed 1",
+              r1: 40,
+              r1place: 1,
+              r2: 40,
+              r2place: 1,
+              r3: 40,
+              r3place: 1,
+              r4: 15,
+              r4place: 24,
+              total: 135,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 1",
+              ...zeroes,
+              r1: 35,
+              r1place: 4,
+              r2: 35,
+              r2place: 4,
+              r3: 35,
+              r3place: 4,
+              r4: 15,
+              r4place: 24,
+              total: 120,
+            },
+            {
+              club: "club1",
+              name: "club1 mixed 2",
+              ...zeroes,
+              r1: 38,
+              r1place: 2,
+              r2: 38,
+              r2place: 2,
+              r3: 38,
+              r3place: 2,
+              total: 114,
+            },
+            {
+              club: "club2",
+              name: "club2 mixed 2",
+              ...zeroes,
+              r1: 34,
+              r1place: 5,
+              r2: 34,
+              r2place: 5,
+              r3: 34,
+              r3place: 5,
+              total: 102,
+            },
+          ],
+          ladies: [
+            {
+              club: "club1",
+              name: "club1 ladies 1",
+              ...zeroes,
+              r1: 36,
+              r1place: 3,
+              r2: 36,
+              r2place: 3,
+              r3: 36,
+              r3place: 3,
+              total: 108,
+            },
+            {
+              club: "club2",
+              name: "club2 ladies 1",
+              ...zeroes,
+              r1: 33,
+              r1place: 6,
+              r2: 33,
+              r2place: 6,
+              r3: 33,
+              r3place: 6,
+              total: 99,
+            }
           ]
         }
       },
@@ -354,7 +863,6 @@ describe("combineResults", () => {
 
   testCases.forEach(({
     title,
-    //leagueData,
     round,
     results,
     expected,
@@ -362,7 +870,6 @@ describe("combineResults", () => {
     it(title, () => {
       const actual = combineResults(leagueData, round, results)
       expect(actual).toEqual(expected)
-      //console.error(resultsToHtml(leagueData, round, results))
     })
   })
 })
