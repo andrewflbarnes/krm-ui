@@ -1,12 +1,12 @@
 import { DragIndicator, Replay } from "@suid/icons-material";
 import { Box, Chip, IconButton, Paper, Theme, Typography } from "@suid/material";
-import NumberBadge from "../ui/NumberBadge";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, transformStyle, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { createSignal, For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 import GroupCard from "../ui/GroupCard";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { DIVISION_ACCENT } from "../theme";
+import NumberedTeam from "../ui/NumberedTeam";
 
 type ManageNewShuffleProps = {
   round: Round;
@@ -216,7 +216,7 @@ function Team(props: {
   moved: string;
   dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>;
 }) {
-  const badgeColor = () => DIVISION_ACCENT[props.division].background
+  const badgeColor = () => DIVISION_ACCENT[props.division].text
   return (
     <Box sx={{
       display: "flex",
@@ -238,10 +238,7 @@ function Team(props: {
           <DragIndicator fontSize="small" {...props.dragActivators} sx={{ color: "text.disabled" }} />
         </Box>
       </Show>
-      <NumberBadge value={props.seed} bgcolor={badgeColor()} />
-      <Typography variant="body2" sx={{ fontSize: "0.75rem", flex: 1, whiteSpace: "nowrap" }}>
-        {props.team}
-      </Typography>
+      <NumberedTeam team={props.team} accent={badgeColor()} num={props.seed} />
       <Chip label={props.moved} color="warning" size="small" variant="outlined" sx={{ height: 18, fontSize: "0.6rem", visibility: props.moved ? "visible" : "hidden" }} />
     </Box>
   )

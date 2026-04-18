@@ -31,7 +31,7 @@ export class RoundSetup {
       await this.addBoard(club, counts.board);
     }
 
-    // Missing teams step
+    // New teams step
     await this.next();
     await this.validateMissingTeams();
 
@@ -109,7 +109,7 @@ export class RoundSetup {
   }
 
   async validateMissingTeams() {
-    await expect(this.page.locator('h3'), 'On missing teams page').toContainText('Missing teams');
+    await expect(this.page.locator('h3'), 'On new teams teams page').toContainText('New Teams Added');
   }
 
   async validateTeamSwap() {

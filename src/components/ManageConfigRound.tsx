@@ -1,11 +1,11 @@
-import { Box, Chip, Paper, Typography } from "@suid/material";
+import { Box, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import { MiniLeagueConfig, MiniLeagueTemplate, Race, RoundConfig, RoundResult } from "../kings";
+import { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings";
 import { asPosition, minileagueRaces } from "../kings/utils";
-import GroupCardShell from "../ui/GroupCard";
-import NumberBadge from "../ui/NumberBadge";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
 import { BaseColor, baseColors } from "../theme";
+import NumberedTeam from "../ui/NumberedTeam";
+import StageCard from "../ui/StageCard";
 
 const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => minileagueRaces(template, teams, name, "stage1", "mixed")
 
@@ -75,12 +75,26 @@ function Content(props: Props) {
         gap: 3,
         p: 4,
       }}>
-        <StageCard title="Stage 1" config={props.config.stage1} seeds accent={baseColors.primary.text} />
+        <ConfigStageCard
+          title="Stage 1"
+          groups={props.config.stage1}
+          accent={baseColors.primary.text}
+          seeding
+        />
         <Show when={props.config.stage2}>{(stage2) => (
-          <StageCard title="Stage 2" config={stage2()} accent={baseColors.secondary.text} />
+          <ConfigStageCard
+            title="Stage 2"
+            groups={stage2()}
+            accent={baseColors.secondary.text}
+          />
         )}</Show>
         <Show when={props.config.knockout}>{(ko) => (
-          <StageCard title="Knockouts" config={ko()} knockout accent={baseColors.teriary.text} />
+          <ConfigStageCard
+            title="Knockouts"
+            groups={ko()}
+            accent={baseColors.teriary.text}
+            knockout
+          />
         )}</Show>
       </Box>
 
@@ -114,145 +128,105 @@ function Content(props: Props) {
   )
 }
 
-type StageCardProps = {
+type ConfigStageCardProps = {
   title: string;
-  config: readonly MiniLeagueConfig[];
-  seeds?: boolean;
-  knockout?: boolean;
+  groups: ReadonlyArray<MiniLeagueConfig>;
   accent: BaseColor;
-};
+  knockout?: boolean;
+  seeding?: boolean;
+}
 
-function StageCard(props: StageCardProps) {
+function ConfigStageCard(props: ConfigStageCardProps) {
   return (
-    <Paper
-      elevation={3}
-      sx={{
-        flex: "1 1 260px",
-        minWidth: 220,
-        maxWidth: 400,
-        overflow: "hidden",
-        borderRadius: 2,
-      }}
-    >
-      <Box sx={{
-        bgcolor: `${props.accent}.main`,
-        px: 2,
-        py: 1.25,
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: 1,
-      }}>
-        <Typography
-          variant="subtitle1"
-          sx={{
-            color: "white",
-            fontWeight: 800,
-            textTransform: "uppercase",
-            letterSpacing: "0.1em",
-            lineHeight: 1,
-          }}
-        >
-          {props.title}
-        </Typography>
-        <Chip
-          label={`${props.config.length} ${props.config.length === 1 ? "group" : "groups"}`}
-          size="small"
-          sx={{
-            bgcolor: "rgba(255,255,255,0.2)",
-            color: "white",
-            fontWeight: 700,
-            fontSize: "0.65rem",
-            height: 20,
-            "& .MuiChip-label": { px: 1 },
-          }}
+    <Box sx={{
+      flexGrow: "1",
+      minWidth: 220,
+      maxWidth: 400,
+    }}>
+      <StageCard
+        title={props.title}
+        groups={props.groups}
+        namer={g => "Group " + g.name}
+        accent={props.accent}
+      >{(group) => (
+        <GroupCardDetails
+          group={group}
+          name={group.name}
+          accent={props.accent}
+          template={group.template}
+          teams={group.seeds}
+          knockout={props.knockout}
+          seeding={props.seeding}
         />
-      </Box>
-
-      <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
-        <For each={props.config}>{(group) => {
-          const groupTeams = props.seeds
-            ? group.seeds.map(s => `Seed ${s.position + 1}`)
-            : group.seeds.map(s => `${asPosition(s.position + 1)} group ${s.group}`)
-          const races = mockRaces(group.name, group.template, groupTeams)
-          return (
-            <GroupCard
-              name={group.name}
-              teams={groupTeams}
-              races={races}
-              knockout={props.knockout}
-              accent={props.accent}
-            />
-          )
-        }}</For>
-      </Box>
-    </Paper>
+      )}</StageCard>
+    </Box>
   )
 }
 
-type GroupCardProps = {
+type GroupCardDetailsProps = {
+  group: MiniLeagueConfig;
   name: string;
-  teams: string[];
-  races: Race[];
+  teams: ReadonlyArray<MiniLeagueSeed>;
+  template: MiniLeagueTemplate;
   knockout?: boolean;
+  seeding?: boolean;
   accent: BaseColor;
 };
 
-function GroupCard(props: GroupCardProps) {
+function GroupCardDetails(props: GroupCardDetailsProps) {
+  const groupTeams = () => props.seeding
+    ? props.teams.map(s => `Seed ${s.position + 1}`)
+    : props.teams.map(s => `${asPosition(s.position + 1)} group ${s.group}`)
+  const races = () => {
+    return mockRaces(props.name, props.template, groupTeams())
+  }
   return (
-    <GroupCardShell name={props.name} accent={props.accent}>
-      <Show
-        when={props.knockout}
-        fallback={
-          <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
-            <For each={props.teams}>{(team, i) => (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <NumberBadge value={i() + 1} bgcolor={`${props.accent}.main`} />
-                <Typography variant="body2" sx={{ fontSize: "0.75rem", whiteSpace: "nowrap" }}>
-                  {team}
-                </Typography>
-              </Box>
-            )}</For>
-          </Box>
-        }
-      >
-        <Box sx={{
-          display: "grid",
-          gridTemplateColumns: "1fr auto 1fr",
-          gap: "2px 8px",
-          alignItems: "center",
-        }}>
-          <For each={props.races}>{(r) => (
-            <>
-              <Typography
-                variant="body2"
-                sx={{ fontSize: "0.75rem", textAlign: "right", whiteSpace: "nowrap" }}
-              >
-                {r.team1}
-              </Typography>
-              <Typography
-                variant="overline"
-                sx={{
-                  fontSize: "0.6rem",
-                  fontWeight: 800,
-                  color: "text.disabled",
-                  letterSpacing: "0.05em",
-                  lineHeight: 1,
-                  textAlign: "center",
-                }}
-              >
-                vs
-              </Typography>
-              <Typography
-                variant="body2"
-                sx={{ fontSize: "0.75rem", textAlign: "left", whiteSpace: "nowrap" }}
-              >
-                {r.team2}
-              </Typography>
-            </>
+    <Show
+      when={props.knockout}
+      fallback={
+        <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
+          <For each={groupTeams()}>{(team, i) => (
+            <NumberedTeam team={team} num={i() + 1} accent={props.accent} />
           )}</For>
         </Box>
-      </Show>
-    </GroupCardShell>
+      }
+    >
+      <Box sx={{
+        display: "grid",
+        gridTemplateColumns: "1fr auto 1fr",
+        gap: "2px 8px",
+        alignItems: "center",
+      }}>
+        <For each={races()}>{(r) => (
+          <>
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "0.75rem", textAlign: "right", whiteSpace: "nowrap" }}
+            >
+              {r.team1}
+            </Typography>
+            <Typography
+              variant="overline"
+              sx={{
+                fontSize: "0.6rem",
+                fontWeight: 800,
+                color: "text.disabled",
+                letterSpacing: "0.05em",
+                lineHeight: 1,
+                textAlign: "center",
+              }}
+            >
+              vs
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ fontSize: "0.75rem", textAlign: "left", whiteSpace: "nowrap" }}
+            >
+              {r.team2}
+            </Typography>
+          </>
+        )}</For>
+      </Box>
+    </Show>
   )
 }
