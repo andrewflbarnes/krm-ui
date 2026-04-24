@@ -39,10 +39,6 @@ export class RoundSetup {
     await this.next();
     await this.validateTeamSwap();
 
-    // Summary step
-    await this.next({ x: 10, y: 10 });
-    await this.validateSummary();
-
     // Finish creating the round
     await this.done();
   }
@@ -113,10 +109,6 @@ export class RoundSetup {
   }
 
   async validateTeamSwap() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On team swap page').toBeVisible()
-  }
-
-  async validateSummary() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On summary page').toBeVisible()
+    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On confirm page').toBeVisible()
   }
 }

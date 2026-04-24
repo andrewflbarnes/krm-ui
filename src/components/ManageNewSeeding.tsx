@@ -1,0 +1,36 @@
+import { List, ListItem, Stack, Typography } from "@suid/material"
+import { For } from "solid-js"
+import { RoundSeeding } from "../kings"
+
+export default function ManageNewSeeding(props: { seeds: RoundSeeding }) {
+  return (
+    <Stack direction="row" gap={4}>
+      <For each={Object.entries(props.seeds)}>{([division, teams]) => {
+        return (
+          <div>
+            <Typography variant="h6">
+              {division.capitalize()}
+              &nbsp;
+              <Typography variant="caption" color="textSecondary" marginLeft="auto">
+                ({teams.length} teams)
+              </Typography>
+            </Typography>
+            <List dense>
+              <For each={teams}>{(team) => {
+                return (
+                  <ListItem dense sx={{ width: "100%", display: "flex" }}>
+                    <Typography>
+                      {team}
+                    </Typography>
+                  </ListItem>
+                )
+              }}
+              </For>
+            </List>
+          </div>
+        )
+      }}
+      </For>
+    </Stack>
+  )
+}

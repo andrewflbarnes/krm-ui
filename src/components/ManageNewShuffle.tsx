@@ -129,7 +129,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                 }}>
                   <For each={config.stage1}>{(group) => {
                     return (
-                      <GroupCard name={group.name} accent={DIVISION_ACCENT[division].text ?? "primary"}>
+                      <GroupCard name={"Group " + group.name} accent={DIVISION_ACCENT[division].text ?? "primary"}>
                         <For each={group.seeds}>{(seed) => {
                           const team = seeds()[seed.position]
                           const originalPosition = props.seeding[division].indexOf(team)

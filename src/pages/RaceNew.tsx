@@ -2,7 +2,6 @@ import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
-const ManageNewShuffle = lazy(() => import("../components/ManageNewShuffle"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding, useKings } from "../kings"
 import krmApi, { RoundDetails } from "../api/krm"
 import notification from "../hooks/notification"
@@ -213,15 +212,8 @@ function RaceNewInternal() {
             setDistributionOrder(seeds)
           })
         }
-        return <ManageNewShuffle seeding={seeding()} originalConfig={originalConfig()} round={round()} onShuffle={handleShuffle} />
+        return <ManageNewConfirm seeds={seeding()} originalConfig={originalConfig()} round={round()} onShuffle={handleShuffle} />
       },
-      validator: () => {
-        return [true,]
-      }
-    },
-    {
-      title: "Confirm",
-      content: () => <ManageNewConfirm seeds={seeding()} />,
       validator: () => {
         return [true,]
       }
