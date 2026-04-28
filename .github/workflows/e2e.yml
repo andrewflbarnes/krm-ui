@@ -12,6 +12,7 @@ on:
 
 env:
   PLAYWRIGHT_TARGET: "https://krm.andrewflbarnes.com"
+  KRM_LIVE: 1
 
 jobs:
   test:

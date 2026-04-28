@@ -70,6 +70,6 @@ export default defineConfig({
   webServer: {
     command: 'pnpm start --host',
     url: baseURL,
-    reuseExistingServer: !process.env.CI,
+    reuseExistingServer: !process.env.CI || !!process.env.KRM_LIVE,
   }
 });
