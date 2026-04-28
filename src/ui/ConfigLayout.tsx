@@ -2,6 +2,7 @@ import {
   Box,
   Chip,
   Divider,
+  IconButton,
   InputAdornment,
   List,
   ListItemButton,
@@ -9,9 +10,11 @@ import {
   Paper,
   TextField,
   Typography,
+  useMediaQuery,
+  useTheme,
 } from "@suid/material";
-import { Search, Settings } from "@suid/icons-material";
-import { createMemo, createSignal, For, JSX, ParentProps, Show } from "solid-js";
+import { Menu, MenuOpen, Search, Settings } from "@suid/icons-material";
+import { createEffect, createMemo, createSignal, For, JSX, ParentProps, Show } from "solid-js";
 import { BaseColor } from "../theme";
 
 export type SidebarChip = {
@@ -70,7 +73,15 @@ type ConfigLayoutProps = ParentProps<{
  * nothing is selected.
  */
 export default function ConfigLayout(props: ConfigLayoutProps) {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
+
   const [search, setSearch] = createSignal("");
+  const [sidebarOpen, setSidebarOpen] = createSignal(true);
+
+  createEffect(() => {
+    setSidebarOpen(!props.selectedId || !isMobile());
+  });
 
   const matchesSearch = (item: SidebarItem, q: string) =>
     item.label.toLowerCase().includes(q) ||
@@ -89,125 +100,146 @@ export default function ConfigLayout(props: ConfigLayoutProps) {
   });
   const hasAnyItems = () => visibleSections().length > 0 || visibleCustom().length > 0;
 
-  return (
-    <Box sx={{ display: "flex", gap: 2, height: "100%", overflow: "hidden" }}>
-      <Paper sx={{
-        width: 240,
-        flexShrink: 0,
-        display: "flex",
-        flexDirection: "column",
-        overflow: "hidden",
-      }}>
-        <Box sx={{ p: 1.5, pb: 1 }}>
-          <TextField
-            size="small"
-            fullWidth
-            placeholder="Filter..."
-            value={search()}
-            onChange={(e) => setSearch(e.target.value)}
-            InputProps={{
-              startAdornment: (
-                <InputAdornment position="start">
-                  <Search fontSize="small" sx={{ color: "text.disabled" }} />
-                </InputAdornment>
-              ),
-            }}
-            sx={{
-              "& .MuiOutlinedInput-root": {
-                borderRadius: 2,
-              },
-            }}
-          />
-        </Box>
+  const handleSelect = (id: string) => {
+    if (isMobile()) {
+      setSidebarOpen(false);
+    }
+    props.onSelect(id);
+  };
 
-        <Box sx={{ overflowY: "auto", flexGrow: 1, pb: 1 }}>
+  return (
+    <Box sx={{ display: "flex", flexDirection: "column", height: "100%", overflow: "hidden" }}>
+      <Show when={isMobile()}>
+        <Box sx={{ pb: 1 }}>
+          <IconButton onClick={() => setSidebarOpen(o => !o)} size="small">
+            <Show when={sidebarOpen()} fallback={<Menu />}>
+              <MenuOpen />
+            </Show>
+          </IconButton>
+        </Box>
+      </Show>
+
+      <Box sx={{ display: "flex", gap: 2, flexGrow: 1, overflow: "hidden" }}>
+        <Paper sx={{
+          width: isMobile() ? "100%" : 240,
+          flexShrink: 0,
+          display: (!isMobile() || sidebarOpen()) ? "flex" : "none",
+          flexDirection: "column",
+          overflow: "hidden",
+        }}>
+          <Box sx={{ p: 1.5, pb: 1 }}>
+            <TextField
+              size="small"
+              fullWidth
+              placeholder="Filter..."
+              value={search()}
+              onChange={(e) => setSearch(e.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <Search fontSize="small" sx={{ color: "text.disabled" }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                "& .MuiOutlinedInput-root": {
+                  borderRadius: 2,
+                },
+              }}
+            />
+          </Box>
+
+          <Box sx={{ overflowY: "auto", flexGrow: 1, pb: 1 }}>
+            <Show
+              when={hasAnyItems()}
+              fallback={
+                <Box sx={{ px: 2, py: 3, textAlign: "center" }}>
+                  <Typography variant="body2" color="text.disabled">
+                    No configs match
+                  </Typography>
+                </Box>
+              }
+            >
+              <For each={visibleSections()}>{(section) => (
+                <>
+                  <SectionHeader label={section.label} description={section.description} />
+                  <List disablePadding dense>
+                    <For each={section.items}>{(item) => (
+                      <SidebarListItem
+                        item={item}
+                        isSelected={props.selectedId === item.id}
+                        onSelect={handleSelect}
+                      />
+                    )}</For>
+                  </List>
+                </>
+              )}</For>
+
+              <Show when={visibleCustom().length > 0}>
+                <SectionHeader label="Custom" />
+                <List disablePadding dense>
+                  <For each={visibleCustom()}>{(item) => (
+                    <SidebarListItem
+                      item={item}
+                      isSelected={props.selectedId === item.id}
+                      onSelect={handleSelect}
+                      isCustom
+                    />
+                  )}</For>
+                </List>
+              </Show>
+            </Show>
+          </Box>
+
+          <Divider />
+          <Box sx={{ px: 2, py: 1 }}>
+            <Show
+              when={props.selectedId}
+              fallback={
+                <Typography variant="caption" color="text.disabled">
+                  Select a config to preview
+                </Typography>
+              }
+            >
+              <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
+                {props.footerIcon}
+                <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 600 }}>
+                  {props.selectedLabel}
+                </Typography>
+              </Box>
+            </Show>
+          </Box>
+        </Paper>
+
+        <Show when={!isMobile() || !sidebarOpen()}>
           <Show
-            when={hasAnyItems()}
+            when={props.selectedId}
             fallback={
-              <Box sx={{ px: 2, py: 3, textAlign: "center" }}>
+              <Box sx={{
+                flexGrow: 1,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                flexDirection: "column",
+                gap: 2,
+                opacity: 0.4,
+              }}>
+                {props.emptyIcon}
+                <Typography variant="h6" color="text.disabled">
+                  {props.emptyHeading}
+                </Typography>
                 <Typography variant="body2" color="text.disabled">
-                  No configs match
+                  {props.emptyDescription}
                 </Typography>
               </Box>
             }
           >
-            <For each={visibleSections()}>{(section) => (
-              <>
-                <SectionHeader label={section.label} description={section.description} />
-                <List disablePadding dense>
-                  <For each={section.items}>{(item) => (
-                    <SidebarListItem
-                      item={item}
-                      isSelected={props.selectedId === item.id}
-                      onSelect={props.onSelect}
-                    />
-                  )}</For>
-                </List>
-              </>
-            )}</For>
-
-            <Show when={visibleCustom().length > 0}>
-              <SectionHeader label="Custom" />
-              <List disablePadding dense>
-                <For each={visibleCustom()}>{(item) => (
-                  <SidebarListItem
-                    item={item}
-                    isSelected={props.selectedId === item.id}
-                    onSelect={props.onSelect}
-                    isCustom
-                  />
-                )}</For>
-              </List>
-            </Show>
-          </Show>
-        </Box>
-
-        <Divider />
-        <Box sx={{ px: 2, py: 1 }}>
-          <Show
-            when={props.selectedId}
-            fallback={
-              <Typography variant="caption" color="text.disabled">
-                Select a config to preview
-              </Typography>
-            }
-          >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 0.5 }}>
-              {props.footerIcon}
-              <Typography variant="caption" sx={{ color: "primary.main", fontWeight: 600 }}>
-                {props.selectedLabel}
-              </Typography>
+            <Box sx={{ flexGrow: 1, overflow: "auto" }}>
+              {props.children}
             </Box>
           </Show>
-        </Box>
-      </Paper>
-
-      <Show
-        when={props.selectedId}
-        fallback={
-          <Box sx={{
-            flexGrow: 1,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "center",
-            flexDirection: "column",
-            gap: 2,
-            opacity: 0.4,
-          }}>
-            {props.emptyIcon}
-            <Typography variant="h6" color="text.disabled">
-              {props.emptyHeading}
-            </Typography>
-            <Typography variant="body2" color="text.disabled">
-              {props.emptyDescription}
-            </Typography>
-          </Box>
-        }
-      >
-        <Box sx={{ flexGrow: 1, overflow: "auto" }}>
-          {props.children}
-        </Box>
-      </Show>
+        </Show>
+      </Box>
     </Box>
   );
 }
