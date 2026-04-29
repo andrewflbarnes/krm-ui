@@ -1,6 +1,6 @@
 import { CancelOutlined, CloseOutlined } from "@suid/icons-material";
 import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
-import { For, Show } from "solid-js";
+import { Index, Show } from "solid-js";
 import { Race } from "../kings";
 import MoreMenu from "../ui/MoreMenu";
 import RaceResultIcon from "../ui/RaceResultIcon";
@@ -19,15 +19,28 @@ export default function RaceList(props: RaceListProps) {
       <TableContainer component={Paper}>
         <Table aria-label="simple table dense" size="small">
           <TableBody>
-            <For each={props.orderedRaces}>{(race, raceNum) =>
-              <RaceTableRow
-                raceNum={raceNum()}
-                raceStr={props.knockout ? race.group : null}
-                race={race}
-                onRaceUpdate={props.onRaceUpdate}
-                readonly={props.readonly}
-              />
-            }</For>
+            <Index each={props.orderedRaces}>{(race, raceNum) => {
+              // Use Index instead of For to prevent unnecessary unmount + mount
+              // when all ordered races changes as a result of a single race
+              // being updated.
+              // For now updating a race results in the entire round being
+              // treated as a brand new object
+              const handleRaceUpdate = (updated: Partial<Race>) => {
+                props.onRaceUpdate({
+                  ...race(),
+                  ...updated,
+                })
+              }
+              return (
+                <RaceTableRow
+                  raceNum={raceNum}
+                  raceStr={props.knockout ? race().group : null}
+                  race={race()}
+                  onRaceUpdate={handleRaceUpdate}
+                  readonly={props.readonly}
+                />
+              )
+            }}</Index>
           </TableBody>
         </Table>
       </TableContainer>
@@ -35,23 +48,21 @@ export default function RaceList(props: RaceListProps) {
   )
 }
 
-function RaceTableRow(props: {
+type RaceTableRowProps = {
   raceNum: number;
   raceStr?: string;
   race: Race;
-  onRaceUpdate: (race: Race) => void;
+  onRaceUpdate: (race: Partial<Race>) => void;
   readonly?: boolean;
-}) {
+}
+
+function RaceTableRow(props: RaceTableRowProps) {
   const setWinner = (winner: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
     if (props.readonly || props.race.winner) {
       return
     }
-    const updated = {
-      ...props.race,
-      winner,
-    }
-    props.onRaceUpdate(updated)
+    props.onRaceUpdate({ winner })
   }
   const canDsq = () => !props.readonly && props.race.indicators != "by"
   const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
@@ -61,12 +72,10 @@ function RaceTableRow(props: {
     }
     const t1Dsq = props.race.team1Dsq
     const t2Dsq = props.race.team2Dsq
-    const updated = {
-      ...props.race,
+    props.onRaceUpdate({
       team1Dsq: dsq == 1 ? !t1Dsq : t1Dsq,
       team2Dsq: dsq == 2 ? !t2Dsq : t2Dsq,
-    }
-    props.onRaceUpdate(updated)
+    })
   }
   const team1Dsq = () => props.race.team1Dsq
   const team2Dsq = () => props.race.team2Dsq
@@ -87,7 +96,6 @@ function RaceTableRow(props: {
               const handleConcede = (team: 1 | 2, e: MouseEvent) => {
                 e.stopPropagation()
                 props.onRaceUpdate({
-                  ...props.race,
                   winner: team == 1 ? 2 : 1,
                   indicators: "by",
                   team1Dsq: undefined,
@@ -97,7 +105,6 @@ function RaceTableRow(props: {
               const handleReset = () => {
                 handleClose()
                 props.onRaceUpdate({
-                  ...props.race,
                   winner: undefined,
                   indicators: undefined,
                   team1Dsq: undefined,
@@ -107,7 +114,6 @@ function RaceTableRow(props: {
               const clearConcede = () => {
                 handleClose()
                 props.onRaceUpdate({
-                  ...props.race,
                   indicators: undefined,
                 })
               }
