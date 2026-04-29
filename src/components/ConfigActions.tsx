@@ -1,5 +1,5 @@
 import { Box, Button, TextField } from "@suid/material";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { createSignal } from "solid-js";
 

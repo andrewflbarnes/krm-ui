@@ -1,5 +1,5 @@
 import { ErrorBoundary, JSXElement, Match, onCleanup, onMount, ParentProps, Suspense, Switch } from "solid-js"
-import { useKings } from "../kings"
+import { useKings } from "../hooks/kings";
 import { useRaceOptions } from "../hooks/results"
 import { Box, Card, CardContent, CircularProgress, Typography } from "@suid/material"
 import { SearchOff } from "@suid/icons-material"

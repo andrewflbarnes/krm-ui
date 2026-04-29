@@ -1,4 +1,4 @@
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 import kings, { leagues, type League } from "../kings";
 import Selector from "../ui/Selector";
 

@@ -2,7 +2,8 @@ import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
-import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding, useKings } from "../kings"
+import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "../kings"
+import { useKings } from "../hooks/kings";
 import krmApi, { RoundDetails } from "../api/krm"
 import notification from "../hooks/notification"
 import { createRound, orderSeeds } from "../kings/utils"

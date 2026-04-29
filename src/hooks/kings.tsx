@@ -1,8 +1,8 @@
 import { useSearchParams } from "@solidjs/router";
 import { batch, createContext, createSignal, ParentProps, useContext } from "solid-js"
-import kings from "./config"
-import { League, LeagueData } from "./types";
-import { leagues } from "./types";
+import kings from "../kings"
+import type { League, LeagueData } from "../kings";
+import { leagues } from "../kings";
 import krmApi from "../api/krm"
 import notification from "../hooks/notification";
 import tracker from "../api/tracker";

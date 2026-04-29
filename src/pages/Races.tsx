@@ -1,7 +1,7 @@
 import { createComputed, createSignal, Show } from "solid-js";
 import krmApi, { RoundInfo } from "../api/krm";
 import ManageContinueList from "../components/ManageContinueList";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 import notification from "../hooks/notification";
 import { Box, Paper } from "@suid/material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";

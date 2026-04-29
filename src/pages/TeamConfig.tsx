@@ -1,5 +1,5 @@
 import { Box, Card, CardContent, IconButton, Modal, Stack } from "@suid/material";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 import ConfigActions from "../components/ConfigActions";
 import ConfigClubs from "../components/ConfigClubs";
 import { createSignal, Show } from "solid-js";

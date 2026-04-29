@@ -1,7 +1,7 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery } from "@suid/material";
 import { LocationOn, Notes } from "@suid/icons-material";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 
 export type Details = {
   description: string;

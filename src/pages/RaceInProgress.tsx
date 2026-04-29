@@ -8,7 +8,7 @@ import { stages, useRaceOptions } from "../hooks/results";
 import { isStage } from "../kings/utils";
 import { useAuth } from "../hooks/auth";
 import { useBreadcrumberUpdate } from "../hooks/breadcrumb";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 
 export default function RaceInProgress() {
   return (

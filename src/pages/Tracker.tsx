@@ -11,7 +11,8 @@ import { Suspense } from "solid-js";
 import { useQuery } from "@tanstack/solid-query";
 import { OpenInNew } from "@suid/icons-material";
 import { parseResults } from "../kings/utils";
-import { LeagueData, useKings } from "../kings";
+import { LeagueData } from "../kings";
+import { useKings } from "../hooks/kings";
 import DivisionResultsAll from "../components/DivisionResultsAll";
 
 const immediateError = (message: string) => {

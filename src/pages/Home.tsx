@@ -1,5 +1,5 @@
 import { Box, Button, Divider, Stack, Typography } from "@suid/material";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 import krm from "../api/krm";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, on, Show } from "solid-js";

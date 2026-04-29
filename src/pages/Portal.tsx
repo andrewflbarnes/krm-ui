@@ -1,5 +1,5 @@
 import { Box } from "@suid/material";
-import { useKings } from "../kings";
+import { useKings } from "../hooks/kings";
 
 export default function Portal() {
   const [{ league }] = useKings()
