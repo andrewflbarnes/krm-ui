@@ -11,8 +11,6 @@ import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 const ManageNewSetup = lazy(() => import("../components/ManageNewSetup"))
 import { Construction, OpenInNew } from "@suid/icons-material"
 
-const raceConfigs = raceConfig
-
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
     acc[club] = {
@@ -191,7 +189,7 @@ function RaceNewInternal() {
         }
 
         const seeding = orderSeeds(k.leagueConfig(), numTeams())
-        const r = createRound("setup", roundDetails(), seeding, raceConfigs)
+        const r = createRound("setup", roundDetails(), seeding, raceConfig)
         batch(() => {
           setDistributionOrder(seeding)
           setSeeding(seeding)
@@ -206,7 +204,7 @@ function RaceNewInternal() {
       title: "Shuffle Teams",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
-          const r = createRound("setup", roundDetails(), seeds, raceConfigs)
+          const r = createRound("setup", roundDetails(), seeds, raceConfig)
           batch(() => {
             setRound(r)
             setDistributionOrder(seeds)
@@ -257,7 +255,7 @@ function RaceNewInternal() {
   }
 
   const handleDone = () => {
-    const r = krmApi.createRound(roundDetails(), seeding(), raceConfigs, distributionOrder())
+    const r = krmApi.createRound(roundDetails(), seeding(), raceConfig, distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()
