@@ -106,7 +106,18 @@ export default function Developer() {
           </Link>
         </Show>
       </div>
-      <Show when={view()}>
+      <Show when={view()} fallback={(
+        <div
+          style={{
+            display: "grid",
+            height: "100%",
+            width: "100%",
+            "place-items": "center",
+          }}>
+          {p.devview === "null" &&
+            <h2>/dev/null has consumed your hopes and dreams</h2>}
+        </div>
+      )}>
         <div
           style={{
             display: "flex",
