@@ -27,10 +27,19 @@ export default function AppFooter(props: {
         borderRadius: 0,
       }}>
         <Stack direction="row" gap={2} alignItems="center">
-          <Link sx={{ display: "flex", alignItems: "center" }} target="_blank" rel="noopener" href="https://github.com/andrewflbarnes/krm-ui">
+          <Link
+            sx={{
+              display: "flex",
+              alignItems: "center"
+            }}
+            target="_blank"
+            rel="noopener"
+            href="https://github.com/andrewflbarnes/krm-ui"
+            aria-label="View project on GitHub"
+          >
             <GitHub />
           </Link>
-          <Typography variant="subtitle2">
+          <Typography variant="subtitle2" component="small">
             Version: {__KRMUI_VERSION__}
           </Typography>
         </Stack>
@@ -46,7 +55,17 @@ export default function AppFooter(props: {
               </Stack>
             </SignedIn>
           </ClerkLoaded>
-          <Link color="inherit" sx={{ display: "flex", alignItems: "center" }} target="_blank" rel="noopener" href="https://kingsski.club">
+          <Link
+            sx={{
+              display: "flex",
+              alignItems: "center"
+            }}
+            color="inherit"
+            aria-label="Open Kings Ski Club website"
+            target="_blank"
+            rel="noopener"
+            href="https://kingsski.club"
+          >
             <DownhillSkiing color="inherit" fontSize="small" />
           </Link>
           <ModeChangeButton mode={mode()} onModeChange={props.onModeChange} />

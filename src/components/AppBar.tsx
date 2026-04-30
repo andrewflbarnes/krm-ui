@@ -93,10 +93,21 @@ export default function KrmAppBar() {
                 </Box>
                 <ClerkLoaded>
                   <SignedIn>
-                    <UserButton />
+                    <UserButton
+                      aria-label="Account details"
+                    />
                   </SignedIn>
                   <SignedOut>
-                    <SignInButton style={{ color: "inherit", cursor: "pointer", background: "transparent", border: "none" }} mode="modal">
+                    <SignInButton
+                      style={{
+                        color: "inherit",
+                        cursor: "pointer",
+                        background: "transparent",
+                        border: "none"
+                      }}
+                      mode="modal"
+                      aria-label="Sign in to your account"
+                    >
                       <Box>
                         <Typography
                           sx={{
