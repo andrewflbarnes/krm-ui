@@ -95,6 +95,7 @@ function RaceTableRow(props: RaceTableRowProps) {
             <MoreMenu id={`${props.race.stage}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
               const handleConcede = (team: 1 | 2, e: MouseEvent) => {
                 e.stopPropagation()
+                handleClose()
                 props.onRaceUpdate({
                   winner: team == 1 ? 2 : 1,
                   indicators: "by",
@@ -102,7 +103,8 @@ function RaceTableRow(props: RaceTableRowProps) {
                   team2Dsq: undefined
                 })
               }
-              const handleReset = () => {
+              const handleReset = (e: MouseEvent) => {
+                e.stopPropagation()
                 handleClose()
                 props.onRaceUpdate({
                   winner: undefined,
@@ -111,7 +113,8 @@ function RaceTableRow(props: RaceTableRowProps) {
                   team2Dsq: undefined
                 })
               }
-              const clearConcede = () => {
+              const clearConcede = (e: MouseEvent) => {
+                e.stopPropagation()
                 handleClose()
                 props.onRaceUpdate({
                   indicators: undefined,
