@@ -35,6 +35,11 @@ test.describe('Full round simulation', {
     knockouts?: number[],
   }
 
+  const noTeamsTestCase: TestCase = {
+    teams: 0,
+    stage1: [],
+  }
+
   const testCases: TestCase[] = [
     {
       teams: 1,
@@ -216,97 +221,104 @@ test.describe('Full round simulation', {
       knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27, 29, 31],
     },
   ]
+
+  const runTest = async (
+    title: string,
+    mixed: TestCase,
+    ladies: TestCase,
+    board: TestCase,
+  ) => test(title, async ({ roundSetup, resultsHelper }) => {
+    // Adjust timeout based on total teams
+    const totalTeams = mixed.teams + ladies.teams + board.teams;
+    const timeout = Math.max(30000, totalTeams * 3000);
+    test.setTimeout(timeout);
+
+    const mixedClub = 'Bath';
+    const ladiesClub = 'Plymouth';
+    const boardClub = 'Bristol';
+    const config = {
+      [mixedClub]: { mixed: mixed.teams, ladies: 0, board: 0 },
+      [ladiesClub]: { mixed: 0, ladies: ladies.teams, board: 0 },
+      [boardClub]: { mixed: 0, ladies: 0, board: board.teams },
+    }
+
+    await roundSetup.setupRound(config);
+    resultsHelper.init(config);
+
+    // Stage 1
+    await resultsHelper.startStage1();
+    await resultsHelper.viewMiniLeagues();
+
+    // Mixed stage 1
+    for (const group of mixed.stage1) {
+      await resultsHelper.setWinnersByTeamName("Mixed", group, mixedClub);
+    }
+
+    // Ladies stage 1
+    for (const group of ladies.stage1) {
+      await resultsHelper.setWinnersByTeamName("Ladies", group, ladiesClub);
+    }
+
+    // Board stage 1
+    for (const group of board.stage1) {
+      await resultsHelper.setWinnersByTeamName("Board", group, boardClub);
+    }
+
+    // Stage 2
+    if (mixed.stage2 || ladies.stage2 || board.stage2) {
+      await resultsHelper.startStage2();
+
+
+      // Mixed stage 2
+      for (const group of mixed.stage2 ?? []) {
+        await resultsHelper.setWinnersByTeamName("Mixed", group, mixedClub);
+      }
+
+      // Ladies stage 2
+      for (const group of ladies.stage2 ?? []) {
+        await resultsHelper.setWinnersByTeamName("Ladies", group, ladiesClub);
+      }
+
+      // Board stage 2
+      for (const group of board.stage2 ?? []) {
+        await resultsHelper.setWinnersByTeamName("Board", group, boardClub);
+      }
+    }
+
+    // Knockouts
+    if (mixed.knockouts || ladies.knockouts || board.knockouts) {
+      await resultsHelper.startKnockouts();
+
+      // Mixed Knockouts
+      await resultsHelper.setKnockoutWinnersByTeamName("Mixed", mixedClub, mixed.knockouts);
+
+      // Ladies Knockouts
+      await resultsHelper.setKnockoutWinnersByTeamName("Ladies", ladiesClub, ladies.knockouts);
+
+      // Board Knockouts
+      await resultsHelper.setKnockoutWinnersByTeamName("Board", boardClub, board.knockouts);
+    }
+
+    // Results
+    await resultsHelper.finishRaces();
+
+    // Mixed results
+    await resultsHelper.verifyResults('Mixed', mixedClub, mixed.teams);
+
+    // Ladies results
+    await resultsHelper.verifyResults('Ladies', ladiesClub, ladies.teams);
+
+    // Board results
+    await resultsHelper.verifyResults('Board', boardClub, board.teams);
+  });
+
   testCases.forEach((mixed) => {
     // dummy ladies and board config so we have more isolated tests
     // eventually we will move to having 0 teams for these divisions
     // for test purposes once supported
-    const ladies: TestCase = {
-      teams: 0,
-      stage1: [],
-    }
-    const board: TestCase = {
-      teams: 0,
-      stage1: [],
-    }
-    test(`${mixed.teams} teams`, async ({ roundSetup, resultsHelper }) => {
-      // Adjust timeout based on total teams
-      const totalTeams = mixed.teams + ladies.teams + board.teams;
-      const timeout = Math.max(30000, totalTeams * 3000);
-      test.setTimeout(timeout);
-
-      const club = 'Test';
-      const config = {
-        [club]: { mixed: mixed.teams, ladies: ladies.teams, board: board.teams }
-      }
-
-      await roundSetup.setupRound(config);
-      resultsHelper.init(config);
-
-      // Stage 1
-      await resultsHelper.startStage1();
-      await resultsHelper.viewMiniLeagues();
-
-      // Mixed stage 1
-      for (const group of mixed.stage1) {
-        await resultsHelper.setWinnersByTeamName("Mixed", group, club);
-      }
-
-      // Ladies stage 1
-      for (const group of ladies.stage1) {
-        await resultsHelper.setWinnersByTeamName("Ladies", group, club);
-      }
-
-      // Board stage 1
-      for (const group of board.stage1) {
-        await resultsHelper.setWinnersByTeamName("Board", group, club);
-      }
-
-      // Stage 2
-      if (mixed.stage2 || ladies.stage2 || board.stage2) {
-        await resultsHelper.startStage2();
-
-
-        // Mixed stage 2
-        for (const group of mixed.stage2 ?? []) {
-          await resultsHelper.setWinnersByTeamName("Mixed", group, club);
-        }
-
-        // Ladies stage 2
-        for (const group of ladies.stage2 ?? []) {
-          await resultsHelper.setWinnersByTeamName("Ladies", group, club);
-        }
-
-        // Board stage 2
-        for (const group of board.stage2 ?? []) {
-          await resultsHelper.setWinnersByTeamName("Board", group, club);
-        }
-      }
-
-      // Knockouts
-      if (mixed.knockouts || ladies.knockouts || board.knockouts) {
-        await resultsHelper.startKnockouts();
-
-        // Mixed Knockouts
-        await resultsHelper.setKnockoutWinnersByTeamName("Mixed", club, mixed.knockouts);
-
-        // Ladies Knockouts
-        await resultsHelper.setKnockoutWinnersByTeamName("Ladies", club, ladies.knockouts);
-
-        // Board Knockouts
-        await resultsHelper.setKnockoutWinnersByTeamName("Board", club, board.knockouts);
-      }
-
-      // Results
-      await resultsHelper.finishRaces();
-
-      // Mixed results
-      await resultsHelper.verifyResults('Mixed', club, mixed.teams);
-
-      // Ladies results
-      await resultsHelper.verifyResults('Ladies', club, ladies.teams);
-
-      // Board results
-      await resultsHelper.verifyResults('Board', club, board.teams);
-    });
+    runTest(`${mixed.teams} teams`, mixed, noTeamsTestCase, noTeamsTestCase);
   })
+
+  runTest('Realistic: mixed 18, ladies 12, board 6',
+    testCases[17], testCases[11], testCases[5])
 })

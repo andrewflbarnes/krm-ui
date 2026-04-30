@@ -1,6 +1,6 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { OpenInNew } from "@suid/icons-material";
-import { Link, Paper, ToggleButton, ToggleButtonGroup } from "@suid/material";
+import { Box, Link, Paper, ToggleButton, ToggleButtonGroup } from "@suid/material";
 import { createMemo, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 const DeveloperData = lazy(() => import("../components/DeveloperData"));
@@ -14,6 +14,24 @@ const devViews = [
   {
     href: "playwright",
     title: "Playwright",
+    info: () => (
+      <Link
+        href={"https://github.com/andrewflbarnes/krm-ui/actions/workflows/e2e.yml"}
+        target="_blank"
+        rel="noopener noreferrer"
+        variant="inherit"
+        sx={{
+          flexDirection: "row",
+          display: "inline-flex",
+          alignItems: "center",
+          justifyContent: "center",
+        }}
+      >
+        Full suite of Playwright tests
+        &nbsp;
+        <OpenInNew fontSize="small" />
+      </Link>
+    ),
     external: true,
     component: () => (
       <ViewPortal
@@ -118,15 +136,18 @@ export default function Developer() {
             <h2>/dev/null has consumed your hopes and dreams</h2>}
         </div>
       )}>
-        <div
-          style={{
+        <Box
+          sx={{
             display: "flex",
+            flexDirection: "column",
+            gap: 1,
             height: "100%",
             width: "100%",
             overflow: "hidden",
           }}>
+          <Show when={view().info}>{(info) => <>{info()}</>}</Show>
           <Dynamic component={view().component} />
-        </div>
+        </Box>
       </Show>
     </Paper>
   )
