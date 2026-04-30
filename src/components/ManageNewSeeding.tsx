@@ -1,36 +1,56 @@
-import { List, ListItem, Stack, Typography } from "@suid/material"
+import { Box } from "@suid/material"
 import { For } from "solid-js"
 import { RoundSeeding } from "../kings"
+import StageCard from "../ui/StageCard"
+import { DIVISION_ACCENT } from "../theme"
+import NumberedTeam from "../ui/NumberedTeam"
 
 export default function ManageNewSeeding(props: { seeds: RoundSeeding }) {
   return (
-    <Stack direction="row" gap={4}>
+    <Box
+      sx={{
+        display: {
+          xs: "flex",
+          md: "grid",
+        },
+        width: "100%",
+        mx: {
+          xs: undefined,
+          sm: "auto",
+        },
+        gridTemplateColumns: "1fr 1fr 1fr",
+        gap: "1rem",
+        justifyContent: "space-between",
+        flexDirection: "column",
+      }}
+    >
       <For each={Object.entries(props.seeds)}>{([division, teams]) => {
         return (
-          <div>
-            <Typography variant="h6">
-              {division.capitalize()}
-              &nbsp;
-              <Typography variant="caption" color="textSecondary" marginLeft="auto">
-                ({teams.length} teams)
-              </Typography>
-            </Typography>
-            <List dense>
-              <For each={teams}>{(team) => {
-                return (
-                  <ListItem dense sx={{ width: "100%", display: "flex" }}>
-                    <Typography>
-                      {team}
-                    </Typography>
-                  </ListItem>
-                )
-              }}
-              </For>
-            </List>
-          </div>
+          <Box sx={{ width: "100%" }}>
+            <StageCard
+              namer={() => null}
+              title={division.capitalize()}
+              accent={DIVISION_ACCENT[division].text}
+              groups={[teams]}
+            >{(group) => (
+              <Box sx={{
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+              }}>
+                <For each={group}>{(team, i) => (
+                  <NumberedTeam
+                    team={team}
+                    num={i() + 1}
+                    accent={DIVISION_ACCENT[division].text}
+                  />
+                )}</For>
+              </Box>
+            )}</StageCard>
+          </Box>
         )
       }}
       </For>
-    </Stack>
+    </Box>
   )
 }
