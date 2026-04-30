@@ -1,6 +1,7 @@
 import { Button, Card, CardContent, Modal } from "@suid/material";
 import { For, createSignal, createEffect } from "solid-js";
 import { useKings } from "../hooks/kings";
+import '@alenaksu/json-viewer';
 
 export default function DeveloperData() {
   const [data, setData] = createSignal<string | undefined>()

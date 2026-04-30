@@ -16,6 +16,7 @@ export default defineConfig({
     solidPlugin(),
     ...(!process.env.PWA ? [] : [VitePWA({
       registerType: "autoUpdate",
+      injectRegister: "script-defer",
       base: "/krm-ui/",
       scope: "/krm-ui/",
       manifest: {

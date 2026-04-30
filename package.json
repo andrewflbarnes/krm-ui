@@ -22,6 +22,7 @@
   "dependencies": {
     "@alenaksu/json-viewer": "^2.1.2",
     "@clerk/themes": "^2.4.57",
+    "@fontsource/roboto": "^5.2.10",
     "@solidjs/router": "^0.15.4",
     "@storybook/addon-vitest": "^10.3.4",
     "@suid/icons-material": "^0.9.0",
