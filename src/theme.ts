@@ -11,7 +11,7 @@ export const useKingsTheme = (initialMode?: "light" | "dark") => {
     return createPalette({
       mode: mode(),
       primary: {
-        main: lightBlue[dark() ? 300 : 900],
+        main: lightBlue[dark() ? 300 : 800],
       },
     });
   });
