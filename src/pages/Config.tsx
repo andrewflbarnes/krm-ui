@@ -1,7 +1,7 @@
 import { useCurrentMatches, useNavigate } from "@solidjs/router";
-import { ArrowBack, Assignment, Create, DownhillSkiing, EmojiEvents, ListAlt } from "@suid/icons-material";
+import { ArrowBack, Assignment, CircleOutlined, Create, DownhillSkiing, EmojiEvents, ListAlt, TaskAlt } from "@suid/icons-material";
 import { Box, Button, Typography } from "@suid/material";
-import { For, JSX, ParentProps, Show } from "solid-js";
+import { createMemo, For, JSX, ParentProps, Show } from "solid-js";
 import { useFeatureFlags } from "../hooks/flags";
 import ButtonCard from "../ui/ButtonCard";
 
@@ -13,6 +13,11 @@ type Option = {
   href: string;
   icon: JSX.Element;
   experimental?: boolean;
+} | {
+  label: string;
+  description: string;
+  onClick: () => void;
+  active: boolean;
 }
 
 const data: Option[] = [
@@ -52,13 +57,22 @@ const configs: Option[] = [
   },
 ]
 
-function SubMenu(props: { options: Option[], label?: string, onSelected?: (option: Option) => void }) {
+function SubMenu(props: {
+  options: Option[],
+  label?: string,
+  onSelected?: (option: Option) => void,
+  preferences?: boolean;
+}) {
   const flags = useFeatureFlags()
   const nav = useNavigate()
 
   const handleClick = (option: Option) => {
     props.onSelected?.(option)
-    nav(option.href)
+    if ('onClick' in option) {
+      option.onClick()
+    } else {
+      nav(option.href)
+    }
   }
 
   return (
@@ -81,13 +95,25 @@ function SubMenu(props: { options: Option[], label?: string, onSelected?: (optio
         gap: 1,
       }}>
         <For each={props.options}>{(opt) => {
-          const { label, description, icon, experimental } = opt
+          const { label, description } = opt
+          const enabled = 'active' in opt && opt.active
+          const cardIcon = 'icon' in opt
+            ? opt.icon
+            : enabled
+            ? <TaskAlt fontSize="large" />
+            : <CircleOutlined fontSize="large" color="action" />
+          const experimental = 'experimental' in opt && opt.experimental
+          const fullLabel = 'active' in opt
+              ? `${label} (${enabled ? "On" : "Off"})`
+              : experimental
+                ? `${label} (Experimental)`
+                : label
           return (
-            <Show when={!experimental || flags.experimental}>
+            <Show when={!experimental || flags.experimental()}>
               <ButtonCard
-                label={label}
+                label={fullLabel}
                 description={description}
-                icon={icon}
+                icon={cardIcon}
                 onClick={[handleClick, opt]}
               />
             </Show>
@@ -107,6 +133,22 @@ export default function Config(props: ParentProps) {
     }
     return !matches[matches.length - 1].path.endsWith(basePath)
   }
+  const flags = useFeatureFlags()
+
+  const prefs = createMemo<Option[]>(() => ([
+    {
+      label: "Developer Mode",
+      description: "Enable developer tools and features",
+      onClick: () => flags.setDeveloper(v => !v),
+      active: flags.developer(),
+    },
+    {
+      label: "Experimental Features",
+      description: "Enable features still in development which may be buggy",
+      onClick: () => flags.setExperimental(v => !v),
+      active: flags.experimental(),
+    },
+  ]))
 
   const nav = useNavigate()
 
@@ -127,6 +169,7 @@ export default function Config(props: ParentProps) {
         }}>
           <SubMenu options={configs} label="Configuration" />
           <SubMenu options={data} label="Data" />
+          <SubMenu options={prefs()} label="Options" />
         </Box>
       }>
         <Box sx={{ display: "flex", flexDirection: "column", height: "100%" }}>

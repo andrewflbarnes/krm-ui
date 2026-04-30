@@ -7,11 +7,12 @@ type ButtonCardProps = {
   disabled?: boolean;
   icon: JSX.Element;
   onClick: ComponentProps<typeof CardActionArea>["onClick"];
+  variant?: "elevation" | "outlined";
 }
 
 export default function ButtonCard(props: ButtonCardProps) {
   return (
-    <Card variant="outlined" sx={{ opacity: props.disabled ? 0.5 : 1 }}>
+    <Card variant={props.variant ?? "outlined"} sx={{ opacity: props.disabled ? 0.5 : 1 }}>
       <CardActionArea sx={{ height: "100%" }} disabled={props.disabled} onClick={props.onClick}>
         <CardContent sx={{ display: "flex", alignItems: "center", gap: 2 }}>
           <Box color="primary.main">
