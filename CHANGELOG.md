@@ -2,6 +2,111 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.4.0] - 2026-05-01
+
+### 🚀 Features
+
+- Add buttons to reset team shuffles
+- Keep manually added teams when loading league config
+- Add venue dropdown to new races, add season field
+- Save season to race details, reset venue when changing league
+- Add better experimental and developer flag support
+
+### 🐛 Bug Fixes
+
+- Prevent scroll clipping on round select, add missing paper
+- Border radius on main element and footer removed
+- Footer/layour opacity
+- Render team being dragged in shuffle phase
+- Don't combine league teams on selection when league changed
+- Ensure loaded status of league config cleared when reset
+- Allow scrolling when dragging a team in shuffle
+- Ensure division and group ordering correct in minileagues
+- Correctly calculate results html based on round number
+- Add jotai-utils file missed from feature flag improvements
+- Ensure menu closes after awarding by on race list
+
+### 📚 Documentation
+
+- Update done/rejected todos
+- Add todo - local caching with jotai
+- Add scroll bug
+
+### 🎨 Styling
+
+- Modernisation and visual improvements
+- Moderinsation and visual improvements to config
+- Prettier team selection on new races
+- Modernise config round
+- Modernise config minileague
+- Modernise race results
+- Modernise minileague
+- Move total teams number next to corresponding text
+- Prevent layout change when shuffle movement chip shown
+- More consistent theming
+- Use drag indicator as icon for shuffling
+- Better visual indicators of droppable items in shuffle
+- Fix header/footer radius regression
+- More consistent paper/card use, some layout fixes
+- Better responsive layout for shuffle groups in columns
+- Udpate theme color
+- Remove unnecessary detail title taking up space when small
+- Remove total team count - clutter, takes up space
+- Modernise update teams component, factor out stage card
+- Config sidebar fully expand/collapse on small screens
+- Slightly lighter primary color in light mode
+- Align seeding styles with rest of app
+
+### 🧪 Testing
+
+- Fix RunRaceResults storybook, change joint rendering to "="
+- Include smoke test of teams on deploy, deploy report
+- Prevent kings state/jotai leaking into test context
+- More realistic test scenario for playwright, include ci link
+
+### ⚙️ Miscellaneous Tasks
+
+- Include env in non production versions
+- Consolidate config layout and sidebar
+- Cleanup minileague
+- Consolidate the detail and selection setup steps
+- Move new detail out to own component
+- Stepper own component, sync storybook bg to mui theme, theme hook
+- Dont use deprecated write function on document
+- Always render Paper as a base to storybook
+- Minor reactive updates
+- Refactor common group card out, re-use in shuffle
+- Fix cliff config to pick up sec messages
+- Correct league venues
+- Remove commented out code
+- Fix storybook with season field, false positive oxlint refs
+- Reduce background opacity in light mode
+- Factor out colors, make new setup more responsive
+- Refactor out manage select footer, fix tests
+- Fix playwright, don't render second select at all
+- Actually use select footer, fix height on PWA/mobile
+- Cleanup unused imports
+- Show error when fetching races fail
+- Consolidate shuffle and seeding into confirm
+- Fix scheduled e2e
+- Playwright and storybook in krm
+- Fix performance of race list
+- /dev/null easter egg
+- Add manage new seeding stories
+- Correct smoke test command
+- Remove playwright trace
+- Address some accessibility issues
+- Minor performance improvement for initial page load
+- Add robots.txt and consolidate index.css files
+- Update robots.txt
+- Include internet archive bot in robots.txt
+
+### 🛡️ Security
+
+- Upgrade axios to address critical dependabot alerts
+- Upgrade cheerio for dependabot, fix ci e2e permission
+- Update vite for dependabot
+
 ## [0.3.0] - 2026-04-06
 
 ### 🚀 Features
