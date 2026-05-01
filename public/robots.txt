@@ -16,6 +16,7 @@ User-agent: Slurp
 User-agent: teoma
 User-agent: TelegramBot
 User-agent: Twitterbot
+User-agent: archive.org_bot
 Disallow: /krm-ui/dev
 Allow: /krm-ui/dev/null
 
