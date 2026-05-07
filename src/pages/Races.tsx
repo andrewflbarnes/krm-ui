@@ -31,7 +31,7 @@ function DownloadRoundsButton(props: { onDownload: (v: boolean) => void }) {
   return (
     <ButtonCard
       label="Download"
-      description={"Download rounds from the server, this will overwrite any tracked rounds which have not been uploaded/synced"}
+      description={"Download rounds from the server"}
       onClick={[props.onDownload, true]}
       icon={<ArrowCircleDown fontSize="large" />}
     />
