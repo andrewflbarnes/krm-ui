@@ -5,6 +5,9 @@ import { createMemo, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 const DeveloperData = lazy(() => import("../components/DeveloperData"));
 
+const playwrightHref = `${window.location.origin}/krm-ui-playwright`
+const storybookHref = `${window.location.origin}/krm-ui-storybook`
+
 const devViews = [
   {
     href: "data",
@@ -32,10 +35,10 @@ const devViews = [
         <OpenInNew fontSize="small" />
       </Link>
     ),
-    external: true,
+    external: playwrightHref,
     component: () => (
       <ViewPortal
-        href={`${window.location.origin}/krm-ui-playwright`}
+        href={playwrightHref}
         title={"KRM UI Playwright"}
       />
     ),
@@ -43,10 +46,10 @@ const devViews = [
   {
     href: "storybook",
     title: "Storybook",
-    external: true,
+    external: storybookHref,
     component: () => (
       <ViewPortal
-        href={`${window.location.origin}/krm-ui-storybook`}
+        href={storybookHref}
         title={"KRM UI Storybook"}
       />
     ),
@@ -65,6 +68,30 @@ function ViewPortal(props: { href: string, title: string }) {
       src={props.href}
       title={props.title}
     />
+  )
+}
+
+function OpenExternal(props: { href: string, justify: "center" | "end", small?: boolean }) {
+  const display = () => props.small
+    ? { xs: "inline-flex", md: "none" }
+    : { xs: "none", md: "inline-flex" }
+  return (
+    <Link
+      href={props.href}
+      target="_blank"
+      rel="noopener noreferrer"
+      variant="inherit"
+      sx={{
+        flexDirection: "row",
+        display,
+        alignItems: "center",
+        justifyContent: props.justify,
+      }}
+    >
+      Open in new tab
+      &nbsp;
+      <OpenInNew fontSize="small" />
+    </Link>
   )
 }
 
@@ -104,25 +131,9 @@ export default function Developer() {
             </ToggleButton>
           }</For>
         </ToggleButtonGroup>
-        <Show when={view()?.external}>
-          <Link
-            href={`/krm-ui-${view().href}`}
-            target="_blank"
-            rel="noopener noreferrer"
-            variant="inherit"
-            sx={{
-              ml: "auto",
-              flexDirection: "row",
-              display: "inline-flex",
-              alignItems: "center",
-              justifyContent: "center",
-            }}
-          >
-            Open in new tab
-            &nbsp;
-            <OpenInNew fontSize="small" />
-          </Link>
-        </Show>
+        <Show when={view()?.external}>{(externalHref) => (
+          <OpenExternal href={externalHref()} justify="end" />
+        )}</Show>
       </div>
       <Show when={view()} fallback={(
         <div
@@ -145,6 +156,9 @@ export default function Developer() {
             width: "100%",
             overflow: "hidden",
           }}>
+          <Show when={view()?.external}>{(externalHref) => (
+            <OpenExternal href={externalHref()} justify="center" small />
+          )}</Show>
           <Show when={view().info}>{(info) => <>{info()}</>}</Show>
           <Dynamic component={view().component} />
         </Box>
