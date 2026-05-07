@@ -96,14 +96,16 @@ function PrintBlockingModal(props: { open: boolean }) {
         justifyContent: "center",
         height: 1,
         width: 1,
-        opacity: 0.9,
+        backgroundColor: "rgba(0, 0, 0, 0.9)",
       }}>
-        <Typography sx={{ opacity: 1 }} variant="body1" align="center">
-          Please close the print window to continue using the app
-        </Typography>
-        <Typography sx={{ opacity: 1 }} variant="body2" align="center">
-          If that doesn't work, refresh or reload the app
-        </Typography>
+        <Paper variant="elevation" sx={{ p: 2 }}>
+          <Typography variant="body1" align="center">
+            Please close the print window to continue using the app
+          </Typography>
+          <Typography variant="body2" align="center">
+            If that doesn't work, refresh or reload the app
+          </Typography>
+        </Paper>
       </Paper>
     </Modal>
   )
