@@ -1,7 +1,10 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery } from "@suid/material";
+import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery, CardHeader } from "@suid/material";
 import { LocationOn, Notes } from "@suid/icons-material";
 import { useKings } from "../hooks/kings";
+import ExpandMoreLess from "../ui/ExpandMoreLess";
+import { Collapse } from "solid-collapse";
+import styles from "./ManageNewDetail.module.css";
 
 export type Details = {
   description: string;
@@ -17,6 +20,7 @@ type ManageNewDetailProps = {
 
 export default function ManageNewDetail(props: ManageNewDetailProps) {
   const [k] = useKings();
+  const [showDetails, setShowDetails] = createSignal(true);
 
   return (
     <Card
@@ -24,35 +28,57 @@ export default function ManageNewDetail(props: ManageNewDetailProps) {
         borderRadius: 2,
       }}
     >
-      <CardContent sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}>
-        <RoundSelect
-          round={props.details.round}
-          onRoundUpdate={round =>
-            props.onDetailUpdate({ ...props.details, round })}
-        />
+      <CardHeader
+        title="Round Details"
+        action={
+          <Box sx={{
+            display: {
+              xs: "block",
+              md: "noni",
+            }
+          }}>
+            <ExpandMoreLess
+              expand={showDetails()}
+              onClick={() => setShowDetails(expanded => !expanded)}
+            />
+          </Box>
+        }
+      />
+      <Collapse value={showDetails()} class={styles.detailcollapse}>
+        <CardContent>
+          <Box
+            sx={{ display: "flex", flexDirection: "column", gap: 2.5 }}
+          >
+            <RoundSelect
+              round={props.details.round}
+              onRoundUpdate={round =>
+                props.onDetailUpdate({ ...props.details, round })}
+            />
 
-        <Stack direction="row" spacing={2} alignItems="center">
-          <LeagueSelect league={k.league()} />
-          <SeasonSelect
-            season={props.details.season}
-            onSeasonUpdate={season =>
-              props.onDetailUpdate({ ...props.details, season })}
-          />
-        </Stack>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <LeagueSelect league={k.league()} />
+              <SeasonSelect
+                season={props.details.season}
+                onSeasonUpdate={season =>
+                  props.onDetailUpdate({ ...props.details, season })}
+              />
+            </Stack>
 
-        <VenueSelect
-          venue={props.details.venue}
-          venues={k.config().venues || []}
-          onVenueUpdate={venue =>
-            props.onDetailUpdate({ ...props.details, venue })}
-        />
+            <VenueSelect
+              venue={props.details.venue}
+              venues={k.config().venues || []}
+              onVenueUpdate={venue =>
+                props.onDetailUpdate({ ...props.details, venue })}
+            />
 
-        <DescriptionInput
-          description={props.details.description}
-          onDescriptionUpdate={description =>
-            props.onDetailUpdate({ ...props.details, description })}
-        />
-      </CardContent>
+            <DescriptionInput
+              description={props.details.description}
+              onDescriptionUpdate={description =>
+                props.onDetailUpdate({ ...props.details, description })}
+            />
+          </Box>
+        </CardContent>
+      </Collapse>
     </Card>
   );
 }

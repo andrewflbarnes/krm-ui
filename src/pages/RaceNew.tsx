@@ -302,17 +302,26 @@ function CallToLoadConfig() {
         startIcon={<Construction />}
         disabled={loadingConfig()}
       >
-        Load {league()} Config
+        Load {league().capitalize()} Config
       </Button>
-      {" "}or load custom configuration from the{" "}
-      <A href="/teams" style={{ "text-decoration": "none" }}>
-        <Typography color="primary" style={{ display: "inline" }}>
-          <Stack direction="row" alignItems="center" gap="0.1em">
-            teams page
-            <OpenInNew fontSize="small" />
-          </Stack>
-        </Typography>
-      </A>
+      <Box sx={{
+        display: {
+          xs: "none",
+          sm: "inherit",
+        },
+        alignItems: "center",
+      }}>
+        or custom configuration from
+        &nbsp;
+        <A href="/teams" style={{ "text-decoration": "none" }}>
+          <Typography color="primary" style={{ display: "inline" }}>
+            <Stack direction="row" alignItems="center" gap="0.1em">
+              teams page
+              <OpenInNew fontSize="small" />
+            </Stack>
+          </Typography>
+        </A>
+      </Box>
     </Stack>
   )
 }
