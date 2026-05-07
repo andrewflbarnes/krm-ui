@@ -1,4 +1,4 @@
-import { Box, Card, Stack } from "@suid/material";
+import { Box, Card, Modal, Paper, Stack, Typography } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, createEffect, createMemo, on } from "solid-js";
 import { divisions, Race, Round, StageRaces } from "../kings";
@@ -86,6 +86,29 @@ export default function RunRaceInProgressStage(props: RunRaceInProgressStageProp
   )
 }
 
+function PrintBlockingModal(props: { open: boolean }) {
+  return (
+    <Modal open={props.open} onClose={() => { }}>
+      <Paper sx={{
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "center",
+        justifyContent: "center",
+        height: 1,
+        width: 1,
+        opacity: 0.9,
+      }}>
+        <Typography sx={{ opacity: 1 }} variant="body1" align="center">
+          Please close the print window to continue using the app
+        </Typography>
+        <Typography sx={{ opacity: 1 }} variant="body2" align="center">
+          If that doesn't work, refresh or reload the app
+        </Typography>
+      </Paper>
+    </Modal>
+  )
+}
+
 function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const queryClient = useQueryClient()
   const {
@@ -150,6 +173,8 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       printwindow.document.writeln('<html><head>')
       printwindow.document.writeln(`<title>Kings Results Manager</title>`)
       printwindow.document.writeln('</head><body>')
+      // use this instead of print, close to prevent window blocking
+      //printwindow.document.writeln('<script>setTimeout(() => { window.print(); window.close(); }, 1000)</script>')
       printwindow.document.writeln(ref.innerHTML)
       printwindow.document.writeln('</body></html>')
       printwindow.document.close(); // necessary for IE >= 10
@@ -157,6 +182,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       printwindow.print();
       printwindow.close();
       setPrint(false)
+      //setTimeout(() => setPrint(false), 500)
     }
   })
 
@@ -165,41 +191,44 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const showSideBySide = () => view() === "side-by-side"
 
   return (
-    <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
-      <Stack direction="row" gap={1} sx={{ justifyContent: "center" }}>
-        <Show when={showList()}>
-          <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
-            <Stack width="100%">
-              <RaceList
-                knockout={props.stage == "knockout"}
-                orderedRaces={orderedRaces()}
+    <>
+      <PrintBlockingModal open={print()} />
+      <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
+        <Stack direction="row" gap={1} sx={{ justifyContent: "center" }}>
+          <Show when={showList()}>
+            <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
+              <Stack width="100%">
+                <RaceList
+                  knockout={props.stage == "knockout"}
+                  orderedRaces={orderedRaces()}
+                  onRaceUpdate={handleRaceUpdate}
+                  readonly={props.readonly}
+                />
+              </Stack>
+            </Card>
+          </Show>
+          <Show when={showMiniLeagues()}>
+            <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
+              <MiniLeagues
+                live={live()}
+                collapse={collapse()}
+                races={orderedMiniLeagueRaces()}
                 onRaceUpdate={handleRaceUpdate}
                 readonly={props.readonly}
               />
-            </Stack>
-          </Card>
-        </Show>
-        <Show when={showMiniLeagues()}>
-          <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
-            <MiniLeagues
-              live={live()}
-              collapse={collapse()}
-              races={orderedMiniLeagueRaces()}
-              onRaceUpdate={handleRaceUpdate}
-              readonly={props.readonly}
+            </Card>
+          </Show>
+        </Stack>
+        <Box sx={{ display: view() === "printable" ? "inherit" : "none" }}>
+          <Card ref={ref} sx={{ display: "flex", flexDirection: "column", p: 3, alignItems: "center", width: "fit-content", mx: "auto" }}>
+            <RaceListPrintable
+              knockouts={props.stage === "knockout"}
+              races={orderedRaces()}
+              subtitle={`${props.round.league} ${props.stage}`}
             />
           </Card>
-        </Show>
-      </Stack>
-      <Box sx={{ display: view() === "printable" ? "inherit" : "none" }}>
-        <Card ref={ref} sx={{ display: "flex", flexDirection: "column", p: 3, alignItems: "center", width: "fit-content", mx: "auto" }}>
-          <RaceListPrintable
-            knockouts={props.stage === "knockout"}
-            races={orderedRaces()}
-            subtitle={`${props.round.league} ${props.stage}`}
-          />
-        </Card>
+        </Box>
       </Box>
-    </Box>
+    </>
   )
 }
