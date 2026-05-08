@@ -31,8 +31,8 @@ jobs:
     - uses: actions/upload-artifact@v6
       if: ${{ !cancelled() }}
       with:
-        name: $PW_ARTIFACT
-        path: $PW_PATH
+        name: ${{ env.PW_ARTIFACT }}
+        path: ${{ env.PW_PATH }}
         retention-days: 30
   upload:
     runs-on: ubuntu-latest
@@ -41,8 +41,8 @@ jobs:
     - name: Download Playwright report
       uses: actions/download-artifact@v8
       with:
-        name: $PW_ARTIFACT
-        path: $PW_PATH
+        name: ${{ env.PW_ARTIFACT }}
+        path: ${{ env.PW_PATH }}
     # https://dt.in.th/PlaywrightAccessibleTestReports
     - name: Publish test results to object storage
       continue-on-error: true
