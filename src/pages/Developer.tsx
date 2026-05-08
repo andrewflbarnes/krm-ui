@@ -141,7 +141,6 @@ export default function Developer() {
           <Show when={view()?.external}>{(externalHref) => (
             <OpenExternal href={externalHref()} justify="center" small />
           )}</Show>
-          <Show when={view().info}>{(info) => <>{info()}</>}</Show>
           <Dynamic component={view().component} />
         </Box>
       </Show>
