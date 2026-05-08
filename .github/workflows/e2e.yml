@@ -32,10 +32,7 @@ jobs:
         name: playwright-report
         path: playwright-report/
         retention-days: 30
-  upload:
     # https://dt.in.th/PlaywrightAccessibleTestReports
-    runs-on: ubuntu-latest
-    steps:
     - name: Publish test results to object storage
       continue-on-error: true
       run: |
