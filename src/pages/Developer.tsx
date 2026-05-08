@@ -5,7 +5,7 @@ import { createMemo, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 const DeveloperData = lazy(() => import("../components/DeveloperData"));
 
-const playwrightHref = `${window.location.origin}/krm-ui-playwright`
+const playwrightHref = `https://krmui-e2e.t3.tigrisfiles.io/playwright-report/index.html`
 const storybookHref = `${window.location.origin}/krm-ui-storybook`
 
 const devViews = [
@@ -17,24 +17,6 @@ const devViews = [
   {
     href: "playwright",
     title: "Playwright",
-    info: () => (
-      <Link
-        href={"https://github.com/andrewflbarnes/krm-ui/actions/workflows/e2e.yml"}
-        target="_blank"
-        rel="noopener noreferrer"
-        variant="inherit"
-        sx={{
-          flexDirection: "row",
-          display: "inline-flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        Full suite of Playwright tests
-        &nbsp;
-        <OpenInNew fontSize="small" />
-      </Link>
-    ),
     external: playwrightHref,
     component: () => (
       <ViewPortal

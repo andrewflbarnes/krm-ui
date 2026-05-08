@@ -57,13 +57,13 @@
 
 [[redirects]]
   from = "/krm-ui-playwright"
-  to = "/krm-ui-playwright"
-  status = 200
+  to = "https://krmui-e2e.t3.tigrisfiles.io/playwright-report/index.html"
+  status = 302
 
 [[redirects]]
   from = "/krm-ui-playwright/*"
-  to = "/krm-ui-playwright/:splat"
-  status = 200
+  to = "https://krmui-e2e.t3.tigrisfiles.io/playwright-report/index.html"
+  status = 302
 
 [[redirects]]
   from = "/krm-ui-storybook"
