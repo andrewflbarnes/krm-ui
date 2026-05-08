@@ -5,7 +5,7 @@ import { createMemo, For, lazy, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 const DeveloperData = lazy(() => import("../components/DeveloperData"));
 
-const playwrightHref = `https://krmui-e2e.t3.tigrisfiles.io/playwright-report/index.html`
+const playwrightHref = "https://data.bucket.andrewflbarnes.com/krm-ui/playwright-report/index.html"
 const storybookHref = `${window.location.origin}/krm-ui-storybook`
 
 const devViews = [

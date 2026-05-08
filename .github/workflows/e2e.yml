@@ -51,10 +51,10 @@ jobs:
         curl https://rclone.org/install.sh | sudo bash
 
         # Upload playwright report
-        rclone copy $PW_PATH publish:$PUBLISH_BUCKET/playwright-report/ --progress
+        rclone copy $PW_PATH publish:$PUBLISH_BUCKET/$PUBLISH_PATH/ --progress
 
         # Print report URL for CI logs
-        REPORT_URL="$REPORT_URL_PREFIX/playwright-report/index.html"
+        REPORT_URL="$REPORT_URL_PREFIX/$PUBLISH_PATH/index.html"
         echo "Test report published: $REPORT_URL"
 
         # Generate preview URL and add to step summary
@@ -68,8 +68,9 @@ jobs:
         echo "" >> $GITHUB_STEP_SUMMARY
         echo "Fallback: Download artifacts below if S3 link is unavailable" >> $GITHUB_STEP_SUMMARY
       env:
-        PUBLISH_BUCKET: krmui-e2e
-        REPORT_URL_PREFIX: https://krmui-e2e.t3.tigrisfiles.io
+        PUBLISH_BUCKET: data.andrewflbarnes
+        PUBLISH_PATH: krm-ui/playwright-report
+        REPORT_URL_PREFIX: https://data.bucket.andrewflbarnes.com
         RCLONE_CONFIG_PUBLISH_TYPE: s3
         RCLONE_CONFIG_PUBLISH_PROVIDER: Other
         RCLONE_CONFIG_PUBLISH_REGION: auto

@@ -57,12 +57,12 @@
 
 [[redirects]]
   from = "/krm-ui-playwright"
-  to = "https://krmui-e2e.t3.tigrisfiles.io/playwright-report/index.html"
+  to = "https://data.bucket.andrewflbarnes.com/krm-ui/playwright-report/index.html"
   status = 302
 
 [[redirects]]
   from = "/krm-ui-playwright/*"
-  to = "https://krmui-e2e.t3.tigrisfiles.io/playwright-report/index.html"
+  to = "https://data.bucket.andrewflbarnes.com/krm-ui/playwright-report/index.html"
   status = 302
 
 [[redirects]]
