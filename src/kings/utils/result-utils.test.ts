@@ -1,6 +1,27 @@
 import { describe, expect, it } from 'vitest';
-import { parseResults } from './result-utils';
+import { kingsPoints, parseResults } from './result-utils';
 import { LeagueData } from '../types';
+
+describe("kingsPoints", () => {
+  const testPositions = (division: string, start: number[], restFrom: number, min: number) => {
+    describe(division, () => {
+      for (let i = 1; i <= 100; i++) {
+        const expected = (i <= start.length)
+          ? start[i - 1]
+          : Math.max(min, restFrom + start.length + 1 - i)
+
+        it(`position ${i} is ${expected} points`, () => {
+          const actual = kingsPoints(division, i)
+          expect(actual).toEqual(expected)
+        })
+      }
+    })
+  }
+
+  testPositions("mixed", [30, 28, 26], 25, 1)
+  testPositions("ladies", [15, 13, 11], 10, 1)
+  testPositions("board", [15, 13, 11], 10, 1)
+})
 
 describe('parseResults', () => {
   it('returns empty object for null input', () => {
