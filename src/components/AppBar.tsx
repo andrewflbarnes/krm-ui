@@ -83,17 +83,34 @@ function DrawerHeader() {
   const auth = useAuth()
   return (
     <>
-      <ListItem>
-        <ListItemText primary={(
-          <>
-            <strong>[ K ]</strong>
-            &nbsp;
-            Kings Race Manager
-          </>
-        )} />
+      <ListItem sx={{
+        backgroundColor: "primary.main",
+      }}>
+        <ListItemText
+          primary={
+            <Typography variant="body1" align="center" color="primary.contrastText">
+              <strong style={{
+                "font-size": "5rem",
+                "width": "100%",
+                display: "flex",
+                "justify-content": "center",
+              }}>
+                [ K ]
+              </strong>
+            </Typography>
+          }
+          secondary={
+            <Typography variant="subtitle1" align="center" color="primary.contrastText">
+              Kings Race Manager
+            </Typography>
+          }
+        />
       </ListItem>
       <Show when={auth.authenticated()}>
-        <ListItem>
+        <ListItem sx={{
+          backgroundColor: "primary.main",
+          color: "primary.contrastText",
+        }}>
           <ListItemAvatar style={{ "pointer-events": "none" }}>
             <UserButton appearance={{
               elements: {
@@ -110,7 +127,11 @@ function DrawerHeader() {
           </ListItemAvatar>
           <ListItemText
             primary={auth.fullName()}
-            secondary={auth.username()}
+            secondary={
+              <Typography variant="caption" color="primary.contrastText">
+                {auth.username()}
+              </Typography>
+            }
           />
         </ListItem>
       </Show>
@@ -209,10 +230,10 @@ export default function KrmAppBar() {
                 alignItems: "center",
                 display: { xs: "none", md: "flex" },
               }}>
-              {/*
-                Don't really like how this workss and renders
-                <KrmBreadcrumbs />
-              */}
+                {/*
+                  Don't really like how this workss and renders
+                  <KrmBreadcrumbs />
+                */}
               </Box>
               <Box sx={{
                 display: "flex",
@@ -240,7 +261,10 @@ export default function KrmAppBar() {
         onClose={() => setDrawerOpen(false)}
         sx={{ display: { xs: "block", sm: "none" } }}
       >
-        <Box sx={{ width: 250 }} role="presentation">
+        <Box sx={{
+          width: 250,
+          maxWidth: "90vw",
+        }} role="presentation">
           <List>
             <DrawerHeader />
             <Divider />
