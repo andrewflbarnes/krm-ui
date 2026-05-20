@@ -3,11 +3,11 @@ import type { ClubSeeding, Division, League, LeagueData, Round, RoundConfig, Rou
 import { divisions } from "../types"
 
 export function checkStage(s: unknown): s is RaceStage {
-  return s == "stage1" || s == "stage2" || s == "knockout"
+  return s === "stage1" || s === "stage2" || s === "knockout"
 }
 
 export function isStage(s: string): RaceStage | null {
-  return s == "stage1" || s == "stage2" || s == "knockout" ? s : null
+  return s === "stage1" || s === "stage2" || s === "knockout" ? s : null
 }
 
 /**
@@ -108,10 +108,10 @@ export function calcTeamResults(teams: string[], races: Race[], maxDepth: number
   // In this case we ay have drawn teams whenever two or more teams share the
   // same number of wins
   const prepos = calcTeamResultsIter(teams, races)
-  // Also perform a one of to check if each team has finsihed all their
+  // Also perform a one off to check if each team has finsihed all their
   // races.
   const unfinished = teams.filter(team => races.some(({ team1, team2, winner }) =>
-    ((team1 == team || team2 == team) && winner > 0)))
+    ((team1 == team || team2 == team) && !winner)))
   Object.entries(prepos.data).forEach(([team, data]) => {
     data.finished = !unfinished.includes(team)
   })
