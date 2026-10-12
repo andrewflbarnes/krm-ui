@@ -101,19 +101,21 @@ export default function RunRaceInProgressHeader(props: {
       <Modal onClose={handleClose} open={actionsOpen()} sx={{ display: "grid", height: "100%", width: "100%", placeItems: "center" }}>
         <Card sx={{ width: "50%" }}>
           <CardContent>
-            <Stack alignItems="center">
-              <FormControlLabel
-                control={<InputSwitch checked={northern()} onChange={switchNorthern} />}
-                label="Race list: northern style"
-              />
-              <FormControlLabel
-                control={<InputSwitch checked={collapse()} onChange={switchCollapse} />}
-                label="Minileague: collapse"
-              />
-              <FormControlLabel
-                control={<InputSwitch checked={live()} onChange={switchLive} />}
-                label="Minileague: live resuts"
-              />
+            <Stack direction="row" justifyContent="center">
+              <Stack alignItems="start">
+                <FormControlLabel
+                  control={<InputSwitch checked={northern()} onChange={switchNorthern} />}
+                  label="Race list: northern style"
+                />
+                <FormControlLabel
+                  control={<InputSwitch checked={collapse()} onChange={switchCollapse} />}
+                  label="Minileague: collapse"
+                />
+                <FormControlLabel
+                  control={<InputSwitch checked={live()} onChange={switchLive} />}
+                  label="Minileague: live resuts"
+                />
+              </Stack>
             </Stack>
           </CardContent>
         </Card>
