@@ -130,7 +130,8 @@ export default function MiniLeague(props: MiniLeagueProps) {
                     {team}
                   </Typography>
                 }>{(selectable) => {
-                  const [selected, setSelected] = createSignal(props.initialSelected?.[i()] ?? "")
+                  const initialSelected = props.initialSelected?.[i()] ?? ""
+                  const [selected, setSelected] = createSignal(initialSelected)
                   const handleTeamSelected = (v: string, idx: number) => {
                     setSelected(v)
                     props.onTeamSelected(v, idx)
