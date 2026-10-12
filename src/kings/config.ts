@@ -49,9 +49,7 @@ export default {
 // Naming convention is <type><number of teams>
 // - type: mini - a normal mini league
 // - type: full - a mini league which contains every team from that round
-export const miniLeagueTemplates: {
-  [k: string]: MiniLeagueTemplate
-} = {
+export const miniLeagueTemplates = {
   "single": {
     teams: 1,
     races: [],
@@ -97,6 +95,17 @@ export const miniLeagueTemplates: {
       [0, 2], [3, 1]
     ],
   },
+  "full4": {
+    teams: 4,
+    races: [
+      [0, 1], [2, 3],
+      [1, 2], [3, 0],
+      [0, 2], [3, 1],
+      [0, 1], [2, 3],
+      [1, 2], [3, 0],
+      [0, 2], [3, 1]
+    ],
+  },
   "mini5": {
     teams: 5,
     races: [
@@ -113,7 +122,9 @@ export const miniLeagueTemplates: {
       [3, 1], [5, 4], [0, 1], [5, 2], [4, 3],
     ],
   }
-} as const
+} as const satisfies {
+  [k: string]: MiniLeagueTemplate
+}
 
 function seeds(name: string, seeds: number[], template?: MiniLeagueTemplate): MiniLeagueConfig {
   const resolvedTemplate = template ?? miniLeagueTemplates[`mini${seeds.length}` as keyof typeof miniLeagueTemplates]

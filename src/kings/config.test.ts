@@ -6,6 +6,8 @@ describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (n
 
   const numRaces = (function() {
     switch (name) {
+      case "full4":
+        return 12
       case "full3":
         return 6
       case "full2":
@@ -20,6 +22,8 @@ describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (n
 
   const numTeamRaces = (function() {
     switch (name) {
+      case "full4":
+        return 6
       case "full3":
         return 4
       case "full2":

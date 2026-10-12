@@ -180,6 +180,15 @@ export const Teams6: Story = {
   },
 }
 
+const f4 = miniLeagueTemplates.full4
+export const Full4: Story = {
+  args: {
+    name: "Full 4",
+    teams: initTeams(f4),
+    races: initRaces(f4),
+  },
+}
+
 const f3 = miniLeagueTemplates.full3
 export const Full3: Story = {
   args: {
