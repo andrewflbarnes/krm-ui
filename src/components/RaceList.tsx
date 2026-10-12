@@ -122,7 +122,9 @@ function RaceTableRow(props: RaceTableRowProps) {
               }
               return (
                 <>
-                  <MenuItem onClick={handleReset}>Reset</MenuItem>
+                  <Show when={props.race.winner || props.race.indicators || team1Dsq() || team2Dsq()}>
+                    <MenuItem onClick={handleReset}>Reset</MenuItem>
+                  </Show>
                   <Show when={props.race.indicators == "by"}>
                     <MenuItem onClick={clearConcede}>clear by</MenuItem>
                   </Show>

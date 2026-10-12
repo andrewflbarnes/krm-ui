@@ -351,17 +351,19 @@ function ContextMenu(props: {
               props.onResultChange(update)
             }}>{race().indicators == "by" ? "clear by" : "concede (by)"}</MenuItem>
           </Show>
-          <MenuItem onClick={(e) => {
-            e.stopPropagation()
-            props.onClose()
-            props.onResultChange({
-              ...race(),
-              team1Dsq: false,
-              team2Dsq: false,
-              winner: undefined,
-              indicators: undefined,
-            })
-          }}>reset</MenuItem>
+          <Show when={race().winner || race().team1Dsq || race().team2Dsq || race().indicators}>
+            <MenuItem onClick={(e) => {
+              e.stopPropagation()
+              props.onClose()
+              props.onResultChange({
+                ...race(),
+                team1Dsq: false,
+                team2Dsq: false,
+                winner: undefined,
+                indicators: undefined,
+              })
+            }}>reset</MenuItem>
+          </Show>
         </Menu>
       )
     }}</Show>
