@@ -79,7 +79,6 @@ test.describe('Full round simulation', {
       teams: 9,
       stage1: ['A', 'B', 'C'],
       stage2: ['I', 'II', 'III'],
-      knockouts: [1, 3, 5],
     },
     {
       teams: 10,
@@ -151,19 +150,19 @@ test.describe('Full round simulation', {
       teams: 21,
       stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
       stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19],
     },
     {
       teams: 22,
       stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
       stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 21],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21],
     },
     {
       teams: 23,
       stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
       stage2: ['I', 'II', 'III', 'IV', 'V', 'VI'],
-      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 21],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21],
     },
     {
       teams: 24,
@@ -193,13 +192,13 @@ test.describe('Full round simulation', {
       teams: 28,
       stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
       stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
     },
     {
       teams: 29,
       stage1: ['A', 'B', 'C', 'D', 'E', 'F', 'G'],
       stage2: ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII'],
-      knockouts: [1, 3, 5, 8, 10, 12, 15, 17, 19, 22, 24, 26, 28],
+      knockouts: [1, 3, 5, 7, 9, 11, 13, 15, 17, 19, 21, 23, 25, 27],
     },
     {
       teams: 30,

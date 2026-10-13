@@ -21,6 +21,32 @@ export function resultsForGroup(stage: RaceStage, group: string, positions: {
   return positions.map(position => ({ stage, group, ...position }))
 }
 
+type Result = {
+  group: string;
+  position: number;
+}
+
+export function knockoutsFromResults(results: {
+  rank: number;
+  team1: Result;
+  team2: Result;
+}[]): MiniLeagueConfig[] {
+  return results.map(r => ({
+    name: asKnockoutPosition(r.rank),
+    seeds: [
+      {
+        group: r.team1.group,
+        position: r.team1.position,
+      },
+      {
+        group: r.team2.group,
+        position: r.team2.position,
+      },
+    ],
+    template: miniLeagueTemplates.knockout,
+  }))
+}
+
 export function knockoutsFromGroups(config: {
   from: number;
   to: number;

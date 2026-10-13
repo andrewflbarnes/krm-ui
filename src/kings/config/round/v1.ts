@@ -2,6 +2,20 @@ import { RoundConfig } from "../../types";
 import { miniLeagueTemplates } from "../minileague";
 import { knockoutsFromGroups, resultsForGroup, resultsFromKnockout, seeds, wrapSingleGroupResults } from "../config-utils";
 
+// V1 is a "standard" two round swiss style - in cases where there is an
+// "outlier" team in stage 2 (e.g. group I has 4 teams, group II has 3 teams)
+// this config prefers running the top 3 from each on knockouts and then
+// making the 4th team from group I (in this case) take the 7th position.
+//
+// V1 strives to
+// - have like seeds meet as late as possible
+// - promote competition at boundaries e.g. for 16 teams where stage 1
+//   determines the top and bottom 8, promote competition between seeds 8 and 9
+//   especially
+// - offer teams within the same seeding bracket the same opportunities e.g.
+//   for 21 teams groups III and IV (positions 8-14) can all potentially come
+//   8th
+
 const raceConfig: {
   [k: number]: RoundConfig
 } = {

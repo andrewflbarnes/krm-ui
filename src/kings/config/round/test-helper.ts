@@ -5,7 +5,14 @@ type Configuration = {
   [k: number]: RoundConfig;
 }
 
-export function testRoundConfig(name: string, raceConfig: Configuration) {
+export function testRoundConfig(
+  name: string,
+  raceConfig: Configuration,
+  options?: {
+    knockoutsFrom?: number;
+  }
+) {
+  const { knockoutsFrom = 9 } = options ?? {}
   describe.each(Object.entries(raceConfig))(`${name} race config for %d teams`, (numTeamsStr, config) => {
     const numTeams = parseInt(numTeamsStr) >>> 0
     it(`number of seeded teams in stage 1 is ${numTeams}`, () => {
@@ -68,14 +75,14 @@ export function testRoundConfig(name: string, raceConfig: Configuration) {
         }
       })
   
-      if (numTeams > 8) {
+      if (numTeams >= knockoutsFrom) {
         config.knockout.forEach(group => {
           it(`knockouts for ${group.name} teams has correct size template`, () => {
             expect(group.seeds.length).toBe(group.template.teams)
           })
         })
   
-        it(`knocckout mini leagues have distinct team names`, () => {
+        it(`knockout mini leagues have distinct team names`, () => {
           const groupNames = config.knockout.map(({ name }) => name)
             .filter((name, idx, arr) => arr.indexOf(name) == idx)
           expect(groupNames.length).toBe(config.knockout.length)

@@ -3,4 +3,4 @@ export * from './division';
 export * from './minileague';
 import roundConfigs from './round';
 
-export const raceConfig = roundConfigs.v1
+export const raceConfig = roundConfigs.v2
