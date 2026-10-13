@@ -112,53 +112,18 @@ const raceConfig: {
         template: miniLeagueTemplates.mini4,
       },
     ],
-    // EXAMPLE ONLY!!! THESE KNOCKOUTS ARE UNNECESSARY
-    knockout: [
-      {
-        name: "7th/8th",
-        seeds: [
-          { group: "II", position: 2 },
-          { group: "II", position: 3 },
-        ],
-        template: miniLeagueTemplates.knockout,
-      },
-      {
-        name: "5th/6th",
-        seeds: [
-          { group: "II", position: 0 },
-          { group: "II", position: 1 },
-        ],
-        template: miniLeagueTemplates.knockout,
-      },
-      {
-        name: "3rd/4th",
-        seeds: [
-          { group: "I", position: 2 },
-          { group: "I", position: 3 },
-        ],
-        template: miniLeagueTemplates.knockout,
-      },
-      {
-        name: "1st/2nd",
-        seeds: [
-          { group: "I", position: 0 },
-          { group: "I", position: 1 },
-        ],
-        template: miniLeagueTemplates.knockout,
-      },
-    ],
     results: [
       ...resultsForGroup("stage2", "I", [
-        { position: 1, rank: 1 },
-        { position: 2, rank: 2 },
-        { position: 3, rank: 3 },
-        { position: 4, rank: 4 },
+        { position: 0, rank: 1 },
+        { position: 1, rank: 2 },
+        { position: 2, rank: 3 },
+        { position: 3, rank: 4 },
       ]),
       ...resultsForGroup("stage2", "II", [
-        { position: 1, rank: 5 },
-        { position: 2, rank: 6 },
-        { position: 3, rank: 7 },
-        { position: 4, rank: 8 },
+        { position: 0, rank: 5 },
+        { position: 1, rank: 6 },
+        { position: 2, rank: 7 },
+        { position: 3, rank: 8 },
       ])
     ],
   },

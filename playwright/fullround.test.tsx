@@ -74,7 +74,6 @@ test.describe('Full round simulation', {
       teams: 8,
       stage1: ['A', 'B'],
       stage2: ['I', 'II'],
-      knockouts: [1, 3, 5, 7],
     },
     {
       teams: 9,
