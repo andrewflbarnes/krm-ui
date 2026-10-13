@@ -37,13 +37,13 @@ const data: Option[] = [
 
 const configs: Option[] = [
   {
-    label: "View Round",
-    description: "Round configurations determining how teams progress through stages",
+    label: "Round Config",
+    description: "Round configurations determining how a given number of teams progress",
     href: "round",
     icon: <Assignment fontSize="large" />,
   },
   {
-    label: "View Minileague",
+    label: "Minileague Config",
     description: "Mini league configurations determining how teams race in a group",
     href: "minileague",
     icon: <ListAlt fontSize="large" />,
