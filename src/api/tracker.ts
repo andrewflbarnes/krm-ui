@@ -10,5 +10,8 @@ async function getLeagueData(league: string, customUrl?: string): Promise<League
     : null
   const qps = customUrlQp ?? `league=${league}`
   const response = await fetch(`/api/ksc-results?${qps}`)
+  if (!response.ok) {
+    throw new Error(`Failed to fetch league data: ${response.status} ${response.statusText}`)
+  }
   return await response.json()
 }

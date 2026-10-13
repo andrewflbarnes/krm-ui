@@ -133,6 +133,11 @@ export function useKings() {
     setLoadingConfig(true)
     tracker.getLeagueData(league, trackingUrl)
       .then(data => {
+        if (Object.keys(data).length === 0) {
+          notification.error(`No config found for ${league} league`)
+          return
+        }
+
         setLeagueConfigEnhanced(data)
         actions.setConfigLoaded(league)
         notification.success(`Config loaded for ${league} league`)
