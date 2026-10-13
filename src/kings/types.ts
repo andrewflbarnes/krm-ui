@@ -1,9 +1,5 @@
-export const divisions = ["mixed", "ladies", "board"] as const
-export const leagues = ["western", "midlands", "southern", "northern", "scotland"] as const
-
-export type Division = typeof divisions[number];
-
-export type League = typeof leagues[number];
+import type { Division, League } from "./config";
+export type { Division, League } from "./config";
 
 export type RaceStage = "stage1" | "stage2" | "knockout";
 export type Stage = RaceStage | "complete";

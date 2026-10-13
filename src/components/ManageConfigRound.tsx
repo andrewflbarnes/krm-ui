@@ -1,7 +1,7 @@
 import { Box, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
 import { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings";
-import { asPosition, minileagueRaces } from "../kings/utils";
+import { asPosition, minileagueRaces } from "../kings";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
 import { BaseColor, baseColors } from "../theme";
 import NumberedTeam from "../ui/NumberedTeam";

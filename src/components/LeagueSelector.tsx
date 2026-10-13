@@ -1,5 +1,6 @@
 import { useKings } from "../hooks/kings";
-import kings, { leagues, type League } from "../kings";
+import { leagues, leagueConfigs } from "../kings";
+import { type League } from "../kings";
 import Selector from "../ui/Selector";
 
 export default function LeagueSelector() {
@@ -10,7 +11,7 @@ export default function LeagueSelector() {
     }
   };
 
-  const options = leagues.map((l) => ({ label: kings[l].name, value: l }))
+  const options = leagues.map((l) => ({ label: leagueConfigs[l].name, value: l }))
 
   return (
     <div>

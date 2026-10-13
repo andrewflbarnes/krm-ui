@@ -1,206 +1,8 @@
-import { League, MiniLeagueConfig, MiniLeagueTemplate, RaceStage, ResultsConfig, RoundConfig } from "./types";
-import { asKnockoutPosition } from "./utils";
+import { RoundConfig } from "../../types";
+import { miniLeagueTemplates } from "../minileague";
+import { knockoutsFromGroups, resultsForGroup, resultsFromKnockout, seeds, wrapSingleGroupResults } from "../config-utils";
 
-export type LeagueConfig = {
-  name: string;
-  venues: readonly string[];
-}
-
-export default {
-  western: {
-    name: "Western",
-    venues: [
-      "Gloucester",
-      "Pembrey",
-      "Plymouth",
-    ],
-  },
-  midlands: {
-    name: "Midlands",
-    venues: [
-      "Ackers",
-    ],
-  },
-  northern: {
-    name: "Northern",
-    venues: [
-      "Rossendale",
-      "Sunderland",
-    ],
-  },
-  southern: {
-    name: "Southern",
-    venues: [
-      "Aldershot",
-      "Brentwood",
-      "Southampton",
-    ],
-  },
-  scotland: {
-    name: "Scotland",
-    venues: [
-      "Bearsdem",
-      "Bellahouston",
-      "Garthdee",
-    ],
-  },
-} as const satisfies Record<League, LeagueConfig> as Record<League, LeagueConfig>
-
-// Naming convention is <type><number of teams>
-// - type: mini - a normal mini league
-// - type: full - a mini league which contains every team from that round
-export const miniLeagueTemplates = {
-  "single": {
-    teams: 1,
-    races: [],
-  },
-  "knockout": {
-    teams: 2,
-    races: [
-      [0, 1],
-    ],
-  },
-  "full2": {
-    teams: 2,
-    races: [
-      [0, 1],
-      [1, 0],
-      [0, 1],
-    ],
-  },
-  "mini3": {
-    teams: 3,
-    races: [
-      [0, 1],
-      [1, 2],
-      [2, 0],
-    ],
-  },
-  "full3": {
-    teams: 3,
-    races: [
-      [0, 1],
-      [1, 2],
-      [2, 0],
-      [1, 0],
-      [2, 1],
-      [0, 2],
-    ],
-  },
-  "mini4": {
-    teams: 4,
-    races: [
-      [0, 1], [2, 3],
-      [1, 2], [3, 0],
-      [0, 2], [3, 1]
-    ],
-  },
-  "full4": {
-    teams: 4,
-    races: [
-      [0, 1], [2, 3],
-      [1, 2], [3, 0],
-      [0, 2], [3, 1],
-      [1, 0], [3, 2],
-      [2, 1], [0, 3],
-      [2, 0], [1, 3]
-    ],
-  },
-  "mini5": {
-    teams: 5,
-    races: [
-      [0, 1], [2, 3], [1, 2],
-      [3, 4], [4, 0], [3, 1],
-      [4, 2], [0, 3], [1, 4], [2, 0]
-    ],
-  },
-  "mini6": {
-    teams: 6,
-    races: [
-      [0, 5], [1, 4], [2, 3], [4, 0], [3, 5],
-      [2, 1], [0, 3], [4, 2], [1, 5], [2, 0],
-      [3, 1], [5, 4], [0, 1], [5, 2], [4, 3],
-    ],
-  }
-} as const satisfies {
-  [k: string]: MiniLeagueTemplate
-}
-
-function seeds(name: string, seeds: number[], template?: MiniLeagueTemplate): MiniLeagueConfig {
-  const resolvedTemplate = template ?? miniLeagueTemplates[`mini${seeds.length}` as keyof typeof miniLeagueTemplates]
-  return {
-    name,
-    seeds: seeds.map(seed => ({ group: "Seeds", position: seed })),
-    template: resolvedTemplate,
-  }
-}
-
-function wrapSingleGroupResults(numTeams: number): readonly ResultsConfig[] {
-  return Array.from({ length: numTeams }, (_, i) => ({ stage: "stage1", group: "A", position: i, rank: i + 1 }))
-}
-
-function resultsForGroup(stage: RaceStage, group: string, positions: {
-  position: number,
-  rank: number,
-}[]): readonly ResultsConfig[] {
-  return positions.map(position => ({ stage, group, ...position }))
-}
-
-function knockoutsFromGroups(config: {
-  from: number;
-  to: number;
-  group1: string;
-  group2: string;
-}[]): MiniLeagueConfig[] {
-  return config.flatMap(c => {
-    let seedPosition = 0;
-    const races: MiniLeagueConfig[] = []
-    for (let place = c.from; place < c.to; place += 2) {
-      races.unshift({
-        name: asKnockoutPosition(place),
-        seeds: [
-          {
-            group: c.group1,
-            position: seedPosition,
-          },
-          {
-            group: c.group2,
-            position: seedPosition,
-          },
-        ],
-        template: miniLeagueTemplates.knockout,
-      })
-      seedPosition += 1
-    }
-    return races
-
-  })
-}
-
-export function resultsFromKnockout(numTeams: number, start: number = 1): readonly ResultsConfig[] {
-  if ((numTeams + start) % 2 !== 1) {
-    throw new Error("Only even numbers of results are supported")
-  }
-  const results: ResultsConfig[] = []
-  for (let i = start; i <= numTeams; i += 2) {
-    const group = asKnockoutPosition(i)
-    results.push({
-      stage: "knockout",
-      group,
-      position: 0,
-      rank: i,
-    })
-    results.push({
-      stage: "knockout",
-      group,
-      position: 1,
-      rank: i + 1,
-    })
-  }
-  return results
-}
-
-export const raceConfig: {
+const raceConfig: {
   [k: number]: RoundConfig
 } = {
   0: {
@@ -227,26 +29,26 @@ export const raceConfig: {
   },
   4: {
     stage1: [
-      seeds("A", [0, 1, 2, 3])
+      seeds("A", [0, 1, 2, 3], miniLeagueTemplates.full4)
     ],
     results: wrapSingleGroupResults(4),
   },
   5: {
     stage1: [
-      seeds("A", [0, 1, 2, 3, 4])
+      seeds("A", [0, 1, 2, 3, 4], miniLeagueTemplates.mini5)
     ],
     results: wrapSingleGroupResults(5),
   },
   6: {
     stage1: [
-      seeds("A", [0, 1, 2, 3, 4, 5])
+      seeds("A", [0, 1, 2, 3, 4, 5], miniLeagueTemplates.mini6)
     ],
     results: wrapSingleGroupResults(6),
   },
   7: {
     stage1: [
-      seeds("A", [0, 3, 4, 6]),
-      seeds("B", [1, 2, 5]),
+      seeds("A", [0, 3, 4, 6], miniLeagueTemplates.mini4),
+      seeds("B", [1, 2, 5], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -285,8 +87,8 @@ export const raceConfig: {
   },
   8: {
     stage1: [
-      seeds("A", [0, 3, 4, 7]),
-      seeds("B", [1, 2, 5, 6]),
+      seeds("A", [0, 3, 4, 7], miniLeagueTemplates.mini4),
+      seeds("B", [1, 2, 5, 6], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -345,27 +147,26 @@ export const raceConfig: {
         template: miniLeagueTemplates.knockout,
       },
     ],
-    results: resultsFromKnockout(8),
-    //results: [
-    //  ...resultsForGroup("stage2", "I", [
-    //    { position: 1, rank: 1 },
-    //    { position: 2, rank: 2 },
-    //    { position: 3, rank: 3 },
-    //    { position: 4, rank: 4 },
-    //  ]),
-    //  ...resultsForGroup("stage2", "II", [
-    //    { position: 1, rank: 5 },
-    //    { position: 2, rank: 6 },
-    //    { position: 3, rank: 7 },
-    //    { position: 4, rank: 8 },
-    //  ])
-    //],
+    results: [
+      ...resultsForGroup("stage2", "I", [
+        { position: 1, rank: 1 },
+        { position: 2, rank: 2 },
+        { position: 3, rank: 3 },
+        { position: 4, rank: 4 },
+      ]),
+      ...resultsForGroup("stage2", "II", [
+        { position: 1, rank: 5 },
+        { position: 2, rank: 6 },
+        { position: 3, rank: 7 },
+        { position: 4, rank: 8 },
+      ])
+    ],
   },
   9: {
     stage1: [
-      seeds("A", [0, 5, 6]),
-      seeds("B", [1, 4, 7]),
-      seeds("C", [2, 3, 8]),
+      seeds("A", [0, 5, 6], miniLeagueTemplates.mini3),
+      seeds("B", [1, 4, 7], miniLeagueTemplates.mini3),
+      seeds("C", [2, 3, 8], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -415,9 +216,9 @@ export const raceConfig: {
   },
   10: {
     stage1: [
-      seeds("A", [0, 5, 6, 9]),
-      seeds("B", [1, 4, 7]),
-      seeds("C", [2, 3, 8]),
+      seeds("A", [0, 5, 6, 9], miniLeagueTemplates.mini4),
+      seeds("B", [1, 4, 7], miniLeagueTemplates.mini3),
+      seeds("C", [2, 3, 8], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -469,9 +270,9 @@ export const raceConfig: {
   },
   11: {
     stage1: [
-      seeds("A", [0, 5, 6, 10]),
-      seeds("B", [1, 4, 7, 9]),
-      seeds("C", [2, 3, 8]),
+      seeds("A", [0, 5, 6, 10], miniLeagueTemplates.mini4),
+      seeds("B", [1, 4, 7, 9], miniLeagueTemplates.mini4),
+      seeds("C", [2, 3, 8], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -523,10 +324,10 @@ export const raceConfig: {
   },
   12: {
     stage1: [
-      seeds("A", [0, 7, 8]),
-      seeds("B", [1, 6, 9]),
-      seeds("C", [2, 5, 10]),
-      seeds("D", [3, 4, 11]),
+      seeds("A", [0, 7, 8], miniLeagueTemplates.mini3),
+      seeds("B", [1, 6, 9], miniLeagueTemplates.mini3),
+      seeds("C", [2, 5, 10], miniLeagueTemplates.mini3),
+      seeds("D", [3, 4, 11], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -580,9 +381,9 @@ export const raceConfig: {
   },
   13: {
     stage1: [
-      seeds("A", [0, 5, 6, 11, 12]),
-      seeds("B", [1, 4, 7, 10]),
-      seeds("C", [2, 3, 8, 9]),
+      seeds("A", [0, 5, 6, 11, 12], miniLeagueTemplates.mini5),
+      seeds("B", [1, 4, 7, 10], miniLeagueTemplates.mini4),
+      seeds("C", [2, 3, 8, 9], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -646,10 +447,10 @@ export const raceConfig: {
   },
   14: {
     stage1: [
-      seeds("A", [0, 7, 8, 13]),
-      seeds("B", [1, 6, 9, 12]),
-      seeds("C", [2, 5, 10]),
-      seeds("D", [3, 4, 11]),
+      seeds("A", [0, 7, 8, 13], miniLeagueTemplates.mini4),
+      seeds("B", [1, 6, 9, 12], miniLeagueTemplates.mini4),
+      seeds("C", [2, 5, 10], miniLeagueTemplates.mini3),
+      seeds("D", [3, 4, 11], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -709,10 +510,10 @@ export const raceConfig: {
   },
   15: {
     stage1: [
-      seeds("A", [0, 7, 8]),
-      seeds("B", [1, 6, 9, 14]),
-      seeds("C", [2, 5, 10, 13]),
-      seeds("D", [3, 4, 11, 12]),
+      seeds("A", [0, 7, 8], miniLeagueTemplates.mini3),
+      seeds("B", [1, 6, 9, 14], miniLeagueTemplates.mini4),
+      seeds("C", [2, 5, 10, 13], miniLeagueTemplates.mini4),
+      seeds("D", [3, 4, 11, 12], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -778,10 +579,10 @@ export const raceConfig: {
   },
   16: {
     stage1: [
-      seeds("A", [0, 7, 8, 15]),
-      seeds("B", [1, 6, 9, 14]),
-      seeds("C", [2, 5, 10, 13]),
-      seeds("D", [3, 4, 11, 12]),
+      seeds("A", [0, 7, 8, 15], miniLeagueTemplates.mini4),
+      seeds("B", [1, 6, 9, 14], miniLeagueTemplates.mini4),
+      seeds("C", [2, 5, 10, 13], miniLeagueTemplates.mini4),
+      seeds("D", [3, 4, 11, 12], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -843,11 +644,11 @@ export const raceConfig: {
   },
   17: {
     stage1: [
-      seeds("A", [0, 9, 10]),
-      seeds("B", [1, 8, 11]),
-      seeds("C", [2, 7, 12, 16]),
-      seeds("D", [3, 6, 13]),
-      seeds("E", [4, 5, 14, 15]),
+      seeds("A", [0, 9, 10], miniLeagueTemplates.mini3),
+      seeds("B", [1, 8, 11], miniLeagueTemplates.mini3),
+      seeds("C", [2, 7, 12, 16], miniLeagueTemplates.mini4),
+      seeds("D", [3, 6, 13], miniLeagueTemplates.mini3),
+      seeds("E", [4, 5, 14, 15], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -915,12 +716,12 @@ export const raceConfig: {
   },
   18: {
     stage1: [
-      seeds("A", [0, 11, 12]),
-      seeds("B", [1, 10, 13]),
-      seeds("C", [2, 9, 14]),
-      seeds("D", [3, 8, 15]),
-      seeds("E", [4, 7, 16]),
-      seeds("F", [5, 6, 17]),
+      seeds("A", [0, 11, 12], miniLeagueTemplates.mini3),
+      seeds("B", [1, 10, 13], miniLeagueTemplates.mini3),
+      seeds("C", [2, 9, 14], miniLeagueTemplates.mini3),
+      seeds("D", [3, 8, 15], miniLeagueTemplates.mini3),
+      seeds("E", [4, 7, 16], miniLeagueTemplates.mini3),
+      seeds("F", [5, 6, 17], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -1002,12 +803,12 @@ export const raceConfig: {
   },
   19: {
     stage1: [
-      seeds("A", [0, 11, 12, 18]),
-      seeds("B", [1, 10, 13]),
-      seeds("C", [2, 9, 14]),
-      seeds("D", [3, 8, 15]),
-      seeds("E", [4, 7, 16]),
-      seeds("F", [5, 6, 17]),
+      seeds("A", [0, 11, 12, 18], miniLeagueTemplates.mini4),
+      seeds("B", [1, 10, 13], miniLeagueTemplates.mini3),
+      seeds("C", [2, 9, 14], miniLeagueTemplates.mini3),
+      seeds("D", [3, 8, 15], miniLeagueTemplates.mini3),
+      seeds("E", [4, 7, 16], miniLeagueTemplates.mini3),
+      seeds("F", [5, 6, 17], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -1095,12 +896,12 @@ export const raceConfig: {
   },
   20: {
     stage1: [
-      seeds("A", [0, 11, 12, 19]),
-      seeds("B", [1, 10, 13, 18]),
-      seeds("C", [2, 9, 14]),
-      seeds("D", [3, 8, 15]),
-      seeds("E", [4, 7, 16]),
-      seeds("F", [5, 6, 17]),
+      seeds("A", [0, 11, 12, 19], miniLeagueTemplates.mini4),
+      seeds("B", [1, 10, 13, 18], miniLeagueTemplates.mini4),
+      seeds("C", [2, 9, 14], miniLeagueTemplates.mini3),
+      seeds("D", [3, 8, 15], miniLeagueTemplates.mini3),
+      seeds("E", [4, 7, 16], miniLeagueTemplates.mini3),
+      seeds("F", [5, 6, 17], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -1184,13 +985,13 @@ export const raceConfig: {
   },
   21: {
     stage1: [
-      seeds("A", [0, 13, 14]),
-      seeds("B", [1, 12, 15]),
-      seeds("C", [2, 11, 16]),
-      seeds("D", [3, 10, 17]),
-      seeds("E", [4, 9, 18]),
-      seeds("F", [5, 8, 19]),
-      seeds("G", [6, 7, 20]),
+      seeds("A", [0, 13, 14], miniLeagueTemplates.mini3),
+      seeds("B", [1, 12, 15], miniLeagueTemplates.mini3),
+      seeds("C", [2, 11, 16], miniLeagueTemplates.mini3),
+      seeds("D", [3, 10, 17], miniLeagueTemplates.mini3),
+      seeds("E", [4, 9, 18], miniLeagueTemplates.mini3),
+      seeds("F", [5, 8, 19], miniLeagueTemplates.mini3),
+      seeds("G", [6, 7, 20], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -1288,13 +1089,13 @@ export const raceConfig: {
   },
   22: {
     stage1: [
-      seeds("A", [0, 13, 14]),
-      seeds("B", [1, 12, 15]),
-      seeds("C", [2, 11, 16]),
-      seeds("D", [3, 10, 17]),
-      seeds("E", [4, 9, 18]),
-      seeds("F", [5, 8, 19]),
-      seeds("G", [6, 7, 20, 21]),
+      seeds("A", [0, 13, 14], miniLeagueTemplates.mini3),
+      seeds("B", [1, 12, 15], miniLeagueTemplates.mini3),
+      seeds("C", [2, 11, 16], miniLeagueTemplates.mini3),
+      seeds("D", [3, 10, 17], miniLeagueTemplates.mini3),
+      seeds("E", [4, 9, 18], miniLeagueTemplates.mini3),
+      seeds("F", [5, 8, 19], miniLeagueTemplates.mini3),
+      seeds("G", [6, 7, 20, 21], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -1390,13 +1191,13 @@ export const raceConfig: {
   },
   23: {
     stage1: [
-      seeds("A", [0, 13, 14]),
-      seeds("B", [1, 12, 15]),
-      seeds("C", [2, 11, 16]),
-      seeds("D", [3, 10, 17]),
-      seeds("E", [4, 9, 18, 22]),
-      seeds("F", [5, 8, 19]),
-      seeds("G", [6, 7, 20, 21]),
+      seeds("A", [0, 13, 14], miniLeagueTemplates.mini3),
+      seeds("B", [1, 12, 15], miniLeagueTemplates.mini3),
+      seeds("C", [2, 11, 16], miniLeagueTemplates.mini3),
+      seeds("D", [3, 10, 17], miniLeagueTemplates.mini3),
+      seeds("E", [4, 9, 18, 22], miniLeagueTemplates.mini4),
+      seeds("F", [5, 8, 19], miniLeagueTemplates.mini3),
+      seeds("G", [6, 7, 20, 21], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -1496,14 +1297,14 @@ export const raceConfig: {
   },
   24: {
     stage1: [
-      seeds("A", [0, 15, 16]),
-      seeds("B", [1, 14, 17]),
-      seeds("C", [2, 13, 18]),
-      seeds("D", [3, 12, 19]),
-      seeds("E", [4, 11, 20]),
-      seeds("F", [5, 10, 21]),
-      seeds("G", [6, 9, 22]),
-      seeds("H", [7, 8, 23]),
+      seeds("A", [0, 15, 16], miniLeagueTemplates.mini3),
+      seeds("B", [1, 14, 17], miniLeagueTemplates.mini3),
+      seeds("C", [2, 13, 18], miniLeagueTemplates.mini3),
+      seeds("D", [3, 12, 19], miniLeagueTemplates.mini3),
+      seeds("E", [4, 11, 20], miniLeagueTemplates.mini3),
+      seeds("F", [5, 10, 21], miniLeagueTemplates.mini3),
+      seeds("G", [6, 9, 22], miniLeagueTemplates.mini3),
+      seeds("H", [7, 8, 23], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -1591,12 +1392,12 @@ export const raceConfig: {
   },
   25: {
     stage1: [
-      seeds("A", [0, 11, 12, 23]),
-      seeds("B", [1, 10, 13, 22, 24]),
-      seeds("C", [2, 9, 14, 21]),
-      seeds("D", [3, 8, 15, 20]),
-      seeds("E", [4, 7, 16, 19]),
-      seeds("F", [5, 6, 17, 18]),
+      seeds("A", [0, 11, 12, 23], miniLeagueTemplates.mini4),
+      seeds("B", [1, 10, 13, 22, 24], miniLeagueTemplates.mini5),
+      seeds("C", [2, 9, 14, 21], miniLeagueTemplates.mini4),
+      seeds("D", [3, 8, 15, 20], miniLeagueTemplates.mini4),
+      seeds("E", [4, 7, 16, 19], miniLeagueTemplates.mini4),
+      seeds("F", [5, 6, 17, 18], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -1708,14 +1509,14 @@ export const raceConfig: {
   },
   26: {
     stage1: [
-      seeds("A", [0, 15, 16]),
-      seeds("B", [1, 14, 17]),
-      seeds("C", [2, 13, 18]),
-      seeds("D", [3, 12, 19]),
-      seeds("E", [4, 11, 20]),
-      seeds("F", [5, 10, 21]),
-      seeds("G", [6, 9, 22, 25]),
-      seeds("H", [7, 8, 23, 24]),
+      seeds("A", [0, 15, 16], miniLeagueTemplates.mini3),
+      seeds("B", [1, 14, 17], miniLeagueTemplates.mini3),
+      seeds("C", [2, 13, 18], miniLeagueTemplates.mini3),
+      seeds("D", [3, 12, 19], miniLeagueTemplates.mini3),
+      seeds("E", [4, 11, 20], miniLeagueTemplates.mini3),
+      seeds("F", [5, 10, 21], miniLeagueTemplates.mini3),
+      seeds("G", [6, 9, 22, 25], miniLeagueTemplates.mini4),
+      seeds("H", [7, 8, 23, 24], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -1805,14 +1606,14 @@ export const raceConfig: {
   },
   27: {
     stage1: [
-      seeds("A", [0, 15, 16]),
-      seeds("B", [1, 14, 17]),
-      seeds("C", [2, 13, 18]),
-      seeds("D", [3, 12, 19]),
-      seeds("E", [4, 11, 20]),
-      seeds("F", [5, 10, 21, 26]),
-      seeds("G", [6, 9, 22, 25]),
-      seeds("H", [7, 8, 23, 24]),
+      seeds("A", [0, 15, 16], miniLeagueTemplates.mini3),
+      seeds("B", [1, 14, 17], miniLeagueTemplates.mini3),
+      seeds("C", [2, 13, 18], miniLeagueTemplates.mini3),
+      seeds("D", [3, 12, 19], miniLeagueTemplates.mini3),
+      seeds("E", [4, 11, 20], miniLeagueTemplates.mini3),
+      seeds("F", [5, 10, 21, 26], miniLeagueTemplates.mini4),
+      seeds("G", [6, 9, 22, 25], miniLeagueTemplates.mini4),
+      seeds("H", [7, 8, 23, 24], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -1916,13 +1717,13 @@ export const raceConfig: {
   },
   28: {
     stage1: [
-      seeds("A", [0, 13, 14, 27]),
-      seeds("B", [1, 12, 15, 26]),
-      seeds("C", [2, 11, 16, 25]),
-      seeds("D", [3, 10, 17, 24]),
-      seeds("E", [4, 9, 18, 23]),
-      seeds("F", [5, 8, 19, 22]),
-      seeds("G", [6, 7, 20, 21]),
+      seeds("A", [0, 13, 14, 27], miniLeagueTemplates.mini4),
+      seeds("B", [1, 12, 15, 26], miniLeagueTemplates.mini4),
+      seeds("C", [2, 11, 16, 25], miniLeagueTemplates.mini4),
+      seeds("D", [3, 10, 17, 24], miniLeagueTemplates.mini4),
+      seeds("E", [4, 9, 18, 23], miniLeagueTemplates.mini4),
+      seeds("F", [5, 8, 19, 22], miniLeagueTemplates.mini4),
+      seeds("G", [6, 7, 20, 21], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -2049,13 +1850,13 @@ export const raceConfig: {
   },
   29: {
     stage1: [
-      seeds("A", [0, 13, 14, 27, 28]),
-      seeds("B", [1, 12, 15, 26]),
-      seeds("C", [2, 11, 16, 25]),
-      seeds("D", [3, 10, 17, 24]),
-      seeds("E", [4, 9, 18, 23]),
-      seeds("F", [5, 8, 19, 22]),
-      seeds("G", [6, 7, 20, 21]),
+      seeds("A", [0, 13, 14, 27, 28], miniLeagueTemplates.mini5),
+      seeds("B", [1, 12, 15, 26], miniLeagueTemplates.mini4),
+      seeds("C", [2, 11, 16, 25], miniLeagueTemplates.mini4),
+      seeds("D", [3, 10, 17, 24], miniLeagueTemplates.mini4),
+      seeds("E", [4, 9, 18, 23], miniLeagueTemplates.mini4),
+      seeds("F", [5, 8, 19, 22], miniLeagueTemplates.mini4),
+      seeds("G", [6, 7, 20, 21], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -2180,16 +1981,16 @@ export const raceConfig: {
   },
   30: {
     stage1: [
-      seeds("A", [0, 19, 20]),
-      seeds("B", [1, 18, 21]),
-      seeds("C", [2, 17, 22]),
-      seeds("D", [3, 16, 23]),
-      seeds("E", [4, 15, 24]),
-      seeds("F", [5, 14, 25]),
-      seeds("G", [6, 13, 26]),
-      seeds("H", [7, 12, 27]),
-      seeds("I", [8, 11, 28]),
-      seeds("J", [9, 10, 29]),
+      seeds("A", [0, 19, 20], miniLeagueTemplates.mini3),
+      seeds("B", [1, 18, 21], miniLeagueTemplates.mini3),
+      seeds("C", [2, 17, 22], miniLeagueTemplates.mini3),
+      seeds("D", [3, 16, 23], miniLeagueTemplates.mini3),
+      seeds("E", [4, 15, 24], miniLeagueTemplates.mini3),
+      seeds("F", [5, 14, 25], miniLeagueTemplates.mini3),
+      seeds("G", [6, 13, 26], miniLeagueTemplates.mini3),
+      seeds("H", [7, 12, 27], miniLeagueTemplates.mini3),
+      seeds("I", [8, 11, 28], miniLeagueTemplates.mini3),
+      seeds("J", [9, 10, 29], miniLeagueTemplates.mini3),
     ],
     stage2: [
       {
@@ -2283,14 +2084,14 @@ export const raceConfig: {
   },
   31: {
     stage1: [
-      seeds("A", [0, 15, 16]),
-      seeds("B", [1, 14, 17, 30]),
-      seeds("C", [2, 13, 18, 29]),
-      seeds("D", [3, 12, 19, 28]),
-      seeds("E", [4, 11, 20, 27]),
-      seeds("F", [5, 10, 21, 26]),
-      seeds("G", [6, 9, 22, 25]),
-      seeds("H", [7, 8, 23, 24]),
+      seeds("A", [0, 15, 16], miniLeagueTemplates.mini3),
+      seeds("B", [1, 14, 17, 30], miniLeagueTemplates.mini4),
+      seeds("C", [2, 13, 18, 29], miniLeagueTemplates.mini4),
+      seeds("D", [3, 12, 19, 28], miniLeagueTemplates.mini4),
+      seeds("E", [4, 11, 20, 27], miniLeagueTemplates.mini4),
+      seeds("F", [5, 10, 21, 26], miniLeagueTemplates.mini4),
+      seeds("G", [6, 9, 22, 25], miniLeagueTemplates.mini4),
+      seeds("H", [7, 8, 23, 24], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -2408,14 +2209,14 @@ export const raceConfig: {
   },
   32: {
     stage1: [
-      seeds("A", [0, 15, 16, 31]),
-      seeds("B", [1, 14, 17, 30]),
-      seeds("C", [2, 13, 18, 29]),
-      seeds("D", [3, 12, 19, 28]),
-      seeds("E", [4, 11, 20, 27]),
-      seeds("F", [5, 10, 21, 26]),
-      seeds("G", [6, 9, 22, 25]),
-      seeds("H", [7, 8, 23, 24]),
+      seeds("A", [0, 15, 16, 31], miniLeagueTemplates.mini4),
+      seeds("B", [1, 14, 17, 30], miniLeagueTemplates.mini4),
+      seeds("C", [2, 13, 18, 29], miniLeagueTemplates.mini4),
+      seeds("D", [3, 12, 19, 28], miniLeagueTemplates.mini4),
+      seeds("E", [4, 11, 20, 27], miniLeagueTemplates.mini4),
+      seeds("F", [5, 10, 21, 26], miniLeagueTemplates.mini4),
+      seeds("G", [6, 9, 22, 25], miniLeagueTemplates.mini4),
+      seeds("H", [7, 8, 23, 24], miniLeagueTemplates.mini4),
     ],
     stage2: [
       {
@@ -2528,6 +2329,7 @@ export const raceConfig: {
     results: resultsFromKnockout(32),
   },
 } as const
+export default raceConfig
 // Round config tests
 // - stage 2 teams <= stage 1 teams
 // - knokcout teams <= stage 2 teams (or stage 1 teams)

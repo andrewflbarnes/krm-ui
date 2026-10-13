@@ -1,6 +1,6 @@
 import { useSearchParams } from "@solidjs/router";
 import { batch, createContext, createSignal, ParentProps, useContext } from "solid-js"
-import kings from "../kings"
+import { leagueConfigs } from "../kings"
 import type { League, LeagueData } from "../kings";
 import { leagues } from "../kings";
 import krmApi from "../api/krm"
@@ -26,22 +26,22 @@ const configLoadedAtom = atomWithStorage<League[]>('krm-config-loaded', [])
 
 const makeContext = (initLeague?: League) => {
   let league = initLeague
-  if (!kings[league]) {
+  if (!leagueConfigs[league]) {
     league = localStorageContext.getSelectedLeague()
   }
-  if (!kings[league]) {
+  if (!leagueConfigs[league]) {
     league = leagues[0]
   }
   localStorageContext.saveSelectedLeague(league)
   const [lock, setLock] = createSignal(false)
   const [selectedLeague, setSelectedLeague] = createSignal(league);
-  const [config, setConfig] = createSignal(kings[league]);
+  const [config, setConfig] = createSignal(leagueConfigs[league]);
   const lc = krmApi.getLeagueConfig(league)
   const [leagueConfig, setLeagueConfig] = createSignal(lc)
   const setLeague = (newLeague: League) => {
     batch(() => {
       setSelectedLeague(newLeague)
-      const newConfig = kings[newLeague]
+      const newConfig = leagueConfigs[newLeague]
       setConfig(newConfig)
     })
   }
@@ -109,8 +109,8 @@ export function useKings() {
       console.error("Attempt to change league but lock in place", state.league(), league)
       return
     }
-    if (!kings[league]) {
-      console.error("No config exists for requested league", league, Object.keys(kings))
+    if (!leagueConfigs[league]) {
+      console.error("No config exists for requested league", league, Object.keys(leagueConfigs))
       return
     }
     batch(() => {
