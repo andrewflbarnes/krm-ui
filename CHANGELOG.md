@@ -2,6 +2,48 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.5.0] - 2026-10-13
+
+### 🚀 Features
+
+- Add responsive app bar drawer for small screens and mobile
+- Only show reset actions if something to reset
+- Align option switches in layout
+- Add full4 configuration, fix typing
+
+### 🐛 Bug Fixes
+
+- Remove unused prop causing ts errors
+- Correct full4 side alternation
+
+### 🧪 Testing
+
+- Improve coverage of result utils
+- Add stringutils test
+- Add round-utils tests, fix stage checking and unfinished bug
+
+### ⚙️ Miscellaneous Tasks
+
+- Fix styling in small screens for external dev links
+- Collapsible round details on small screens
+- Make it obvious printing is blocking the UI
+- Fix opacity problems on print blocking modal
+- Simplify download button text
+- Publish playwright report to tigris
+- Correct e2e flow
+- Split e2e run from upload
+- Update playwright report bucket and host
+- Fix environment variables refs in upload/download artifact
+- Minor visual improvements to drawer
+- Dependency updates
+- More dependency updates - mainly linting related
+- More dep updates - playwright and utility libs
+- Update firebase dependency and some others
+- Update solidjs router to release 1
+- Update netlify function deps
+- Update latest clerk deps
+- Remove netlify lighthouse plugin
+
 ## [0.4.0] - 2026-05-01
 
 ### 🚀 Features
