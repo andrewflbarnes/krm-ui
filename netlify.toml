@@ -2,15 +2,6 @@
   command = "pnpm build && pnpm build-storybook"
   publish = "dist"
 
-[[plugins]]
-  package = "@netlify/plugin-lighthouse"
-
-  [plugins.inputs.settings]
-    preset = "desktop"
-
-  [[plugins.inputs.audits]]
-    path = "krm-ui"
-
 [dev]
   command = "pnpm start" # Command to start your dev server
   targetPort = 5173 # The port for your application server, framework, or site generator
