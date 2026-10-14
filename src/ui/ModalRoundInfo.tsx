@@ -5,6 +5,7 @@ import { Match, Switch } from "solid-js";
 import { RoundInfo } from "../api/krm";
 import { db } from "../firebase";
 import KingsModal from "./KingsModal";
+import { getEnv } from "../utils/envutils";
 
 type ModalRoundInfoProps = {
   open: boolean;
@@ -17,7 +18,7 @@ export default function ModalRoundInfo(props: ModalRoundInfoProps) {
   const user = useQuery(() => ({
     queryKey: ["user", ownerId()],
     queryFn: async () => {
-      const userRef = doc(db, "users", props.round.owner)
+      const userRef = doc(db, `${getEnv()}-users`, props.round.owner)
       const user = await getDoc(userRef)
       if (user.exists()) {
         return user.data()

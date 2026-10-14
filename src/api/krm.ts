@@ -2,6 +2,7 @@ import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeedin
 import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings";
 import { auth, db, serde } from "../firebase";
 import { setDoc, doc, collection, query, where, getDocsFromServer } from "firebase/firestore";
+import { getEnv } from "../utils/envutils";
 
 export type CustomConfig<T> = {
   configs: {
@@ -312,7 +313,7 @@ export default (function krmApiLocalStorage(): KrmApi {
         owner,
       }
 
-      const ref = doc(db, "rounds", id)
+      const ref = doc(db, `${getEnv()}-rounds`, id)
       await setDoc(ref, payload)
       if (owner !== round.owner) {
         round.owner = owner
@@ -320,7 +321,7 @@ export default (function krmApiLocalStorage(): KrmApi {
       }
     },
     async syncRounds(league: string) {
-      const roundsRef = collection(db, "rounds")
+      const roundsRef = collection(db, `${getEnv()}-rounds`)
       const q = query(roundsRef, where("league", "==", league))
       const rounds = await getDocsFromServer(q)
       // FIXME detect dups

@@ -5,6 +5,7 @@ import { auth, db } from "../firebase"
 import notification from "./notification"
 import { dark } from "@clerk/themes";
 import { doc, setDoc } from "firebase/firestore"
+import { getEnv } from "../utils/envutils"
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -67,7 +68,7 @@ function FirebaseProvider(props: ParentProps) {
     const serialised = JSON.stringify(userinfo)
     const update = !saved || (saved && saved != serialised)
     if (update && authenticated()) {
-      const ref = doc(db, "users", userId())
+      const ref = doc(db, `${getEnv()}-users`, userId())
       setDoc(ref, userinfo)
       return serialised
     }
