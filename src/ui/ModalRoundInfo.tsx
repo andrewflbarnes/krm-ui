@@ -1,11 +1,9 @@
 import { Button, CardActions, CardContent, CardHeader, Typography } from "@suid/material";
 import { useQuery } from "@tanstack/solid-query";
-import { doc, getDoc } from "firebase/firestore";
 import { Match, Switch } from "solid-js";
-import { RoundInfo } from "../api/krm";
-import { db } from "../firebase";
+import { type RoundInfo } from "../kings/engine";
 import KingsModal from "./KingsModal";
-import { getEnv } from "../utils/envutils";
+import { getUser } from "../api/persistence";
 
 type ModalRoundInfoProps = {
   open: boolean;
@@ -18,12 +16,8 @@ export default function ModalRoundInfo(props: ModalRoundInfoProps) {
   const user = useQuery(() => ({
     queryKey: ["user", ownerId()],
     queryFn: async () => {
-      const userRef = doc(db, `${getEnv()}-users`, props.round.owner)
-      const user = await getDoc(userRef)
-      if (user.exists()) {
-        return user.data()
-      }
-      return {
+      const user = await getUser(props.round.owner)
+      return user ?? {
         fullName: "Unknown",
         username: "Unknown",
       }

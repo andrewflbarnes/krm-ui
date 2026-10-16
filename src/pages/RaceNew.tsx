@@ -4,7 +4,7 @@ const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTea
 const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "../kings"
 import { useKings } from "../hooks/kings";
-import krmApi, { RoundDetails } from "../api/krm"
+import krmEngine, { type RoundDetails } from "../kings/engine"
 import notification from "../hooks/notification"
 import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
@@ -256,7 +256,7 @@ function RaceNewInternal() {
   }
 
   const handleDone = () => {
-    const r = krmApi.createRound(roundDetails(), seeding(), raceConfig, distributionOrder())
+    const r = krmEngine.createRound(roundDetails(), seeding(), raceConfig, distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       unlock()

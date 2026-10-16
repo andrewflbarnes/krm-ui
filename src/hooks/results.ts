@@ -1,7 +1,7 @@
 import { useNavigate, useParams } from "@solidjs/router"
 import { useQuery } from "@tanstack/solid-query"
 import { Round, Stage } from "../kings"
-import krmApi from "../api/krm"
+import krmEngine from "../kings/engine"
 import { atom, useAtom } from "solid-jotai"
 
 export const stages: {
@@ -48,7 +48,7 @@ export const useRaceOptions = () => {
     queryKey: [params.raceid],
     queryFn: async () => new Promise((res, rej) => {
       try {
-        res(krmApi.getRound(params.raceid))
+        res(krmEngine.getRound(params.raceid))
       } catch (e) {
         console.error("Failed to fetch round data", e)
         rej(e)

@@ -1,11 +1,10 @@
 import { ClerkProvider, useAuth as useClerkAuth, useUser } from "clerk-solidjs"
 import { signInWithCustomToken, signOut, User } from "firebase/auth"
 import { Accessor, batch, createComputed, createContext, createMemo, createSignal, ParentProps, useContext } from "solid-js"
-import { auth, db } from "../firebase"
+import { auth } from "../firebase"
 import notification from "./notification"
 import { dark } from "@clerk/themes";
-import { doc, setDoc } from "firebase/firestore"
-import { getEnv } from "../utils/envutils"
+import { saveUser } from "../api/persistence"
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 
@@ -68,9 +67,10 @@ function FirebaseProvider(props: ParentProps) {
     const serialised = JSON.stringify(userinfo)
     const update = !saved || (saved && saved != serialised)
     if (update && authenticated()) {
-      const ref = doc(db, `${getEnv()}-users`, userId())
-      setDoc(ref, userinfo)
-      return serialised
+      saveUser(userinfo).catch(e => {
+        console.error("Failed to persist user info", e)
+        notification.warning(`Failed to save user info: %{e.message}`)
+      })
     }
     return saved
   }, false)

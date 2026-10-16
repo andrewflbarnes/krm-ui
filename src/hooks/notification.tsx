@@ -5,6 +5,7 @@ import toast from "solid-toast"
 export default {
   info,
   success,
+  warning,
   error,
 }
 
@@ -14,6 +15,10 @@ function info(msg: string) {
 
 function success(msg: string) {
   create("success", msg)
+}
+
+function warning(msg: string) {
+  create("warning", msg)
 }
 
 function error(msg: string) {

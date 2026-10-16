@@ -1,47 +1,14 @@
-import { divisions, Division, League, LeagueData, Race, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, Stage, MiniLeagueTemplate, leagues } from "../kings"
-import { asPosition, calcTeamResults, createRound, minileagueSeededRaces } from "../kings";
-import { auth, db, serde } from "../firebase";
-import { setDoc, doc, collection, query, where, getDocsFromServer } from "firebase/firestore";
-import { getEnv } from "../utils/envutils";
+import { divisions, Division, League, LeagueData, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, leagues } from "../"
+import { calcTeamResults, createRound, minileagueSeededRaces } from "../";
+import { asPosition } from "../core-utils";
+import { KrmEngine, ProgressionStage, RoundDetails, RoundInfo } from "./types";
 
-export type CustomConfig<T> = {
-  configs: {
-    id: string;
-    owner: string;
-    description?: string;
-    config: T;
-  }[];
-}
-export type CustomRoundConfigs = CustomConfig<RoundConfig>
-export type CustomMiniLeagueTemplates = CustomConfig<MiniLeagueTemplate>
+export type * from "./types"
 
-export type RoundInfo = Omit<Round, "races">
-export type ProgressionStage = Exclude<Stage, "stage1">;
-export type RoundDetails = {
-  league: League;
-  round: string;
-  venue: string;
-  season: string;
-  description: string;
-}
-export type KrmApi = {
-  clearLocalData(): void;
-  saveLeagueConfig(league: League, config: LeagueData): void;
-  getLeagueConfig(league: League): LeagueData | null;
-  createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
-  getRounds(league?: string): RoundInfo[];
-  getRound(id: string): Round | null;
-  deleteRound(id: string): void;
-  updateRace(id: string, race: Race): void;
-  progressRound(id: string): ProgressionStage;
-  reopenStage(id: string, stage: RaceStage): void;
-  uploadRound(id: string): Promise<void>;
-  syncRounds(league: string): Promise<RoundInfo[]>;
-  getCustomRoundConfigs(): Promise<CustomRoundConfigs>;
-  getCustomMiniLeagueConfigs(): Promise<CustomMiniLeagueTemplates>;
-}
+// This is a pseudo API which is really the kings "engine" backed by local
+// storage
 
-export default (function krmApiLocalStorage(): KrmApi {
+export default (function KrmEngineLocalStorage(): KrmEngine {
   function getStorageKeyRounds() {
     return "kings-round-ids"
   }
@@ -210,6 +177,7 @@ export default (function krmApiLocalStorage(): KrmApi {
     getLeagueConfig(league: League): LeagueData | null {
       return JSON.parse(localStorage.getItem(getStorageKeyLeagueConfig(league)))
     },
+    saveRound,
     createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
       const round = createRound(newStorageKeyRound(details.league), details, teams, raceConfigs, distributionOrder)
       saveRound(round)
@@ -288,50 +256,13 @@ export default (function krmApiLocalStorage(): KrmApi {
 
       return nextStatus
     },
-    reopenStage(id: string, stage: RaceStage) {
+    reopenStage(id: string, stage: RaceStage, user: string) {
       const round: Round = this.getRound(id)
-      const owner = auth?.currentUser?.uid
-      if (owner !== round.owner && round.owner !== "local") {
+      if (user !== round.owner && round.owner !== "local") {
         throw new Error("Cannot update rounds you do not own")
       }
       reopenRoundAtStage(round, stage)
       saveRound(round)
-    },
-    async uploadRound(id: string) {
-      const owner = auth?.currentUser?.uid
-      if (!owner) {
-        throw new Error("User is not logged in and fully authenticated")
-      }
-      // TODO use built in support for converters in firestore
-      const round = getRound(id)
-      if (owner !== round.owner && round.owner !== "local") {
-        throw new Error("Cannot update rounds you do not own")
-      }
-      const fsRound = serde.toFirestoreRound(round)
-      const payload = {
-        ...fsRound,
-        owner,
-      }
-
-      const ref = doc(db, `${getEnv()}-rounds`, id)
-      await setDoc(ref, payload)
-      if (owner !== round.owner) {
-        round.owner = owner
-        saveRound(round)
-      }
-    },
-    async syncRounds(league: string) {
-      const roundsRef = collection(db, `${getEnv()}-rounds`)
-      const q = query(roundsRef, where("league", "==", league))
-      const rounds = await getDocsFromServer(q)
-      // FIXME detect dups
-      const dl = rounds.docs
-        .map(doc => doc.data())
-        .map(d => serde.fromFirestoreRound(d as unknown as Round))
-      // todo detect conflicts
-      dl.forEach(saveRound)
-      // todo we need to ensure any in state rounds are refreshed
-      return dl
     },
     async getCustomRoundConfigs() {
       // FIXME

@@ -55,6 +55,12 @@ const raceConfig: {
     stage1: [
       seeds("A", [0, 1, 2, 3, 4], miniLeagueTemplates.mini5)
     ],
+    stage1Config: {
+      order: {
+        type: 'equal-splits',
+        splits: 5,
+      }
+    },
     results: wrapSingleGroupResults(5),
   },
   6: {

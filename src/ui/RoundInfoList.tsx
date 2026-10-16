@@ -1,7 +1,7 @@
 import { Assignment, InfoOutlined, PlayCircleOutline, Visibility } from "@suid/icons-material";
 import { Button, Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createMemo, For, Match, Show, Switch } from "solid-js";
-import { RoundInfo } from "../api/krm";
+import { type RoundInfo } from "../kings/engine";
 import MoreMenu from "./MoreMenu";
 import { useNavigate } from "@solidjs/router";
 

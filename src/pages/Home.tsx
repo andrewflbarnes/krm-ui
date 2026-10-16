@@ -1,6 +1,6 @@
 import { Box, Button, Divider, Stack, Typography } from "@suid/material";
 import { useKings } from "../hooks/kings";
-import krm from "../api/krm";
+import krmEngine from "../kings/engine";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, on, Show } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
@@ -8,7 +8,7 @@ import notification from "../hooks/notification"
 
 function getRounds(league: string) {
   try {
-    return krm.getRounds(league)
+    return krmEngine.getRounds(league)
   } catch (e) {
     console.warn("Failed to get rounds for league", league, e)
   }

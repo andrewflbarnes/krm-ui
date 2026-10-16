@@ -1,5 +1,5 @@
 import { createComputed, createSignal, Show } from "solid-js";
-import krmApi, { RoundInfo } from "../api/krm";
+import krmEngine, { type RoundInfo } from "../kings/engine";
 import ManageContinueList from "../components/ManageContinueList";
 import { useKings } from "../hooks/kings";
 import notification from "../hooks/notification";
@@ -9,9 +9,11 @@ import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import { useNavigate } from "@solidjs/router";
 import { AddCircleOutlined, ArrowCircleDown } from "@suid/icons-material";
 import ButtonCard from "../ui/ButtonCard";
+import { getRounds, uploadRound } from "../api/persistence";
+import { useAuth } from "../hooks/auth";
 
 function getSortedRounds(league: string) {
-  const unsortedRounds = krmApi.getRounds(league);
+  const unsortedRounds = krmEngine.getRounds(league);
   return unsortedRounds.sort((a, b) => b.details.date.getTime() - a.details.date.getTime())
 }
 
@@ -56,13 +58,16 @@ function RacesInternal() {
   // TODO we should use a render prop equivalent, below is getting
   //   out of hand
   const handleDeleteRound = (id: string) => {
-    krmApi.deleteRound(id)
+    krmEngine.deleteRound(id)
     setRounds(getSortedRounds(k.league()))
   }
 
+  const { userId } = useAuth()
+
   const handleUploadRound = (id: string) => {
     notification.info("Uploading round...")
-    krmApi.uploadRound(id)
+    const round = krmEngine.getRound(id)
+    uploadRound(round, userId())
       .then(() => notification.success("Round uploaded"))
       .then(() => setRounds(getSortedRounds(k.league())))
       .catch(e => {
@@ -75,7 +80,10 @@ function RacesInternal() {
   const handleDownload = async () => {
     setDownload(false)
     try {
-      await krmApi.syncRounds(k.league())
+      const downloaded = await getRounds(k.league())
+      downloaded.forEach(r => {
+        krmEngine.saveRound(r)
+      })
       setRounds(getSortedRounds(k.league()))
       notification.success("Rounds downloaded")
     } catch (e) {
@@ -86,7 +94,7 @@ function RacesInternal() {
 
   const handleCopyToClipboard = (id: string) => {
     try {
-      const data = krmApi.getRound(id)
+      const data = krmEngine.getRound(id)
       navigator.clipboard.writeText(JSON.stringify(data, null, 2))
       notification.info("Data copied")
     } catch (e) {

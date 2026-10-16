@@ -3,7 +3,7 @@ import { batch, createContext, createSignal, ParentProps, useContext } from "sol
 import { leagueConfigs } from "../kings"
 import type { League, LeagueData } from "../kings";
 import { leagues } from "../kings";
-import krmApi from "../api/krm"
+import krmEngine from "../kings/engine";
 import notification from "../hooks/notification";
 import tracker from "../api/tracker";
 import { atomWithStorage } from "solid-jotai/utils";
@@ -36,7 +36,7 @@ const makeContext = (initLeague?: League) => {
   const [lock, setLock] = createSignal(false)
   const [selectedLeague, setSelectedLeague] = createSignal(league);
   const [config, setConfig] = createSignal(leagueConfigs[league]);
-  const lc = krmApi.getLeagueConfig(league)
+  const lc = krmEngine.getLeagueConfig(league)
   const [leagueConfig, setLeagueConfig] = createSignal(lc)
   const setLeague = (newLeague: League) => {
     batch(() => {
@@ -56,9 +56,9 @@ const makeContext = (initLeague?: League) => {
   const isConfigLoaded = (league?: League) => internalConfigLoaded().includes(league ?? selectedLeague())
   const clearLocalData = () => {
     batch(() => {
-      krmApi.clearLocalData()
+      krmEngine.clearLocalData()
       internalSetConfigLoaded([])
-      const resetConfig = krmApi.getLeagueConfig(selectedLeague())
+      const resetConfig = krmEngine.getLeagueConfig(selectedLeague())
       setLeagueConfig(resetConfig)
     })
   }
@@ -116,14 +116,14 @@ export function useKings() {
     batch(() => {
       actions.setLeague(league)
       localStorageContext.saveSelectedLeague(league)
-      const lc = krmApi.getLeagueConfig(league)
+      const lc = krmEngine.getLeagueConfig(league)
       actions.setLeagueConfig(lc)
       setSearchParams({ league })
     })
   }
   const setLeagueConfigEnhanced = (config: LeagueData) => {
     const newConfig = { ...state.leagueConfig(), ...config }
-    krmApi.saveLeagueConfig(state.league(), newConfig)
+    krmEngine.saveLeagueConfig(state.league(), newConfig)
     actions.setLeagueConfig(newConfig)
   }
   const [loadingConfig, setLoadingConfig] = createSignal(false)

@@ -1,8 +1,7 @@
 import { createSignal } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
-import { RoundInfo } from "../api/krm";
+import krmEngine, { type RoundInfo } from "../kings/engine";
 import download from "downloadjs";
-import krmApi from "../api/krm"
 import { useAuth } from "../hooks/auth";
 import ModalRoundInfo from "../ui/ModalRoundInfo";
 import RoundInfoList from "../ui/RoundInfoList";
@@ -19,7 +18,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
   const [deleteRound, setDeleteRound] = createSignal<string | null>();
   const { userId, authenticated } = useAuth()
   const handleConfirmExport = (id: string) => {
-    const round = krmApi.getRound(id);
+    const round = krmEngine.getRound(id);
     const blob = new Blob([JSON.stringify(round, null, 2)], { type: "application/json" })
     download(blob, `${round.id}.json`)
   }

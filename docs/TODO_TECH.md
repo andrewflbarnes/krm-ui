@@ -15,6 +15,9 @@
 
 ## Must
 
+- [ ] De-couple engine from local storage persistence in kings/engine
+- [ ] Make engine stateful for a given configuration/round
+- [ ] De-couple engine from reactivity
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
 - [ ] Transition all "api" interactions to tanstack query and async
 - [ ] Transition all state caching to jotai

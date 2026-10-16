@@ -96,12 +96,23 @@ export type ResultsConfig = {
   rank: number;
 }
 
+type CustomRaceOrder = {
+  type: 'equal-splits';
+  splits: number;
+}
+
+type RoundStageConfig = {
+  order?: CustomRaceOrder;
+}
+
 /** Concrete configuration for a round of races */
 export type RoundConfig = {
   /** Config for stage 1 races */
   readonly stage1: readonly MiniLeagueConfig[];
+  readonly stage1Config?: RoundStageConfig;
   /** Config for stage 2 races */
   readonly stage2?: readonly MiniLeagueConfig[];
+  readonly stage2Config?: RoundStageConfig;
   /** Config for knockout races */
   readonly knockout?: readonly MiniLeagueConfig[];
   /** Config for results */

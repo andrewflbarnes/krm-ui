@@ -49,14 +49,14 @@
   introduced in commit 7e19cc0c051245ba8ef53ddc1c3a7cb9eacfa4b0: "Navigate to
   round stage using router".
 - [ ] Results HTML should pin to correct season
-- [ ] Modify configuration presets for mini leagues
-- [ ] Modify configuration presets for rounds
-- [ ] Custom configuration groups
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
 - [ ] Ability to run individual board races
+- [ ] Modify configuration presets for mini leagues
+- [ ] Modify configuration presets for rounds
+- [ ] Custom configuration groups
 - [ ] Support abandoning races
 - [ ] Support modifying league data
 

@@ -4,7 +4,7 @@ import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
 import { GroupRaces, RaceStage, Round } from "../kings";
 import PopoverButton from "../ui/PopoverButton";
 import Selector from "../ui/Selector";
-import krmApi, { ProgressionStage } from "../api/krm";
+import krmEngine, { type ProgressionStage } from "../kings/engine";
 import notification from "../hooks/notification";
 import { ErrorOutlineRounded } from "@suid/icons-material";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
@@ -198,7 +198,7 @@ function ProgressButton(props: {
   const progressRound = useMutation(() => ({
     mutationKey: ["progressRound"],
     mutationFn: async (data: { id: string }) => new Promise<ProgressionStage>((res) => {
-      const nextStatus = krmApi.progressRound(data.id);
+      const nextStatus = krmEngine.progressRound(data.id);
       res(nextStatus);
     }),
     onSuccess: (nextStatus) => {
@@ -254,10 +254,12 @@ function ReopenButton(props: {
 }) {
   const queryClient = useQueryClient()
 
+  const { userId } = useAuth()
+
   const reopenStage = useMutation(() => ({
     mutationKey: ["reopenStage"],
     mutationFn: async (data: { id: string, stage: RaceStage }) => new Promise((res) => {
-      krmApi.reopenStage(data.id, data.stage);
+      krmEngine.reopenStage(data.id, data.stage, userId());
       res({});
     }),
     onSuccess: () => {

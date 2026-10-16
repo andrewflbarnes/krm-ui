@@ -3,7 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, createEffect, createMemo, on } from "solid-js";
 import { divisions, Race, Round, StageRaces } from "../kings";
 import RaceList from "./RaceList";
-import krmApi from "../api/krm";
+import krmEngine from "../kings/engine";
 import notification from "../hooks/notification";
 import BasicErrorBoundary from "../ui/BasicErrorBoundary";
 import RaceListPrintable from "./RaceListPrintable";
@@ -123,7 +123,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const mut = useMutation(() => ({
     mutationKey: [props.round.id],
     mutationFn: async (data: { id: string, race: Race }) => new Promise((res) => {
-      krmApi.updateRace(data.id, data.race);
+      krmEngine.updateRace(data.id, data.race);
       res({});
     }),
     onSuccess: () => {
