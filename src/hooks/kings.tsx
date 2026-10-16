@@ -73,7 +73,6 @@ const KingsContext = createContext(makeContext())
 export function KingsProvider(props: ParentProps) {
   const ctx = makeContext()
   const ctxLeague = ctx[0].league()
-  console.log("KingsProvider: ctxLeague", ctxLeague, "query param league", league)
   if (ctxLeague != league) {
     const qpstr = qps.toString()
     history.replaceState({}, "", qpstr.length ? "?" + qps.toString() : "")

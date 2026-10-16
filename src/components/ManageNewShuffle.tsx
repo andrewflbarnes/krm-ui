@@ -1,12 +1,13 @@
-import { DragIndicator, Replay } from "@suid/icons-material";
-import { Box, Chip, IconButton, Paper, Theme, Typography } from "@suid/material";
-import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, transformStyle, useDragDropContext } from "@thisbeyond/solid-dnd";
+import { Replay } from "@suid/icons-material";
+import { Box, Chip, IconButton, Paper, Typography } from "@suid/material";
+import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { createSignal, For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 import GroupCard from "../ui/GroupCard";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import { DIVISION_ACCENT } from "../theme";
-import NumberedTeam from "../ui/NumberedTeam";
+import SeedInteractive from "../ui/SeedInteractive";
+import DragAnchor from "../ui/DragAnchor";
 
 type ManageNewShuffleProps = {
   round: Round;
@@ -68,13 +69,38 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
       >
         <For each={Object.entries(props.round.config)}>{([division, config]: [Division, RoundConfig]) => {
           const seeds = () => props.round.teams[division]
-          const dndHandler: DragEventHandler = ({ draggable, droppable }) => {
+          const [over, setOver] = createSignal<string | null>(null)
+          const [fromGroup, setFromGroup] = createSignal<string | null>(null)
+          const [from, setFrom] = createSignal<string | null>(null)
+          const handleDragStart: DragEventHandler = ({ draggable }) => {
+            setFromGroup(draggable.data.group)
+            setFrom(draggable.data.team)
+          }
+          const handleDragOver: DragEventHandler = ({ draggable, droppable }) => {
             if (!droppable) {
+              setOver(null)
+              return
+            }
+            const { team } = draggable.data
+            const { team: overTeam } = droppable.data
+            if (team !== overTeam) {
+              setOver(overTeam)
+            }
+          }
+          const handleDragEnd: DragEventHandler = ({ draggable, droppable }) => {
+            const finish = () => {
+              setOver(null)
+              setFromGroup(null)
+              setFrom(null)
+            }
+            if (!droppable) {
+              finish()
               return
             }
             const { group, team } = draggable.data
             const { group: toGroup, team: toTeam } = droppable.data
             if (!props.inGroupSwaps && group === toGroup) {
+              finish()
               return
             }
             const newSeeds = [...seeds()]
@@ -86,6 +112,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
               ...props.round.teams,
               [division]: newSeeds
             })
+            finish()
           }
           return (
             <Box sx={{ display: "flex", flexDirection: "column" }}>
@@ -113,9 +140,6 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                   <Replay fontSize="small" />
                 </IconButton>
               </Box>
-              <DragDropProvider onDragEnd={dndHandler}>
-                <DragDropSensors />
-                <DragOverlayTeam />
                 <Box sx={{
                   display: "grid",
                   flexDirection: "column",
@@ -127,32 +151,89 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                   },
                   gap: 1.5
                 }}>
-                  <For each={config.stage1}>{(group) => {
-                    return (
-                      <GroupCard name={"Group " + group.name} accent={DIVISION_ACCENT[division].text ?? "primary"}>
-                        <For each={group.seeds}>{(seed) => {
-                          const team = seeds()[seed.position]
-                          const originalPosition = props.seeding[division].indexOf(team)
-                          const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == originalPosition)).name
-                          const moved = originalGroup !== group.name ? originalGroup : null
-                          const originalSeed = "" + (originalPosition + 1)
-                          return (
-                            <DndTeam
-                              disabled={config.stage1.length < 2 && !props.inGroupSwaps}
-                              seed={originalSeed}
-                              division={division}
-                              group={group.name}
-                              team={team}
-                              moved={moved}
-                              inGroupSwaps={props.inGroupSwaps}
-                            />
-                          )
-                        }}</For>
-                      </GroupCard>
-                    )
-                  }}</For>
+                  <DragDropProvider
+                    onDragStart={handleDragStart}
+                    onDragOver={handleDragOver}
+                    onDragEnd={handleDragEnd}
+                  >
+                    <DragDropSensors />
+                    <TeamDragOverlay />
+                    <For each={config.stage1}>{(group) => {
+                      return (
+                        <GroupCard
+                          name={"Group " + group.name}
+                          accent={DIVISION_ACCENT[division].text ?? "primary"}
+                        >
+                          <For each={group.seeds}>{(seed) => {
+                            const team = () => seeds()[seed.position]
+                            const teamDetails = {
+                              team: team(),
+                              seed: seed.position + 1,
+                              group: group.name,
+                              division,
+                            }
+                            const droppable = createDroppable(team(), teamDetails)
+                            const draggable = createDraggable(team(), teamDetails)
+                            const originalPosition = props.seeding[division].indexOf(team())
+                            const originalGroup = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == originalPosition)).name
+                            const moved = originalGroup !== group.name ? originalGroup : null
+                            const originalSeed = "" + (originalPosition + 1)
+                            const highlight = () => {
+                              if (!over()) {
+                                return false
+                              }
+                              if (over() !== team()) {
+                                return false
+                              }
+                              return props.inGroupSwaps || fromGroup() !== group.name
+                            }
+                            const defocus = () => {
+                              if (team() == from()) {
+                                return true
+                              }
+                              return !props.inGroupSwaps && fromGroup() == group.name
+                            }
+                            return (
+                              <div use:droppable={!!droppable}>
+                                <div ref={draggable.ref}>
+                                  <SeedInteractive
+                                    disabled={config.stage1.length < 2 && !props.inGroupSwaps}
+                                    seed={originalSeed}
+                                    division={division}
+                                    highlight={highlight()}
+                                    defocus={defocus()}
+                                    team={team()}
+                                    startAdornment={
+                                      <Show when={props.inGroupSwaps || config.stage1.length > 1}>
+                                        <DragAnchor
+                                          dragActivators={draggable.dragActivators}
+                                        />
+                                      </Show>
+                                    }
+                                    endAdornmnet={
+                                      <Chip
+                                        label={moved}
+                                        size="small"
+                                        variant="outlined"
+                                        color="warning"
+                                        sx={{
+                                          marginLeft: "auto",
+                                          visibility: moved ? "visible" : "hidden",
+                                          fontSize: "0.5rem",
+                                          height: "1rem",
+                                        }}
+                                      />
+                                    }
+                                  />
+                                </div>
+                              </div>
+                            )
+                          }}</For>
+                        </GroupCard>
+                      )
+                    }}</For>
+                  </DragDropProvider>
                 </Box>
-              </DragDropProvider>
             </Box>
           )
         }}</For>
@@ -161,99 +242,22 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
   )
 }
 
-function DndTeam(props: { disabled?: boolean, seed: string, division: Division, group: string, team: string, moved?: string, inGroupSwaps: boolean }) {
-  const id = () => `${props.division}-${props.group}-${props.team}`
-  const draggable = createDraggable(id(), props)
-  const droppable = createDroppable(id(), props)
+function TeamDragOverlay() {
   const [dnd] = useDragDropContext()
-  const defocus = () => {
-    if (!dnd.active.draggable) {
-      return false
-    }
-    if (dnd.active.draggable.data?.group != props.group) {
-      return false
-    }
-    return (!props.inGroupSwaps || dnd.active.draggable.data?.team == props.team)
-  }
-  const highlight = () => {
-    if (!dnd.active.droppable) {
-      return false
-    }
-    if (dnd.active.droppable.data?.team != props.team) {
-      return false
-    }
-    if (dnd.active.draggable.data?.team == props.team) {
-      return false
-    }
-    return props.inGroupSwaps || dnd.active.draggable.data?.group != props.group
-  }
-  return (
-    <div use:droppable={!!droppable}>
-      <div ref={draggable.ref} style={{ ...transformStyle(draggable.transform) }}>
-        <Team
-          disabled={props.disabled}
-          defocus={defocus()}
-          highlight={highlight()}
-          division={props.division}
-          seed={props.seed}
-          team={props.team}
-          moved={props.moved}
-          dragActivators={draggable.dragActivators}
-        />
-      </div>
-    </div>
-  )
-}
-
-function Team(props: {
-  disabled?: boolean;
-  defocus?: boolean;
-  highlight?: boolean;
-  overlay?: boolean;
-  division: Division;
-  seed: string;
-  team: string;
-  moved: string;
-  dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>;
-}) {
-  const badgeColor = () => DIVISION_ACCENT[props.division].text
-  return (
-    <Box sx={{
-      display: "flex",
-      alignItems: "center",
-      gap: 1,
-      px: 0.5,
-      py: 0.5,
-      opacity: props.defocus ? 0.5 : 1,
-      borderRadius: 1,
-      transition: "box-shadow 0.15s ease, background-color 0.15s ease, transform 0.12s ease",
-      boxShadow: props.highlight
-        ? (theme: Theme) => `0 0 0 2px ${theme.palette.primary.main}, 0 4px 16px ${theme.palette.primary.main}40`
-        : "none",
-      bgcolor: props.highlight ? "action.selected" : "transparent",
-      transform: props.highlight ? "scale(1.015)" : "scale(1)",
-    }}>
-      <Show when={!props.disabled}>
-        <Box sx={{ cursor: props.overlay ? "grabbing" : "grab", display: "flex", alignItems: "center", touchAction: "none" }}>
-          <DragIndicator fontSize="small" {...props.dragActivators} sx={{ color: "text.disabled" }} />
-        </Box>
-      </Show>
-      <NumberedTeam team={props.team} accent={badgeColor()} num={props.seed} />
-      <Chip label={props.moved} color="warning" size="small" variant="outlined" sx={{ height: 18, fontSize: "0.6rem", visibility: props.moved ? "visible" : "hidden" }} />
-    </Box>
-  )
-}
-
-function DragOverlayTeam() {
-  const [dnd] = useDragDropContext()
-
   return (
     <Show when={dnd.active.draggable}>{draggable =>
       <DragOverlay>
-        <div style={{ "z-index": 100 }}>
+        <div style={{ "z-index": 100, cursor: "grabbing" }}>
           <Paper sx={{ px: 1, py: 0.5 }}>
             {/* @ts-expect-error draggable data untyped */}
-            <Team overlay {...draggable().data} />
+            <Team
+              startAdornment={
+                <DragAnchor
+                  dragging
+                />
+              }
+              {...draggable().data}
+            />
           </Paper>
         </div>
       </DragOverlay>

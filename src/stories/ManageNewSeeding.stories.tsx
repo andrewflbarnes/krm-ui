@@ -1,6 +1,7 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import ManageNewSeeding from '../components/ManageNewSeeding';
 import { RoundSeeding } from '../kings';
+import { fn } from 'storybook/test';
 
 const seeds: RoundSeeding = {
   "mixed": ["Bath 1", "Bristol 1", "Plymouth 1", "Aberystwyth 1", "Bath 2", "Plymouth 2", "Bath 3", "Aberystwyth 2"],
@@ -22,5 +23,13 @@ type Story = StoryObj<typeof meta>;
 export const Default: Story = {
   args: {
     seeds
+  },
+};
+
+export const Editable: Story = {
+  args: {
+    seeds,
+    editable: true,
+    onEdit: fn(),
   },
 };

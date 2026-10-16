@@ -7,7 +7,7 @@ type Props = {
   num: string | number;
 }
 
-export default function NumberedTeam(props: Props) {
+export default function Seed(props: Props) {
   return (
     <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
       <NumberBadge value={props.num} bgcolor={`${props.accent ?? "primary"}.main`} />

@@ -4,7 +4,7 @@ import { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RoundConfig, Roun
 import { asPosition, minileagueRaces } from "../kings";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
 import { BaseColor, baseColors } from "../theme";
-import NumberedTeam from "../ui/NumberedTeam";
+import Seed from "../ui/Seed";
 import StageCard from "../ui/StageCard";
 
 const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => minileagueRaces(template, teams, name, "stage1", "mixed")
@@ -186,7 +186,7 @@ function GroupCardDetails(props: GroupCardDetailsProps) {
       fallback={
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
           <For each={groupTeams()}>{(team, i) => (
-            <NumberedTeam team={team} num={i() + 1} accent={props.accent} />
+            <Seed team={team} num={i() + 1} accent={props.accent} />
           )}</For>
         </Box>
       }
