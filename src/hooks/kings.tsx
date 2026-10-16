@@ -22,8 +22,8 @@ const configLoadedAtom = atomWithStorage('krm-config-loaded', [], defaultStorage
 const makeContext = () => {
   const [selectedLeague, setSelectedLeague] = useSelectedLeague()
   const [lock, setLock] = createSignal(false)
-  const [config, setConfig] = createSignal(leagueConfigs[league]);
-  const lc = krmEngine.getLeagueConfig(league)
+  const [config, setConfig] = createSignal(leagueConfigs[selectedLeague()]);
+  const lc = krmEngine.getLeagueConfig(selectedLeague())
   const [leagueConfig, setLeagueConfig] = createSignal(lc)
   const setLeague = (newLeague: League) => {
     batch(() => {
