@@ -2,6 +2,8 @@ import { Button, Card, CardContent, Modal } from "@suid/material";
 import { For, createSignal, createEffect } from "solid-js";
 import { useKings } from "../hooks/kings";
 import '@alenaksu/json-viewer';
+import cacher from "../kings/engine/cacher";
+import { leagues } from "../kings";
 
 export default function DeveloperData() {
   const [data, setData] = createSignal<string | undefined>()
@@ -42,17 +44,17 @@ export default function DeveloperData() {
       </Modal>
       <div style={{ display: "flex", "flex-direction": "column", "align-items": "start" }}>
         kings-selected-league: {league()}
-        <For each={["western", "northern", "southern", "midlands"]}>{league =>
-          <Button onClick={[setData, JSON.parse(localStorage.getItem(`kings-${league}-config`)) || "N/A"]}>
+        <For each={leagues}>{league =>
+          <Button onClick={[setData, cacher.getLeagueConfig(league) || "N/A"]}>
             kings-{league}-config
           </Button>
         }</For>
-        <Button onClick={[setData, JSON.parse(localStorage.getItem("kings-round-ids"))]}>
+        <Button onClick={[setData, cacher.getRoundsIds()]}>
           kings-round-ids
         </Button>
-        <For each={JSON.parse(localStorage.getItem("kings-round-ids"))}>
+        <For each={cacher.getRoundsIds()}>
           {(id: string) => (
-            <Button onClick={[setData, JSON.parse(localStorage.getItem(id))]}>
+            <Button onClick={[setData, cacher.getRound(id)]}>
               {id}
             </Button>
           )}

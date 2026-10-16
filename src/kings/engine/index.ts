@@ -1,33 +1,17 @@
-import { divisions, Division, League, LeagueData, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, leagues } from "../"
+import { divisions, Division, League, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage } from "../"
 import { calcTeamResults, createRound, minileagueSeededRaces } from "../";
 import { asPosition } from "../core-utils";
 import { KrmEngine, ProgressionStage, RoundDetails, RoundInfo } from "./types";
+import cacher from "./cacher"
 
 export type * from "./types"
 
 // This is a pseudo API which is really the kings "engine" backed by local
 // storage
 
-export default (function KrmEngineLocalStorage(): KrmEngine {
-  function getStorageKeyRounds() {
-    return "kings-round-ids"
-  }
-
-  function getStorageKeyLeagueConfig(league: League) {
-    return `kings-${league}-config`
-  }
-
-  function newStorageKeyRound(league: League) {
+export default (function KrmEngine(): KrmEngine {
+  function newRoundId(league: League) {
     return `${league}-${new Date().getTime()}`
-  }
-
-  function saveRound(round: Round) {
-    localStorage.setItem(round.id, JSON.stringify(round))
-    const keyRoundIds = getStorageKeyRounds()
-    let roundIds = JSON.parse(localStorage.getItem(keyRoundIds) ?? "[]") as string[]
-    roundIds = roundIds.filter(rid => rid !== round.id)
-    roundIds.push(round.id)
-    localStorage.setItem(keyRoundIds, JSON.stringify(roundIds))
   }
 
   function progressRoundStage(round: Round, status: "stage1" | "stage2", nextStatus: "stage2" | "knockout") {
@@ -144,47 +128,19 @@ export default (function KrmEngineLocalStorage(): KrmEngine {
     return "complete"
   }
 
-  function getRound(id: string): Round | null {
-    const r = JSON.parse(localStorage.getItem(id))
-    if (!r) {
-      return null
-    }
-    const { details } = r
-    return {
-      ...r,
-      details: {
-        ...details,
-        date: details.date ? new Date(details.date) : new Date(),
-      }
-    }
-  }
-
   return {
-    clearLocalData() {
-      const ids = JSON.parse(localStorage.getItem(getStorageKeyRounds()) ?? "[]") as string[]
-      ids.forEach(id => {
-        localStorage.removeItem(id)
-      })
-      for (const league of leagues) {
-        localStorage.removeItem(getStorageKeyLeagueConfig(league))
-      }
-      localStorage.removeItem(getStorageKeyRounds())
-      localStorage.removeItem("kings-selected-league")
-    },
-    saveLeagueConfig(league: League, config: LeagueData) {
-      localStorage.setItem(getStorageKeyLeagueConfig(league), JSON.stringify(config))
-    },
-    getLeagueConfig(league: League): LeagueData | null {
-      return JSON.parse(localStorage.getItem(getStorageKeyLeagueConfig(league)))
-    },
-    saveRound,
+    clearLocalData: cacher.clearData,
+    saveLeagueConfig: cacher.saveLeagueConfig,
+    getLeagueConfig: cacher.getLeagueConfig,
+    saveRound: cacher.saveRound,
     createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
-      const round = createRound(newStorageKeyRound(details.league), details, teams, raceConfigs, distributionOrder)
-      saveRound(round)
+      const roundId = newRoundId(details.league)
+      const round = createRound(roundId, details, teams, raceConfigs, distributionOrder)
+      this.saveRound(round)
       return round
     },
     getRounds(league?: string): RoundInfo[] {
-      const ids = JSON.parse(localStorage.getItem(getStorageKeyRounds()) ?? "[]") as string[]
+      const ids = cacher.getRoundsIds()
       // Wasteful but should be fine - can always convert to async for perf
       return ids
         .map(id => this.getRound(id) as Round)
@@ -198,14 +154,8 @@ export default (function KrmEngineLocalStorage(): KrmEngine {
           }
         })
     },
-    getRound,
-    deleteRound(id: string) {
-      localStorage.removeItem(id)
-      const keyRoundIds = getStorageKeyRounds()
-      const roundIds = JSON.parse(localStorage.getItem(keyRoundIds) ?? "[]") as string[]
-      const updated = roundIds.filter(rid => rid !== id)
-      localStorage.setItem(keyRoundIds, JSON.stringify(updated))
-    },
+    getRound: cacher.getRound,
+    deleteRound: cacher.deleteRound,
     updateRace(id, race) {
       const { stage, division, group, groupRace } = race
       const round: Round = this.getRound(id)
@@ -231,7 +181,7 @@ export default (function KrmEngineLocalStorage(): KrmEngine {
         groupData.conflict = false
       }
 
-      saveRound(round)
+      this.saveRound(round)
     },
     progressRound(id: string): ProgressionStage {
       const round: Round = this.getRound(id)
@@ -252,7 +202,7 @@ export default (function KrmEngineLocalStorage(): KrmEngine {
 
       round.status = nextStatus
 
-      saveRound(round)
+      this.saveRound(round)
 
       return nextStatus
     },
@@ -262,7 +212,7 @@ export default (function KrmEngineLocalStorage(): KrmEngine {
         throw new Error("Cannot update rounds you do not own")
       }
       reopenRoundAtStage(round, stage)
-      saveRound(round)
+      this.saveRound(round)
     },
     async getCustomRoundConfigs() {
       // FIXME

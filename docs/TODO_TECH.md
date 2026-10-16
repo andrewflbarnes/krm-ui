@@ -12,10 +12,10 @@
 - [x] ManageNewSelect should be uncontrolled with event emits - reduce duplice update implementations
 - [x] REJECT(global signals not a thing, use jotai if necessary) Replace KingsContext with global signals - maybe bad idea as "computations created outside a `createRoot` or `render` will never be disposed"
 - [x] Service worker for offline use
+- [x] De-couple engine from local storage persistence in kings/engine
 
 ## Must
 
-- [ ] De-couple engine from local storage persistence in kings/engine
 - [ ] Make engine stateful for a given configuration/round
 - [ ] De-couple engine from reactivity
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code

@@ -8,33 +8,20 @@ import notification from "../hooks/notification";
 import tracker from "../api/tracker";
 import { atomWithStorage } from "solid-jotai/utils";
 import { useAtom } from "solid-jotai";
+import { defaultStorage, initialisableAtomWithStorage } from "../utils/jotai-utils";
 
-function getStorageKeyLeague() {
-  return "kings-selected-league"
+const qps = new URLSearchParams(window.location.search)
+let league = qps.get("league")?.toLowerCase() as League | undefined
+if (!league || !leagueConfigs[league]) {
+  league = undefined
 }
+const useSelectedLeague = initialisableAtomWithStorage<League>('kings-selected-league', leagues[0], league)
 
-const localStorageContext = {
-  getSelectedLeague() {
-    return localStorage.getItem(getStorageKeyLeague()) as League | undefined
-  },
-  saveSelectedLeague(league: League) {
-    localStorage.setItem(getStorageKeyLeague(), league)
-  },
-}
+const configLoadedAtom = atomWithStorage('krm-config-loaded', [], defaultStorage<League[]>(), { getOnInit: true })
 
-const configLoadedAtom = atomWithStorage<League[]>('krm-config-loaded', [])
-
-const makeContext = (initLeague?: League) => {
-  let league = initLeague
-  if (!leagueConfigs[league]) {
-    league = localStorageContext.getSelectedLeague()
-  }
-  if (!leagueConfigs[league]) {
-    league = leagues[0]
-  }
-  localStorageContext.saveSelectedLeague(league)
+const makeContext = () => {
+  const [selectedLeague, setSelectedLeague] = useSelectedLeague()
   const [lock, setLock] = createSignal(false)
-  const [selectedLeague, setSelectedLeague] = createSignal(league);
   const [config, setConfig] = createSignal(leagueConfigs[league]);
   const lc = krmEngine.getLeagueConfig(league)
   const [leagueConfig, setLeagueConfig] = createSignal(lc)
@@ -51,7 +38,7 @@ const makeContext = (initLeague?: League) => {
     if (internalConfigLoaded().includes(league)) {
       return
     }
-    internalSetConfigLoaded((prev) => [...prev, league])
+    internalSetConfigLoaded((prev) => [...prev, selectedLeague()])
   }
   const isConfigLoaded = (league?: League) => internalConfigLoaded().includes(league ?? selectedLeague())
   const clearLocalData = () => {
@@ -84,11 +71,10 @@ const makeContext = (initLeague?: League) => {
 const KingsContext = createContext(makeContext())
 
 export function KingsProvider(props: ParentProps) {
-  const qps = new URLSearchParams(window.location.search)
-  const l = qps.get("league")?.toLowerCase() as League | undefined
-  const ctx = makeContext(l)
+  const ctx = makeContext()
   const ctxLeague = ctx[0].league()
-  if (ctxLeague != l) {
+  console.log("KingsProvider: ctxLeague", ctxLeague, "query param league", league)
+  if (ctxLeague != league) {
     const qpstr = qps.toString()
     history.replaceState({}, "", qpstr.length ? "?" + qps.toString() : "")
   }
@@ -115,7 +101,6 @@ export function useKings() {
     }
     batch(() => {
       actions.setLeague(league)
-      localStorageContext.saveSelectedLeague(league)
       const lc = krmEngine.getLeagueConfig(league)
       actions.setLeagueConfig(lc)
       setSearchParams({ league })

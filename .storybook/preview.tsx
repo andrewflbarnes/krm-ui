@@ -1,5 +1,5 @@
 import { Paper, ThemeProvider } from '@suid/material';
-import { createEffect } from 'solid-js';
+import { createComputed } from 'solid-js';
 import { createJSXDecorator, Preview } from 'storybook-solidjs-vite';
 import "../src/utils/stringutils"
 import { useKingsTheme } from '../src/theme';
@@ -20,8 +20,8 @@ const preview: Preview = {
   decorators: [
     createJSXDecorator((Story, context) => {
       const bgMode = () => context.globals.backgrounds?.value === "dark" ? "dark" : "light" as const
-      const { theme, setMode } = useKingsTheme(bgMode())
-      createEffect(() => setMode(bgMode()))
+      const { theme, setMode } = useKingsTheme()
+      createComputed(() => setMode(bgMode()))
 
       return (
         <ThemeProvider theme={theme}>

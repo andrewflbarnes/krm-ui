@@ -75,27 +75,13 @@ export default function App() {
 }
 
 function HydratedAppLayout(props: ParentProps) {
-  const savedMode = (function() {
-    const m = localStorage.getItem("theme-mode")
-    switch (m) {
-      case "light":
-      case "dark":
-        return m
-      default:
-        localStorage.setItem("theme-mode", "dark")
-        return "dark"
-    }
-  })()
-
   const {
     setMode,
     theme,
-  } = useKingsTheme(savedMode)
+  } = useKingsTheme()
 
   const handleModeChange = () => setMode(m => {
-    const newMode = m === "light" ? "dark" : "light"
-    localStorage.setItem("theme-mode", newMode)
-    return newMode
+    return m === "light" ? "dark" : "light"
   })
   return (
     <AuthProvider>

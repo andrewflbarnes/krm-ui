@@ -1,9 +1,35 @@
 import { createPalette, createTheme } from "@suid/material";
-import { createMemo, createSignal } from "solid-js";
+import { createMemo } from "solid-js";
 import { lightBlue } from "@suid/material/colors";
+import { initialisableAtomWithStorage } from "./utils/jotai-utils";
 
-export const useKingsTheme = (initialMode?: "light" | "dark") => {
-  const [mode, setMode] = createSignal<"light" | "dark">(initialMode);
+type ThemeMode = "dark" | "light"
+
+const useThemeMode = initialisableAtomWithStorage<ThemeMode>("theme-mode", "dark")
+
+export const useKingsTheme = () => {
+  const [mode, baseSetMode] = useThemeMode()
+  switch (mode()) {
+    case "dark":
+    case "light":
+      break;
+    default:
+      baseSetMode("dark")
+  }
+
+  const setMode = (newMode: ThemeMode | ((current: ThemeMode) => ThemeMode)) => {
+    if (typeof newMode === "function") {
+      newMode = newMode(mode())
+    }
+    switch (newMode) {
+      case "dark":
+      case "light":
+        baseSetMode(newMode)
+        break;
+      default:
+        console.error(`Invalid theme mode: ${mode()}.`)
+    }
+  }
 
   const dark = () => mode() === "dark";
 
