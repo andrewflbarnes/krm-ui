@@ -12,6 +12,7 @@ export default [
       "dist/**",
       ".netlify/**",
       "coverage/**",
+      "test-results/**",
       "html/**",
       "playwright-report/**",
       "**/node_modules/",

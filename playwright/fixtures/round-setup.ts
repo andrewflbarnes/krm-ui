@@ -35,9 +35,13 @@ export class RoundSetup {
     await this.next();
     await this.validateMissingTeams();
 
-    // Team swap step
+    // Seeding adjustment step
     await this.next();
-    await this.validateTeamSwap();
+    await this.validateSeedingAdjustment();
+
+    // Group adjustment step
+    await this.next();
+    await this.validateGroupAdjustment();
 
     // Finish creating the round
     await this.done();
@@ -108,7 +112,11 @@ export class RoundSetup {
     await expect(this.page.locator('h3'), 'On new teams teams page').toContainText('New Teams Added');
   }
 
-  async validateTeamSwap() {
-    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On confirm page').toBeVisible()
+  async validateSeedingAdjustment() {
+    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On seed adjustment page').toBeVisible()
+  }
+
+  async validateGroupAdjustment() {
+    await expect(this.page.getByRole('heading', { name: 'Mixed' }), 'On group adjustment page').toBeVisible()
   }
 }

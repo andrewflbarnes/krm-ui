@@ -5,6 +5,7 @@ import GroupCard from "./GroupCard";
 
 type StageCardProps<T> = {
   title: string;
+  titleEndAdornment?: JSX.Element;
   subtitle?: string;
   groups: ReadonlyArray<T>;
   namer: (group: T) => string;
@@ -43,6 +44,7 @@ export default function StageCard<T>(props: StageCardProps<T>) {
         >
           {props.title}
         </Typography>
+        {props.titleEndAdornment}
         <Show when={props.subtitle}>
           <Chip
             label={props.subtitle}

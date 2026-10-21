@@ -1,18 +1,34 @@
-import { Box, Typography } from "@suid/material"
-import { createSignal, For, Show } from "solid-js"
+import { Box, IconButton, Typography } from "@suid/material"
+import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js"
 import { Division, RoundSeeding } from "../kings"
 import StageCard from "../ui/StageCard"
 import { DIVISION_ACCENT } from "../theme"
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay } from "@thisbeyond/solid-dnd"
 import SeedInteractive from "../ui/SeedInteractive"
-import { North, South } from "@suid/icons-material"
+import { North, Replay, South } from "@suid/icons-material"
 import DragAnchor from "../ui/DragAnchor"
-
+/**
+  * Shows the seeding per division. Note that 
+  *
+  * @param originalSeeds the {RoundSeeding} prior to any shifts
+  * @param seeds the {RoundSeeding} to display and adjust
+  */
 export default function ManageNewSeeding(props: {
+  originalSeeds?: RoundSeeding;
   seeds: RoundSeeding;
   editable?: boolean;
   onEdit?: (newSeeding: RoundSeeding) => void;
 }) {
+  const originalSeeds = createMemo(() => {
+    const seeds = untrack(() => props.seeds)
+    return props.originalSeeds ?? seeds
+  })
+
+  const initialSeeds = props.seeds // eslint-disable-line solid/reactivity
+  const [seeds, setSeeds] = createSignal(initialSeeds)
+  createEffect(() => {
+    setSeeds(props.seeds)
+  })
   return (
     <Box
       sx={{
@@ -31,15 +47,50 @@ export default function ManageNewSeeding(props: {
         flexDirection: "column",
       }}
     >
-      <For each={Object.entries(props.seeds)}>{([division, teams]) => {
+      <For each={Object.entries(seeds())}>{([division, teams]) => {
+        const modified = () => {
+          if (!props.editable) {
+            return false
+          }
+          return !teams.every((team, i) => team === originalSeeds()[division][i])
+        }
+
         return (
           <Box sx={{ width: "100%" }}>
             <StageCard
               namer={() => null}
               title={`${division.capitalize()} - ${teams.length} teams`}
+              titleEndAdornment={
+                <Show when={props.editable}>
+                  <IconButton
+                    size="small"
+                    color="error"
+                    disabled={!modified()}
+                    onClick={() => {
+                      const nextSeeds = {
+                        ...seeds(),
+                        [division]: originalSeeds()[division],
+                      }
+                      props.onEdit?.(nextSeeds)
+                      setSeeds(nextSeeds)
+                    }}
+                    sx={{
+                      background: "white"
+                    }}
+                  >
+                    <Replay fontSize="small" />
+                  </IconButton>
+                </Show>
+              }
               accent={DIVISION_ACCENT[division].text}
               groups={[teams]}
             >{(group) => {
+              const [seeding, setSeeding] = createSignal(group.map((team, i) => ({
+                team,
+                seed: i + 1,
+                originalSeed: originalSeeds()[division].indexOf(team) + 1,
+              })))
+
               const [moveFrom, setMoveFrom] = createSignal<number | null>(null)
               const [moveTo, setMoveTo] = createSignal<number | null>(null)
 
@@ -65,24 +116,24 @@ export default function ManageNewSeeding(props: {
                   const next = seeding()
                     .toSpliced(moveFrom(), 1)
                     .toSpliced(moveTo(), 0, moveTeam)
+                    .map((t, i) => ({
+                      ...t,
+                      seed: i + 1,
+                    }))
                   setSeeding(next)
 
-                  if (props.editable && props.onEdit) {
+                  if (props.editable) {
                     const nextRoundSeeding = {
-                      ...props.seeds,
+                      ...seeds(),
                       [division]: next.map((t) => t.team),
                     }
                     props.onEdit?.(nextRoundSeeding)
+                    setSeeds(nextRoundSeeding)
                   }
                 }
                 setMoveFrom(null)
                 setMoveTo(null)
               }
-
-              const [seeding, setSeeding] = createSignal(group.map((team, i) => ({
-                team,
-                seed: i + 1,
-              })))
               return (
                 <DragDropProvider onDragOver={handleDragOver} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
                   <DragDropSensors />
@@ -101,9 +152,10 @@ export default function ManageNewSeeding(props: {
                     flexDirection: "column",
                     gap: "0.5rem",
                   }}>
-                    <For each={seeding()}>{(team, i) => {
+                    <For each={seeding()}>{(team) => {
+                      const { team: teamName, seed, originalSeed } = team
+                      const pos = seed - 1
                       const order = () => {
-                        const pos = i()
                         const from = moveFrom()
                         const to = moveTo()
                         if (from === null || to === null) {
@@ -126,16 +178,11 @@ export default function ManageNewSeeding(props: {
                         }
                         return pos
                       }
-                      const draggable = createDraggable(team.team, team)
-                      const droppable = createDroppable(team.team, team)
+                      const draggable = createDraggable(teamName, team)
+                      const droppable = createDroppable(teamName, team)
                       const moved = () => {
-                        const seedIndex = seeding().findIndex(t => t.team == team.team)
-                        const currentIndex = teams.indexOf(team.team)
-
-                        if (seedIndex == currentIndex) {
-                          return undefined
-                        }
-                        return currentIndex - seedIndex
+                        const change = originalSeed - seed
+                        return change !== 0 ? change : undefined
                       }
                       return (
                         <div
@@ -147,8 +194,8 @@ export default function ManageNewSeeding(props: {
                         >
                           <div ref={draggable.ref}>
                             <SeedInteractive
-                              highlight={moveFrom() === i()}
-                              seed={team.seed}
+                              highlight={moveFrom() === pos}
+                              seed={seed}
                               division={division as Division}
                               team={team.team}
                               startAdornment={
