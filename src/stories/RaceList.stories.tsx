@@ -13,7 +13,6 @@ const RaceListWithHandler = (props: ComponentProps<typeof RaceList>) => {
   const handleResultChange = (result: Race) => {
     const newRaces = [...races()]
     newRaces[result.groupRace] = result
-    console.log("Received result change event: " + JSON.stringify(result))
     setRaces(newRaces)
     props.onRaceUpdate(result)
   }

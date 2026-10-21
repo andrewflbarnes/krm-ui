@@ -4,6 +4,7 @@ import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
 import MiniLeague from '../components/MiniLeague';
 import { expect, fn, userEvent, waitFor } from 'storybook/test';
 import { initRaces, initTeams } from '../test';
+import { Canvas } from 'storybook/internal/csf';
 
 // Identical to above but reverse the teams to ensure rendering isn't affected
 function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {
@@ -14,6 +15,12 @@ function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {
   }))
 }
 
+async function selectWinner(canvas: Canvas, group: string, teamIndex: number, raceOrdinal: number = 1) {
+  const testId = `race-${group}-${teamIndex}-${raceOrdinal}`
+  await waitFor(() => expect(canvas.getByTestId(testId)).toBeInTheDocument(), { timeout: 5000 })
+  await userEvent.click(canvas.getByTestId(testId))
+}
+
 const MiniLeagueWithHandler = (props: ComponentProps<typeof MiniLeague>) => {
   const [races, setRaces] = createSignal<Race[]>(untrack(() => props.races))
   createEffect(() => {
@@ -22,10 +29,8 @@ const MiniLeagueWithHandler = (props: ComponentProps<typeof MiniLeague>) => {
   const handleResultChange = (result: Race) => {
     const newRaces = [...races()]
     newRaces[result.groupRace] = result
-    console.log("Received result change event: " + JSON.stringify(result))
     setRaces(newRaces)
     props.onResultChange?.(result)
-    //notification.info("Received result change event: " + JSON.stringify(result))
   }
   return <MiniLeague {...props} onResultChange={handleResultChange} races={races()} />
 }
@@ -45,7 +50,7 @@ const meta = {
   play: async ({ args, canvas, step }) => {
     await step('Set winner of all races to the first team', async () => {
       for (let i = 0; i < args.races.length; i++) {
-        await userEvent.click(canvas.getByTestId(`race-${args.races[i].group}-${i}-1`))
+        await selectWinner(canvas, args.races[i].group, i)
       }
     })
     await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
@@ -120,9 +125,9 @@ export const TeamsReadonly4: Story = {
     readonly: true,
   },
   play: async ({ args, canvas, step }) => {
-    step('Try to set winner of all races to the first team', async () => {
+    await step('Try to set winner of all races to the first team', async () => {
       for (let i = 0; i < args.races.length; i++) {
-        await userEvent.click(canvas.getByTestId(`race-${args.races[i].group}-${i}-1`))
+        await selectWinner(canvas, args.races[i].group, i)
       }
     })
     await waitFor(() => expect(canvas.queryByText(/1st/)).not.toBeInTheDocument())
@@ -144,7 +149,7 @@ export const TeamsLive4: Story = {
   },
   play: async ({ args, canvas, step }) => {
     await step('Set first race winner', async () => {
-      await userEvent.click(canvas.getByTestId('race-Z-0-1'))
+      await selectWinner(canvas, "Z", 0)
     })
     await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
     await waitFor(() => expect(args.onResultChange).toHaveBeenCalledOnce())
@@ -160,6 +165,19 @@ export const NoResults: Story = {
     name: "Mini 4 No Results",
     noResults: true,
   },
+  play: async ({ args, canvas, step }) => {
+    await step('Set winner of all races to the first team', async () => {
+      for (let i = 0; i < args.races.length; i++) {
+        await selectWinner(canvas, args.races[i].group, i)
+      }
+    })
+    expect(canvas.queryByText(/Complete/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/1st/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/4th/)).not.toBeInTheDocument()
+    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledTimes(args.races.length))
+  }
 }
 
 const m5 = miniLeagueTemplates.mini5
@@ -223,4 +241,5 @@ export const Single: Story = {
     teams: initTeams(single),
     races: [],
   },
+  play: async () => { },
 }

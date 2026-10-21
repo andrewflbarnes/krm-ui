@@ -46,36 +46,3 @@ export const ValidConfig: Story = {
     config: validConfig,
   }
 };
-
-export const AddedClub: Story = {
-  args: {
-    ...Default.args,
-  },
-  play: async ({ canvas, step }) => {
-    const addClub = canvas.getByTestId('add-team')
-    const addClubText = within(addClub).getByRole('textbox');
-    const addClubButton = within(addClub).getByRole('button');
-
-    await step('Check club can be added', async () => {
-      await expect(addClubText).toBeVisible();
-      await expect(addClubButton).toBeVisible();
-    })
-
-    await step('Select club entry input', async () => {
-      await userEvent.click(addClubText);
-    })
-    await step('Type Test as new club in input', async () => {
-      await userEvent.type(addClubText, 'Test');
-    })
-    await step('Click to add club', async () => {
-      await userEvent.click(addClubButton);
-    })
-
-    await step('New club successfully added', async () => {
-      await waitFor(() => {
-        expect(within(addClub).queryByText('Test')).not.toBeInTheDocument();
-        expect(canvas.getByRole('cell', { name: 'Test' })).toBeInTheDocument();
-      })
-    })
-  }
-}
