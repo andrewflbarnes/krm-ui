@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.6.0] - 2026-10-22
+
+### 🚀 Features
+
+- Update configuration to current
+- Environment scoping for firebase (bit janky for now)
+- Allow seeding to be modified
+- Start adding seeding shuffle to race new flow
+
+### 🐛 Bug Fixes
+
+- Remove bad config on 8 teams
+- Add forgotten file...
+- Get league data/config when deep linking and navving
+- Fix tsc errors from unused imports
+
+### 🧪 Testing
+
+- Add vitest integration to storybook and cleanup a little
+
+### ⚙️ Miscellaneous Tasks
+
+- Refactor configuration and utils so easier to make sense of
+- Better config button descriptions
+- Some better error messages when fetching config
+- Start decoupling api, storage, persistence, reactivity
+- More localstorage decoupling
+
 ## [0.5.0] - 2026-10-13
 
 ### 🚀 Features
