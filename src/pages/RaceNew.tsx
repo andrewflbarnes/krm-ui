@@ -1,7 +1,8 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
-const ManageNewConfirm = lazy(() => import("../components/ManageNewConfirm"))
+const ManageNewSetup = lazy(() => import("../components/ManageNewSetup"))
+const ManageNewSeeding = lazy(() => import("../components/ManageNewSeeding"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "../kings"
 import { useKings } from "../hooks/kings";
 import krmEngine, { type RoundDetails } from "../kings/engine"
@@ -9,8 +10,8 @@ import notification from "../hooks/notification"
 import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
-const ManageNewSetup = lazy(() => import("../components/ManageNewSetup"))
 import { Construction, OpenInNew } from "@suid/icons-material"
+import ManageNewShuffle from "../components/ManageNewShuffle"
 
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
@@ -106,6 +107,7 @@ function RaceNewInternal() {
 
   const [distributionOrder, setDistributionOrder] = createSignal<RoundSeeding>();
   const [seeding, setSeeding] = createSignal<RoundSeeding>();
+  const [originalSeeding, setOriginalSeeding] = createSignal<RoundSeeding>();
   const [originalConfig, setOriginalConfig] = createSignal<{
     [d in Division]: RoundConfig;
   }>()
@@ -192,8 +194,9 @@ function RaceNewInternal() {
         const seeding = orderSeeds(k.leagueConfig(), numTeams())
         const r = createRound("setup", roundDetails(), seeding, raceConfig)
         batch(() => {
-          setDistributionOrder(seeding)
+          setOriginalSeeding(seeding)
           setSeeding(seeding)
+          setDistributionOrder(seeding)
           setRound(r)
           setOriginalConfig(r.config)
         })
@@ -202,7 +205,31 @@ function RaceNewInternal() {
       }
     },
     {
-      title: "Shuffle Teams",
+      title: "Adjust Seeds",
+      content: () => {
+        const handleEdit = (seeds: RoundSeeding) => {
+          const r = createRound("setup", roundDetails(), seeds, raceConfig)
+          batch(() => {
+            setRound(r)
+            setSeeding(seeds)
+            setDistributionOrder(seeds)
+          })
+        }
+        return (
+          <ManageNewSeeding
+            originalSeeds={originalSeeding()}
+            seeds={seeding()}
+            editable
+            onEdit={handleEdit}
+          />
+        )
+      },
+      validator: () => {
+        return [true,]
+      }
+    },
+    {
+      title: "Adjust Groups",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
           const r = createRound("setup", roundDetails(), seeds, raceConfig)
@@ -211,7 +238,14 @@ function RaceNewInternal() {
             setDistributionOrder(seeds)
           })
         }
-        return <ManageNewConfirm seeds={seeding()} originalConfig={originalConfig()} round={round()} onShuffle={handleShuffle} />
+        return (
+          <ManageNewShuffle
+            seeding={seeding()}
+            originalConfig={originalConfig()}
+            round={round()}
+            onShuffle={handleShuffle}
+          />
+        )
       },
       validator: () => {
         return [true,]

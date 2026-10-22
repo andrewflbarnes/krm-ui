@@ -44,7 +44,7 @@ export const useKingsTheme = () => {
 
   const theme = createTheme({
     palette: palette,
-    shape: { borderRadius: 10 },
+    shape: { borderRadius: 4 },
     typography: {
       h1: { fontWeight: 700, letterSpacing: "-1px" },
       h4: { fontWeight: 600 },
