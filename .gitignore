@@ -3,10 +3,12 @@ node_modules*/
 dist/
 html/
 coverage/
+.DS_Store
 
 # Local Netlify folder
 .netlify
 
+# Storybook
 *storybook.log
 
 # Playwright
@@ -14,3 +16,9 @@ coverage/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# Firebase
+firestore-debug.log
+
+# Sensitive
+.env
