@@ -6,6 +6,7 @@ export default function DragAnchor(props: {
   cursorHover?: string;
   cursorDrag?: string;
   dragActivators?: Record<string, (event: HTMLElementEventMap[keyof HTMLElementEventMap]) => void>;
+  "data-testid"?: string;
 }) {
   return (
     <Box sx={{
@@ -15,6 +16,7 @@ export default function DragAnchor(props: {
       touchAction: "none",
     }}>
       <DragIndicator
+        data-testid={props["data-testid"]}
         fontSize="small"
         {...props.dragActivators}
         sx={{ color: "text.disabled" }}

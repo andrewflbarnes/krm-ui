@@ -1,4 +1,4 @@
-import { For, JSX, Show } from "solid-js";
+import { For, JSX, ParentProps, Show } from "solid-js";
 import { Box, Chip, Paper, Typography } from "@suid/material";
 import { BaseColor } from "../theme";
 import GroupCard from "./GroupCard";
@@ -10,6 +10,7 @@ type StageCardProps<T> = {
   groups: ReadonlyArray<T>;
   namer: (group: T) => string;
   accent: BaseColor;
+  responsive?: boolean;
   children: (group: T) => JSX.Element;
 };
 
@@ -61,7 +62,7 @@ export default function StageCard<T>(props: StageCardProps<T>) {
         </Show>
       </Box>
 
-      <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
+      <StageCardData responsive={props.responsive}>
         <For each={props.groups}>{(group) => {
           return (
             <GroupCard
@@ -72,8 +73,35 @@ export default function StageCard<T>(props: StageCardProps<T>) {
             </GroupCard>
           )
         }}</For>
-      </Box>
+      </StageCardData>
     </Paper>
   )
 }
 
+function StageCardData(props: ParentProps<{ responsive?: boolean }>) {
+  return (
+    <Show
+      fallback={
+        <Box sx={{ p: 2, display: "flex", flexDirection: "column", gap: 1.5 }}>
+          {props.children}
+        </Box>
+      }
+      when={props.responsive}
+    >
+      <Box sx={{
+        display: "grid",
+        p: 2,
+        flexDirection: "column",
+        gridTemplateColumns: {
+          xs: "1fr",
+          sm: "1fr 1fr",
+          md: "1fr",
+          xl: "1fr 1fr",
+        },
+        gap: 1.5
+      }}>
+        {props.children}
+      </Box>
+    </Show>
+  )
+}

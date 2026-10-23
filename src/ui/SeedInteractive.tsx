@@ -12,7 +12,7 @@ export default function SeedInteractive(props: {
   defocus?: boolean;
   highlight?: boolean;
   startAdornment?: JSX.Element;
-  endAdornmnet?: JSX.Element;
+  endAdornment?: JSX.Element;
 }) {
   const badgeColor = () => DIVISION_ACCENT[props.division].text
   return (
@@ -33,7 +33,7 @@ export default function SeedInteractive(props: {
     }}>
       {props.startAdornment}
       <Seed team={props.team} accent={badgeColor()} num={props.seed} />
-      {props.endAdornmnet}
+      {props.endAdornment}
     </Box>
   )
 }

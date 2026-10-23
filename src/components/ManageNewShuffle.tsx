@@ -37,7 +37,6 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
     setResetDivision(null)
   }
 
-  const gtr = () => Object.keys(props.round.config).map(() => "1fr").join(" ")
   return (
     <>
       <ModalConfirmAction
@@ -61,7 +60,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
             xs: undefined,
             sm: "auto",
           },
-          gridTemplateColumns: gtr(),
+          gridTemplateColumns: "1fr 1fr 1fr",
           gap: "1rem",
           justifyContent: "space-between",
           flexDirection: "column",
@@ -120,73 +119,62 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
             fromTeam: from(),
           }))
           return (
-            <Box sx={{ display: "flex", flexDirection: "column" }}>
-              <Box sx={{
-                display: "grid",
-                flexDirection: "column",
-                gridTemplateColumns: {
-                  xs: "1fr",
-                  sm: "1fr 1fr",
-                  md: "1fr",
-                  xl: "1fr 1fr",
-                },
-                gap: 1.5
-              }}>
-                <DragDropProvider
-                  onDragStart={handleDragStart}
-                  onDragOver={handleDragOver}
-                  onDragEnd={handleDragEnd}
-                >
-                  <DragDropSensors />
-                  <TeamDragOverlay />
-                  <StageCard
-                    title={`${division.capitalize()} - ${config.stage1.length} groups`}
-                    titleEndAdornment={
-                      <IconButton
-                        size="small"
-                        color="error"
-                        disabled={!divisionHasChanges(division)}
-                        onClick={() => setResetDivision(division)}
-                        sx={{
-                          background: "white"
-                        }}
-                      >
-                        <Replay fontSize="small" />
-                      </IconButton>
-                    }
-                    accent={DIVISION_ACCENT[division].text ?? "primary"}
-                    groups={config.stage1}
-                    namer={(group) => "Group " + group.name}
-                  >{(group) => {
-                    return (
-                      <For each={group.seeds}>{(seed) => {
-                        const team = () => seeds()[seed.position]
-                        const original = () => {
-                          const position = props.seeding[division].indexOf(team())
-                          const group = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == position)).name
-                          return {
-                            position,
-                            group,
-                          }
+            <Box sx={{ width: "100%" }}>
+              <DragDropProvider
+                onDragStart={handleDragStart}
+                onDragOver={handleDragOver}
+                onDragEnd={handleDragEnd}
+              >
+                <DragDropSensors />
+                <TeamDragOverlay />
+                <StageCard
+                  title={`${division.capitalize()} - ${config.stage1.length} groups`}
+                  responsive
+                  titleEndAdornment={
+                    <IconButton
+                      size="small"
+                      color="error"
+                      disabled={!divisionHasChanges(division)}
+                      onClick={() => setResetDivision(division)}
+                      sx={{
+                        background: "white"
+                      }}
+                    >
+                      <Replay fontSize="small" />
+                    </IconButton>
+                  }
+                  accent={DIVISION_ACCENT[division].text ?? "primary"}
+                  groups={config.stage1}
+                  namer={(group) => "Group " + group.name}
+                >{(group) => {
+                  return (
+                    <For each={group.seeds}>{(seed) => {
+                      const team = () => seeds()[seed.position]
+                      const original = () => {
+                        const position = props.seeding[division].indexOf(team())
+                        const group = props.originalConfig[division].stage1.find(g => g.seeds.find(s => (s.position) == position)).name
+                        return {
+                          position,
+                          group,
                         }
-                        return (
-                          <DraggableSeed
-                            group={group.name}
-                            division={division}
-                            team={team()}
-                            position={seed.position}
-                            seeding={seeds()}
-                            config={config}
-                            inGroupSwaps={props.inGroupSwaps}
-                            dragging={dragging()}
-                            original={original()}
-                          />
-                        )
-                      }}</For>
-                    )
-                  }}</StageCard>
-                </DragDropProvider>
-              </Box>
+                      }
+                      return (
+                        <DraggableSeed
+                          group={group.name}
+                          division={division}
+                          team={team()}
+                          position={seed.position}
+                          seeding={seeds()}
+                          config={config}
+                          inGroupSwaps={props.inGroupSwaps}
+                          dragging={dragging()}
+                          original={original()}
+                        />
+                      )
+                    }}</For>
+                  )
+                }}</StageCard>
+              </DragDropProvider>
             </Box>
           )
         }}</For>
@@ -256,7 +244,7 @@ function DraggableSeed(props: {
               />
             </Show>
           }
-          endAdornmnet={
+          endAdornment={
             <Chip
               label={moved()}
               size="small"
