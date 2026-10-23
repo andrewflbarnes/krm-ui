@@ -1,0 +1,33 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /env/{env} {
+      function isValidEnv(env) {
+        return env in ['dev', 'stage', 'prod'];
+      }
+
+      function isOwner() {
+        return request.auth != null && request.auth.uid == resource.data.owner;
+      }
+
+      function isAuthenticated() {
+        return request.auth != null;
+      }
+
+      match /users/{id} {
+        allow read;
+        allow create: if isValidEnv(env) && request.auth.uid == id;
+        allow update: if isValidEnv(env) && isOwner() && request.auth.uid == id;
+        allow delete: if false;
+      }
+
+      match /rounds/{id} {
+        allow read;
+        allow create: if isValidEnv(env) && isAuthenticated();
+        allow update: if isValidEnv(env) && isOwner();
+        allow delete: if false;
+      }
+    }
+  }
+}

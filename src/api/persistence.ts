@@ -4,9 +4,10 @@ import { setDoc, doc, collection, query, where, getDocsFromServer, getDoc } from
 import { getEnv } from "../utils/envutils";
 
 const env = getEnv()
+const envPath = `env/${env}`
 
-const refpathRounds = `${env}-rounds`
-const refpathUsers = `${env}-users`
+const refpathRounds = `${envPath}/rounds`
+const refpathUsers = `${envPath}/users`
 
 export async function uploadRound(round: Round, owner: string) {
   if (!round.id) {

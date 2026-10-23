@@ -15,6 +15,7 @@
     "e2e": "playwright test --retries 2",
     "e2e:ui": "cross-env PLAYWRIGHT_NO_PARALLEL=true playwright test --ui",
     "e2e:report": "playwright show-report",
+    "emulators": "firebase emulators:start --import=./.firestore-data --export-on-exit=./.firestore-data",
     "check": "tsc --noEmit --skipLibCheck",
     "serve": "cp serve.json dist/ && serve -l 5173 dist/",
     "ngrok": "ngrok start krm",

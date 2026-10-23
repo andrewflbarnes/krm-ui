@@ -19,6 +19,7 @@ coverage/
 
 # Firebase
 firestore-debug.log
+.firestore-data/
 
 # Sensitive
 .env
