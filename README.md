@@ -20,13 +20,32 @@ netlify dev
 
 ## Optional functionality
 
+### User authentication
+
 To enable integration with clerk for user login and persistence to firestore,
 add `VITE_CLERK_PUBLISHABLE_KEY` to your `.env` file.
 
+### Firestore emulation
+
+To use local firestore emulation, start the emulators with the cli i.e.
+```bash
+firebase emulators:start
+```
+
+Then export `VITE_FIRESTORE_EMULATOR=localhost:8081` before starting the dev
+server e.g. when using netlify
+```sh
+VITE_FIRESTORE_EMULATOR=localhost:8081 netlify dev
+# alternatively add to .env
+```
+
+Note: it is not currently possible to authenticate (and therefore upload) under
+emulation without also configuring [clerk](#user-authentication).
+
 ## Config loading
 
-The function for loading lead config scrapes data from the kingsski.club site -
-it expects certain pages to exist by default but a custom URL may be given on
+The function for loading league config scrapes data from the kingsski.club site
+\- it expects certain pages to exist by default but a custom URL may be given on
 the teams page when updating.
 
 ## Build

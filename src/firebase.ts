@@ -1,6 +1,6 @@
-import { initializeApp } from "firebase/app";
+import { FirebaseOptions, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
-import { getFirestore } from "firebase/firestore";
+import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { GroupRaces, MiniLeagueConfig, Round } from "./kings";
 //import { getAnalytics } from "firebase/analytics";
 
@@ -11,7 +11,7 @@ import { GroupRaces, MiniLeagueConfig, Round } from "./kings";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
-const firebaseConfig = {
+const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyDlXiU-m-CqadoYPnTVcVEeaQJ40RDGNg4",
   authDomain: "kings-results-manager.firebaseapp.com",
   projectId: "kings-results-manager",
@@ -26,6 +26,11 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 //const analytics = getAnalytics(app);
 export const db = getFirestore(app);
+if (import.meta.env.VITE_FIRESTORE_EMULATOR) {
+  console.warn("Connecting to Firestore emulator at", import.meta.env.VITE_FIRESTORE_EMULATOR);
+  const [host, port] = import.meta.env.VITE_FIRESTORE_EMULATOR.split(":");
+  connectFirestoreEmulator(db, host, parseInt(port));
+}
 export const auth = getAuth(app);
 
 export const serde = {
