@@ -7,25 +7,40 @@ service cloud.firestore {
         return env in ['dev', 'stage', 'prod'];
       }
 
-      function isOwner() {
-        return request.auth != null && request.auth.uid == resource.data.owner;
+      function isUploadOwner() {
+        return request.auth.uid == request.resource.data.owner
+      }
+
+      function isResourceOwner() {
+        return request.auth.uid == resource.data.owner
       }
 
       function isAuthenticated() {
         return request.auth != null;
       }
 
+      allow read: if isValidEnv(env);
+
       match /users/{id} {
-        allow read;
-        allow create: if isValidEnv(env) && request.auth.uid == id;
-        allow update: if isValidEnv(env) && isOwner() && request.auth.uid == id;
+        allow read: if isValidEnv(env);
+        allow create: if isValidEnv(env)
+                      && isAuthenticated()
+                      && request.auth.uid == id;
+        allow update: if isValidEnv(env)
+                      && isAuthenticated()
+                      && request.auth.uid == id;
         allow delete: if false;
       }
 
       match /rounds/{id} {
-        allow read;
-        allow create: if isValidEnv(env) && isAuthenticated();
-        allow update: if isValidEnv(env) && isOwner();
+        allow read: if isValidEnv(env);
+        allow create: if isValidEnv(env)
+                      && isAuthenticated()
+                      && isUploadOwner();
+        allow update: if isValidEnv(env)
+                      && isAuthenticated()
+                      && isUploadOwner()
+                      && isResourceOwner();
         allow delete: if false;
       }
     }
