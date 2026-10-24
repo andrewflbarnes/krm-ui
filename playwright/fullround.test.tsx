@@ -24,7 +24,7 @@ test.describe('Full round simulation', {
   }
 
   test.beforeEach(async ({ page, roundSetup }) => {
-    await page.goto('/krm-ui');
+    await page.goto('/krm-ui?developer=true');
     await roundSetup.resetData();
   });
 

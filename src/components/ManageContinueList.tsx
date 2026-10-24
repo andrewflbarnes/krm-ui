@@ -11,6 +11,7 @@ type ManageContinueListProps = {
   rounds: RoundInfo[];
   onDeleteRound: (id: string) => void;
   onUploadRound: (id: string) => void;
+  onTakeover: (id: string) => void;
   onCopyToClipboard: (id: string) => void;
 }
 
@@ -54,6 +55,7 @@ export default function ManageContinueList(props: ManageContinueListProps) {
         handleConfirmExport={handleConfirmExport}
         onCopyToClipboard={props.onCopyToClipboard}
         handleUploadRound={props.onUploadRound}
+        handleTakeover={props.onTakeover}
         handleInfo={(roundInfo) => setInfo(roundInfo)}
         canUpload={authenticated()}
         userId={userId()}

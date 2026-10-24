@@ -4,6 +4,7 @@ import { createMemo, For, Match, Show, Switch } from "solid-js";
 import { type RoundInfo } from "../kings/engine";
 import MoreMenu from "./MoreMenu";
 import { useNavigate } from "@solidjs/router";
+import { useFeatureFlags } from "../hooks/flags";
 
 const statusColor = {
   "abandoned": "error",
@@ -14,6 +15,7 @@ type RoundInfoListProps = {
   handleConfirmDelete: (id: string) => void;
   handleConfirmExport: (id: string) => void;
   handleUploadRound: (id: string) => void;
+  handleTakeover: (id: string) => void;
   onCopyToClipboard: (id: string) => void;
   handleInfo: (roundInfo: RoundInfo) => void;
   rounds: RoundInfo[];
@@ -72,6 +74,7 @@ export default function RoundInfoList(props: RoundInfoListProps) {
                           handleConfirmDelete={props.handleConfirmDelete}
                           handleConfirmExport={props.handleConfirmExport}
                           handleUploadRound={props.handleUploadRound}
+                          handleTakeover={props.handleTakeover}
                           handleInfo={props.handleInfo}
                           onCopyToClipboard={props.onCopyToClipboard}
                           canUpload={props.canUpload}
@@ -96,6 +99,7 @@ function RoundInfoRow(props: {
   handleConfirmExport: (id: string) => void;
   handleUploadRound: (id: string) => void;
   onCopyToClipboard: (id: string) => void;
+  handleTakeover: (id: string) => void;
   handleInfo: (roundInfo: RoundInfo) => void;
   canUpload?: boolean;
   owned?: boolean;
@@ -113,6 +117,7 @@ function RoundInfoRow(props: {
   const navToRace = () => {
     nav(`/races/${props.round.id}/${props.round.status}`)
   }
+  const flags = useFeatureFlags()
   return (
     <TableRow>
       <TableCell sx={{ width: "1%", minWidth: "fit-content", padding: 0 }}>
@@ -134,12 +139,19 @@ function RoundInfoRow(props: {
               props.onCopyToClipboard(props.round.id)
               handleClose()
             }
+            const doTakeOver = () => {
+              props.handleTakeover(props.round.id)
+              handleClose()
+            }
             return (
               <>
                 <MenuItem onClick={confirmExport}>Export</MenuItem>
                 <MenuItem onClick={confirmDelete}>Delete</MenuItem>
                 <Show when={props.canUpload && props.owned}>
                   <MenuItem onClick={doUpload}>Upload</MenuItem>
+                </Show>
+                <Show when={!props.owned && flags.experimental()}>
+                  <MenuItem onClick={doTakeOver}>Takeover</MenuItem>
                 </Show>
                 <MenuItem onClick={copyToClipboard}>Copy to clipboard</MenuItem>
               </>

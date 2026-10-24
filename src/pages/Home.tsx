@@ -5,6 +5,7 @@ import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, on, Show } from "solid-js";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
 import notification from "../hooks/notification"
+import { useFeatureFlags } from "../hooks/flags";
 
 function getRounds(league: string) {
   try {
@@ -37,6 +38,7 @@ export default function Home() {
     setRounds(getRounds(k.league()))
     notification.info("Cleared cached data")
   }
+  const flags = useFeatureFlags()
   const nav = useNavigate()
   const [reset, setReset] = createSignal(false)
   return (
@@ -74,14 +76,16 @@ export default function Home() {
               View/Continue a race
             </Button>
           </Show>
-          <Button
-            variant="outlined"
-            color="error"
-            sx={{ bgcolor: "background.paper" }}
-            onClick={[setReset, true]}
-          >
-            Reset data
-          </Button>
+          <Show when={flags.developer()}>
+            <Button
+              variant="outlined"
+              color="error"
+              sx={{ bgcolor: "background.paper" }}
+              onClick={[setReset, true]}
+            >
+              Reset data
+            </Button>
+          </Show>
           <Show when={!hasRounds()}>
             <Button style={{ visibility: 'hidden' }}>
               INVISIBLE BALANCE

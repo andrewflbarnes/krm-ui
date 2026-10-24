@@ -11,6 +11,7 @@ import { AddCircleOutlined, ArrowCircleDown } from "@suid/icons-material";
 import ButtonCard from "../ui/ButtonCard";
 import { getRounds, uploadRound } from "../api/persistence";
 import { useAuth } from "../hooks/auth";
+import { Round } from "../kings";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmEngine.getRounds(league);
@@ -103,6 +104,34 @@ function RacesInternal() {
     }
   }
 
+  const nav = useNavigate()
+
+  const handleTakeover = (id: string) => {
+    try {
+      const data = krmEngine.getRound(id)
+      // preserve the original id only, in case multiple takeovers
+      let newId = data.id
+      newId = newId.replace(/-takeover-\d+$/, "")
+      newId = `${newId}-takeover-${Date.now()}`
+      const updatedRound: Round = {
+        ...data,
+        id: newId,
+        owner: "local",
+        details: {
+          ...data.details,
+          description: `Takeover ${data.details.season} round ${data.details.round} at ${new Date().toLocaleString()}`,
+        },
+      }
+      krmEngine.saveRound(updatedRound)
+      // navigate to the new round
+      notification.success("Round copied")
+      nav(`/races/${newId}`)
+    } catch (e) {
+      notification.error(`Failed to takeover round: ${e.message}`)
+      console.error("Failed to takeover round", e)
+    }
+  }
+
   return (
     <>
       <ModalConfirmAction
@@ -122,6 +151,7 @@ function RacesInternal() {
               onDeleteRound={handleDeleteRound}
               onUploadRound={handleUploadRound}
               onCopyToClipboard={handleCopyToClipboard}
+              onTakeover={handleTakeover}
             />
           </Paper>
         </Show>
