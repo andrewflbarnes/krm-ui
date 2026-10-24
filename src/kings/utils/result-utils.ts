@@ -34,10 +34,11 @@ export function parseResults(leagueData: LeagueData): DivisionResults {
     .reduce((acc, division) => {
       const divisionResult: Result[] = []
       Object.entries(leagueData || {}).forEach(([clubName, club]) => {
-        Object.entries(club.teams[division] ?? {}).forEach(([name, { results }]) => {
+        Object.entries(club.teams[division] ?? {}).forEach(([name, { isNew, results }]) => {
           const tr: Result = {
             club: clubName,
             name,
+            isNew,
             r1: results[0]?.[1],
             r2: results[1]?.[1],
             r3: results[2]?.[1],

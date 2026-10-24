@@ -7,6 +7,7 @@ import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, Dr
 import SeedInteractive from "../ui/SeedInteractive"
 import { North, Replay, South } from "@suid/icons-material"
 import DragAnchor from "../ui/DragAnchor"
+
 /**
   * Shows the seeding per division. Note that 
   *

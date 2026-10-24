@@ -31,10 +31,6 @@ export class RoundSetup {
       await this.addBoard(club, counts.board);
     }
 
-    // New teams step
-    await this.next();
-    await this.validateMissingTeams();
-
     // Seeding adjustment step
     await this.next();
     await this.validateSeedingAdjustment();
@@ -106,10 +102,6 @@ export class RoundSetup {
       .click({
         position,
       });
-  }
-
-  async validateMissingTeams() {
-    await expect(this.page.locator('h3'), 'On new teams teams page').toContainText('New Teams Added');
   }
 
   async validateSeedingAdjustment() {

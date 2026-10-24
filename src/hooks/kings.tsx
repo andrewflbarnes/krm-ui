@@ -145,6 +145,7 @@ export function useKings() {
         teams[division] = {}
       }
       teams[division][team] = {
+        isNew: true,
         results: [
           [null, null],
           [null, null],

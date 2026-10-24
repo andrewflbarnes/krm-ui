@@ -1,6 +1,5 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
-const ManageNewUpdateTeams = lazy(() => import("../components/ManageNewUpdateTeams"))
 const ManageNewSetup = lazy(() => import("../components/ManageNewSetup"))
 const ManageNewSeeding = lazy(() => import("../components/ManageNewSeeding"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "../kings"
@@ -74,12 +73,6 @@ function RaceNewInternal() {
 
   const [teamSelectErrors, setTeamSelectErrors] = createSignal<string[]>([]);
 
-  const [missingTeams, setMissingTeams] = createSignal<{
-    club: string,
-    team: string,
-    division: string
-  }[]>();
-
   const defaultSeason = (() => {
     const now = new Date()
     const year = now.getFullYear()
@@ -143,6 +136,7 @@ function RaceNewInternal() {
         if (teamSelectErrors().length > 0) {
           return [false, teamSelectErrors().join(", ")]
         }
+        setOriginalSeeding(prev => prev ?? orderSeeds(k.leagueConfig(), numTeams(), { excludeNew: true, }))
         const divisionCounts = Object.values(numTeams()).reduce((acc, next) => {
           acc.mixed += next.mixed
           acc.ladies += next.ladies
@@ -172,19 +166,11 @@ function RaceNewInternal() {
           })
           return acc
         }, [])
-        setMissingTeams(missing)
-        return [true,]
-      }
-    },
-    {
-      title: "Update teams",
-      content: () => <ManageNewUpdateTeams missingTeams={missingTeams()} />,
-      onArrive: lock,
-      skip: () => missingTeams().length < 1,
-      validator: () => {
-        if (missingTeams().length > 0) {
+
+        if (missing.length > 0) {
+          // TODO at round end set isNew to false for all teams that were in the round
           try {
-            addLeagueTeams(missingTeams())
+            addLeagueTeams(missing)
             notification.success("Missing teams added")
           } catch (e) {
             return [false, e.message]
@@ -194,18 +180,17 @@ function RaceNewInternal() {
         const seeding = orderSeeds(k.leagueConfig(), numTeams())
         const r = createRound("setup", roundDetails(), seeding, raceConfig)
         batch(() => {
-          setOriginalSeeding(seeding)
           setSeeding(seeding)
           setDistributionOrder(seeding)
           setRound(r)
           setOriginalConfig(r.config)
         })
-
         return [true,]
       }
     },
     {
       title: "Adjust Seeds",
+      onArrive: lock,
       content: () => {
         const handleEdit = (seeds: RoundSeeding) => {
           const r = createRound("setup", roundDetails(), seeds, raceConfig)
@@ -215,6 +200,8 @@ function RaceNewInternal() {
             setDistributionOrder(seeds)
           })
         }
+
+        // TODO pass isNew in as part of seeding
         return (
           <ManageNewSeeding
             originalSeeds={originalSeeding()}

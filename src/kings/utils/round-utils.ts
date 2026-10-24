@@ -10,9 +10,14 @@ export function isStage(s: string): RaceStage | null {
   return s === "stage1" || s === "stage2" || s === "knockout" ? s : null
 }
 
-export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding): RoundSeeding {
+export function orderSeeds(leagueConfig: LeagueData, numTeams: ClubSeeding, options?: {
+  excludeNew?: boolean
+}): RoundSeeding {
   return Object.entries(parseResults(leagueConfig || {})).reduce((acc, [division, seeded]) => {
     acc[division] = seeded.filter(t => {
+      if (options?.excludeNew && t.isNew) {
+        return false
+      }
       let teamIndex = +t.name.replace(/.*?(\d*)$/, "$1") >>> 0
       if (teamIndex != 0) {
         --teamIndex

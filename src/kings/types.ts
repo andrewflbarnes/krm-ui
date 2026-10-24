@@ -192,6 +192,8 @@ export type Result = {
   club: string;
   /** The name of the team */
   name: string;
+  /** Whether this is a new team this round */
+  isNew: boolean;
   /** The points scored in round 1 */
   r1?: number;
   /** The points scored in round 2 */
@@ -216,7 +218,8 @@ export type LeagueData = {
       [division: string]: {
         [team: string]: {
           results: [number, number][]
-          total: number,
+          total: number
+          isNew?: boolean
         }
       }
     }
