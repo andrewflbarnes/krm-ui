@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.7.0] - 2026-10-24
+
+### 🚀 Features
+
+- Add firestore emulation support
+- Add firestore rules, fix incorrect placeholder in notification
+- Use consistent, declarative firestore rules
+- Simplify new round setup and identification of new teams
+- Add experimental takeover, move reset data to dev tools
+
+### 🐛 Bug Fixes
+
+- IsNew should be optional on teams
+
+### ⚙️ Miscellaneous Tasks
+
+- Improvements to seeding, standardise stagecard use, fix typo
+- Update git ignore
+
 ## [0.6.0] - 2026-10-22
 
 ### 🚀 Features
