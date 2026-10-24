@@ -193,7 +193,7 @@ export type Result = {
   /** The name of the team */
   name: string;
   /** Whether this is a new team this round */
-  isNew: boolean;
+  isNew?: boolean;
   /** The points scored in round 1 */
   r1?: number;
   /** The points scored in round 2 */
