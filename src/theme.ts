@@ -1,6 +1,6 @@
 import { createPalette, createTheme } from "@suid/material";
 import { createMemo } from "solid-js";
-import { lightBlue } from "@suid/material/colors";
+import { deepOrange, indigo, teal } from "@suid/material/colors";
 import { initialisableAtomWithStorage } from "@/utils/jotai-utils";
 
 type ThemeMode = "dark" | "light"
@@ -31,30 +31,35 @@ export const useKingsTheme = () => {
     }
   }
 
-  const dark = createMemo(() => mode() === "dark");
-
-  const basePalette = createPalette()
+  // color calculations are only done on existing color types
+  const basePalette = createPalette({
+    primary: {
+      main: teal[400],
+    },
+    secondary: {
+      main: indigo[400],
+    },
+    info: {
+      main: deepOrange[400],
+    },
+  })
 
   const palette = createMemo(() => {
-    const primaryMain = lightBlue[dark() ? 300 : 800];
     return createPalette({
       mode: mode(),
-      primary: {
-        main: primaryMain,
-      },
-      stage1: {
-        ...basePalette.primary,
-        main: primaryMain,
-      },
+      // standard colors
+      primary: basePalette.primary,
+      secondary: basePalette.secondary,
+      // additional colors
+      tertiary: basePalette.info,
+      // stage colors
+      stage1: basePalette.primary,
       stage2: basePalette.secondary,
-      knockout: basePalette.error,
-      mixed: {
-        ...basePalette.primary,
-        main: primaryMain,
-      },
+      knockout: basePalette.info,
+      // division colors
+      mixed: basePalette.primary,
       ladies: basePalette.secondary,
-      board: basePalette.error,
-      tertiary: basePalette.error,
+      board: basePalette.info,
     });
   });
 
