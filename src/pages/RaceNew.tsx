@@ -108,7 +108,7 @@ function RaceNewInternal() {
   const [round, setRound] = createSignal<Round>()
 
   type Step = {
-    title: string;
+    id: string;
     content: () => JSX.Element;
     onArrive?: () => void;
     skip?: () => boolean;
@@ -118,7 +118,7 @@ function RaceNewInternal() {
 
   const steps: Step[] = [
     {
-      title: "Setup",
+      id: "Setup",
       content: () => {
         return (
           <RaceNewSetup
@@ -189,7 +189,7 @@ function RaceNewInternal() {
       }
     },
     {
-      title: "Adjust Seeds",
+      id: "Adjust Seeds",
       onArrive: lock,
       content: () => {
         const handleEdit = (seeds: RoundSeeding) => {
@@ -216,7 +216,7 @@ function RaceNewInternal() {
       }
     },
     {
-      title: "Adjust Groups",
+      id: "Adjust Groups",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
           const r = createRound("setup", roundDetails(), seeds, raceConfig)
@@ -288,7 +288,7 @@ function RaceNewInternal() {
   }
 
   return (
-    <Box sx={{ height: 1, p: 1 }}>
+    <Box data-testid={steps[step()].id} sx={{ height: 1, p: 1 }}>
       <Stack flexDirection="column" height="100%" gap="1em">
         <Show when={!isConfigLoaded(k.league()) && steps[step()].loadConfig} >
           <CallToLoadConfig />
