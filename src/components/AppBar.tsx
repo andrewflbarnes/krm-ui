@@ -199,12 +199,9 @@ export default function KrmAppBar() {
             <Box
               as={"nav"}
               sx={{
-                display: "grid",
+                display: "flex",
                 width: "100%",
-                gridTemplateColumns: {
-                  xs: "1fr 1fr",
-                  md: "1fr 1fr 1fr",
-                }
+                gap: "1em",
               }}
             >
               <Box sx={{ gap: "1em", display: "flex", alignItems: "center" }}>
@@ -221,9 +218,23 @@ export default function KrmAppBar() {
                 >
                   <Menu />
                 </IconButton>
-                <Link href="/">
-                  <strong style={{ "white-space": "nowrap" }}>[ K ]</strong>
-                </Link>
+                <Box sx={{
+                  display: {
+                    xs: "none",
+                    sm: "flex",
+                  }
+                }}>
+                  <Link href="/">
+                    <strong style={{ "white-space": "nowrap" }}>[ K ]</strong>
+                  </Link>
+                </Box>
+              </Box>
+              <Box sx={{
+                mx: {
+                  xs: "auto",
+                  sm: 0,
+                }
+              }}>
                 <LeagueSelector />
               </Box>
               <Box sx={{
@@ -241,6 +252,10 @@ export default function KrmAppBar() {
                 gap: "1rem",
                 justifyContent: "flex-end",
                 alignItems: "center",
+                ml: {
+                  xs: 0,
+                  sm: "auto",
+                }
               }}>
                 <Box sx={{ display: { xs: "none", sm: "flex" }, gap: "1rem", alignItems: "center" }}>
                   <For each={navs()}>{(nav) => (

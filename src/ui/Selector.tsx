@@ -18,6 +18,7 @@ type SelectorProps<T extends string | number> = {
   // implementation specific
   small?: boolean;
   defaultBackground?: boolean;
+  fullWidth?: boolean;
 }
 
 const StyledSelect = styled(Select)({
@@ -62,7 +63,7 @@ export default function Selector<T extends string | number>(props: SelectorProps
   const id = createUniqueId();
 
   return (
-    <div>
+    <div  style={{ width: props.fullWidth ? "100%" : "auto" }}>
       <Switch>
         <Match when={props.type == "input" || !props.type}>
           <FormControl fullWidth sx={{
@@ -83,7 +84,8 @@ export default function Selector<T extends string | number>(props: SelectorProps
                 sx={{
                   '& .MuiSelect-select': {
                     py: props.small ? '3px' : undefined,
-                  }
+                  },
+                  width: props.fullWidth ? "100%" : undefined,
                 }}
                 labelId={`${id}-select-label`}
                 id={`${id}-select`}

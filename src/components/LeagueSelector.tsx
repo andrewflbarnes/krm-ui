@@ -3,7 +3,7 @@ import { leagues, leagueConfigs } from "../kings";
 import { type League } from "../kings";
 import Selector from "../ui/Selector";
 
-export default function LeagueSelector() {
+export default function LeagueSelector(props: { fullWidth?: boolean }) {
   const [k, { setLeague }] = useKings()
   const handleClose = (league?: League) => {
     if (league && !k.lock()) {
@@ -14,9 +14,10 @@ export default function LeagueSelector() {
   const options = leagues.map((l) => ({ label: leagueConfigs[l].name, value: l }))
 
   return (
-    <div>
+    <div style={{ width: props.fullWidth ? "100%" : "auto" }}>
       <Selector
         type="input"
+        fullWidth={props.fullWidth}
         current={k.league()}
         onClose={handleClose}
         locked={k.lock()}
