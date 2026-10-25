@@ -7,6 +7,16 @@ import SeedInteractive from "@/ui/SeedInteractive"
 import { North, Replay, South } from "@suid/icons-material"
 import DragAnchor from "@/ui/DragAnchor"
 
+function initNewSeeds(): RoundSeeding {
+  return {
+    mixed: [],
+    ladies: [],
+    board: [],
+  }
+}
+
+const noNewSeeds = initNewSeeds()
+
 /**
   * Shows the seeding per division. Original seeds will default to seeds if not]
   * provided. Any teams not present in original seeds that are in seeds are
@@ -42,19 +52,17 @@ export default function RaceNewSeeding(props: {
   })
 
   const newSeeds = createMemo<RoundSeeding>(() => {
-    const newSeeds: RoundSeeding = {
-      mixed: [],
-      ladies: [],
-      board: [],
-    }
     // Add any seeds not in the originalSeeds to the end of the list for each division
-    return props.originalSeeds
-      ? Object.entries(props.seeds)
-        .reduce((acc, [division, teams]: [Division, string[]]) => {
-          acc[division] = teams.filter((team) => !props.originalSeeds[division].includes(team))
-          return acc
-        }, newSeeds)
-      : newSeeds
+    const originalSeeds = props.originalSeeds // moving here prevents lint warning
+    if (!originalSeeds) {
+      return noNewSeeds
+    }
+
+    return Object.entries(props.seeds)
+      .reduce((acc, [division, teams]: [Division, string[]]) => {
+        acc[division] = teams.filter((team) => !originalSeeds[division].includes(team))
+        return acc
+      }, initNewSeeds())
   })
 
   const initialSeeds = props.seeds // eslint-disable-line solid/reactivity
