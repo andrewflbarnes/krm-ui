@@ -92,6 +92,7 @@ export const WithAdditionalAndOriginalSeeds: Story = {
     originalSeeds: {
       ...seeds,
       mixed: seeds.mixed.toSpliced(0, 4, seeds.mixed[1], seeds.mixed[0]),
+      ladies: seeds.ladies.slice(0, 4),
     },
     editable: true,
     onEdit: fn(),

@@ -8,7 +8,9 @@ import { North, Replay, South } from "@suid/icons-material"
 import DragAnchor from "@/ui/DragAnchor"
 
 /**
-  * Shows the seeding per division. Note that 
+  * Shows the seeding per division. Original seeds will default to seeds if not]
+  * provided. Any teams not present in original seeds that are in seeds are
+  * considered new and will be displayed at the bottom of the list if reset.
   *
   * @param originalSeeds the {RoundSeeding} prior to any shifts
   * @param seeds the {RoundSeeding} to display and adjust
@@ -19,9 +21,40 @@ export default function RaceNewSeeding(props: {
   editable?: boolean;
   onEdit?: (newSeeding: RoundSeeding) => void;
 }) {
-  const originalSeeds = createMemo(() => {
+  const originalSeeds = createMemo<RoundSeeding>(() => {
     const seeds = untrack(() => props.seeds)
-    return props.originalSeeds ?? seeds
+    // Add any seeds not in the originalSeeds to the end of the list for each division
+    return props.originalSeeds
+      ? Object.entries(props.seeds)
+        .reduce((acc, [division, teams]: [Division, string[]]) => {
+          teams.forEach((team) => {
+            if (!acc[division].includes(team)) {
+              acc[division].push(team)
+            }
+          })
+          return acc
+        }, {
+          mixed: [...(props.originalSeeds?.mixed ?? [])],
+          ladies: [...(props.originalSeeds?.ladies ?? [])],
+          board: [...(props.originalSeeds?.board ?? [])],
+        })
+      : seeds
+  })
+
+  const newSeeds = createMemo<RoundSeeding>(() => {
+    const newSeeds: RoundSeeding = {
+      mixed: [],
+      ladies: [],
+      board: [],
+    }
+    // Add any seeds not in the originalSeeds to the end of the list for each division
+    return props.originalSeeds
+      ? Object.entries(props.seeds)
+        .reduce((acc, [division, teams]: [Division, string[]]) => {
+          acc[division] = teams.filter((team) => !props.originalSeeds[division].includes(team))
+          return acc
+        }, newSeeds)
+      : newSeeds
   })
 
   const initialSeeds = props.seeds // eslint-disable-line solid/reactivity
@@ -55,6 +88,21 @@ export default function RaceNewSeeding(props: {
           return !teams.every((team, i) => team === originalSeeds()[division][i])
         }
 
+        const handleReset = () => {
+          const currentSeeds = seeds()
+          const nextSeeds = {
+            ...currentSeeds,
+            [division]: [...originalSeeds()[division]],
+          }
+          props.seeds[division]
+            .filter(seed => !nextSeeds[division].includes(seed))
+            .forEach((team) => {
+              nextSeeds[division].push(team)
+            })
+          props.onEdit?.(nextSeeds)
+          setSeeds(nextSeeds)
+        }
+
         return (
           <Box sx={{ width: "100%" }}>
             <StageCard
@@ -66,20 +114,7 @@ export default function RaceNewSeeding(props: {
                     size="small"
                     color="error"
                     disabled={!modified()}
-                    onClick={() => {
-                      const currentSeeds = seeds()
-                      const nextSeeds = {
-                        ...currentSeeds,
-                        [division]: [...originalSeeds()[division]],
-                      }
-                      props.seeds[division]
-                        .filter(seed => !nextSeeds[division].includes(seed))
-                        .forEach((team) => {
-                          nextSeeds[division].push(team)
-                        })
-                      props.onEdit?.(nextSeeds)
-                      setSeeds(nextSeeds)
-                    }}
+                    onClick={handleReset}
                     sx={{
                       background: "white"
                     }}
@@ -186,10 +221,8 @@ export default function RaceNewSeeding(props: {
                       }
                       const draggable = createDraggable(teamName, team)
                       const droppable = createDroppable(teamName, team)
+                      const isNew = () => newSeeds()[division].includes(teamName)
                       const moved = () => {
-                        if (originalSeed == 0) {
-                          return "New"
-                        }
                         const change = originalSeed - seed
                         return change !== 0 ? change : undefined
                       }
@@ -215,7 +248,21 @@ export default function RaceNewSeeding(props: {
                                   />
                                 </Show>
                               }
-                              endAdornment={moved() != null ? <MovementIndicator moved={moved()} /> : undefined}
+                              endAdornment={
+                                <Box sx={{
+                                  display: "flex",
+                                  alignItems: "center",
+                                  gap: 0.5,
+                                  marginLeft: "auto"
+                                }}>
+                                  <Show when={isNew()}>
+                                    <MovementIndicator moved={"New"} />
+                                  </Show>
+                                  <Show when={moved()}>{(moveIndicator) => (
+                                    <MovementIndicator moved={moveIndicator()} />
+                                  )}</Show>
+                                </Box>
+                              }
                             />
                           </div>
                         </div>
@@ -251,7 +298,6 @@ function MovementIndicator(props: { moved: number | string }) {
     <Typography
       color={color()}
       sx={{
-        marginLeft: "auto",
         fontSize: "0.75em",
       }}
     >
