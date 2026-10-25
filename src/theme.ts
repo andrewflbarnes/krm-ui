@@ -33,26 +33,33 @@ export const useKingsTheme = () => {
 
   const dark = createMemo(() => mode() === "dark");
 
+  const basePalette = createPalette()
+
   const palette = createMemo(() => {
+    const primaryMain = lightBlue[dark() ? 300 : 800];
     return createPalette({
       mode: mode(),
       primary: {
-        main: lightBlue[dark() ? 300 : 800],
+        main: primaryMain,
       },
+      stage1: {
+        ...basePalette.primary,
+        main: primaryMain,
+      },
+      stage2: basePalette.secondary,
+      knockout: basePalette.error,
+      mixed: {
+        ...basePalette.primary,
+        main: primaryMain,
+      },
+      ladies: basePalette.secondary,
+      board: basePalette.error,
+      tertiary: basePalette.error,
     });
   });
 
   const theme = createTheme({
-    palette: {
-      mode: mode(),
-      stage1: palette().primary,
-      stage2: palette().secondary,
-      knockout: palette().error,
-      mixed: palette().primary,
-      ladies: palette().secondary,
-      board: palette().error,
-      tertiary: palette().error,
-    },
+    palette: palette,
     shape: { borderRadius: 4 },
     typography: {
       h1: { fontWeight: 700, letterSpacing: "-1px" },
