@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import { ComponentProps, createEffect, createSignal, untrack } from "solid-js";
-import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "../kings";
-import MiniLeague from '../components/MiniLeague';
+import { MiniLeagueTemplate, miniLeagueTemplates, Race } from "@/kings";
+import MiniLeague from '@/components/MiniLeague';
 import { expect, fn, userEvent, waitFor } from 'storybook/test';
-import { initRaces, initTeams } from '../test';
+import { initRaces, initTeams } from '@/test';
 import { Canvas } from 'storybook/internal/csf';
 
 // Identical to above but reverse the teams to ensure rendering isn't affected

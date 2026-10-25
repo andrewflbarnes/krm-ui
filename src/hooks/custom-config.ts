@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/solid-query"
 import { createMemo } from "solid-js"
-import krmEngine from "../kings/engine"
+import krmEngine from "@/kings/engine"
 
 export const customRoundsQueryKey = 'customRoundConfig'
 export function useCustomRounds(props = {

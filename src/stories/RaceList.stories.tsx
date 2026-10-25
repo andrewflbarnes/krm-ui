@@ -1,9 +1,9 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import RaceList from '../components/RaceList';
+import RaceList from '@/components/RaceList';
 import { fn } from 'storybook/test';
-import { knockouts, races } from './data';
+import { knockouts, races } from '@/stories/data';
 import { ComponentProps, createEffect, createSignal, untrack } from 'solid-js';
-import { Race } from '../kings';
+import { Race } from '@/kings';
 
 const RaceListWithHandler = (props: ComponentProps<typeof RaceList>) => {
   const [races, setRaces] = createSignal<Race[]>(untrack(() => props.orderedRaces))

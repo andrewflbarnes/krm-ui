@@ -1,11 +1,11 @@
 import { Box, IconButton, Typography } from "@suid/material"
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js"
-import { Division, RoundSeeding } from "../kings"
-import StageCard from "../ui/StageCard"
+import { Division, RoundSeeding } from "@/kings"
+import StageCard from "@/ui/StageCard"
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay } from "@thisbeyond/solid-dnd"
-import SeedInteractive from "../ui/SeedInteractive"
+import SeedInteractive from "@/ui/SeedInteractive"
 import { North, Replay, South } from "@suid/icons-material"
-import DragAnchor from "../ui/DragAnchor"
+import DragAnchor from "@/ui/DragAnchor"
 
 /**
   * Shows the seeding per division. Note that 

@@ -1,6 +1,6 @@
-import { RoundConfig } from "../../types";
-import { miniLeagueTemplates } from "../minileague";
-import { knockoutsFromGroups, knockoutsFromResults, resultsForGroup, resultsFromKnockout, seeds, wrapSingleGroupResults } from "../config-utils";
+import { RoundConfig } from "@/kings/types";
+import { miniLeagueTemplates } from "@/kings/config/minileague";
+import { knockoutsFromGroups, knockoutsFromResults, resultsForGroup, resultsFromKnockout, seeds, wrapSingleGroupResults } from "@/kings/config/config-utils";
 
 // V2 is a "quirky" two round swiss style - in cases where there is an
 // "outlier" team in stage 2 (e.g. group III has 4 teams, group IV has 3 teams)

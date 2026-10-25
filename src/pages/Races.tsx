@@ -1,17 +1,17 @@
 import { createComputed, createSignal, Show } from "solid-js";
-import krmEngine, { type RoundInfo } from "../kings/engine";
-import ManageContinueList from "../components/ManageContinueList";
-import { useKings } from "../hooks/kings";
-import notification from "../hooks/notification";
+import krmEngine, { type RoundInfo } from "@/kings/engine";
+import ManageContinueList from "@/components/ManageContinueList";
+import { useKings } from "@/hooks/kings";
+import notification from "@/hooks/notification";
 import { Box, Paper } from "@suid/material";
-import ModalConfirmAction from "../ui/ModalConfirmAction";
-import BasicErrorBoundary from "../ui/BasicErrorBoundary";
+import ModalConfirmAction from "@/ui/ModalConfirmAction";
+import BasicErrorBoundary from "@/ui/BasicErrorBoundary";
 import { useNavigate } from "@solidjs/router";
 import { AddCircleOutlined, ArrowCircleDown } from "@suid/icons-material";
-import ButtonCard from "../ui/ButtonCard";
-import { getRounds, uploadRound } from "../api/persistence";
-import { useAuth } from "../hooks/auth";
-import { Round } from "../kings";
+import ButtonCard from "@/ui/ButtonCard";
+import { getRounds, uploadRound } from "@/api/persistence";
+import { useAuth } from "@/hooks/auth";
+import { Round } from "@/kings";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmEngine.getRounds(league);

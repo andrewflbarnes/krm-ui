@@ -2,11 +2,11 @@ import { Replay } from "@suid/icons-material";
 import { Box, Chip, IconButton, Paper } from "@suid/material";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
-import ModalConfirmAction from "../ui/ModalConfirmAction";
-import SeedInteractive from "../ui/SeedInteractive";
-import DragAnchor from "../ui/DragAnchor";
-import StageCard from "../ui/StageCard";
+import { Division, Round, RoundConfig, RoundSeeding } from "@/kings";
+import ModalConfirmAction from "@/ui/ModalConfirmAction";
+import SeedInteractive from "@/ui/SeedInteractive";
+import DragAnchor from "@/ui/DragAnchor";
+import StageCard from "@/ui/StageCard";
 
 type RaceNewShuffleProps = {
   round: Round;

@@ -1,15 +1,15 @@
 import { Box, Card, Modal, Paper, Stack, Typography } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { Show, createEffect, createMemo, on } from "solid-js";
-import { divisions, Race, Round, StageRaces } from "../kings";
-import RaceList from "./RaceList";
-import krmEngine from "../kings/engine";
-import notification from "../hooks/notification";
-import BasicErrorBoundary from "../ui/BasicErrorBoundary";
-import RaceListPrintable from "./RaceListPrintable";
-import { usePrint } from "../hooks/print";
-import { useRaceOptions } from "../hooks/results";
-import MiniLeagues from "./MiniLeagues";
+import { divisions, Race, Round, StageRaces } from "@/kings";
+import RaceList from "@/components/RaceList";
+import krmEngine from "@/kings/engine";
+import notification from "@/hooks/notification";
+import BasicErrorBoundary from "@/ui/BasicErrorBoundary";
+import RaceListPrintable from "@/components/RaceListPrintable";
+import { usePrint } from "@/hooks/print";
+import { useRaceOptions } from "@/hooks/results";
+import MiniLeagues from "@/components/MiniLeagues";
 
 const orderRaces = (divisionRaces: StageRaces, northern: boolean) => {
   const splits = 3

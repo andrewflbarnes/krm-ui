@@ -1,7 +1,7 @@
 import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { Box, Chip, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@suid/material"
-import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
-import PopoverButton from "../ui/PopoverButton";
+import { ClubSeeding, Division, divisions, raceConfig } from "@/kings"
+import PopoverButton from "@/ui/PopoverButton";
 import { Add, ErrorOutlineRounded } from "@suid/icons-material";
 
 export default function RaceNewSelectFooter(props: {

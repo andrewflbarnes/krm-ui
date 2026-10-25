@@ -1,4 +1,4 @@
-import { MiniLeagueTemplate } from "../types";
+import { MiniLeagueTemplate } from "@/kings/types";
 
 // Naming convention is <type><number of teams>
 // - type: mini - a normal mini league

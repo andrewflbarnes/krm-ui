@@ -1,1 +1,1 @@
-export * from './testData'
+export * from '@/test/testData'

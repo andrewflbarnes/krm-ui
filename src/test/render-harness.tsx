@@ -1,5 +1,5 @@
 import { ParentProps } from "solid-js";
-import { useKingsTheme } from "../theme";
+import { useKingsTheme } from "@/theme";
 import { ThemeProvider } from "@suid/material";
 
 /**

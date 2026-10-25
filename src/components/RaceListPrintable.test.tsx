@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { render } from '@solidjs/testing-library';
-import RaceListPrintable from './RaceListPrintable';
-import { Race } from '../kings';
+import RaceListPrintable from '@/components/RaceListPrintable';
+import { Race } from '@/kings';
 
 const mockRaces: Race[] = [
   {

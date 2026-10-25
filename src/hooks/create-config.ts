@@ -1,7 +1,7 @@
 import { batch, createMemo, createUniqueId } from "solid-js";
 import { createStore, produce } from "solid-js/store";
-import { RaceStage } from "../kings"
-import { asPosition, checkStage } from "../kings";
+import { RaceStage } from "@/kings"
+import { asPosition, checkStage } from "@/kings";
 
 export type ConfigState = RaceStage | "results"
 

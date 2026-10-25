@@ -2,15 +2,15 @@ import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const RaceNewSetup = lazy(() => import("../components/RaceNewSetup"))
 const RaceNewSeeding = lazy(() => import("../components/RaceNewSeeding"))
-import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "../kings"
-import { useKings } from "../hooks/kings";
-import krmEngine, { type RoundDetails } from "../kings/engine"
-import notification from "../hooks/notification"
-import { createRound, orderSeeds } from "../kings/utils"
+import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "@/kings"
+import { useKings } from "@/hooks/kings";
+import krmEngine, { type RoundDetails } from "@/kings/engine"
+import notification from "@/hooks/notification"
+import { createRound, orderSeeds } from "@/kings/utils"
 import { A, useNavigate } from "@solidjs/router"
-import BasicErrorBoundary from "../ui/BasicErrorBoundary"
+import BasicErrorBoundary from "@/ui/BasicErrorBoundary"
 import { Construction, OpenInNew } from "@suid/icons-material"
-import RaceNewShuffle from "../components/RaceNewShuffle"
+import RaceNewShuffle from "@/components/RaceNewShuffle"
 
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {

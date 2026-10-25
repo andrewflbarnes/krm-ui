@@ -1,7 +1,7 @@
 import { batch } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import CustomRoundStage from '../components/CustomRoundStage';
-import { useCreateRoundConfig } from '../hooks/create-config';
+import CustomRoundStage from '@/components/CustomRoundStage';
+import { useCreateRoundConfig } from '@/hooks/create-config';
 
 const meta = {
   title: 'kings/CustomRoundStage',

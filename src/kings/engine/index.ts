@@ -1,10 +1,10 @@
-import { divisions, Division, League, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage } from "../"
-import { calcTeamResults, createRound, minileagueSeededRaces } from "../";
-import { asPosition } from "../core-utils";
-import { KrmEngine, ProgressionStage, RoundDetails, RoundInfo } from "./types";
-import cacher from "./cacher"
+import { divisions, Division, League, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage } from "@/kings"
+import { calcTeamResults, createRound, minileagueSeededRaces } from "@/kings";
+import { asPosition } from "@/kings/core-utils";
+import { KrmEngine, ProgressionStage, RoundDetails, RoundInfo } from "@/kings/engine/types";
+import cacher from "@/kings/engine/cacher"
 
-export type * from "./types"
+export type * from "@/kings/engine/types"
 
 // This is a pseudo API which is really the kings "engine" backed by local
 // storage

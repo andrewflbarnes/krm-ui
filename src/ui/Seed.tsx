@@ -1,5 +1,5 @@
 import { Box, Typography } from "@suid/material";
-import NumberBadge from "./NumberBadge";
+import NumberBadge from "@/ui/NumberBadge";
 
 type Props = {
   team: string;

@@ -1,6 +1,6 @@
 import { Button, CardActions, CardContent, TextField, Typography } from "@suid/material";
 import { createSignal, onMount, ParentProps, Show } from "solid-js";
-import KingsModal from "../ui/KingsModal";
+import KingsModal from "@/ui/KingsModal";
 
 type ModalConfirmActionProps = {
   open: boolean;

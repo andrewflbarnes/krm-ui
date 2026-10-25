@@ -1,9 +1,9 @@
 import { Show } from "solid-js";
 import { Box, useMediaQuery, useTheme } from "@suid/material"
-import RaceNewSelect from "./RaceNewSelect"
-import { ClubSeeding, Division } from "../kings"
-import RaceNewDetail, { Details } from "./RaceNewDetail"
-import RaceNewSelectFooter from "./RaceNewSelectFooter";
+import RaceNewSelect from "@/components/RaceNewSelect"
+import { ClubSeeding, Division } from "@/kings"
+import RaceNewDetail, { Details } from "@/components/RaceNewDetail"
+import RaceNewSelectFooter from "@/components/RaceNewSelectFooter";
 
 type ComponentProps = {
   details: Details;

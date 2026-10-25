@@ -1,7 +1,7 @@
 import Stack from "@suid/material/Stack";
 import { For } from "solid-js";
-import { GroupRaces, Race } from "../kings";
-import MiniLeague from "./MiniLeague";
+import { GroupRaces, Race } from "@/kings";
+import MiniLeague from "@/components/MiniLeague";
 
 type MiniLeaguesProps = {
   readonly: boolean;

@@ -1,10 +1,10 @@
 import { ContentCopy } from "@suid/icons-material";
 import { Box, IconButton, Paper, Popover, Typography } from "@suid/material";
 import { createMemo, createSignal, For, Show } from "solid-js";
-import { LeagueData, RoundResult } from "../kings";
-import { kingsPoints, resultsToHtml } from "../kings/utils";
-import notification from "../hooks/notification";
-import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
+import { LeagueData, RoundResult } from "@/kings";
+import { kingsPoints, resultsToHtml } from "@/kings/utils";
+import notification from "@/hooks/notification";
+import RankBadge, { RANK_ACCENT } from "@/ui/RankBadge";
 
 const GRID_COLS = "auto 1fr auto";
 

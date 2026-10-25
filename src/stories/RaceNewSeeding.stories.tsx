@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import RaceNewSeeding from '../components/RaceNewSeeding';
-import { RoundSeeding } from '../kings';
+import RaceNewSeeding from '@/components/RaceNewSeeding';
+import { RoundSeeding } from '@/kings';
 import { expect, fn, userEvent } from 'storybook/test';
 import { createComputed, createSignal } from 'solid-js';
 

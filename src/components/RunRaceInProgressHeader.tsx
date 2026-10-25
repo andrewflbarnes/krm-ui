@@ -1,18 +1,18 @@
 import { Box, Button, Card, CardContent, FormControlLabel, Modal, Stack, Switch as InputSwitch } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
-import { GroupRaces, RaceStage, Round } from "../kings";
-import PopoverButton from "../ui/PopoverButton";
-import Selector from "../ui/Selector";
-import krmEngine, { type ProgressionStage } from "../kings/engine";
-import notification from "../hooks/notification";
+import { GroupRaces, RaceStage, Round } from "@/kings";
+import PopoverButton from "@/ui/PopoverButton";
+import Selector from "@/ui/Selector";
+import krmEngine, { type ProgressionStage } from "@/kings/engine";
+import notification from "@/hooks/notification";
 import { ErrorOutlineRounded } from "@suid/icons-material";
-import ModalConfirmAction from "../ui/ModalConfirmAction";
-import { usePrint } from "../hooks/print";
-import { stages, useRaceOptions, View, views } from "../hooks/results";
-import { checkStage, isStage } from "../kings/utils";
-import { useAuth } from "../hooks/auth";
-import Stepper from "../ui/Stepper";
+import ModalConfirmAction from "@/ui/ModalConfirmAction";
+import { usePrint } from "@/hooks/print";
+import { stages, useRaceOptions, View, views } from "@/hooks/results";
+import { checkStage, isStage } from "@/kings/utils";
+import { useAuth } from "@/hooks/auth";
+import Stepper from "@/ui/Stepper";
 
 const options = Object.entries(views).map(([value, label]) => ({ value, label }))
 

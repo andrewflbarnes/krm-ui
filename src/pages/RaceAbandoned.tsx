@@ -1,8 +1,8 @@
 import { A } from "@solidjs/router";
 import { Typography } from "@suid/material";
 import { Show } from "solid-js";
-import { useRaceOptions } from "../hooks/results";
-import { Round } from "../kings";
+import { useRaceOptions } from "@/hooks/results";
+import { Round } from "@/kings";
 
 export default function RaceAbandoned() {
   const { useRound } = useRaceOptions()

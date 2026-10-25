@@ -1,10 +1,10 @@
 import { Assignment, InfoOutlined, PlayCircleOutline, Visibility } from "@suid/icons-material";
 import { Button, Chip, IconButton, MenuItem, Paper, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from "@suid/material";
 import { createMemo, For, Match, Show, Switch } from "solid-js";
-import { type RoundInfo } from "../kings/engine";
-import MoreMenu from "./MoreMenu";
+import { type RoundInfo } from "@/kings/engine";
+import MoreMenu from "@/ui/MoreMenu";
 import { useNavigate } from "@solidjs/router";
-import { useFeatureFlags } from "../hooks/flags";
+import { useFeatureFlags } from "@/hooks/flags";
 
 const statusColor = {
   "abandoned": "error",

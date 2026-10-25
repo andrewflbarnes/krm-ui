@@ -1,7 +1,7 @@
 import { fn } from 'storybook/test';
 import { Meta, StoryObj } from 'storybook-solidjs-vite';
-import RaceNewSelect from '../components/RaceNewSelect';
-import { ClubSeeding } from '../kings';
+import RaceNewSelect from '@/components/RaceNewSelect';
+import { ClubSeeding } from '@/kings';
 
 const meta = {
   title: 'Kings/RaceNewSelect',

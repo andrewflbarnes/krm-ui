@@ -2,9 +2,9 @@ import { For, JSX, Show } from "solid-js";
 import { Accessible, DownhillSkiing } from "@suid/icons-material";
 import { Box, Link, Paper, Stack, Typography, useTheme } from "@suid/material";
 import { ClerkLoaded, SignedIn } from "clerk-solidjs";
-import { useAuth } from "../hooks/auth";
-import GitHub from "../ui/GitHubIcon";
-import ModeChangeButton from "../ui/ModeChangeButton";
+import { useAuth } from "@/hooks/auth";
+import GitHub from "@/ui/GitHubIcon";
+import ModeChangeButton from "@/ui/ModeChangeButton";
 
 const flairs: [(roles: string[]) => boolean, JSX.Element][] = [
   [(roles) => roles.includes("life_member"), <Accessible fontSize="small" />],

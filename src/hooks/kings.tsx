@@ -1,14 +1,14 @@
 import { useSearchParams } from "@solidjs/router";
 import { batch, createContext, createSignal, ParentProps, useContext } from "solid-js"
-import { leagueConfigs } from "../kings"
-import type { League, LeagueData } from "../kings";
-import { leagues } from "../kings";
-import krmEngine from "../kings/engine";
-import notification from "../hooks/notification";
-import tracker from "../api/tracker";
+import { leagueConfigs } from "@/kings"
+import type { League, LeagueData } from "@/kings";
+import { leagues } from "@/kings";
+import krmEngine from "@/kings/engine";
+import notification from "@/hooks/notification";
+import tracker from "@/api/tracker";
 import { atomWithStorage } from "solid-jotai/utils";
 import { useAtom } from "solid-jotai";
-import { defaultStorage, initialisableAtomWithStorage } from "../utils/jotai-utils";
+import { defaultStorage, initialisableAtomWithStorage } from "@/utils/jotai-utils";
 
 const qps = new URLSearchParams(window.location.search)
 let league = qps.get("league")?.toLowerCase() as League | undefined

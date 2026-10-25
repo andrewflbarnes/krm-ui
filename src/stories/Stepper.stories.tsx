@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import Stepper from '../ui/Stepper';
+import Stepper from '@/ui/Stepper';
 import { fn } from 'storybook/test';
 
 const meta = {

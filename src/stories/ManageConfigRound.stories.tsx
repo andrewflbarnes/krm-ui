@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import ManageConfigRound from '../components/ManageConfigRound';
-import { raceConfig } from '../kings';
+import ManageConfigRound from '@/components/ManageConfigRound';
+import { raceConfig } from '@/kings';
 
 const meta = {
   title: 'kings/ManageConfigRound',

@@ -1,5 +1,5 @@
-import { orderResults } from "./result-utils";
-import { LeagueData, Result, RoundResultPoints } from "../types"
+import { orderResults } from "@/kings/utils/result-utils";
+import { LeagueData, Result, RoundResultPoints } from "@/kings/types"
 
 const [
   tableStart,

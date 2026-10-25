@@ -1,7 +1,7 @@
-import { Round } from "../kings"
-import { db, serde } from "../firebase";
+import { Round } from "@/kings"
+import { db, serde } from "@/firebase";
 import { setDoc, doc, collection, query, where, getDocsFromServer, getDoc } from "firebase/firestore";
-import { getEnv } from "../utils/envutils";
+import { getEnv } from "@/utils/envutils";
 
 const env = getEnv()
 const envPath = `env/${env}`

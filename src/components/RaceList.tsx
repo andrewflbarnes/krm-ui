@@ -1,10 +1,10 @@
 import { CancelOutlined, CloseOutlined } from "@suid/icons-material";
 import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { Index, Show } from "solid-js";
-import { Race } from "../kings";
-import MoreMenu from "../ui/MoreMenu";
-import RaceResultIcon from "../ui/RaceResultIcon";
-import styles from "./RaceList.module.css";
+import { Race } from "@/kings";
+import MoreMenu from "@/ui/MoreMenu";
+import RaceResultIcon from "@/ui/RaceResultIcon";
+import styles from "@/components/RaceList.module.css";
 
 type RaceListProps = {
   orderedRaces: Race[],

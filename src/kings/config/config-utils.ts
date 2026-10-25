@@ -1,6 +1,6 @@
-import type { MiniLeagueConfig, MiniLeagueTemplate, RaceStage, ResultsConfig } from "../types";
-import { asKnockoutPosition } from "../core-utils";
-import { miniLeagueTemplates } from "./minileague";
+import type { MiniLeagueConfig, MiniLeagueTemplate, RaceStage, ResultsConfig } from "@/kings/types";
+import { asKnockoutPosition } from "@/kings/core-utils";
+import { miniLeagueTemplates } from "@/kings/config/minileague";
 
 export function seeds(name: string, seeds: number[], template: MiniLeagueTemplate): MiniLeagueConfig {
   return {

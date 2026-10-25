@@ -1,10 +1,10 @@
 import { ClerkProvider, useAuth as useClerkAuth, useUser } from "clerk-solidjs"
 import { signInWithCustomToken, signOut, User } from "firebase/auth"
 import { Accessor, batch, createComputed, createContext, createMemo, createSignal, ParentProps, useContext } from "solid-js"
-import { auth } from "../firebase"
-import notification from "./notification"
+import { auth } from "@/firebase"
+import notification from "@/hooks/notification"
 import { dark } from "@clerk/themes";
-import { saveUser } from "../api/persistence"
+import { saveUser } from "@/api/persistence"
 
 const clerkPubKey = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY
 

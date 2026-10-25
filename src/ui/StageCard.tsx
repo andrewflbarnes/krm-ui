@@ -1,7 +1,7 @@
 import { For, JSX, ParentProps, Show } from "solid-js";
 import { Box, Chip, Paper, Typography } from "@suid/material";
-import GroupCard from "./GroupCard";
-import { Division, RaceStage } from "../kings/types";
+import GroupCard from "@/ui/GroupCard";
+import { Division, RaceStage } from "@/kings/types";
 
 type StageCardProps<T> = {
   title: string;

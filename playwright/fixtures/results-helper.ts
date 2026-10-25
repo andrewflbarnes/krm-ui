@@ -1,5 +1,5 @@
 import { Page, expect } from '@playwright/test';
-import { asKnockoutPosition, asPosition } from '../../src/kings';
+import { asKnockoutPosition, asPosition } from '@/kings';
 
 type Config = Record<string, {
   mixed: number;

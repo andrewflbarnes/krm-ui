@@ -1,7 +1,7 @@
 import { Box, Button, ButtonGroup, Typography } from "@suid/material"
 import { createSignal, For } from "solid-js"
-import { Result, DivisionResults as Results, Division } from "../kings"
-import DivisionResults from "./DivisionResults"
+import { Result, DivisionResults as Results, Division } from "@/kings"
+import DivisionResults from "@/components/DivisionResults"
 
 type Props = {
   results: Results;

@@ -1,8 +1,8 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
 import { fn } from 'storybook/test';
-import RoundInfoList from '../ui/RoundInfoList';
-import { miniLeagueTemplates } from '../kings';
-import { type RoundInfo } from '../kings/engine';
+import RoundInfoList from '@/ui/RoundInfoList';
+import { miniLeagueTemplates } from '@/kings';
+import { type RoundInfo } from '@/kings/engine';
 import { Route, Router } from '@solidjs/router';
 
 const meta = {

@@ -1,9 +1,9 @@
 import { fn } from 'storybook/test';
 import { createMemo, createSignal } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import RaceNewShuffle from '../components/RaceNewShuffle';
-import { raceConfig, Round, RoundSeeding } from '../kings';
-import { createRound } from '../kings/utils';
+import RaceNewShuffle from '@/components/RaceNewShuffle';
+import { raceConfig, Round, RoundSeeding } from '@/kings';
+import { createRound } from '@/kings/utils';
 
 const meta = {
   title: 'Kings/RaceNewShuffle',

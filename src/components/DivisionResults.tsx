@@ -11,7 +11,7 @@ import {
   useTheme,
 } from "@suid/material";
 import { For, Show } from "solid-js";
-import { Result } from "../kings";
+import { Result } from "@/kings";
 
 type LeagueProps = {
   results: Result[];

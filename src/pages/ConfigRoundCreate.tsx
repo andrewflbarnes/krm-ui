@@ -1,9 +1,9 @@
 import { Button, Typography } from "@suid/material";
 import { createSignal, Show } from "solid-js";
-import CustomRoundResults from "../components/CustomRoundResults";
-import CustomRoundStage from "../components/CustomRoundStage";
-import { ConfigState } from "../hooks/create-config";
-import { isStage } from "../kings/utils";
+import CustomRoundResults from "@/components/CustomRoundResults";
+import CustomRoundStage from "@/components/CustomRoundStage";
+import { ConfigState } from "@/hooks/create-config";
+import { isStage } from "@/kings/utils";
 
 const conf: {
   [state in ConfigState]: {

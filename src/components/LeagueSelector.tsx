@@ -1,7 +1,7 @@
-import { useKings } from "../hooks/kings";
-import { leagues, leagueConfigs } from "../kings";
-import { type League } from "../kings";
-import Selector from "../ui/Selector";
+import { useKings } from "@/hooks/kings";
+import { leagues, leagueConfigs } from "@/kings";
+import { type League } from "@/kings";
+import Selector from "@/ui/Selector";
 
 export default function LeagueSelector(props: { fullWidth?: boolean }) {
   const [k, { setLeague }] = useKings()

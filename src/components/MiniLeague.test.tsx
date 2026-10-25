@@ -1,8 +1,8 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render } from '@solidjs/testing-library'
-import MiniLeague from './MiniLeague';
-import { initRaces, initTeams } from '../test';
-import { miniLeagueTemplates, Race } from '../kings';
+import MiniLeague from '@/components/MiniLeague';
+import { initRaces, initTeams } from '@/test';
+import { miniLeagueTemplates, Race } from '@/kings';
 import { createSignal } from 'solid-js';
 import userEvent from '@testing-library/user-event';
 

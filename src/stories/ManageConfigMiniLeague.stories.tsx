@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import ManageConfigMiniLeague from '../components/ManageConfigMiniLeague';
-import { MiniLeagueTemplate } from '../kings';
+import ManageConfigMiniLeague from '@/components/ManageConfigMiniLeague';
+import { MiniLeagueTemplate } from '@/kings';
 
 const meta = {
   title: 'Kings/ManageConfigMiniLeague',

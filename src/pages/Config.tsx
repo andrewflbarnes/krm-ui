@@ -2,8 +2,8 @@ import { useCurrentMatches, useNavigate } from "@solidjs/router";
 import { ArrowBack, Assignment, CircleOutlined, Create, DownhillSkiing, EmojiEvents, ListAlt, TaskAlt } from "@suid/icons-material";
 import { Box, Button, Typography } from "@suid/material";
 import { createMemo, For, JSX, ParentProps, Show } from "solid-js";
-import { useFeatureFlags } from "../hooks/flags";
-import ButtonCard from "../ui/ButtonCard";
+import { useFeatureFlags } from "@/hooks/flags";
+import ButtonCard from "@/ui/ButtonCard";
 
 const basePath = "/config"
 

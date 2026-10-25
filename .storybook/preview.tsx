@@ -1,8 +1,8 @@
 import { Paper, ThemeProvider } from '@suid/material';
 import { createComputed } from 'solid-js';
 import { createJSXDecorator, Preview } from 'storybook-solidjs-vite';
-import "../src/utils/stringutils"
-import { useKingsTheme } from '../src/theme';
+import "@/utils/stringutils"
+import { useKingsTheme } from '@/theme';
 
 const preview: Preview = {
   parameters: {

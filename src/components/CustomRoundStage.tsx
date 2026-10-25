@@ -2,15 +2,15 @@ import { Delete, InfoOutlined, WarningAmberRounded } from "@suid/icons-material"
 import { Button, IconButton, Paper, TextField, Typography } from "@suid/material"
 import { createMemo, createSignal, FlowProps, For, JSX, Show } from "solid-js"
 import { ChangeEventHandler } from '@suid/types'
-import { ConfigMinileague, SeedInfo, useCreateRoundConfig } from "../hooks/create-config"
-import { MiniLeagueTemplate, miniLeagueTemplates, RaceStage } from "../kings"
-import KingsModal from "../ui/KingsModal"
-import ModalConfirmAction from "../ui/ModalConfirmAction"
-import Selector from "../ui/Selector"
-import ManageConfigMiniLeague from "./ManageConfigMiniLeague"
+import { ConfigMinileague, SeedInfo, useCreateRoundConfig } from "@/hooks/create-config"
+import { MiniLeagueTemplate, miniLeagueTemplates, RaceStage } from "@/kings"
+import KingsModal from "@/ui/KingsModal"
+import ModalConfirmAction from "@/ui/ModalConfirmAction"
+import Selector from "@/ui/Selector"
+import ManageConfigMiniLeague from "@/components/ManageConfigMiniLeague"
 import { Dynamic } from "solid-js/web"
-import { asPosition } from "../kings"
-import PopoverIconButton from "../ui/PopoverIconButton"
+import { asPosition } from "@/kings"
+import PopoverIconButton from "@/ui/PopoverIconButton"
 
 export default function CustomRoundStage(props: {
   stage: RaceStage;

@@ -1,10 +1,10 @@
 import { Box, Card, CardContent, IconButton, Modal, Stack } from "@suid/material";
-import { useKings } from "../hooks/kings";
-import ConfigActions from "../components/ConfigActions";
-import ConfigClubs from "../components/ConfigClubs";
+import { useKings } from "@/hooks/kings";
+import ConfigActions from "@/components/ConfigActions";
+import ConfigClubs from "@/components/ConfigClubs";
 import { createSignal, Show } from "solid-js";
 import { Construction, Settings } from "@suid/icons-material";
-import ButtonCard from "../ui/ButtonCard";
+import ButtonCard from "@/ui/ButtonCard";
 
 export default function TeamConfig() {
   const [k] = useKings()

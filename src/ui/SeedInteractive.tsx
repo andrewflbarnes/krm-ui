@@ -1,7 +1,7 @@
 import { Box, Theme } from "@suid/material";
 import { JSX } from "solid-js";
-import { Division } from "../kings";
-import Seed from "../ui/Seed";
+import { Division } from "@/kings";
+import Seed from "@/ui/Seed";
 
 export default function SeedInteractive(props: {
   team: string;

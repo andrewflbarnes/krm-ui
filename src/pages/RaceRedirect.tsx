@@ -1,7 +1,7 @@
 import { useNavigate } from "@solidjs/router"
 import { Typography } from "@suid/material"
 import { createEffect, Match, Switch } from "solid-js"
-import { useRaceOptions } from "../hooks/results"
+import { useRaceOptions } from "@/hooks/results"
 
 export default function RaceRedirect() {
   const { useRound, setStage } = useRaceOptions()

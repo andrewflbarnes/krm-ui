@@ -1,6 +1,6 @@
 import { Box, Card, Typography } from "@suid/material";
 import { JSX, Show } from "solid-js";
-import { Division, RaceStage } from "../kings/types";
+import { Division, RaceStage } from "@/kings/types";
 
 type GroupCardProps = {
   name: string;

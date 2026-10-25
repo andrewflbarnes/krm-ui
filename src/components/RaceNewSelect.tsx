@@ -1,7 +1,7 @@
 import { Box, Card, CardContent, Chip, Stack, Typography } from "@suid/material"
 import { For } from "solid-js"
-import { ClubSeeding, Division, divisions } from "../kings"
-import NumberField from "../ui/NumberField"
+import { ClubSeeding, Division, divisions } from "@/kings"
+import NumberField from "@/ui/NumberField"
 
 type ComponentProps = {
   config: ClubSeeding;

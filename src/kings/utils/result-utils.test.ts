@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { kingsPoints, parseResults } from './result-utils';
-import { LeagueData } from '../types';
+import { kingsPoints, parseResults } from '@/kings/utils/result-utils';
+import { LeagueData } from '@/kings/types';
 
 describe("kingsPoints", () => {
   const testPositions = (division: string, start: number[], restFrom: number, min: number) => {

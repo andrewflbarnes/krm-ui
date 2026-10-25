@@ -1,5 +1,8 @@
 import path from 'path';
+import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from 'storybook-solidjs-vite';
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 const getAbsolutePath = (packageName: string): string =>
     path.dirname(import.meta.resolve(path.join(packageName, 'package.json'))).replace(/^file:\/\//, '');
@@ -27,6 +30,11 @@ const config: StorybookConfig = {
     if (configType === "PRODUCTION") {
       config.base = "/krm-ui-storybook/";
     }
+    config.resolve = config.resolve ?? {};
+    config.resolve.alias = {
+      ...(config.resolve.alias as Record<string, string>),
+      "@": path.resolve(__dirname, "../src"),
+    };
     return config
   },
   framework: {

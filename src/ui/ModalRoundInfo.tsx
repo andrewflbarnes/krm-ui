@@ -1,9 +1,9 @@
 import { Button, CardActions, CardContent, CardHeader, Typography } from "@suid/material";
 import { useQuery } from "@tanstack/solid-query";
 import { Match, Switch } from "solid-js";
-import { type RoundInfo } from "../kings/engine";
-import KingsModal from "./KingsModal";
-import { getUser } from "../api/persistence";
+import { type RoundInfo } from "@/kings/engine";
+import KingsModal from "@/ui/KingsModal";
+import { getUser } from "@/api/persistence";
 
 type ModalRoundInfoProps = {
   open: boolean;

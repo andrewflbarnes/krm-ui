@@ -1,6 +1,6 @@
 import { Box, Button, Card, CardActions, CardContent, Chip, TextField, Typography } from "@suid/material";
 import { untrack, createSignal, For } from "solid-js";
-import { Result } from "../kings";
+import { Result } from "@/kings";
 
 export type ToEdit = {
   division: string;

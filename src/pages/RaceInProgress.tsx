@@ -1,14 +1,14 @@
 import { Match, Switch, Show } from "solid-js";
-import RunRaceInProgressStage from "../components/RunRaceInProgressStage";
-import BasicErrorBoundary from "../ui/BasicErrorBoundary";
-import RunRaceInProgressHeader from "../components/RunRaceInProgressHeader";
-import RunRaceResults from "../components/RunRaceResults";
+import RunRaceInProgressStage from "@/components/RunRaceInProgressStage";
+import BasicErrorBoundary from "@/ui/BasicErrorBoundary";
+import RunRaceInProgressHeader from "@/components/RunRaceInProgressHeader";
+import RunRaceResults from "@/components/RunRaceResults";
 import { Alert, Box, Button, Typography } from "@suid/material";
-import { stages, useRaceOptions } from "../hooks/results";
-import { isStage } from "../kings/utils";
-import { useAuth } from "../hooks/auth";
-import { useBreadcrumberUpdate } from "../hooks/breadcrumb";
-import { useKings } from "../hooks/kings";
+import { stages, useRaceOptions } from "@/hooks/results";
+import { isStage } from "@/kings/utils";
+import { useAuth } from "@/hooks/auth";
+import { useBreadcrumberUpdate } from "@/hooks/breadcrumb";
+import { useKings } from "@/hooks/kings";
 
 export default function RaceInProgress() {
   return (

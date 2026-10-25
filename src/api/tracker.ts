@@ -1,4 +1,4 @@
-import { LeagueData } from "../kings"
+import { LeagueData } from "@/kings"
 
 export default {
   getLeagueData,

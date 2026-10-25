@@ -1,10 +1,10 @@
 import { Box, Paper, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import { MiniLeagueTemplate } from "../kings";
-import { minileagueRaces } from "../kings/utils";
-import NumberBadge from "../ui/NumberBadge";
-import ValidIcon from "../ui/ValidIcon";
-import MiniLeague from "./MiniLeague";
+import { MiniLeagueTemplate } from "@/kings";
+import { minileagueRaces } from "@/kings/utils";
+import NumberBadge from "@/ui/NumberBadge";
+import ValidIcon from "@/ui/ValidIcon";
+import MiniLeague from "@/components/MiniLeague";
 
 type Props = {
   name: string;

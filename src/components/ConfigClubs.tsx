@@ -1,10 +1,10 @@
 import { Box, Divider, List, ListItem, ListItemButton, ListItemText, Modal, Paper, Typography } from "@suid/material";
 import { createComputed, createSignal, For, on, ParentProps, Show } from "solid-js";
-import { LeagueData, Result } from "../kings";
-import { parseResults } from "../kings/utils";
-import ConfigEditTeam, { ToEdit } from "./ConfigEditTeam";
-import DivisionResultsAll from "./DivisionResultsAll";
-import ModalConfirmAction from "../ui/ModalConfirmAction";
+import { LeagueData, Result } from "@/kings";
+import { parseResults } from "@/kings/utils";
+import ConfigEditTeam, { ToEdit } from "@/components/ConfigEditTeam";
+import DivisionResultsAll from "@/components/DivisionResultsAll";
+import ModalConfirmAction from "@/ui/ModalConfirmAction";
 
 export default function ConfigClubs(props: ParentProps<{ data: LeagueData }>) {
   const [club, setClub] = createSignal("all")

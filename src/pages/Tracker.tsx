@@ -1,4 +1,4 @@
-import tracker from "../api/tracker";
+import tracker from "@/api/tracker";
 import {
   Box,
   Card,
@@ -10,10 +10,10 @@ import { Match, ParentProps, Switch } from "solid-js";
 import { Suspense } from "solid-js";
 import { useQuery } from "@tanstack/solid-query";
 import { OpenInNew } from "@suid/icons-material";
-import { parseResults } from "../kings/utils";
-import { LeagueData } from "../kings";
-import { useKings } from "../hooks/kings";
-import DivisionResultsAll from "../components/DivisionResultsAll";
+import { parseResults } from "@/kings/utils";
+import { LeagueData } from "@/kings";
+import { useKings } from "@/hooks/kings";
+import DivisionResultsAll from "@/components/DivisionResultsAll";
 
 const immediateError = (message: string) => {
   const error = new Error(message);

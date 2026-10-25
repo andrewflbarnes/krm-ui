@@ -1,4 +1,4 @@
-import { flagAtomWithStorage } from "../utils/jotai-utils";
+import { flagAtomWithStorage } from "@/utils/jotai-utils";
 
 const useDeveloperFlag = flagAtomWithStorage("krm-pref-developer", "developer")
 const useExperimentalFlag = flagAtomWithStorage("krm-pref-experimental", "experimental")

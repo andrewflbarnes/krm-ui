@@ -1,8 +1,8 @@
 import { useCurrentMatches } from "@solidjs/router";
 import { Breadcrumbs, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import { useBreadcrumber } from "../hooks/breadcrumb";
-import Link from "./Link";
+import { useBreadcrumber } from "@/hooks/breadcrumb";
+import Link from "@/components/Link";
 
 export default function KrmBreadcrumbs() {
   const [breadcrumber] = useBreadcrumber();

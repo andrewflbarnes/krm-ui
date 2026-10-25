@@ -1,9 +1,9 @@
 import { ErrorBoundary, JSXElement, Match, onCleanup, onMount, ParentProps, Suspense, Switch } from "solid-js"
-import { useKings } from "../hooks/kings";
-import { useRaceOptions } from "../hooks/results"
+import { useKings } from "@/hooks/kings";
+import { useRaceOptions } from "@/hooks/results"
 import { Box, Card, CardContent, CircularProgress, Typography } from "@suid/material"
 import { SearchOff } from "@suid/icons-material"
-import ErrorCard from "../ui/ErrorCard"
+import ErrorCard from "@/ui/ErrorCard"
 
 function StateCard(props: { icon: JSXElement, title: string, body: string }) {
   return (

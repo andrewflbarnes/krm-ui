@@ -1,8 +1,8 @@
 import { ParentProps } from "solid-js"
-import AppBar from "./components/AppBar"
-import AppFooter from "./components/AppFooter"
+import AppBar from "@/components/AppBar"
+import AppFooter from "@/components/AppFooter"
 import { Box, Paper, useTheme } from "@suid/material"
-import triangles from "./assets/triangles.png"
+import triangles from "@/assets/triangles.png"
 
 export default function AppLayout(props: ParentProps<{
   onModeChange: () => void;

@@ -1,10 +1,10 @@
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery, CardHeader } from "@suid/material";
 import { LocationOn, Notes } from "@suid/icons-material";
-import { useKings } from "../hooks/kings";
-import ExpandMoreLess from "../ui/ExpandMoreLess";
+import { useKings } from "@/hooks/kings";
+import ExpandMoreLess from "@/ui/ExpandMoreLess";
 import { Collapse } from "solid-collapse";
-import styles from "./RaceNewDetail.module.css";
+import styles from "@/components/RaceNewDetail.module.css";
 
 export type Details = {
   description: string;

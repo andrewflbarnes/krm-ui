@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { RoundConfig } from '../../types';
+import { RoundConfig } from '@/kings/types';
 
 type Configuration = {
   [k: number]: RoundConfig;

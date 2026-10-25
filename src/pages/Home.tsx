@@ -1,11 +1,11 @@
 import { Box, Button, Divider, Stack, Typography } from "@suid/material";
-import { useKings } from "../hooks/kings";
-import krmEngine from "../kings/engine";
+import { useKings } from "@/hooks/kings";
+import krmEngine from "@/kings/engine";
 import { useNavigate } from "@solidjs/router";
 import { createEffect, createSignal, on, Show } from "solid-js";
-import ModalConfirmAction from "../ui/ModalConfirmAction";
-import notification from "../hooks/notification"
-import { useFeatureFlags } from "../hooks/flags";
+import ModalConfirmAction from "@/ui/ModalConfirmAction";
+import notification from "@/hooks/notification"
+import { useFeatureFlags } from "@/hooks/flags";
 
 function getRounds(league: string) {
   try {

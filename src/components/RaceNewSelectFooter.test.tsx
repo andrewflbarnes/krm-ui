@@ -1,9 +1,9 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render as renderBase, within } from '@solidjs/testing-library'
-import RaceNewSelectFooter from './RaceNewSelectFooter';
-import { ClubSeeding } from '../kings';
+import RaceNewSelectFooter from '@/components/RaceNewSelectFooter';
+import { ClubSeeding } from '@/kings';
 import userEvent from '@testing-library/user-event';
-import RenderHarness from '../test/render-harness';
+import RenderHarness from '@/test/render-harness';
 
 const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].reduce((acc, club) => {
   acc[club] = {

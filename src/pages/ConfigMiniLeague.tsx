@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { DownhillSkiing } from "@suid/icons-material";
 import { ComponentProps, createMemo } from "solid-js";
-import ManageConfigMiniLeague from "../components/ManageConfigMiniLeague";
-import { useCustomMinileagues } from "../hooks/custom-config";
-import { miniLeagueTemplates, MiniLeagueTemplate } from "../kings";
-import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
+import ManageConfigMiniLeague from "@/components/ManageConfigMiniLeague";
+import { useCustomMinileagues } from "@/hooks/custom-config";
+import { miniLeagueTemplates, MiniLeagueTemplate } from "@/kings";
+import ConfigLayout, { SidebarItem, SidebarSection } from "@/ui/ConfigLayout";
 import { Chip } from "@suid/material";
 
 type StructureLabel = {

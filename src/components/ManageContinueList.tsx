@@ -1,10 +1,10 @@
 import { createSignal } from "solid-js";
-import ModalConfirmAction from "../ui/ModalConfirmAction";
-import krmEngine, { type RoundInfo } from "../kings/engine";
+import ModalConfirmAction from "@/ui/ModalConfirmAction";
+import krmEngine, { type RoundInfo } from "@/kings/engine";
 import download from "downloadjs";
-import { useAuth } from "../hooks/auth";
-import ModalRoundInfo from "../ui/ModalRoundInfo";
-import RoundInfoList from "../ui/RoundInfoList";
+import { useAuth } from "@/hooks/auth";
+import ModalRoundInfo from "@/ui/ModalRoundInfo";
+import RoundInfoList from "@/ui/RoundInfoList";
 import { Box } from "@suid/material";
 
 type ManageContinueListProps = {

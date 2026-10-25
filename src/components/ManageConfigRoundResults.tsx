@@ -1,8 +1,8 @@
 import { Box, Paper, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import { divisions, RoundResult } from "../kings";
-import { kingsPoints } from "../kings/utils";
-import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
+import { divisions, RoundResult } from "@/kings";
+import { kingsPoints } from "@/kings/utils";
+import RankBadge, { RANK_ACCENT } from "@/ui/RankBadge";
 
 const GRID_COLS = "56px 1fr repeat(3, 60px)";
 

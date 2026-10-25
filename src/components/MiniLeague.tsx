@@ -1,10 +1,10 @@
 import { Box, Chip, Menu, MenuItem, Typography, useTheme } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
-import { Race } from "../kings";
-import { calcTeamResults, collapseRaces } from "../kings/utils";
-import RaceResultIcon from "../ui/RaceResultIcon";
-import { RANK_GRADIENT } from "../ui/RankBadge";
-import Selector from "../ui/Selector";
+import { Race } from "@/kings";
+import { calcTeamResults, collapseRaces } from "@/kings/utils";
+import RaceResultIcon from "@/ui/RaceResultIcon";
+import { RANK_GRADIENT } from "@/ui/RankBadge";
+import Selector from "@/ui/Selector";
 
 const CELL_SIZE = "2em";
 const BORDER = "2px solid";

@@ -1,4 +1,4 @@
-import { League, LeagueData, Race, RoundConfig, RoundSeeding, Round, RaceStage, Stage, MiniLeagueTemplate } from "../types"
+import { League, LeagueData, Race, RoundConfig, RoundSeeding, Round, RaceStage, Stage, MiniLeagueTemplate } from "@/kings/types"
 
 export type CustomConfig<T> = {
   configs: {

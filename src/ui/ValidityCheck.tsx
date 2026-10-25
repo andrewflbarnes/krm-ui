@@ -1,6 +1,6 @@
 import { Typography } from "@suid/material";
 import { ParentProps } from "solid-js";
-import ValidIcon from "./ValidIcon";
+import ValidIcon from "@/ui/ValidIcon";
 
 export default function ValidityCheck(props: ParentProps<{
   valid: boolean;

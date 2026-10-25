@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { calcTeamResults, checkStage, collapseRaces, createRound, isStage, minileagueRaces, orderSeeds } from "./round-utils";
-import type { Division, LeagueData, MiniLeagueTemplate, Race, RoundConfig } from "../types";
+import { calcTeamResults, checkStage, collapseRaces, createRound, isStage, minileagueRaces, orderSeeds } from "@/kings/utils/round-utils";
+import type { Division, LeagueData, MiniLeagueTemplate, Race, RoundConfig } from "@/kings/types";
 
 const testTemplate3: MiniLeagueTemplate = {
   teams: 3,

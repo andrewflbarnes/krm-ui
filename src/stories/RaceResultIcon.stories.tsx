@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import RaceResultIcon from '../ui/RaceResultIcon';
+import RaceResultIcon from '@/ui/RaceResultIcon';
 
 const meta = {
   title: 'ui/RaceResultIcon',

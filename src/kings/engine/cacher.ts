@@ -1,5 +1,5 @@
-import type { League, LeagueData, Round } from "../"
-import { leagues } from "../"
+import type { League, LeagueData, Round } from "@/kings"
+import { leagues } from "@/kings"
 
 export default (function() {
   function getStorageKeyRounds() {

@@ -1,7 +1,7 @@
 import { createPalette, createTheme } from "@suid/material";
 import { createMemo } from "solid-js";
 import { lightBlue } from "@suid/material/colors";
-import { initialisableAtomWithStorage } from "./utils/jotai-utils";
+import { initialisableAtomWithStorage } from "@/utils/jotai-utils";
 
 type ThemeMode = "dark" | "light"
 

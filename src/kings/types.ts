@@ -1,5 +1,5 @@
-import type { Division, League } from "./config";
-export type { Division, League } from "./config";
+import type { Division, League } from "@/kings/config";
+export type { Division, League } from "@/kings/config";
 
 export type RaceStage = "stage1" | "stage2" | "knockout";
 export type Stage = RaceStage | "complete";

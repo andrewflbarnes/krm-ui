@@ -1,4 +1,4 @@
-import { Race } from "../kings"
+import { Race } from "@/kings"
 
 export const races: Race[] = [
   { group: "1st/2nd", team1: "Bath 1", team2: "Bristol 1", teamMlIndices: [0, 1], division: "mixed", stage: "stage1", groupRace: 0, },

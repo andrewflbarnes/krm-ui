@@ -1,7 +1,7 @@
 
 import { describe, expect, it } from 'vitest';
-import { AccResult, combineResults, Results } from './html-utils';
-import { LeagueData } from '../types';
+import { AccResult, combineResults, Results } from '@/kings/utils/html-utils';
+import { LeagueData } from '@/kings/types';
 
 const zeroes = {
   r1: 0,

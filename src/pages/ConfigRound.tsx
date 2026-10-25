@@ -1,10 +1,10 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Tune } from "@suid/icons-material";
 import { ComponentProps, createMemo } from "solid-js";
-import ManageConfigRound from "../components/ManageConfigRound";
-import { useCustomRounds } from "../hooks/custom-config";
-import { raceConfig, RoundConfig } from "../kings";
-import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
+import ManageConfigRound from "@/components/ManageConfigRound";
+import { useCustomRounds } from "@/hooks/custom-config";
+import { raceConfig, RoundConfig } from "@/kings";
+import ConfigLayout, { SidebarItem, SidebarSection } from "@/ui/ConfigLayout";
 import { Chip } from "@suid/material";
 
 type Tier = {

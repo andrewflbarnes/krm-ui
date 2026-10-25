@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { asKnockoutPosition, asPosition } from "./core-utils";
+import { asKnockoutPosition, asPosition } from "@/kings/core-utils";
 
 describe("round-utils", () => {
   describe("asPosition", () => {

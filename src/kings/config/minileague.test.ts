@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { miniLeagueTemplates } from './minileague';
+import { miniLeagueTemplates } from '@/kings/config/minileague';
 
 describe.each(Object.entries(miniLeagueTemplates))('mini league template %s', (name, template) => {
   const numTeams = template.teams

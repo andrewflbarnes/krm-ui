@@ -1,10 +1,10 @@
 import { Box, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import type { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RaceStage, RoundConfig, RoundResult } from "../kings/types";
-import { asPosition, minileagueRaces } from "../kings";
-import ManageConfigRoundResults from "./ManageConfigRoundResults";
-import Seed from "../ui/Seed";
-import StageCard from "../ui/StageCard";
+import type { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RaceStage, RoundConfig, RoundResult } from "@/kings/types";
+import { asPosition, minileagueRaces } from "@/kings";
+import ManageConfigRoundResults from "@/components/ManageConfigRoundResults";
+import Seed from "@/ui/Seed";
+import StageCard from "@/ui/StageCard";
 
 const mockRaces = (name: string, template: MiniLeagueTemplate, teams: string[]) => minileagueRaces(template, teams, name, "stage1", "mixed")
 

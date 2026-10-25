@@ -1,7 +1,7 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render as renderBase } from '@solidjs/testing-library'
-import RaceNewSelect from './RaceNewSelect';
-import { ClubSeeding } from '../kings';
+import RaceNewSelect from '@/components/RaceNewSelect';
+import { ClubSeeding } from '@/kings';
 
 const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].reduce((acc, club) => {
   acc[club] = {

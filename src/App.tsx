@@ -1,10 +1,10 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/solid-query";
-import { BreadcrumberProvider } from "./hooks/breadcrumb";
-import { KingsProvider } from "./hooks/kings";
+import { BreadcrumberProvider } from "@/hooks/breadcrumb";
+import { KingsProvider } from "@/hooks/kings";
 import { Route, Router } from "@solidjs/router";
 import { lazy, ParentProps } from "solid-js";
 import { ThemeProvider } from "@suid/material";
-import AppLayout from "./AppLayout";
+import AppLayout from "@/AppLayout";
 const Home = lazy(() => import("./pages/Home"));
 const Config = lazy(() => import("./pages/Config"));
 const ConfigMiniLeague = lazy(() => import("./pages/ConfigMiniLeague"));
@@ -22,9 +22,9 @@ const RaceInProgress = lazy(() => import("./pages/RaceInProgress"));
 const RaceRedirect = lazy(() => import("./pages/RaceRedirect"));
 const Status404 = lazy(() => import("./pages/Status404"));
 import { Toaster } from "solid-toast";
-import "./utils/stringutils";
-import { AuthProvider } from "./hooks/auth";
-import { useKingsTheme } from "./theme";
+import "@/utils/stringutils";
+import { AuthProvider } from "@/hooks/auth";
+import { useKingsTheme } from "@/theme";
 
 const queryClient = new QueryClient()
 

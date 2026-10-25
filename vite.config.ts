@@ -3,6 +3,8 @@ import suidPlugin from "@suid/vite-plugin";
 import solidPlugin from "vite-plugin-solid";
 import { VitePWA } from "vite-plugin-pwa";
 import { ServerResponse } from "node:http";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 const environment = (process.env.NODE_ENV || "development") === "production"
  ? ""
@@ -11,6 +13,11 @@ const version = JSON.stringify(`${process.env.npm_package_version}${environment}
 
 export default defineConfig({
   base: "/krm-ui",
+  resolve: {
+    alias: {
+      "@": path.resolve(path.dirname(fileURLToPath(import.meta.url)), "./src"),
+    },
+  },
   plugins: [
     suidPlugin(),
     solidPlugin(),

@@ -17,9 +17,9 @@ import {
 } from "@suid/material";
 import { ClerkLoaded, SignedIn, SignedOut, SignInButton, UserButton } from "clerk-solidjs";
 import { createMemo, createSignal, For, JSX, ParentProps, Show } from "solid-js";
-import { useFeatureFlags } from "../hooks/flags";
-import LeagueSelector from "./LeagueSelector";
-import { useAuth } from "../hooks/auth";
+import { useFeatureFlags } from "@/hooks/flags";
+import LeagueSelector from "@/components/LeagueSelector";
+import { useAuth } from "@/hooks/auth";
 
 type NavItem = { name: string; href: string; icon: JSX.Element }
 

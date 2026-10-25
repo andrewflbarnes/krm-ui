@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import ValidityCheck from '../ui/ValidityCheck';
+import ValidityCheck from '@/ui/ValidityCheck';
 
 const meta = {
   title: 'ui/ValidityCheck',
