@@ -71,6 +71,7 @@ function FirebaseProvider(props: ParentProps) {
         console.error("Failed to persist user info", e)
         notification.warning(`Failed to save user info: ${e.message}`)
       })
+      return serialised
     }
     return saved
   }, false)
