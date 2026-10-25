@@ -11,6 +11,7 @@ import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "@/ui/BasicErrorBoundary"
 import { Construction, OpenInNew } from "@suid/icons-material"
 import RaceNewShuffle from "@/components/RaceNewShuffle"
+import { initialisableAtomWithStorage } from "@/utils/jotai-utils"
 
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
@@ -35,7 +36,13 @@ function RaceNewInternal() {
   const [k, { addLeagueTeams, isConfigLoaded, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
-  const [numTeams, setNumTeams] = createSignal<ClubSeeding>(initConfig(k.leagueConfig()))
+  //const [numTeams, setNumTeams] = createSignal<ClubSeeding>(initConfig(k.leagueConfig()))
+  const useTeamsAtom = initialisableAtomWithStorage<ClubSeeding>(
+    "race-new-num-teams",
+    initConfig(k.leagueConfig()),
+  )
+  const [numTeams, setNumTeams] = useTeamsAtom()
+
   createEffect(on([k.leagueConfig, k.league], ([newConfig, newLeague], _, prevLeague) => {
     batch(() => {
       setNumTeams(numTeams => {
