@@ -1,7 +1,8 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
-const RaceNewSetup = lazy(() => import("../components/RaceNewSetup"))
-const RaceNewSeeding = lazy(() => import("../components/RaceNewSeeding"))
+const RaceNewSetup = lazy(() => import("@/components/RaceNewSetup"))
+const RaceNewSeeding = lazy(() => import("@/components/RaceNewSeeding"))
+const RaceNewShuffle = lazy(() => import("@/components/RaceNewShuffle"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "@/kings"
 import { useKings } from "@/hooks/kings";
 import krmEngine, { type RoundDetails } from "@/kings/engine"
@@ -10,7 +11,6 @@ import { createRound, orderSeeds } from "@/kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "@/ui/BasicErrorBoundary"
 import { Construction, OpenInNew } from "@suid/icons-material"
-import RaceNewShuffle from "@/components/RaceNewShuffle"
 import { initialisableAtomWithStorage } from "@/utils/jotai-utils"
 
 function initConfig(leagueConfig?: LeagueData) {
@@ -36,12 +36,7 @@ function RaceNewInternal() {
   const [k, { addLeagueTeams, isConfigLoaded, lock, unlock }] = useKings()
   onCleanup(() => unlock())
 
-  //const [numTeams, setNumTeams] = createSignal<ClubSeeding>(initConfig(k.leagueConfig()))
-  const useTeamsAtom = initialisableAtomWithStorage<ClubSeeding>(
-    "race-new-num-teams",
-    initConfig(k.leagueConfig()),
-  )
-  const [numTeams, setNumTeams] = useTeamsAtom()
+  const [numTeams, setNumTeams] = useNumTeams(k.leagueConfig())
 
   createEffect(on([k.leagueConfig, k.league], ([newConfig, newLeague], _, prevLeague) => {
     batch(() => {
@@ -352,4 +347,30 @@ function CallToLoadConfig() {
       </Box>
     </Stack>
   )
+}
+
+function useNumTeams(leagueConfig: LeagueData) {
+  const initialConfig = initConfig(leagueConfig)
+  const useTeamsAtom = initialisableAtomWithStorage<ClubSeeding>(
+    "race-new-num-teams",
+    initialConfig,
+  )
+  const [getter, setter] = useTeamsAtom()
+  setter(prev => {
+    try {
+      const next = {
+        ...initialConfig,
+      }
+      for (const club of Object.keys(initialConfig)) {
+        if (prev[club]) {
+          next[club] = prev[club]
+        }
+      }
+      return next
+    } catch (e) {
+      console.error("Failed to merge previous config", prev, initialConfig, e)
+      return initialConfig
+    }
+  })
+  return [getter, setter] as const
 }
