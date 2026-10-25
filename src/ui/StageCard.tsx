@@ -1,7 +1,7 @@
 import { For, JSX, ParentProps, Show } from "solid-js";
 import { Box, Chip, Paper, Typography } from "@suid/material";
-import { BaseColor } from "../theme";
 import GroupCard from "./GroupCard";
+import { Division, RaceStage } from "../kings/types";
 
 type StageCardProps<T> = {
   title: string;
@@ -9,7 +9,7 @@ type StageCardProps<T> = {
   subtitle?: string;
   groups: ReadonlyArray<T>;
   namer: (group: T) => string;
-  accent: BaseColor;
+  type: Division | RaceStage;
   responsive?: boolean;
   children: (group: T) => JSX.Element;
 };
@@ -25,7 +25,7 @@ export default function StageCard<T>(props: StageCardProps<T>) {
       }}
     >
       <Box sx={{
-        bgcolor: `${props.accent}.main`,
+        bgcolor: `${props.type}.main`,
         px: 2,
         py: 1.25,
         display: "flex",
@@ -67,7 +67,7 @@ export default function StageCard<T>(props: StageCardProps<T>) {
           return (
             <GroupCard
               name={props.namer(group)}
-              accent={props.accent}
+              type={props.type}
             >
               {props.children(group)}
             </GroupCard>

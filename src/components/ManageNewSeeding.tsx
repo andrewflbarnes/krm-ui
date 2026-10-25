@@ -2,7 +2,6 @@ import { Box, IconButton, Typography } from "@suid/material"
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js"
 import { Division, RoundSeeding } from "../kings"
 import StageCard from "../ui/StageCard"
-import { DIVISION_ACCENT } from "../theme"
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay } from "@thisbeyond/solid-dnd"
 import SeedInteractive from "../ui/SeedInteractive"
 import { North, Replay, South } from "@suid/icons-material"
@@ -89,7 +88,7 @@ export default function ManageNewSeeding(props: {
                   </IconButton>
                 </Show>
               }
-              accent={DIVISION_ACCENT[division].text}
+              type={division}
               groups={[teams]}
             >{(group) => {
               const [seeding, setSeeding] = createSignal(group.map((team, i) => ({

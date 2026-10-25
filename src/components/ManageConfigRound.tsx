@@ -1,9 +1,8 @@
 import { Box, Typography } from "@suid/material";
 import { createMemo, For, Show } from "solid-js";
-import { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RoundConfig, RoundResult } from "../kings";
+import type { MiniLeagueConfig, MiniLeagueSeed, MiniLeagueTemplate, RaceStage, RoundConfig, RoundResult } from "../kings/types";
 import { asPosition, minileagueRaces } from "../kings";
 import ManageConfigRoundResults from "./ManageConfigRoundResults";
-import { BaseColor, baseColors } from "../theme";
 import Seed from "../ui/Seed";
 import StageCard from "../ui/StageCard";
 
@@ -78,21 +77,21 @@ function Content(props: Props) {
         <ConfigStageCard
           title="Stage 1"
           groups={props.config.stage1}
-          accent={baseColors.primary.text}
+          stage="stage1"
           seeding
         />
         <Show when={props.config.stage2}>{(stage2) => (
           <ConfigStageCard
             title="Stage 2"
             groups={stage2()}
-            accent={baseColors.secondary.text}
+            stage="stage2"
           />
         )}</Show>
         <Show when={props.config.knockout}>{(ko) => (
           <ConfigStageCard
             title="Knockouts"
             groups={ko()}
-            accent={baseColors.teriary.text}
+            stage="knockout"
             knockout
           />
         )}</Show>
@@ -131,7 +130,7 @@ function Content(props: Props) {
 type ConfigStageCardProps = {
   title: string;
   groups: ReadonlyArray<MiniLeagueConfig>;
-  accent: BaseColor;
+  stage: RaceStage;
   knockout?: boolean;
   seeding?: boolean;
 }
@@ -147,12 +146,12 @@ function ConfigStageCard(props: ConfigStageCardProps) {
         title={props.title}
         groups={props.groups}
         namer={g => "Group " + g.name}
-        accent={props.accent}
+        type={props.stage}
       >{(group) => (
         <GroupCardDetails
           group={group}
           name={group.name}
-          accent={props.accent}
+          stage={props.stage}
           template={group.template}
           teams={group.seeds}
           knockout={props.knockout}
@@ -170,7 +169,7 @@ type GroupCardDetailsProps = {
   template: MiniLeagueTemplate;
   knockout?: boolean;
   seeding?: boolean;
-  accent: BaseColor;
+  stage: RaceStage;
 };
 
 function GroupCardDetails(props: GroupCardDetailsProps) {
@@ -186,7 +185,7 @@ function GroupCardDetails(props: GroupCardDetailsProps) {
       fallback={
         <Box sx={{ display: "flex", flexDirection: "column", gap: 0.5 }}>
           <For each={groupTeams()}>{(team, i) => (
-            <Seed team={team} num={i() + 1} accent={props.accent} />
+            <Seed team={team} num={i() + 1} accent={props.stage} />
           )}</For>
         </Box>
       }

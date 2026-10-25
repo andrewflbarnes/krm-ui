@@ -4,7 +4,6 @@ import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, Dr
 import { createMemo, createSignal, For, Show } from "solid-js";
 import { Division, Round, RoundConfig, RoundSeeding } from "../kings";
 import ModalConfirmAction from "../ui/ModalConfirmAction";
-import { DIVISION_ACCENT } from "../theme";
 import SeedInteractive from "../ui/SeedInteractive";
 import DragAnchor from "../ui/DragAnchor";
 import StageCard from "../ui/StageCard";
@@ -143,7 +142,7 @@ export default function ManageNewShuffle(props: ManageNewShuffleProps) {
                       <Replay fontSize="small" />
                     </IconButton>
                   }
-                  accent={DIVISION_ACCENT[division].text ?? "primary"}
+                  type={division}
                   groups={config.stage1}
                   namer={(group) => "Group " + group.name}
                 >{(group) => {

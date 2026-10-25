@@ -1,7 +1,6 @@
 import { batch, createEffect, createMemo, createSignal, For, Show } from "solid-js";
 import { Box, Chip, IconButton, InputAdornment, Paper, Stack, TextField, Typography } from "@suid/material"
 import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
-import { DIVISION_ACCENT } from "../theme";
 import PopoverButton from "../ui/PopoverButton";
 import { Add, ErrorOutlineRounded } from "@suid/icons-material";
 
@@ -116,7 +115,7 @@ export default function ManageNewSelectFooter(props: {
               <Typography variant="caption" sx={{ textTransform: "capitalize" }}>
                 {division}
               </Typography>
-              <Chip color={`${DIVISION_ACCENT[division].text}`} label={total()[division]} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
+              <Chip color={division} label={total()[division]} size="small" sx={{ width: 32, "& .MuiChip-label": { px: 0, textAlign: "center" } }} />
             </Stack>
           )}</For>
         </Box>

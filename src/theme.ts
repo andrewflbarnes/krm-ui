@@ -31,7 +31,7 @@ export const useKingsTheme = () => {
     }
   }
 
-  const dark = () => mode() === "dark";
+  const dark = createMemo(() => mode() === "dark");
 
   const palette = createMemo(() => {
     return createPalette({
@@ -43,7 +43,16 @@ export const useKingsTheme = () => {
   });
 
   const theme = createTheme({
-    palette: palette,
+    palette: {
+      mode: mode(),
+      stage1: palette().primary,
+      stage2: palette().secondary,
+      knockout: palette().error,
+      mixed: palette().primary,
+      ladies: palette().secondary,
+      board: palette().error,
+      tertiary: palette().error,
+    },
     shape: { borderRadius: 4 },
     typography: {
       h1: { fontWeight: 700, letterSpacing: "-1px" },
@@ -67,32 +76,3 @@ export const useKingsTheme = () => {
     setMode,
   }
 }
-
-export type BaseColor = 'primary' | 'secondary' | 'error' | 'info' | 'success' | 'warning' | 'default';
-
-export const baseColors = {
-  primary: {
-    text: "primary",
-    background: "primary.main",
-  },
-  secondary: {
-    text: "secondary",
-    background: "secondary.main",
-  },
-  teriary: {
-    text: "error",
-    background: "error.main",
-  }
-} as const
-
-export const STAGE_ACCENT = {
-  stage1: baseColors.primary,
-  stage2: baseColors.secondary,
-  knockout: baseColors.teriary,
-} as const;
-
-export const DIVISION_ACCENT = {
-  mixed: baseColors.primary,
-  ladies: baseColors.secondary,
-  board: baseColors.teriary,
-} as const;

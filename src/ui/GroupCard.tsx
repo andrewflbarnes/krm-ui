@@ -1,10 +1,10 @@
 import { Box, Card, Typography } from "@suid/material";
 import { JSX, Show } from "solid-js";
-import { BaseColor } from "../theme";
+import { Division, RaceStage } from "../kings/types";
 
 type GroupCardProps = {
   name: string;
-  accent: BaseColor;
+  type: Division | RaceStage;
   children: JSX.Element;
 }
 
@@ -13,7 +13,7 @@ export default function GroupCard(props: GroupCardProps) {
     <Card sx={{ borderRadius: 1.5, overflow: "hidden" }}>
       <Show when={props.name}>
         <Box sx={{ px: 1.5, py: 0.75, borderBottom: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", gap: 1 }}>
-          <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: `${props.accent}.main`, flexShrink: 0 }} />
+          <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: `${props.type}.main`, flexShrink: 0 }} />
           <Typography variant="overline" sx={{ fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.1em", lineHeight: 1 }}>
             {props.name}
           </Typography>

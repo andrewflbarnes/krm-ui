@@ -1,7 +1,6 @@
 import { Box, Theme } from "@suid/material";
 import { JSX } from "solid-js";
 import { Division } from "../kings";
-import { DIVISION_ACCENT } from "../theme";
 import Seed from "../ui/Seed";
 
 export default function SeedInteractive(props: {
@@ -14,7 +13,6 @@ export default function SeedInteractive(props: {
   startAdornment?: JSX.Element;
   endAdornment?: JSX.Element;
 }) {
-  const badgeColor = () => DIVISION_ACCENT[props.division].text
   return (
     <Box sx={{
       display: "flex",
@@ -32,7 +30,7 @@ export default function SeedInteractive(props: {
       transform: props.highlight ? "scale(1.015)" : "scale(1)",
     }}>
       {props.startAdornment}
-      <Seed team={props.team} accent={badgeColor()} num={props.seed} />
+      <Seed team={props.team} accent={props.division} num={props.seed} />
       {props.endAdornment}
     </Box>
   )

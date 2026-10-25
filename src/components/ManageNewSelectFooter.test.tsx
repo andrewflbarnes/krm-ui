@@ -3,6 +3,7 @@ import { render as renderBase, within } from '@solidjs/testing-library'
 import ManageNewSelectFooter from './ManageNewSelectFooter';
 import { ClubSeeding } from '../kings';
 import userEvent from '@testing-library/user-event';
+import RenderHarness from '../test/render-harness';
 
 const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].reduce((acc, club) => {
   acc[club] = {
@@ -16,10 +17,14 @@ const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol',
 
 const render = (numTeams: number = 0) => {
   const onUpdate = vi.fn();
-  const queries = renderBase(() => <ManageNewSelectFooter
-    onUpdate={onUpdate}
-    config={initialConfig(numTeams)}
-  />);
+  const queries = renderBase(() => (
+    <RenderHarness>
+      <ManageNewSelectFooter
+        onUpdate={onUpdate}
+        config={initialConfig(numTeams)}
+      />
+    </RenderHarness>
+  ));
 
   return {
     ...queries,

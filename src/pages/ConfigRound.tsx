@@ -1,11 +1,11 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { Tune } from "@suid/icons-material";
-import { createMemo } from "solid-js";
+import { ComponentProps, createMemo } from "solid-js";
 import ManageConfigRound from "../components/ManageConfigRound";
 import { useCustomRounds } from "../hooks/custom-config";
 import { raceConfig, RoundConfig } from "../kings";
 import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
-import { BaseColor, baseColors } from "../theme";
+import { Chip } from "@suid/material";
 
 type Tier = {
   label: string;
@@ -21,12 +21,12 @@ const TIERS: Tier[] = [
   { label: "Large", min: 17, max: 32, description: "17 – 32 teams" },
 ]
 
-function getComplexityLabel(config: RoundConfig): { label: string; color: BaseColor } {
+function getComplexityLabel(config: RoundConfig): { label: string; color: ComponentProps<typeof Chip>["color"] } {
   const hasKnockout = !!config.knockout?.length
   const hasStage2 = !!config.stage2?.length
-  if (hasKnockout) return { label: "knockout", color: baseColors.teriary.text }
-  if (hasStage2) return { label: "2-stage", color: baseColors.secondary.text }
-  return { label: "1-stage", color: baseColors.primary.text }
+  if (hasKnockout) return { label: "knockout", color: "knockout" }
+  if (hasStage2) return { label: "2-stage", color: "stage2" }
+  return { label: "1-stage", color: "stage1" }
 }
 
 function getGroupCount(config: RoundConfig): number {

@@ -1,24 +1,24 @@
 import { useNavigate, useParams } from "@solidjs/router";
 import { DownhillSkiing } from "@suid/icons-material";
-import { createMemo } from "solid-js";
+import { ComponentProps, createMemo } from "solid-js";
 import ManageConfigMiniLeague from "../components/ManageConfigMiniLeague";
 import { useCustomMinileagues } from "../hooks/custom-config";
 import { miniLeagueTemplates, MiniLeagueTemplate } from "../kings";
 import ConfigLayout, { SidebarItem, SidebarSection } from "../ui/ConfigLayout";
-import { BaseColor, baseColors } from "../theme";
+import { Chip } from "@suid/material";
 
 type StructureLabel = {
   label: string;
-  color: BaseColor;
+  color: ComponentProps<typeof Chip>["color"];
 }
 
 function getStructureLabel(t: MiniLeagueTemplate): StructureLabel {
   if (t.teams <= 1) return { label: "bye", color: "default" }
   const singleElim = t.races.length === 1
-  if (singleElim) return { label: "knockout", color: baseColors.primary.text }
+  if (singleElim) return { label: "knockout", color: "knockout" }
   const halfRobin = t.teams * (t.teams - 1) / 2
   if (t.races.length === halfRobin) return { label: "half-robin", color: "secondary" }
-  if (t.races.length === halfRobin * 2) return { label: "full-robin", color: baseColors.teriary.text }
+  if (t.races.length === halfRobin * 2) return { label: "full-robin", color: "tertiary" }
   if (t.races.length === halfRobin * 3) return { label: "mega-robin", color: "primary" }
   return { label: "custom", color: "warning" }
 }

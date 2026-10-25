@@ -21,7 +21,7 @@ export default function NumberBadge(props: NumberBadgeProps) {
       justifyContent: "center",
       flexShrink: 0,
     }}>
-      <Typography sx={{ fontSize: "0.6rem", fontWeight: 800, color: props.bgcolor ?? undefined, lineHeight: 1 }}>
+      <Typography sx={{ fontSize: "0.6rem", fontWeight: 800, color: props.color ?? undefined, lineHeight: 1 }}>
         {props.value}
       </Typography>
     </Box>

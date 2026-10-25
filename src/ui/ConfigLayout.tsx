@@ -14,12 +14,11 @@ import {
   useTheme,
 } from "@suid/material";
 import { Menu, MenuOpen, Search, Settings } from "@suid/icons-material";
-import { createEffect, createMemo, createSignal, For, JSX, ParentProps, Show } from "solid-js";
-import { BaseColor } from "../theme";
+import { ComponentProps, createEffect, createMemo, createSignal, For, JSX, ParentProps, Show } from "solid-js";
 
 export type SidebarChip = {
   label: string;
-  color: BaseColor;
+  color: ComponentProps<typeof Chip>["color"];
 };
 
 export type SidebarItem = {

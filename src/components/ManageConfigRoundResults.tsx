@@ -3,13 +3,6 @@ import { createMemo, For, Show } from "solid-js";
 import { divisions, RoundResult } from "../kings";
 import { kingsPoints } from "../kings/utils";
 import RankBadge, { RANK_ACCENT } from "../ui/RankBadge";
-import { DIVISION_ACCENT } from "../theme";
-
-const DIVISION_META: Record<string, { color: string; label: string }> = {
-  mixed: { color: DIVISION_ACCENT.mixed.background, label: "M" },
-  ladies: { color: DIVISION_ACCENT.ladies.background, label: "L" },
-  board: { color: DIVISION_ACCENT.board.background, label: "B" },
-};
 
 const GRID_COLS = "56px 1fr repeat(3, 60px)";
 
@@ -40,7 +33,6 @@ export default function ManageConfigRoundResults(props: {
             <Box />
             <Box />
             <For each={divisions}>{(division) => {
-              const meta = DIVISION_META[division] ?? { color: "text.secondary", label: division[0].toUpperCase() };
               return (
                 <Box sx={{
                   display: "flex",
@@ -52,7 +44,7 @@ export default function ManageConfigRoundResults(props: {
                     width: 7,
                     height: 7,
                     borderRadius: "50%",
-                    bgcolor: meta.color,
+                    bgcolor: `${division}.main`,
                     flexShrink: 0,
                   }} />
                   <Typography
@@ -65,7 +57,7 @@ export default function ManageConfigRoundResults(props: {
                       lineHeight: 1,
                     }}
                   >
-                    {meta.label}
+                    {division[0].toUpperCase()}
                   </Typography>
                 </Box>
               );
