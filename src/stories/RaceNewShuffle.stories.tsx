@@ -1,12 +1,12 @@
 import { fn } from 'storybook/test';
 import { createMemo, createSignal } from 'solid-js';
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import ManageNewShuffle from '../components/ManageNewShuffle';
+import RaceNewShuffle from '../components/RaceNewShuffle';
 import { raceConfig, Round, RoundSeeding } from '../kings';
 import { createRound } from '../kings/utils';
 
 const meta = {
-  title: 'Kings/ManageNewShuffle',
+  title: 'Kings/RaceNewShuffle',
   render: props => {
     const [seeds, setSeeds] = createSignal<RoundSeeding>()
     const round = createMemo<Round>(() => {
@@ -19,10 +19,10 @@ const meta = {
       props.onShuffle?.(seeds)
       setSeeds(seeds)
     }
-    return <ManageNewShuffle inGroupSwaps={props.inGroupSwaps} seeding={props.seeding} originalConfig={props.originalConfig} round={round()} onShuffle={handleShuffle} />
+    return <RaceNewShuffle inGroupSwaps={props.inGroupSwaps} seeding={props.seeding} originalConfig={props.originalConfig} round={round()} onShuffle={handleShuffle} />
   },
-  component: ManageNewShuffle,
-} satisfies Meta<typeof ManageNewShuffle>;
+  component: RaceNewShuffle,
+} satisfies Meta<typeof RaceNewShuffle>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render as renderBase } from '@solidjs/testing-library'
-import ManageNewSelect from './ManageNewSelect';
+import RaceNewSelect from './RaceNewSelect';
 import { ClubSeeding } from '../kings';
 
 const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].reduce((acc, club) => {
@@ -15,7 +15,7 @@ const initialConfig = (numTeams: number = 0): ClubSeeding => ['Bath', 'Bristol',
 
 const render = (numTeams: number = 0) => {
   const onUpdate = vi.fn();
-  const queries = renderBase(() => <ManageNewSelect onUpdate={onUpdate} config={initialConfig(numTeams)} />);
+  const queries = renderBase(() => <RaceNewSelect onUpdate={onUpdate} config={initialConfig(numTeams)} />);
 
   return {
     ...queries,
@@ -23,7 +23,7 @@ const render = (numTeams: number = 0) => {
   }
 }
 
-describe('ManageNewSelect', () => {
+describe('RaceNewSelect', () => {
   it('renders', () => {
     const { getByText } = render();
     ['Bath', 'Bristol', 'Plymouth', 'Aberystwyth'].forEach(club => {

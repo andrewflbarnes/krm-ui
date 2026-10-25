@@ -13,7 +13,7 @@ import DragAnchor from "../ui/DragAnchor"
   * @param originalSeeds the {RoundSeeding} prior to any shifts
   * @param seeds the {RoundSeeding} to display and adjust
   */
-export default function ManageNewSeeding(props: {
+export default function RaceNewSeeding(props: {
   originalSeeds?: RoundSeeding;
   seeds: RoundSeeding;
   editable?: boolean;

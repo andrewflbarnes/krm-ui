@@ -1,19 +1,19 @@
 import { fn } from 'storybook/test';
 import { Meta, StoryObj } from 'storybook-solidjs-vite';
-import ManageNewSelect from '../components/ManageNewSelect';
+import RaceNewSelect from '../components/RaceNewSelect';
 import { ClubSeeding } from '../kings';
 
 const meta = {
-  title: 'Kings/ManageNewSelect',
+  title: 'Kings/RaceNewSelect',
   render: props => {
-    return <ManageNewSelect onErrorUpdate={props.onErrorUpdate} onUpdate={props.onUpdate} config={props.config || {}} />;
+    return <RaceNewSelect onErrorUpdate={props.onErrorUpdate} onUpdate={props.onUpdate} config={props.config || {}} />;
   },
-  component: ManageNewSelect,
+  component: RaceNewSelect,
   args: {
     onUpdate: fn(),
     onErrorUpdate: fn(),
   },
-} satisfies Meta<typeof ManageNewSelect>;
+} satisfies Meta<typeof RaceNewSelect>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;

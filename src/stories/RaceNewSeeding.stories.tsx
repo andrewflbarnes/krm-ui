@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import ManageNewSeeding from '../components/ManageNewSeeding';
+import RaceNewSeeding from '../components/RaceNewSeeding';
 import { RoundSeeding } from '../kings';
 import { expect, fn, userEvent } from 'storybook/test';
 import { createComputed, createSignal } from 'solid-js';
@@ -11,12 +11,12 @@ const seeds: RoundSeeding = {
 }
 
 const meta = {
-  title: 'Kings/ManageNewSeeding',
-  component: ManageNewSeeding,
+  title: 'Kings/RaceNewSeeding',
+  component: RaceNewSeeding,
   args: {
     seeds,
   }
-} satisfies Meta<typeof ManageNewSeeding>;
+} satisfies Meta<typeof RaceNewSeeding>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
@@ -48,7 +48,7 @@ export const EditableReactive: Story = {
       setSeeds(next)
     }
 
-    return <ManageNewSeeding seeds={seeds()} editable onEdit={handleEdit} />
+    return <RaceNewSeeding seeds={seeds()} editable onEdit={handleEdit} />
   },
   play: async ({ canvas, step }) => {
     await step('Check Cardiff 1 and Swansea 1 are first/second respectively', async () => {

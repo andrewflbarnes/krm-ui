@@ -9,7 +9,7 @@ type ComponentProps = {
   onErrorUpdate?: (errors: string[]) => void;
 };
 
-export default function ManageNewSelect(props: ComponentProps) {
+export default function RaceNewSelect(props: ComponentProps) {
   const clubs = () => Object.keys(props.config).sort((a, b) => a.localeCompare(b));
 
   return (

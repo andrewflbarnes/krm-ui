@@ -8,7 +8,7 @@ import SeedInteractive from "../ui/SeedInteractive";
 import DragAnchor from "../ui/DragAnchor";
 import StageCard from "../ui/StageCard";
 
-type ManageNewShuffleProps = {
+type RaceNewShuffleProps = {
   round: Round;
   originalConfig: {
     [d in Division]: RoundConfig;
@@ -20,7 +20,7 @@ type ManageNewShuffleProps = {
   inGroupSwaps?: boolean;
 }
 
-export default function ManageNewShuffle(props: ManageNewShuffleProps) {
+export default function RaceNewShuffle(props: RaceNewShuffleProps) {
   const [resetDivision, setResetDivision] = createSignal<Division | null>(null)
 
   const divisionHasChanges = (division: Division) => {

@@ -4,7 +4,7 @@ import { ClubSeeding, Division, divisions, raceConfig } from "../kings"
 import PopoverButton from "../ui/PopoverButton";
 import { Add, ErrorOutlineRounded } from "@suid/icons-material";
 
-export default function ManageNewSelectFooter(props: {
+export default function RaceNewSelectFooter(props: {
   config: ClubSeeding,
   onUpdate: (club: string, division: Division, num: number) => void,
   onErrorUpdate?: (errors: string[]) => void,

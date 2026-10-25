@@ -1,7 +1,7 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
 import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
-const ManageNewSetup = lazy(() => import("../components/ManageNewSetup"))
-const ManageNewSeeding = lazy(() => import("../components/ManageNewSeeding"))
+const RaceNewSetup = lazy(() => import("../components/RaceNewSetup"))
+const RaceNewSeeding = lazy(() => import("../components/RaceNewSeeding"))
 import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "../kings"
 import { useKings } from "../hooks/kings";
 import krmEngine, { type RoundDetails } from "../kings/engine"
@@ -10,7 +10,7 @@ import { createRound, orderSeeds } from "../kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "../ui/BasicErrorBoundary"
 import { Construction, OpenInNew } from "@suid/icons-material"
-import ManageNewShuffle from "../components/ManageNewShuffle"
+import RaceNewShuffle from "../components/RaceNewShuffle"
 
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
@@ -121,7 +121,7 @@ function RaceNewInternal() {
       title: "Setup",
       content: () => {
         return (
-          <ManageNewSetup
+          <RaceNewSetup
             details={details()}
             onDetailUpdate={handleDetailUpdate}
             config={numTeams()}
@@ -203,7 +203,7 @@ function RaceNewInternal() {
 
         // TODO pass isNew in as part of seeding
         return (
-          <ManageNewSeeding
+          <RaceNewSeeding
             originalSeeds={originalSeeding()}
             seeds={seeding()}
             editable
@@ -226,7 +226,7 @@ function RaceNewInternal() {
           })
         }
         return (
-          <ManageNewShuffle
+          <RaceNewShuffle
             seeding={seeding()}
             originalConfig={originalConfig()}
             round={round()}

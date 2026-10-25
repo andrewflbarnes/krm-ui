@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { render as renderBase, within } from '@solidjs/testing-library'
-import ManageNewSelectFooter from './ManageNewSelectFooter';
+import RaceNewSelectFooter from './RaceNewSelectFooter';
 import { ClubSeeding } from '../kings';
 import userEvent from '@testing-library/user-event';
 import RenderHarness from '../test/render-harness';
@@ -19,7 +19,7 @@ const render = (numTeams: number = 0) => {
   const onUpdate = vi.fn();
   const queries = renderBase(() => (
     <RenderHarness>
-      <ManageNewSelectFooter
+      <RaceNewSelectFooter
         onUpdate={onUpdate}
         config={initialConfig(numTeams)}
       />
@@ -32,7 +32,7 @@ const render = (numTeams: number = 0) => {
   }
 }
 
-describe('ManageNewSelectFooter', () => {
+describe('RaceNewSelectFooter', () => {
   it('shows error if no teams', () => {
     const { getByText } = render(0);
     expect(getByText('Errors')).toBeInTheDocument();

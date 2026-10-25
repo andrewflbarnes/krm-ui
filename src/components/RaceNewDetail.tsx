@@ -4,7 +4,7 @@ import { LocationOn, Notes } from "@suid/icons-material";
 import { useKings } from "../hooks/kings";
 import ExpandMoreLess from "../ui/ExpandMoreLess";
 import { Collapse } from "solid-collapse";
-import styles from "./ManageNewDetail.module.css";
+import styles from "./RaceNewDetail.module.css";
 
 export type Details = {
   description: string;
@@ -13,12 +13,12 @@ export type Details = {
   season: string;
 }
 
-type ManageNewDetailProps = {
+type RaceNewDetailProps = {
   details: Details;
   onDetailUpdate: (details: Details) => void;
 }
 
-export default function ManageNewDetail(props: ManageNewDetailProps) {
+export default function RaceNewDetail(props: RaceNewDetailProps) {
   const [k] = useKings();
   const [showDetails, setShowDetails] = createSignal(true);
 

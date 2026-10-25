@@ -1,9 +1,9 @@
 import { Show } from "solid-js";
 import { Box, useMediaQuery, useTheme } from "@suid/material"
-import ManageNewSelect from "./ManageNewSelect"
+import RaceNewSelect from "./RaceNewSelect"
 import { ClubSeeding, Division } from "../kings"
-import ManageNewDetail, { Details } from "./ManageNewDetail"
-import ManageNewSelectFooter from "./ManageNewSelectFooter";
+import RaceNewDetail, { Details } from "./RaceNewDetail"
+import RaceNewSelectFooter from "./RaceNewSelectFooter";
 
 type ComponentProps = {
   details: Details;
@@ -13,7 +13,7 @@ type ComponentProps = {
   onErrorUpdate?: (errors: string[]) => void;
 }
 
-export default function ManageNewSetup(props: ComponentProps) {
+export default function RaceNewSetup(props: ComponentProps) {
   const theme = useTheme();
   const small = useMediaQuery(theme.breakpoints.down("md"));
 
@@ -38,7 +38,7 @@ export default function ManageNewSetup(props: ComponentProps) {
         overflow: "scroll",
         width: "100%",
       }}>
-        <ManageNewDetail
+        <RaceNewDetail
           details={props.details}
           onDetailUpdate={props.onDetailUpdate}
         />
@@ -47,7 +47,7 @@ export default function ManageNewSetup(props: ComponentProps) {
           <Box sx={{
             mt: 2,
           }}>
-            <ManageNewSelect
+            <RaceNewSelect
               config={props.config}
               onUpdate={props.onUpdate}
               onErrorUpdate={props.onErrorUpdate}
@@ -73,7 +73,7 @@ export default function ManageNewSetup(props: ComponentProps) {
             flexGrow: 1,
             overflow: "scroll",
           }}>
-            <ManageNewSelect
+            <RaceNewSelect
               config={props.config}
               onUpdate={props.onUpdate}
               onErrorUpdate={props.onErrorUpdate}
@@ -81,7 +81,7 @@ export default function ManageNewSetup(props: ComponentProps) {
           </Box>
         </Show>
 
-        <ManageNewSelectFooter
+        <RaceNewSelectFooter
           config={props.config}
           onUpdate={props.onUpdate}
           onErrorUpdate={props.onErrorUpdate}
