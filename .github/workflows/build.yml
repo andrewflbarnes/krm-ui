@@ -27,7 +27,7 @@ jobs:
     - name: Install Playwright Browsers
       run: pnpm exec playwright install chromium --with-deps --only-shell
     - name: Run Playwright tests
-      run: pnpm e2e --grep "Realistic"
+      run: pnpm e2e:smoke
   test:
     runs-on: ubuntu-latest
     steps:

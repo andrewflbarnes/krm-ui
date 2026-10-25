@@ -13,6 +13,7 @@
     "test:all:coverage": "vitest --coverage",
     "lint": "pnpm exec oxlint && pnpm exec eslint",
     "e2e": "playwright test --retries 2",
+    "e2e:smoke": "playwright test --grep realistic",
     "e2e:ui": "cross-env PLAYWRIGHT_NO_PARALLEL=true playwright test --ui",
     "e2e:report": "playwright show-report",
     "emulators": "firebase emulators:start --import=./.firestore-data --export-on-exit=./.firestore-data",
