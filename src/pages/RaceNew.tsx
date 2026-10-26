@@ -139,7 +139,7 @@ function RaceNewInternal() {
         if (teamSelectErrors().length > 0) {
           return [false, teamSelectErrors().join(", ")]
         }
-        setOriginalSeeding(prev => prev ?? orderSeeds(k.leagueConfig(), numTeams()))
+        setOriginalSeeding(orderSeeds(k.leagueConfig(), numTeams()))
         const divisionCounts = Object.values(numTeams()).reduce((acc, next) => {
           acc.mixed += next.mixed
           acc.ladies += next.ladies
@@ -287,6 +287,7 @@ function RaceNewInternal() {
     const r = krmEngine.createRound(roundDetails(), seeding(), raceConfig, distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
+      setNumTeams(initConfig(k.leagueConfig()))
       unlock()
       navigate(`/races/${r.id}/stage1`)
     } else {
