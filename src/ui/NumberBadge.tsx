@@ -8,13 +8,20 @@ type NumberBadgeProps = {
 }
 
 export default function NumberBadge(props: NumberBadgeProps) {
+  const borderColor = () => {
+    if (props.bgcolor) {
+      return `${props.bgcolor}.main`;
+    } else {
+      return "primary.main";
+    }
+  }
   return (
     <Box sx={{
       width: props.size ?? 20,
       height: props.size ?? 20,
       borderRadius: "0.3em",
-      borderColor: props.bgcolor ?? "primary.main",
-      borderWidth: 1,
+      borderColor: borderColor(),
+      borderWidth: 2,
       borderStyle: "solid",
       display: "flex",
       alignItems: "center",

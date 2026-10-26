@@ -5,6 +5,7 @@ import { Race } from "@/kings";
 import MoreMenu from "@/ui/MoreMenu";
 import RaceResultIcon from "@/ui/RaceResultIcon";
 import styles from "@/components/RaceList.module.css";
+import NumberBadge from "@/ui/NumberBadge";
 
 type RaceListProps = {
   orderedRaces: Race[],
@@ -139,9 +140,7 @@ function RaceTableRow(props: RaceTableRowProps) {
           <div style={{ display: "inline-block", flex: "1 0 0", "min-width": "1em" }}>
             {props.raceStr || (props.raceNum + 1)}
           </div>
-          <div style={{ display: "inline-block", "min-width": "1em" }}>
-            {props.race.division[0].toUpperCase()}
-          </div>
+          <NumberBadge value={props.race.division[0].toUpperCase()} bgcolor={props.race.division} />
         </div>
       </td>
       <td
