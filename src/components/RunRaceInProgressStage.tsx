@@ -154,11 +154,18 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const orderedMiniLeagueRaces = createMemo(() =>
     divisions.map(division => {
       const races = props.round.races[props.stage][division] ?? {}
+      const raceNumOrdering = orderedRaces()
       const ordered = Object.entries(races)
         .sort(([groupA], [groupB]) => groupA.localeCompare(groupB))
         .map(([group, races]) => ({
           group,
-          races,
+          races: {
+            ...races,
+            races: races.races.map(r => ({
+              ...r,
+              raceNumber: raceNumOrdering.indexOf(r) + 1,
+            }))
+          }
         }))
       return {
         division,

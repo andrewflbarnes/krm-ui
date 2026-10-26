@@ -13,6 +13,8 @@ export type Race = {
   readonly group: string;
   /** The number of the race in the minileague group */
   readonly groupRace: number;
+  /** The number of the race in the overall round */
+  readonly raceNumber?: number;
   /** The team indices from the minileage config - this is redundant
     * information since team1 and team2 preserve this order
     */
@@ -24,7 +26,7 @@ export type Race = {
   winner?: 1 | 2;
   team1Dsq?: boolean;
   team2Dsq?: boolean;
-  indicators?: "by" | "skip"
+  indicators?: "by" | "skip";
 };
 
 export type GroupRaces = {

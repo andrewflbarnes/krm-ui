@@ -59,7 +59,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
   return (
     <GroupCard
       name={props.name}
-      type={props.races[0].division}
+      type={props.races[0]?.division}
       endAdornment={
         <Chip
           label="Complete"
@@ -87,6 +87,24 @@ export default function MiniLeague(props: MiniLeagueProps) {
         width: "100%",
       }}>
         <table style={{ "border-spacing": "4px 0", width: "100%" }}>
+        <thead>
+          <tr>
+            <td>
+              &nbsp;
+            </td>
+            <For each={props.races}>{(race) => {
+              return (
+                <td style={{
+                  height: CELL_SIZE,
+                  width: CELL_SIZE,
+                  "text-align": "center",
+                }}>
+                 {race.raceNumber}
+                </td>
+              )
+            }}</For>
+          </tr>
+        </thead>
           <For each={teams()}>{(team, i) => {
             const dimmed = createMemo(() => { const ht = highlightTeams(); return ht.length > 0 && !ht.includes(team) })
             return (
