@@ -34,3 +34,7 @@ export const teams = [
 export const initTeams = (mlt: MiniLeagueTemplate) => teams.slice(0, mlt.teams)
 
 export const initRaces = (mlt: MiniLeagueTemplate): Race[] => minileagueRaces(mlt, teams, "Z", "stage1", "mixed")
+  .map((r, i) => ({
+    ...r,
+    raceNumber: i + 1,
+  }))

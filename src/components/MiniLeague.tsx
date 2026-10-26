@@ -1,5 +1,5 @@
 import { Box, Chip, Menu, MenuItem, Typography, useTheme } from "@suid/material";
-import { createMemo, createSelector, createSignal, For, Match, Show, Switch } from "solid-js";
+import { createMemo, createSelector, createSignal, For, Match, ParentProps, Show, Switch } from "solid-js";
 import { Race } from "@/kings";
 import { calcTeamResults, collapseRaces } from "@/kings/utils";
 import RaceResultIcon from "@/ui/RaceResultIcon";
@@ -95,17 +95,19 @@ export default function MiniLeague(props: MiniLeagueProps) {
               <td>
                 &nbsp;
               </td>
-              <For each={props.races}>{(race) => {
-                return (
-                  <td style={{
-                    height: CELL_SIZE,
-                    width: CELL_SIZE,
-                    "text-align": "center",
-                  }}>
-                   {race.raceNumber}
-                  </td>
-                )
-              }}</For>
+              <For each={collapsedRaces()}>{(races) => (
+                <TableCell>
+                  {races.length > 1 ? "*" : races[0]?.raceNumber}
+                </TableCell>
+              )}</For>
+              <Show when={!props.noResults}>
+                <TableCell>
+                  W
+                </TableCell>
+                <TableCell>
+                  P
+                </TableCell>
+              </Show>
             </tr>
           </thead>
           <For each={teams()}>{(team, i) => {
@@ -262,8 +264,15 @@ export default function MiniLeague(props: MiniLeagueProps) {
                           {wins()}
                         </Typography>
                       </td>
-                      <td style={{ "width": "3em" }}>
-                        <Show when={(finished() || props.live) && posInfo()}>
+                      <td style={{
+                        width: "2.5em",
+                        "text-align": "center",
+                        height: CELL_SIZE,
+                      }}>
+                        <Show
+                          when={(finished() || props.live) && posInfo()}
+                          fallback={"-"}
+                        >
                           {(info) => (
                             <Box sx={{
                               display: "inline-flex",
@@ -373,5 +382,19 @@ function ContextMenu(props: {
         </Menu>
       )
     }}</Show>
+  )
+}
+
+function TableCell(props: ParentProps) {
+  return (
+    <td style={{
+      height: CELL_SIZE,
+      width: CELL_SIZE,
+      "text-align": "center",
+    }}>
+      <Typography variant="body2" sx={{ fontWeight: 700, color: "text.disabled" }}>
+        {props.children}
+      </Typography>
+    </td>
   )
 }
