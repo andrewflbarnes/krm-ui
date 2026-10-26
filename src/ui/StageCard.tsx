@@ -4,7 +4,7 @@ import GroupCard from "@/ui/GroupCard";
 import { Division, RaceStage } from "@/kings/types";
 
 type StageCardProps<T> = {
-  title: string;
+  title: JSX.Element;
   titleEndAdornment?: JSX.Element;
   subtitle?: string;
   groups: ReadonlyArray<T>;
@@ -41,6 +41,9 @@ export default function StageCard<T>(props: StageCardProps<T>) {
             textTransform: "uppercase",
             letterSpacing: "0.1em",
             lineHeight: 1,
+            display: "flex",
+            alignItems: "center",
+            width: 1,
           }}
         >
           {props.title}

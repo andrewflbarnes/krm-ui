@@ -1,4 +1,4 @@
-import { Replay } from "@suid/icons-material";
+import { InfoOutlined, Replay } from "@suid/icons-material";
 import { Box, Chip, IconButton, Paper } from "@suid/material";
 import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay, useDragDropContext } from "@thisbeyond/solid-dnd";
 import { createMemo, createSignal, For, Show } from "solid-js";
@@ -7,6 +7,7 @@ import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import SeedInteractive from "@/ui/SeedInteractive";
 import DragAnchor from "@/ui/DragAnchor";
 import StageCard from "@/ui/StageCard";
+import PopoverIconButton from "@/ui/PopoverIconButton";
 
 type RaceNewShuffleProps = {
   round: Round;
@@ -117,6 +118,34 @@ export default function RaceNewShuffle(props: RaceNewShuffleProps) {
             fromGroup: fromGroup(),
             fromTeam: from(),
           }))
+          const title = () => {
+            const s1Races = (config.stage1?.reduce((acc, group) => acc + group.template.races.length, 0) ?? 0)
+            const s2Races = (config.stage2?.reduce((acc, group) => acc + group.template.races.length, 0) ?? 0)
+            const koRaces = (config.knockout?.reduce((acc, group) => acc + group.template.races.length, 0) ?? 0)
+            const raceCountInfo = []
+            if (s1Races > 0) {
+              raceCountInfo.push(`${s1Races} Stage 1 races`)
+            }
+            if (s2Races > 0) {
+              raceCountInfo.push(`${s2Races} Stage 2 races`)
+            }
+            if (koRaces > 0) {
+              raceCountInfo.push(`${koRaces} Knockouts`)
+            }
+            const totalRaces = s1Races + s2Races + koRaces
+            const groups = config.stage1.length > 1 ? "groups" : "group"
+            return <div style={{ display: "flex", "flex-wrap": "wrap", "align-items": "center", "column-gap": "1rem", width: "100%" }}>
+              <div>{division.capitalize()}</div>
+              <div>{config.stage1.length} {groups}</div>
+              <div style={{ display: "flex", "align-items": "center" }}>
+                {totalRaces} races
+                <PopoverIconButton
+                  messages={raceCountInfo}
+                  icon={<InfoOutlined fontSize="small" color="action" />}
+                />
+              </div>
+            </div>
+          }
           return (
             <Box sx={{ width: "100%" }}>
               <DragDropProvider
@@ -127,7 +156,7 @@ export default function RaceNewShuffle(props: RaceNewShuffleProps) {
                 <DragDropSensors />
                 <TeamDragOverlay />
                 <StageCard
-                  title={`${division.capitalize()} - ${config.stage1.length} groups`}
+                  title={title()}
                   responsive
                   titleEndAdornment={
                     <IconButton
