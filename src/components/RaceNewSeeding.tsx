@@ -7,16 +7,6 @@ import SeedInteractive from "@/ui/SeedInteractive"
 import { North, Replay, South } from "@suid/icons-material"
 import DragAnchor from "@/ui/DragAnchor"
 
-function initNewSeeds(): RoundSeeding {
-  return {
-    mixed: [],
-    ladies: [],
-    board: [],
-  }
-}
-
-const noNewSeeds = initNewSeeds()
-
 /**
   * Shows the seeding per division. Original seeds will default to seeds if not]
   * provided. Any teams not present in original seeds that are in seeds are
@@ -27,6 +17,7 @@ const noNewSeeds = initNewSeeds()
   */
 export default function RaceNewSeeding(props: {
   originalSeeds?: RoundSeeding;
+  newSeeds?: RoundSeeding;
   seeds: RoundSeeding;
   editable?: boolean;
   onEdit?: (newSeeding: RoundSeeding) => void;
@@ -49,20 +40,6 @@ export default function RaceNewSeeding(props: {
           board: [...(props.originalSeeds?.board ?? [])],
         })
       : seeds
-  })
-
-  const newSeeds = createMemo<RoundSeeding>(() => {
-    // Add any seeds not in the originalSeeds to the end of the list for each division
-    const originalSeeds = props.originalSeeds // moving here prevents lint warning
-    if (!originalSeeds) {
-      return noNewSeeds
-    }
-
-    return Object.entries(props.seeds)
-      .reduce((acc, [division, teams]: [Division, string[]]) => {
-        acc[division] = teams.filter((team) => !originalSeeds[division].includes(team))
-        return acc
-      }, initNewSeeds())
   })
 
   const initialSeeds = props.seeds // eslint-disable-line solid/reactivity
@@ -229,7 +206,7 @@ export default function RaceNewSeeding(props: {
                       }
                       const draggable = createDraggable(teamName, team)
                       const droppable = createDroppable(teamName, team)
-                      const isNew = () => newSeeds()[division].includes(teamName)
+                      const isNew = () => props.newSeeds?.[division]?.includes(teamName)
                       const moved = () => {
                         const change = originalSeed - seed
                         return change !== 0 ? change : undefined

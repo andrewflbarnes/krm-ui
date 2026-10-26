@@ -86,9 +86,13 @@ export const EditableReactive: Story = {
   }
 };
 
-export const WithAdditionalAndOriginalSeeds: Story = {
+export const WithNewAndOriginalSeeds: Story = {
   args: {
     seeds,
+    newSeeds: {
+      mixed: seeds.mixed.slice(2, 4),
+      ladies: seeds.ladies.slice(4),
+    },
     originalSeeds: {
       ...seeds,
       mixed: seeds.mixed.toSpliced(0, 4, seeds.mixed[1], seeds.mixed[0]),

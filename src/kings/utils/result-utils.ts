@@ -1,4 +1,4 @@
-import type { DivisionResults, LeagueData, Result } from "@/kings/types"
+import type { DivisionResults, LeagueData, Result, RoundSeeding } from "@/kings/types"
 import { divisions } from "@/kings/config"
 
 export function orderResults(a: Result, b: Result): number {
@@ -27,6 +27,25 @@ export function orderResults(a: Result, b: Result): number {
     return aIdx - bIdx
   }
   return a.name.localeCompare(b.name)
+}
+
+export function newTeams(leagueData: LeagueData): RoundSeeding {
+  // TODO resolve duplication
+  const results = parseResults(leagueData)
+  const ret = {
+    mixed: [],
+    ladies: [],
+    board: [],
+  }
+
+  divisions.forEach(division => {
+    const divisionResults = results[division] ?? []
+    divisionResults
+      .filter(r => r.isNew)
+      .forEach(({ name }) => ret[division].push(name))
+  })
+
+  return ret
 }
 
 export function parseResults(leagueData: LeagueData): DivisionResults {

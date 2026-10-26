@@ -1,5 +1,5 @@
 import { Box, Button, Stack, Typography } from "@suid/material"
-import { batch, createEffect, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
+import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup, Show } from "solid-js"
 const RaceNewSetup = lazy(() => import("@/components/RaceNewSetup"))
 const RaceNewSeeding = lazy(() => import("@/components/RaceNewSeeding"))
 const RaceNewShuffle = lazy(() => import("@/components/RaceNewShuffle"))
@@ -7,7 +7,7 @@ import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, Roun
 import { useKings } from "@/hooks/kings";
 import krmEngine, { type RoundDetails } from "@/kings/engine"
 import notification from "@/hooks/notification"
-import { createRound, orderSeeds } from "@/kings/utils"
+import { createRound, newTeams, orderSeeds } from "@/kings/utils"
 import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "@/ui/BasicErrorBoundary"
 import { Construction, OpenInNew } from "@suid/icons-material"
@@ -138,7 +138,7 @@ function RaceNewInternal() {
         if (teamSelectErrors().length > 0) {
           return [false, teamSelectErrors().join(", ")]
         }
-        setOriginalSeeding(prev => prev ?? orderSeeds(k.leagueConfig(), numTeams(), { excludeNew: true, }))
+        setOriginalSeeding(prev => prev ?? orderSeeds(k.leagueConfig(), numTeams()))
         const divisionCounts = Object.values(numTeams()).reduce((acc, next) => {
           acc.mixed += next.mixed
           acc.ladies += next.ladies
@@ -203,11 +203,13 @@ function RaceNewInternal() {
           })
         }
 
+        const newSeeds = createMemo(() => newTeams(k.leagueConfig()))
         // TODO pass isNew in as part of seeding
         return (
           <RaceNewSeeding
             originalSeeds={originalSeeding()}
             seeds={seeding()}
+            newSeeds={newSeeds()}
             editable
             onEdit={handleEdit}
           />
