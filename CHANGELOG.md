@@ -2,6 +2,50 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.8.0] - 2026-10-26
+
+### 🚀 Features
+
+- Show new indicator and movement in seeding
+- Start adding persistence for race setup
+- Easier palette management, new colors
+- Add race information to shuffle step
+- Add optional titles to setup
+- Use number badge for race list, fix bgcolor
+- Use groupcard for minileagues, prevent content jumping
+- Add race numbers to minileagues
+
+### 🐛 Bug Fixes
+
+- Prevent unnecessary, frequent user writes
+- Correct stage1/mixed/primary alignment and mode swapping
+- Prevent lint warning
+- Navigating to different league resets team setup
+- Consistent application of new seeds in race seeding
+- Reset seeds when round created, reset original if teams changed
+- Correct minileague columns when collapsed, add win/pos header cells
+
+### 🎨 Styling
+
+- Slightly more muted red
+- Align shuffle reset with theme
+- Improve layout on shuffle when flex wrapping occurs
+
+### 🧪 Testing
+
+- Get minileagues by test id, address some formatting
+- Remove timeout override
+
+### ⚙️ Miscellaneous Tasks
+
+- Improve appbar styling on small screens
+- Remove custom color code, move to MUI theme
+- Better naming of files
+- Use absolute alias imports
+- Make race steps use test id instead of unused title
+- Add test:smoke convenience script
+- Remove redundant strong tag
+
 ## [0.7.0] - 2026-10-24
 
 ### 🚀 Features
