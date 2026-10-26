@@ -111,6 +111,7 @@ function RaceNewInternal() {
 
   type Step = {
     id: string;
+    title?: string;
     content: () => JSX.Element;
     onArrive?: () => void;
     skip?: () => boolean;
@@ -120,7 +121,7 @@ function RaceNewInternal() {
 
   const steps: Step[] = [
     {
-      id: "Setup",
+      id: "setup",
       content: () => {
         return (
           <RaceNewSetup
@@ -191,7 +192,8 @@ function RaceNewInternal() {
       }
     },
     {
-      id: "Adjust Seeds",
+      id: "adjust-seeds",
+      title: "Adjust Seeds",
       onArrive: lock,
       content: () => {
         const handleEdit = (seeds: RoundSeeding) => {
@@ -220,7 +222,8 @@ function RaceNewInternal() {
       }
     },
     {
-      id: "Adjust Groups",
+      id: "adjust-groups",
+      title: "Adjust Groups",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
           const r = createRound("setup", roundDetails(), seeds, raceConfig)
@@ -297,6 +300,11 @@ function RaceNewInternal() {
         <Show when={!isConfigLoaded(k.league()) && steps[step()].loadConfig} >
           <CallToLoadConfig />
         </Show>
+        <Show when={steps[step()].title}>{(title) => (
+          <Typography variant="h5" sx={{ textAlign: "center", fontWeight: 600 }}>
+            {title()}
+          </Typography>
+        )}</Show>
         <Box sx={{ flexGrow: 1, display: "flex", overflow: "auto", alignItems: "start", justifyContent: "center" }}>
           {steps[step()].content()}
         </Box>
