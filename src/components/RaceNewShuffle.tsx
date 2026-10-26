@@ -161,14 +161,15 @@ export default function RaceNewShuffle(props: RaceNewShuffleProps) {
                   titleEndAdornment={
                     <IconButton
                       size="small"
-                      color="error"
                       disabled={!divisionHasChanges(division)}
                       onClick={() => setResetDivision(division)}
                       sx={{
-                        background: "white"
+                        background: "white",
+                        transition: "opacity 0.2s",
+                        "&:hover": { background: "white", opacity: 0.9 }
                       }}
                     >
-                      <Replay fontSize="small" />
+                      <Replay fontSize="small" color="action" />
                     </IconButton>
                   }
                   type={division}
