@@ -134,17 +134,32 @@ export default function RaceNewShuffle(props: RaceNewShuffleProps) {
             }
             const totalRaces = s1Races + s2Races + koRaces
             const groups = config.stage1.length > 1 ? "groups" : "group"
-            return <div style={{ display: "flex", "flex-wrap": "wrap", "align-items": "center", "column-gap": "1rem", width: "100%" }}>
-              <div>{division.capitalize()}</div>
-              <div>{config.stage1.length} {groups}</div>
-              <div style={{ display: "flex", "align-items": "center" }}>
-                {totalRaces} races
-                <PopoverIconButton
-                  messages={raceCountInfo}
-                  icon={<InfoOutlined fontSize="small" color="action" />}
-                />
+            return (
+              <div style={{
+                display: "flex",
+                "flex-wrap": "wrap",
+                "align-items": "center",
+                "column-gap": "1rem",
+                "row-gap": "0.25rem",
+                width: "100%",
+              }}>
+                <div>{division.capitalize()}</div>
+                <div>{config.stage1.length} {groups}</div>
+                <div style={{ display: "flex", "align-items": "center" }}>
+                  {totalRaces} races&nbsp;
+                  <PopoverIconButton
+                    messages={raceCountInfo}
+                    noPadding
+                    icon={(
+                      <InfoOutlined
+                        fontSize="small"
+                        color="action"
+                      />
+                    )}
+                  />
+                </div>
               </div>
-            </div>
+            )
           }
           return (
             <Box sx={{ width: "100%" }}>

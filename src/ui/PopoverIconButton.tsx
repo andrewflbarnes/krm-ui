@@ -4,6 +4,7 @@ import { createSignal, createUniqueId, For, JSX } from "solid-js";
 type PopoverIconButtonProps = {
   messages: string[];
   icon: JSX.Element;
+  noPadding?: boolean;
   color?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
 }
 
@@ -31,6 +32,9 @@ export default function PopoverIconButton(props: PopoverIconButtonProps) {
         aria-describedby={id()}
         onClick={handleClick}
         color={props.color || "primary"}
+        sx={{
+          p: props.noPadding ? 0 : undefined,
+        }}
       >
         {props.icon}
       </IconButton>
