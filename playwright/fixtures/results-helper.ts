@@ -17,6 +17,10 @@ export class ResultsHelper {
     this.config = config;
   }
 
+  getMiniLeagueTable(division: string, group: string) {
+    return this.page.getByTestId(`minileague-table-${division} ${group}`)
+  }
+
   async startStage1() {
     await this.page.waitForSelector('[data-step-selected=stage1]');
   }
@@ -64,8 +68,7 @@ export class ResultsHelper {
   }
 
   async setWinners(division: string, group: string, teamNumbers: (1 | 2)[]) {
-    const titleLocator = this.page.getByText(`${division} ${group}`, { exact: true })
-    const ml = this.page.getByRole('table').filter({ has: titleLocator })
+    const ml = this.getMiniLeagueTable(division, group);
     await expect(ml, `${division} ${group} minileague found`).toBeVisible();
 
     let raceNumber = 0;
@@ -81,8 +84,7 @@ export class ResultsHelper {
   // but expect to do so by highest seeding precedence. It relies on a team getting
   // marked as the winner disabling the competing teams button.
   async setWinnersByTeamName(division: string, group: string, club: string) {
-    const titleLocator = this.page.getByText(`${division} ${group}`, { exact: true })
-    const ml = this.page.getByRole('table').filter({ has: titleLocator })
+    const ml = this.getMiniLeagueTable(division, group);
     await expect(ml, `${division} ${group} minileague found`).toBeVisible();
 
     const count = this.config[club][division.toLowerCase()];
@@ -119,13 +121,12 @@ export class ResultsHelper {
     }
 
     for (const position of positions) {
-      const title = `${division} ${asKnockoutPosition(position)}`;
-      const titleLocator = this.page.getByText(title, { exact: true })
-      const ml = this.page.getByRole('table').filter({ has: titleLocator })
-      await expect(ml, `${title} knockout visible`).toBeVisible();
+      const group = asKnockoutPosition(position);
+      const ml = this.getMiniLeagueTable(division, group);
+      await expect(ml, `${division} ${group} knockout visible`).toBeVisible();
       const team = `${club} ${position}`;
       await ml.getByRole('row', { name: new RegExp(`${team}\\b`) }).getByRole('button')
-        .describe(`${title} ${team}`)
+        .describe(`${division} ${group} ${team}`)
         .click();
     }
   }

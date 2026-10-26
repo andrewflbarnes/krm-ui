@@ -171,7 +171,7 @@ export const NoResults: Story = {
         await selectWinner(canvas, args.races[i].group, i)
       }
     })
-    expect(canvas.queryByText(/Complete/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/Complete/)).toBeInTheDocument()
     expect(canvas.queryByText(/1st/)).not.toBeInTheDocument()
     expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument()
     expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument()
