@@ -17,7 +17,7 @@ function initRacesInverse(mlt: MiniLeagueTemplate): Race[] {
 
 async function selectWinner(canvas: Canvas, group: string, teamIndex: number, raceOrdinal: number = 1) {
   const testId = `race-${group}-${teamIndex}-${raceOrdinal}`
-  await waitFor(() => expect(canvas.getByTestId(testId)).toBeInTheDocument(), { timeout: 5000 })
+  await waitFor(() => expect(canvas.getByTestId(testId)).toBeInTheDocument())
   await userEvent.click(canvas.getByTestId(testId))
 }
 
