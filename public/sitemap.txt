@@ -1,0 +1,9 @@
+https://krm.andrewflbarnes.com/krm-ui
+https://krm.andrewflbarnes.com/krm-ui/dev/null
+https://krm.andrewflbarnes.com/krm-ui/config
+https://krm.andrewflbarnes.com/krm-ui/config/round
+https://krm.andrewflbarnes.com/krm-ui/config/minileague
+https://krm.andrewflbarnes.com/krm-ui/races
+https://krm.andrewflbarnes.com/krm-ui/races/new
+https://krm.andrewflbarnes.com/krm-ui/teams
+https://krm.andrewflbarnes.com/krm-ui-playwright

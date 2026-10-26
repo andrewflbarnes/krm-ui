@@ -36,6 +36,12 @@
   force = true
 
 [[redirects]]
+  from = "/sitemap.txt"
+  to = "/krm-ui/sitemap.txt"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/robots.txt"
   to = "/krm-ui/robots.txt"
   status = 200
