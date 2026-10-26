@@ -56,7 +56,7 @@ export default function Home() {
         Are you sure? This will clear all locally cached data.
       </ModalConfirmAction>
       <Box>
-        <Typography align="center" variant="h1"><strong>[ K ]</strong></Typography>
+        <Typography align="center" variant="h1">[ K ]</Typography>
         <Typography align="center" color="text.secondary">Welcome to the Kings Race Manager</Typography>
         <Divider sx={{ my: 2 }} />
         <Stack gap={1.5}>
