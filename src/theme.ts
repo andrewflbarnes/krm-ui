@@ -1,6 +1,6 @@
 import { createPalette, createTheme } from "@suid/material";
 import { createMemo } from "solid-js";
-import { deepOrange, indigo, teal } from "@suid/material/colors";
+import { deepOrange, indigo, red, teal } from "@suid/material/colors";
 import { initialisableAtomWithStorage } from "@/utils/jotai-utils";
 
 type ThemeMode = "dark" | "light"
@@ -42,6 +42,9 @@ export const useKingsTheme = () => {
     info: {
       main: deepOrange[400],
     },
+    error: {
+      main: red[400],
+    }
   })
 
   const palette = createMemo(() => {
@@ -50,6 +53,7 @@ export const useKingsTheme = () => {
       // standard colors
       primary: basePalette.primary,
       secondary: basePalette.secondary,
+      error: basePalette.error,
       // additional colors
       tertiary: basePalette.info,
       // stage colors
