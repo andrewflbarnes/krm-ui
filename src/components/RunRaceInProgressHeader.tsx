@@ -6,7 +6,7 @@ import PopoverButton from "@/ui/PopoverButton";
 import Selector from "@/ui/Selector";
 import krmEngine, { type ProgressionStage } from "@/kings/engine";
 import notification from "@/hooks/notification";
-import { ErrorOutlineRounded } from "@suid/icons-material";
+import { WarningAmberRounded } from "@suid/icons-material";
 import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import { usePrint } from "@/hooks/print";
 import { stages, useRaceOptions, View, views } from "@/hooks/results";
@@ -147,8 +147,10 @@ export default function RunRaceInProgressHeader(props: {
                   <PopoverButton
                     title="Errors"
                     messages={errors()}
-                    color="error"
-                    startIcon={<ErrorOutlineRounded />}
+                    noPadding
+                    color="warning"
+                    variant="icon"
+                    icon={<WarningAmberRounded />}
                   />
                 </Show>
                 <Show when={canReopen()}>

@@ -10,7 +10,7 @@ import Selector from "@/ui/Selector"
 import ManageConfigMiniLeague from "@/components/ManageConfigMiniLeague"
 import { Dynamic } from "solid-js/web"
 import { asPosition } from "@/kings"
-import PopoverIconButton from "@/ui/PopoverIconButton"
+import PopoverButton from "@/ui/PopoverButton"
 
 export default function CustomRoundStage(props: {
   stage: RaceStage;
@@ -144,7 +144,9 @@ function BaseCustomRoundStage(props: FlowProps<{
         </Button>
         <Show when={errors().length > 0}>
           <div>
-            <PopoverIconButton
+            <PopoverButton
+              title="Errors"
+              variant="icon"
               messages={errors()}
               icon={<WarningAmberRounded />}
               color="warning"

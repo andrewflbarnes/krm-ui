@@ -7,7 +7,7 @@ import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import SeedInteractive from "@/ui/SeedInteractive";
 import DragAnchor from "@/ui/DragAnchor";
 import StageCard from "@/ui/StageCard";
-import PopoverIconButton from "@/ui/PopoverIconButton";
+import PopoverButton from "@/ui/PopoverButton";
 
 type RaceNewShuffleProps = {
   round: Round;
@@ -147,8 +147,10 @@ export default function RaceNewShuffle(props: RaceNewShuffleProps) {
                 <div>{config.stage1.length} {groups}</div>
                 <div style={{ display: "flex", "align-items": "center" }}>
                   {totalRaces} races&nbsp;
-                  <PopoverIconButton
+                  <PopoverButton
+                    title="Race count"
                     messages={raceCountInfo}
+                    variant="icon"
                     noPadding
                     icon={(
                       <InfoOutlined
