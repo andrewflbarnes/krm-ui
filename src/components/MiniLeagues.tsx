@@ -19,7 +19,7 @@ type MiniLeaguesProps = {
 
 export default function MiniLeagues(props: MiniLeaguesProps) {
   return (
-    <Stack gap="2em" width="100%">
+    <Stack gap={2} width="100%">
       <For each={props.races}>{({ division, groups }) => (
         <For each={groups}>{({ group, races }) => (
           <MiniLeague

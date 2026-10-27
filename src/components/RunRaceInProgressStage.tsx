@@ -203,21 +203,19 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     <>
       <PrintBlockingModal open={print()} />
       <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
-        <Stack direction="row" gap={1} sx={{ justifyContent: "center" }}>
+        <Stack direction="row" padding={2} gap={2} sx={{ justifyContent: "center" }}>
           <Show when={showList()}>
-            <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
-              <Stack width="100%">
-                <RaceList
-                  knockout={props.stage == "knockout"}
-                  orderedRaces={orderedRaces()}
-                  onRaceUpdate={handleRaceUpdate}
-                  readonly={props.readonly}
-                />
-              </Stack>
-            </Card>
+            <Box sx={{ overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
+              <RaceList
+                knockout={props.stage == "knockout"}
+                orderedRaces={orderedRaces()}
+                onRaceUpdate={handleRaceUpdate}
+                readonly={props.readonly}
+              />
+            </Box>
           </Show>
           <Show when={showMiniLeagues()}>
-            <Card sx={{ p: 3, overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
+            <Box sx={{ overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
               <MiniLeagues
                 live={live()}
                 collapse={collapse()}
@@ -225,7 +223,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
                 onRaceUpdate={handleRaceUpdate}
                 readonly={props.readonly}
               />
-            </Card>
+            </Box>
           </Show>
         </Stack>
         <Box sx={{ display: view() === "printable" ? "inherit" : "none" }}>

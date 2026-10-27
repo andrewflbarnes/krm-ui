@@ -1,5 +1,5 @@
 import { CancelOutlined, CloseOutlined } from "@suid/icons-material";
-import { MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { Card, MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
 import { Index, Show } from "solid-js";
 import { Race } from "@/kings";
 import MoreMenu from "@/ui/MoreMenu";
@@ -16,36 +16,38 @@ type RaceListProps = {
 
 export default function RaceList(props: RaceListProps) {
   return (
-    <Typography>
-      <TableContainer component={Paper}>
-        <Table aria-label="simple table dense" size="small">
-          <TableBody>
-            <Index each={props.orderedRaces}>{(race, raceNum) => {
-              // Use Index instead of For to prevent unnecessary unmount + mount
-              // when all ordered races changes as a result of a single race
-              // being updated.
-              // For now updating a race results in the entire round being
-              // treated as a brand new object
-              const handleRaceUpdate = (updated: Partial<Race>) => {
-                props.onRaceUpdate({
-                  ...race(),
-                  ...updated,
-                })
-              }
-              return (
-                <RaceTableRow
-                  raceNum={raceNum}
-                  raceStr={props.knockout ? race().group : null}
-                  race={race()}
-                  onRaceUpdate={handleRaceUpdate}
-                  readonly={props.readonly}
-                />
-              )
-            }}</Index>
-          </TableBody>
-        </Table>
-      </TableContainer>
-    </Typography>
+    <Card>
+      <Typography>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table dense" size="small">
+            <TableBody>
+              <Index each={props.orderedRaces}>{(race, raceNum) => {
+                // Use Index instead of For to prevent unnecessary unmount + mount
+                // when all ordered races changes as a result of a single race
+                // being updated.
+                // For now updating a race results in the entire round being
+                // treated as a brand new object
+                const handleRaceUpdate = (updated: Partial<Race>) => {
+                  props.onRaceUpdate({
+                    ...race(),
+                    ...updated,
+                  })
+                }
+                return (
+                  <RaceTableRow
+                    raceNum={raceNum}
+                    raceStr={props.knockout ? race().group : null}
+                    race={race()}
+                    onRaceUpdate={handleRaceUpdate}
+                    readonly={props.readonly}
+                  />
+                )
+              }}</Index>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Typography>
+    </Card>
   )
 }
 
