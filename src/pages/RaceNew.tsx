@@ -12,6 +12,7 @@ import { A, useNavigate } from "@solidjs/router"
 import BasicErrorBoundary from "@/ui/BasicErrorBoundary"
 import { Construction, OpenInNew } from "@suid/icons-material"
 import { initialisableAtomWithStorage } from "@/utils/jotai-utils"
+import LoadingSuspense from "@/ui/LoadingSuspense"
 
 function initConfig(leagueConfig?: LeagueData) {
   return Object.keys(leagueConfig ?? {}).reduce((acc, club) => {
@@ -307,7 +308,9 @@ function RaceNewInternal() {
           </Typography>
         )}</Show>
         <Box sx={{ flexGrow: 1, display: "flex", overflow: "auto", alignItems: "start", justifyContent: "center" }}>
-          {steps[step()].content()}
+          <LoadingSuspense>
+            {steps[step()].content()}
+          </LoadingSuspense>
         </Box>
         <Stack gap="8px" flexDirection="row" sx={{ width: "100%", marginTop: "auto" }}>
           <Show when={step() > 0}>

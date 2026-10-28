@@ -1,0 +1,91 @@
+.openTransition {
+  transition: height 300ms cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+.raceInfoTop {
+  display: table-row;
+}
+
+.raceInfoTop > td {
+  padding: 0.5em;
+  margin: 0;
+}
+
+.raceInfoBottom {
+  display: table-row;
+}
+
+.raceInfoBottom > td {
+}
+
+.raceInfoBottom > td:nth-child(2) {
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+  padding-left: 0.75em;
+}
+
+.raceInfoBottom > td:last-child {
+  padding-top: 0.75em;
+  padding-bottom: 0.75em;
+  padding-right: 0.75em;
+}
+
+.raceInfoExpand {
+  display: table-row;
+}
+
+.raceInfoExpand > td {
+  padding: 0;
+}
+
+.fadeIn {
+	opacity: 1;
+  transform: scale(1);
+	animation-name: fadeInAnimation;
+	animation-iteration-count: 1;
+	animation-timing-function: ease-in;
+	animation-duration: 0.2s;
+}
+
+@keyframes fadeInAnimation {
+	0% {
+    transform: scale(0);
+		opacity: 0;
+	}
+	100% {
+    transform: scale(1);
+		opacity: 1;
+	}
+}
+
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  padding: 0;
+  border-radius: 0.25em;
+  background: color-mix(in srgb, currentColor 0%, transparent);
+  transition: background 300ms cubic-bezier(0.65, 0, 0.35, 1);
+  outline: 0;
+  border: 0;
+  margin: 0;
+  font-weight: 600;
+  font-size: 0.8125rem;
+  line-height: 1.75;
+  letter-spacing: 0.02857em;
+  text-transform: none;
+  min-width: 64px;
+  padding: 4px 5px;
+  border-radius: 4px;
+}
+
+.button:hover {
+  cursor: pointer;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}
+
+.button:focus {
+  cursor: pointer;
+  background: color-mix(in srgb, currentColor 8%, transparent);
+}

@@ -1,0 +1,198 @@
+import { CancelOutlined, CloseOutlined } from "@suid/icons-material";
+import { Card, MenuItem, Paper, Table, TableBody, TableContainer, Typography } from "@suid/material";
+import { createEffect, Index, onMount, Show } from "solid-js";
+import { Race } from "@/kings";
+import MoreMenu from "@/ui/MoreMenu";
+import RaceResultIcon from "@/ui/RaceResultIcon";
+import styles from "@/components/RaceListV1.module.css";
+import NumberBadge from "@/ui/NumberBadge";
+import { useIncrementalLoader } from "@/hooks/incremental-loader";
+
+type RaceListV1Props = {
+  orderedRaces: Race[],
+  onRaceUpdate: (race: Race) => void;
+  readonly?: boolean;
+  knockout?: boolean;
+}
+
+export default function RaceListV1(props: RaceListV1Props) {
+  const [raceSlice, startLoad] = useIncrementalLoader(() => props.orderedRaces)
+  onMount(startLoad)
+  createEffect(startLoad)
+  return (
+    <Card>
+      <Typography>
+        <TableContainer component={Paper}>
+          <Table aria-label="simple table dense" size="small">
+            <TableBody>
+              <Index each={raceSlice()}>{(race, raceNum) => {
+                // Use Index instead of For to prevent unnecessary unmount + mount
+                // when all ordered races changes as a result of a single race
+                // being updated.
+                // For now updating a race results in the entire round being
+                // treated as a brand new object
+                const handleRaceUpdate = (updated: Partial<Race>) => {
+                  props.onRaceUpdate({
+                    ...race(),
+                    ...updated,
+                  })
+                }
+                return (
+                  <RaceTableV1Row
+                    raceNum={raceNum}
+                    raceStr={props.knockout ? race().group : null}
+                    race={race()}
+                    onRaceUpdate={handleRaceUpdate}
+                    readonly={props.readonly}
+                  />
+                )
+              }}</Index>
+            </TableBody>
+          </Table>
+        </TableContainer>
+      </Typography>
+    </Card>
+  )
+}
+
+type RaceTableV1RowProps = {
+  raceNum: number;
+  raceStr?: string;
+  race: Race;
+  onRaceUpdate: (race: Partial<Race>) => void;
+  readonly?: boolean;
+}
+
+function RaceTableV1Row(props: RaceTableV1RowProps) {
+  const setWinner = (winner: 1 | 2, e: MouseEvent) => {
+    e.stopPropagation()
+    if (props.readonly || props.race.winner) {
+      return
+    }
+    props.onRaceUpdate({ winner })
+  }
+  const canDsq = () => !props.readonly && props.race.indicators != "by"
+  const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
+    e.stopPropagation()
+    if (!canDsq()) {
+      return
+    }
+    const t1Dsq = props.race.team1Dsq
+    const t2Dsq = props.race.team2Dsq
+    props.onRaceUpdate({
+      team1Dsq: dsq == 1 ? !t1Dsq : t1Dsq,
+      team2Dsq: dsq == 2 ? !t2Dsq : t2Dsq,
+    })
+  }
+  const team1Dsq = () => props.race.team1Dsq
+  const team2Dsq = () => props.race.team2Dsq
+  const winner = () => props.race.winner
+  // Performance degradations with solid + suid once we start to get to around
+  // 20+ rows so we use native elements instead.
+  return (
+    <tr class={styles.fadeIn} style={{
+      display: "table-row",
+      ...(props.race.winner && !props.readonly ? {
+        "background-color": "rgba(0, 255, 0, 0.1)",
+      } : {})
+    }}>
+      <td class={styles.td} style={{ width: "8em" }}>
+        <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "justify-content": "space-between", "align-items": "center" }}>
+          <div style={{ visibility: props.readonly ? "hidden" : "visible" }} >
+            <MoreMenu id={`${props.race.stage}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}>{(handleClose) => {
+              const handleConcede = (team: 1 | 2, e: MouseEvent) => {
+                e.stopPropagation()
+                handleClose()
+                props.onRaceUpdate({
+                  winner: team == 1 ? 2 : 1,
+                  indicators: "by",
+                  team1Dsq: undefined,
+                  team2Dsq: undefined
+                })
+              }
+              const handleReset = (e: MouseEvent) => {
+                e.stopPropagation()
+                handleClose()
+                props.onRaceUpdate({
+                  winner: undefined,
+                  indicators: undefined,
+                  team1Dsq: undefined,
+                  team2Dsq: undefined
+                })
+              }
+              const clearConcede = (e: MouseEvent) => {
+                e.stopPropagation()
+                handleClose()
+                props.onRaceUpdate({
+                  indicators: undefined,
+                })
+              }
+              return (
+                <>
+                  <Show when={props.race.winner || props.race.indicators || team1Dsq() || team2Dsq()}>
+                    <MenuItem onClick={handleReset}>Reset</MenuItem>
+                  </Show>
+                  <Show when={props.race.indicators == "by"}>
+                    <MenuItem onClick={clearConcede}>clear by</MenuItem>
+                  </Show>
+                  <Show when={props.race.indicators != "by"}>
+                    <MenuItem onClick={[handleConcede, 1]}>{props.race.team1} concede (by)</MenuItem>
+                    <MenuItem onClick={[handleConcede, 2]}>{props.race.team2} concede (by)</MenuItem>
+                  </Show>
+                </>
+              )
+            }}</MoreMenu>
+          </div>
+          <div style={{ display: "inline-block", flex: "1 0 0", "min-width": "1em" }}>
+            {props.raceStr || (props.raceNum + 1)}
+          </div>
+          <NumberBadge value={props.race.division[0].toUpperCase()} bgcolor={props.race.division} />
+        </div>
+      </td>
+      <td
+        class={styles.td}
+        style={{ cursor: props.readonly ? "inherit" : "pointer" }}
+        onClick={[setWinner, 1]}
+      >
+        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center" }}>
+          <div onClick={[toggleDsq, 1]} style={{ display: "contents" }}>
+            <Show when={team1Dsq()} fallback={<CloseOutlined fontSize="small" color={canDsq() ? "inherit" : "disabled"} />}>
+              <CancelOutlined fontSize="small" color="error" />
+            </Show>
+          </div>
+          <RaceResultIcon won={winner() == 1} conceded={winner() != 1 && props.race.indicators == "by"} fontSize="small" />
+          &nbsp;
+          {props.race.team1}
+        </div>
+      </td>
+      <td class={styles.td} style={{ "text-align": "center" }}>v</td>
+      <td
+        class={styles.td}
+        style={{ cursor: props.readonly ? "inherit" : "pointer" }}
+        onClick={[setWinner, 2]}
+      >
+        <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "end" }}>
+          {props.race.team2}
+          &nbsp;
+          <RaceResultIcon won={winner() == 2} conceded={winner() != 2 && props.race.indicators == "by"} fontSize="small" />
+          <div onClick={[toggleDsq, 2]} style={{ display: "contents" }}>
+            <Show when={team2Dsq()} fallback={<CloseOutlined fontSize="small" color={canDsq() ? "inherit" : "disabled"} />}>
+              <CancelOutlined fontSize="small" color="error" />
+            </Show>
+          </div>
+        </div>
+      </td>
+      <td class={styles.td} style={{ width: "3em", border: 0 }}>
+        <div style={{ display: "flex", "flex-direction": "row", gap: "1em", "align-items": "center" }}>
+          <Typography
+            style={{ visibility: props.race.indicators || team1Dsq() || team2Dsq() ? null : "hidden" }}
+            variant="caption"
+            color={props.race.indicators ? "warning.main" : "error"}
+          >
+            {props.race.indicators?.toUpperCase() || "DSQ"}
+          </Typography>
+        </div>
+      </td>
+    </tr>
+  )
+}

@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/solid-query"
 import { Round, Stage } from "@/kings"
 import krmEngine from "@/kings/engine"
 import { atom, useAtom } from "solid-jotai"
+import { initialisableAtomWithStorage } from "@/utils/jotai-utils"
 
 export const stages: {
   [s in Stage]: string
@@ -26,10 +27,13 @@ const liveAtom = atom(false)
 const collapseAtom = atom(false)
 const northernAtom = atom(false)
 const roundAtom = atom<Round>()
+export const useListStyle = initialisableAtomWithStorage<"v1" | "v2">("results-list-style", "v1")
 
 export const useRaceOptions = () => {
   const [view, setView] = useAtom(viewAtom)
   const [live, setLive] = useAtom(liveAtom)
+  const [listStyle, setListStyle] = useListStyle()
+  const toggleListStyle = () => setListStyle(v => v == "v1" ? "v2" : "v1")
   const switchLive = () => setLive(v => !v)
   const [collapse, setCollapse] = useAtom(collapseAtom)
   const switchCollapse = () => setCollapse(v => !v)
@@ -74,5 +78,7 @@ export const useRaceOptions = () => {
     northern,
     setNorthern,
     switchNorthern,
+    listStyle,
+    toggleListStyle,
   }
 }

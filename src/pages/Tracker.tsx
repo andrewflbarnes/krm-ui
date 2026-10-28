@@ -2,18 +2,17 @@ import tracker from "@/api/tracker";
 import {
   Box,
   Card,
-  LinearProgress,
   Link,
   Typography,
 } from "@suid/material";
 import { Match, ParentProps, Switch } from "solid-js";
-import { Suspense } from "solid-js";
 import { useQuery } from "@tanstack/solid-query";
 import { OpenInNew } from "@suid/icons-material";
 import { parseResults } from "@/kings/utils";
 import { LeagueData } from "@/kings";
 import { useKings } from "@/hooks/kings";
 import DivisionResultsAll from "@/components/DivisionResultsAll";
+import LoadingSuspense from "@/ui/LoadingSuspense";
 
 const immediateError = (message: string) => {
   const error = new Error(message);
@@ -52,7 +51,7 @@ export default function Tracker() {
         width: "100%",
         p: 1,
       }}>
-        <Suspense fallback={<Loading />}>
+        <LoadingSuspense>
           <Link sx={{ position: "absolute", right: 0 }} target="_blank" rel="noopener" href={`https://www.kingsski.club/${league().toLowerCase()}`}>
             <OpenInNew fontSize="small" />
           </Link>
@@ -64,17 +63,9 @@ export default function Tracker() {
               <DivisionResultsAll results={divisionResults()} />
             </Match>
           </Switch>
-        </Suspense>
+        </LoadingSuspense>
       </Card>
     </>
-  )
-}
-
-function Loading() {
-  return (
-    <Box sx={{ width: "100%" }}>
-      <LinearProgress />
-    </Box>
   )
 }
 

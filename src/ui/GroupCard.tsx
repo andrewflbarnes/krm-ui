@@ -11,7 +11,9 @@ type GroupCardProps = {
 
 export default function GroupCard(props: GroupCardProps) {
   return (
-    <Card sx={{ borderRadius: 1.5, overflow: "hidden" }}>
+    <Card
+      sx={{ borderRadius: 1.5, overflow: "hidden" }}
+    >
       <Box sx={{ px: 1.5, py: 0.75, borderBottom: "1px solid", borderColor: "divider", display: "flex", alignItems: "center", gap: 1 }}>
         <Box sx={{ width: 6, height: 6, borderRadius: "50%", bgcolor: `${props.type}.main`, flexShrink: 0 }} />
         <Typography variant="overline" sx={{ fontSize: "0.6rem", fontWeight: 800, letterSpacing: "0.1em", lineHeight: 1 }}>

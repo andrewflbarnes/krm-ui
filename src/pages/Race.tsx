@@ -1,4 +1,4 @@
-import { ErrorBoundary, JSXElement, Match, onCleanup, onMount, ParentProps, Suspense, Switch } from "solid-js"
+import { ErrorBoundary, JSXElement, Match, onCleanup, onMount, ParentProps, Switch } from "solid-js"
 import { useKings } from "@/hooks/kings";
 import { useRaceOptions } from "@/hooks/results"
 import { Box, Card, CardContent, CircularProgress, Typography } from "@suid/material"
@@ -31,30 +31,28 @@ export default function Race(props: ParentProps) {
 
   return (
     <ErrorBoundary fallback={e => <ErrorCard error={e} />}>
-      <Suspense fallback="Loading...">
-        <Switch>
-          <Match when={query.isSuccess && query.data}>
-            {props.children}
-          </Match>
-          <Match when={query.isSuccess}>
-            <StateCard
-              icon={<SearchOff sx={{ fontSize: 64, color: "text.disabled", mb: 2 }} />}
-              title="Races not found"
-              body="No race data could be loaded. Verify the race ID in the URL is correct and/or try refreshing."
-            />
-          </Match>
-          <Match when={query.isLoading}>
-            <StateCard
-              icon={<CircularProgress size={56} sx={{ mb: 2 }} />}
-              title="Loading races"
-              body="Please wait while race data is being fetched..."
-            />
-          </Match>
-          <Match when={query.isError}>
-            <ErrorCard error={query.error} />
-          </Match>
-        </Switch>
-      </Suspense>
+      <Switch>
+        <Match when={query.isSuccess && query.data}>
+          {props.children}
+        </Match>
+        <Match when={query.isSuccess}>
+          <StateCard
+            icon={<SearchOff sx={{ fontSize: 64, color: "text.disabled", mb: 2 }} />}
+            title="Races not found"
+            body="No race data could be loaded. Verify the race ID in the URL is correct and/or try refreshing."
+          />
+        </Match>
+        <Match when={query.isLoading}>
+          <StateCard
+            icon={<CircularProgress size={56} sx={{ mb: 2 }} />}
+            title="Loading races"
+            body="Please wait while race data is being fetched..."
+          />
+        </Match>
+        <Match when={query.isError}>
+          <ErrorCard error={query.error} />
+        </Match>
+      </Switch>
     </ErrorBoundary>
   )
 }

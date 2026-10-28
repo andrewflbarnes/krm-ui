@@ -11,7 +11,16 @@ import { usePrint } from "@/hooks/print";
 import { useRaceOptions } from "@/hooks/results";
 import MiniLeagues from "@/components/MiniLeagues";
 
-const orderRaces = (divisionRaces: StageRaces, northern: boolean) => {
+const orderRaces = (divisionRaces: StageRaces, northern: boolean, knockouts?: boolean): Race[] => {
+  if (knockouts) {
+    return ["board", "ladies", "mixed"]
+      .flatMap(division => {
+        const groupRaces = (divisionRaces[division] ?? {})
+        return Object.values(groupRaces)
+          .flatMap(({ races }) => races)
+      })
+  }
+
   const splits = 3
   const topSplits = northern ? splits : 1;
   const inSplits = northern ? 1 : splits;
@@ -117,6 +126,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     collapse,
     live,
     northern,
+    listStyle,
     view,
   } = useRaceOptions()
 
@@ -147,7 +157,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   }
 
   const orderedRaces = createMemo(() => {
-    return orderRaces(props.round.races[props.stage], northern())
+    return orderRaces(props.round.races[props.stage], northern(), props.stage === "knockout")
   })
 
   // Ensure mini leagues are ordered by division, then group
@@ -211,6 +221,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
                 orderedRaces={orderedRaces()}
                 onRaceUpdate={handleRaceUpdate}
                 readonly={props.readonly}
+                listStyle={listStyle()}
               />
             </Box>
           </Show>

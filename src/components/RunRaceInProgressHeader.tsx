@@ -28,6 +28,8 @@ export default function RunRaceInProgressHeader(props: {
     switchCollapse,
     northern,
     switchNorthern,
+    listStyle,
+    toggleListStyle,
     view,
     setView,
     stage,
@@ -106,6 +108,10 @@ export default function RunRaceInProgressHeader(props: {
                 <FormControlLabel
                   control={<InputSwitch checked={northern()} onChange={switchNorthern} />}
                   label="Race list: northern style"
+                />
+                <FormControlLabel
+                  control={<InputSwitch checked={listStyle() == "v2"} onChange={toggleListStyle} />}
+                  label="Race list: v2 style"
                 />
                 <FormControlLabel
                   control={<InputSwitch checked={collapse()} onChange={switchCollapse} />}

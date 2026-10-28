@@ -25,6 +25,7 @@ type MiniLeagueProps = {
   selectable?: string[];
   initialSelected?: string[];
   onTeamSelected?: (team: string, i: number) => void;
+  contextRef?: Element;
 }
 
 export default function MiniLeague(props: MiniLeagueProps) {
@@ -76,6 +77,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
       }
     >
       <ContextMenu
+        container={props.contextRef}
         anchor={anchorEl()}
         onClose={() => setAnchorEl(null)}
         race={ctxRace()?.race}
@@ -312,6 +314,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
 
 function ContextMenu(props: {
   anchor: HTMLTableColElement;
+  container: Element;
   race: Race;
   team: string;
   onClose: () => void;
@@ -324,7 +327,7 @@ function ContextMenu(props: {
         : "team2Dsq")
       return (
         <Menu
-          container={props.anchor}
+          container={props.container ?? props.anchor}
           anchorEl={props.anchor}
           open={!!props.anchor}
           onClose={(e) => {
