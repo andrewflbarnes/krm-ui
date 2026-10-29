@@ -13,7 +13,7 @@ import MiniLeagues from "@/components/MiniLeagues";
 
 const orderRaces = (divisionRaces: StageRaces, northern: boolean, knockouts?: boolean): Race[] => {
   if (knockouts) {
-    return ["board", "ladies", "mixed"]
+    return (["board", "ladies", "mixed"] as const)
       .flatMap(division => {
         const groupRaces = (divisionRaces[division] ?? {})
         return Object.values(groupRaces)
