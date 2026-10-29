@@ -200,8 +200,9 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
           }}
         >
           <StatusIndicator complete={!!props.race.winner} color={props.successColor} />
+          <td />
           <td
-            colspan={5}
+            colspan={3}
           >
             <TeamActionRow
               race={props.race}
@@ -210,6 +211,7 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
               onRaceUpdate={props.onRaceUpdate}
             />
           </td>
+          <td />
         </Card>
         <tr>
           <td colspan={6}>
@@ -404,6 +406,11 @@ function TeamActions(props: {
         color="success"
         onClick={props.onSetWinner}
         disabled={props.winner === props.team || !!props.indicators}
+        sx={{
+          marginLeft: props.displayReverse ? "auto" : undefined,
+          marginRight: props.displayReverse ? undefined : "auto",
+          justifyContent: props.displayReverse ? "flex-end" : "flex-start",
+        }}
       >
         Winner
       </Button>
@@ -412,6 +419,11 @@ function TeamActions(props: {
         color={props.dsq ? "info" : "error"}
         onClick={props.onDsqToggle}
         disabled={!!props.indicators}
+        sx={{
+          marginLeft: props.displayReverse ? "auto" : undefined,
+          marginRight: props.displayReverse ? undefined : "auto",
+          justifyContent: props.displayReverse ? "flex-end" : "flex-start",
+        }}
       >
         {props.dsq && "Clear "}DSQ
       </Button>
@@ -420,6 +432,11 @@ function TeamActions(props: {
         color="warning"
         onClick={props.onConcede}
         disabled={!!props.indicators}
+        sx={{
+          marginLeft: props.displayReverse ? "auto" : undefined,
+          marginRight: props.displayReverse ? undefined : "auto",
+          justifyContent: props.displayReverse ? "flex-end" : "flex-start",
+        }}
       >
         By
       </Button>
