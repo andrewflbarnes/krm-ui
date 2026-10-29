@@ -25,7 +25,7 @@ const preview: Preview = {
 
       return (
         <ThemeProvider theme={theme}>
-          <Paper style={{ display: "flex", "justify-content": "center", "align-items": "center", padding: "2em", height: "100%" }}>
+          <Paper elevation={0} style={{ display: "flex", "justify-content": "center", "align-items": "center", padding: "2em", height: "100%" }}>
             <Story />
           </Paper>
         </ThemeProvider >
