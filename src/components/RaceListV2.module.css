@@ -6,7 +6,8 @@
   display: table-row;
 }
 
-.raceInfoTop > td {
+.raceInfoTop > * {
+  vertical-align: middle;
   padding: 0.5em;
   margin: 0;
 }
@@ -15,7 +16,8 @@
   display: table-row;
 }
 
-.raceInfoBottom > td {
+.raceInfoBottom > * {
+  vertical-align: middle;
 }
 
 .raceInfoBottom > td:nth-child(2) {
@@ -34,7 +36,8 @@
   display: table-row;
 }
 
-.raceInfoExpand > td {
+.raceInfoExpand > * {
+  vertical-align: middle;
   padding: 0;
 }
 

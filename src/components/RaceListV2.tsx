@@ -7,12 +7,23 @@ import Seed from "@/ui/Seed";
 import { Collapse } from "solid-collapse";
 import { ButtonProps } from "@suid/material/Button";
 import { useIncrementalLoader } from "@/hooks/incremental-loader";
+import NumberBadge from "@/ui/NumberBadge";
 
 type RaceListV2Props = {
   orderedRaces: Race[],
   onRaceUpdate: (race: Race) => void;
   readonly?: boolean;
   knockout?: boolean;
+}
+
+function raceInfoString(race: Race): string {
+  if (race.stage === "knockout") {
+    return `${race.division.capitalize()} knockout`
+  }
+  return `Group ${race.group}`
+    + ` team ${race.teamMlIndices[0] + 1}`
+    + " vs "
+    + `team ${race.teamMlIndices[1] + 1}`
 }
 
 export default function RaceListV2(props: RaceListV2Props) {
@@ -79,6 +90,7 @@ type RaceTableV2RowProps = {
 function RaceTableV2Row(props: RaceTableV2RowProps) {
   const handleSetWinner = (winner: 1 | 2) => {
     if (props.readonly) {
+      props.onOpen()
       return
     }
     if (props.race.winner) {
@@ -89,14 +101,14 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
   }
 
   const handleOpen = () => {
-    if (props.readonly) {
-      return
-    }
     props.onOpen()
   }
 
   return (
     <>
+      <Show when={props.readonly}>
+        <ExpandableGap open={!!props.open} />
+      </Show>
       <Show when={!props.readonly}>
         <Card
           data-testid={`race-${props.race.stage}-${props.race.division}-${props.race.group}-${props.race.groupRace}`}
@@ -108,14 +120,18 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
           }}
         >
           <StatusIndicator complete={!!props.race.winner} color={props.successColor} />
-          <td colspan={5}>
+          <td colspan="100%">
             <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "space-between", gap: "1em" }}>
-              <Seed
-                team={`Race ${props.raceNum + 1}${props.raceStr ? ` - ${props.raceStr}` : ""}`}
-                num={props.race.division[0].toUpperCase()}
-                accent={props.race.division}
-              />
-              <div>
+              <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", gap: "0.5em" }}>
+                <NumberBadge value={props.race.division[0].toUpperCase()} bgcolor={props.race.division} />
+                <Typography align="left" variant="caption" color="text.secondary">
+                  Race {props.raceNum + 1}{props.raceStr ? ` - ${props.raceStr}` : ""}
+                </Typography>
+              </div>
+              <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", gap: "0.5em" }}>
+                <Typography align="left" variant="caption" color="text.secondary">
+                  {raceInfoString(props.race)}
+                </Typography>
                 <ExpandLess fontSize="small" sx={{
                   transform: props.open ? "rotate(0deg)" : "rotate(180deg)",
                   transition: "transform 0.2s ease",
@@ -131,7 +147,7 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
         onClick={handleOpen}
         sx={{
           boxShadow: props.open ? "none" : undefined,
-          cursor: props.readonly ? "inherit" : "pointer",
+          cursor: "pointer",
         }}
       >
         <StatusIndicator complete={!!props.race.winner} color={props.successColor} />
@@ -191,35 +207,48 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
             indicators={props.race.indicators}
           />
         </td>
+        <Show when={props.readonly}>
+          <td style={{ "vertical-align": "middle", "text-align": "center" }}>
+            <ExpandLess fontSize="small" sx={{
+              transform: props.open ? "rotate(0deg)" : "rotate(180deg)",
+              transition: "transform 0.2s ease",
+            }} />
+          </td>
+        </Show>
       </Card>
-      <Show when={!props.readonly}>
-        <Card
-          class={styles.raceInfoExpand}
-          style={{
-            display: "table-row",
-          }}
-        >
-          <StatusIndicator complete={!!props.race.winner} color={props.successColor} />
-          <td />
-          <td
-            colspan={3}
-          >
-            <TeamActionRow
-              race={props.race}
-              open={!!props.open}
-              readonly={props.readonly}
-              onRaceUpdate={props.onRaceUpdate}
-            />
-          </td>
-          <td />
-        </Card>
-        <tr>
-          <td colspan={6}>
-            <div style={{ height: "8px" }} />
-          </td>
-        </tr>
+      <Show when={props.readonly}>
+        <TeamInfoRow
+          race={props.race}
+          open={!!props.open}
+          onClick={handleOpen}
+          successColor={props.successColor}
+        />
       </Show>
+      <Show when={!props.readonly}>
+        <TeamActionRow
+          race={props.race}
+          open={!!props.open}
+          readonly={props.readonly}
+          onRaceUpdate={props.onRaceUpdate}
+          successColor={props.successColor}
+        />
+      </Show>
+      <ExpandableGap open={!props.readonly || !!props.open} />
     </>
+  )
+}
+
+function ExpandableGap(props: { open: boolean }) {
+  return (
+    <tr class={styles.raceInfoExpand}>
+      <td colspan="100%">
+        <div style={{
+          transition: "height 0.2s ease",
+          transform: props.open ? "scaleY(1)" : "scaleY(0)",
+          height: props.open ? "8px" : "0px",
+        }} />
+      </td>
+    </tr>
   )
 }
 
@@ -229,6 +258,7 @@ function StatusIndicator(props: { complete: boolean, color: string }) {
       style={{
         display: "table-cell",
         width: "0.2em",
+        padding: 0,
         height: "100%",
         "background-color": props.complete ? props.color : undefined
       }}
@@ -273,25 +303,69 @@ function TeamName(props: ParentProps<{
   )
 }
 
+function TeamInfoRow(props: {
+  race: Race;
+  open: boolean;
+  onClick: () => void;
+  successColor: string;
+}) {
+  const [open, setOpen] = createSignal(false)
+  const [expand, setExpand] = createSignal(false)
+  createEffect(() => {
+    if (props.open) {
+      setOpen(true)
+      setTimeout(() => setExpand(true), 10) // ensure mount completes before transition
+    } else {
+      setTimeout(() => setOpen(false), 200) // ensure stays mounted for transition
+      setExpand(false)
+    }
+  })
+
+  return (
+    <Show when={open()}>
+      <Show when={props.race.stage !== "knockout"}>
+        <Card
+          style={{
+            display: "table-row",
+            cursor: "pointer",
+          }}
+          onClick={props.onClick}
+        >
+          <StatusIndicator complete={!!props.race.winner} color={props.successColor} />
+          <td colspan={2} />
+          <td colspan="100%" style={{
+            "padding-left": "0.75em",
+            "padding-right": "0.75em",
+          }}>
+            <Collapse value={expand()} class={styles.openTransition}>
+              <div>
+                <Typography align="left" variant="caption">
+                  {raceInfoString(props.race)}
+                </Typography>
+              </div>
+            </Collapse>
+          </td>
+        </Card>
+      </Show>
+    </Show>
+  )
+}
+
 function TeamActionRow(props: {
   race: Race;
   open: boolean;
   readonly?: boolean;
   onRaceUpdate: (race: Partial<Race>) => void;
+  successColor: string;
 }) {
   const [options, setOptions] = createSignal(false)
-  createEffect(() => {
-    if (props.open) {
-      setOptions(true)
-    } else {
-      setTimeout(() => setOptions(false), 200) // ensure stays mounted for transition
-    }
-  })
   const [expand, setExpand] = createSignal(false)
   createEffect(() => {
     if (props.open) {
+      setOptions(true)
       setTimeout(() => setExpand(true), 10) // ensure mount completes before transition
     } else {
+      setTimeout(() => setOptions(false), 200) // ensure stays mounted for transition
       setExpand(false)
     }
   })
@@ -331,53 +405,64 @@ function TeamActionRow(props: {
   }
   return (
     <Show when={options()}>
-      <Collapse value={expand()} class={styles.openTransition}>
-        <div
-          style={{
-            display: "grid",
-            "grid-template-columns": "1fr auto 1fr",
-            "align-items": "center",
-            padding: "0.5em",
-          }}
+      <Card
+        class={styles.raceInfoExpand}
+      >
+        <StatusIndicator complete={!!props.race.winner} color={props.successColor} />
+        <td />
+        <td
+          colspan={3}
         >
-          <TeamActions
-            winner={props.race.winner}
-            team={1}
-            onSetWinner={[handleForceWinner, 1]}
-            onDsqToggle={[handleDsqToggle, 1]}
-            onConcede={[handleConcede, 1]}
-            dsq={props.race.team1Dsq}
-            indicators={props.race.indicators}
-          />
-          <Button
-            color="error"
-            size="small"
-            variant="outlined"
-            onClick={(e) => {
-              e.stopPropagation()
-              props.onRaceUpdate({
-                winner: undefined,
-                indicators: undefined,
-                team1Dsq: undefined,
-                team2Dsq: undefined
-              })
-            }}
-            disabled={props.readonly || (!props.race.winner && !props.race.indicators && !props.race.team1Dsq && !props.race.team2Dsq)}
-          >
-            Reset
-          </Button>
-          <TeamActions
-            winner={props.race.winner}
-            team={2}
-            onSetWinner={[handleForceWinner, 2]}
-            onDsqToggle={[handleDsqToggle, 2]}
-            onConcede={[handleConcede, 2]}
-            dsq={props.race.team2Dsq}
-            indicators={props.race.indicators}
-            displayReverse
-          />
-        </div>
-      </Collapse>
+          <Collapse value={expand()} class={styles.openTransition}>
+            <div
+              style={{
+                display: "grid",
+                "grid-template-columns": "1fr auto 1fr",
+                "align-items": "center",
+                padding: "0.5em",
+              }}
+            >
+              <TeamActions
+                winner={props.race.winner}
+                team={1}
+                onSetWinner={[handleForceWinner, 1]}
+                onDsqToggle={[handleDsqToggle, 1]}
+                onConcede={[handleConcede, 1]}
+                dsq={props.race.team1Dsq}
+                indicators={props.race.indicators}
+              />
+              <Button
+                color="error"
+                size="small"
+                variant="outlined"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  props.onRaceUpdate({
+                    winner: undefined,
+                    indicators: undefined,
+                    team1Dsq: undefined,
+                    team2Dsq: undefined
+                  })
+                }}
+                disabled={props.readonly || (!props.race.winner && !props.race.indicators && !props.race.team1Dsq && !props.race.team2Dsq)}
+              >
+                Reset
+              </Button>
+              <TeamActions
+                winner={props.race.winner}
+                team={2}
+                onSetWinner={[handleForceWinner, 2]}
+                onDsqToggle={[handleDsqToggle, 2]}
+                onConcede={[handleConcede, 2]}
+                dsq={props.race.team2Dsq}
+                indicators={props.race.indicators}
+                alignEnd
+              />
+            </div>
+          </Collapse>
+        </td>
+        <td />
+      </Card>
     </Show>
   )
 }
@@ -390,7 +475,7 @@ function TeamActions(props: {
   onDsqToggle: ButtonProps["onClick"];
   onSetWinner: ButtonProps["onClick"];
   onConcede: ButtonProps["onClick"];
-  displayReverse?: boolean;
+  alignEnd?: boolean;
 }) {
   return (
     <div
@@ -407,9 +492,9 @@ function TeamActions(props: {
         onClick={props.onSetWinner}
         disabled={props.winner === props.team || !!props.indicators}
         sx={{
-          marginLeft: props.displayReverse ? "auto" : undefined,
-          marginRight: props.displayReverse ? undefined : "auto",
-          justifyContent: props.displayReverse ? "flex-end" : "flex-start",
+          marginLeft: props.alignEnd ? "auto" : undefined,
+          marginRight: props.alignEnd ? undefined : "auto",
+          justifyContent: props.alignEnd ? "flex-end" : "flex-start",
         }}
       >
         Winner
@@ -420,9 +505,9 @@ function TeamActions(props: {
         onClick={props.onDsqToggle}
         disabled={!!props.indicators}
         sx={{
-          marginLeft: props.displayReverse ? "auto" : undefined,
-          marginRight: props.displayReverse ? undefined : "auto",
-          justifyContent: props.displayReverse ? "flex-end" : "flex-start",
+          marginLeft: props.alignEnd ? "auto" : undefined,
+          marginRight: props.alignEnd ? undefined : "auto",
+          justifyContent: props.alignEnd ? "flex-end" : "flex-start",
         }}
       >
         {props.dsq && "Clear "}DSQ
@@ -433,9 +518,9 @@ function TeamActions(props: {
         onClick={props.onConcede}
         disabled={!!props.indicators}
         sx={{
-          marginLeft: props.displayReverse ? "auto" : undefined,
-          marginRight: props.displayReverse ? undefined : "auto",
-          justifyContent: props.displayReverse ? "flex-end" : "flex-start",
+          marginLeft: props.alignEnd ? "auto" : undefined,
+          marginRight: props.alignEnd ? undefined : "auto",
+          justifyContent: props.alignEnd ? "flex-end" : "flex-start",
         }}
       >
         By
