@@ -2,6 +2,26 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.0] - 2026-10-29
+
+### 🚀 Features
+
+- Brand new race list renderer, fix re-render issue
+- Nicer UX and more info on race list v2
+
+### 🎨 Styling
+
+- Better layout and card wrapping on race list and mini leagues
+- Align buttons with edge of team names in race list
+
+### ⚙️ Miscellaneous Tasks
+
+- Add basic sitemap, correct robots.txt
+- Consolidate PopoverIconButton with PopoverButton
+- Correct paper elevation in preview
+- Refactore RaceListV2 so not a single massive file
+- Better type hinting for race ordering
+
 ## [0.8.0] - 2026-10-26
 
 ### 🚀 Features
