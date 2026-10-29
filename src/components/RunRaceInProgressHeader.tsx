@@ -15,8 +15,9 @@ import { useAuth } from "@/hooks/auth";
 import Stepper from "@/ui/Stepper";
 import { usePreferences } from "@/hooks/preferences";
 import RunRacePreferencesModal from "./RunRacePreferencesModal";
+import { useFeatureFlags } from "@/hooks/flags";
 
-const options = Object.entries(views).map(([value, label]) => ({ value, label }))
+const allViewOptions = Object.entries(views).map(([value, label]) => ({ value, label }))
 
 const keepValidStages = (s: string, round: Round) => s == round.status || Object.values(round.config).some(c => c[s])
 
@@ -94,6 +95,14 @@ export default function RunRaceInProgressHeader(props: {
       })
   })
 
+  const flags = useFeatureFlags()
+  const viewOptions = createMemo(() => {
+    if (flags.developer()) {
+      return allViewOptions
+    }
+    return allViewOptions.filter(o => o.value != "printable")
+  })
+
   return (
     <>
       <RunRacePreferencesModal
@@ -116,7 +125,7 @@ export default function RunRaceInProgressHeader(props: {
               title="View"
               current={view()}
               onClose={(v: View) => setView(current => v ?? current)}
-              options={options}
+              options={viewOptions()}
               defaultBackground
             />
           </Show>
