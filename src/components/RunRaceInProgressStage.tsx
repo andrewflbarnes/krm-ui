@@ -156,7 +156,9 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     })
   }
 
-  const orderedRaces = createMemo(() => {
+  // For now track unnumbered so we can align with minileague
+  // Should definitely make this work better
+  const orderedRacesUnnumbered = createMemo(() => {
     return orderRaces(props.round.races[props.stage], northern(), props.stage === "knockout")
   })
 
@@ -164,7 +166,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
   const orderedMiniLeagueRaces = createMemo(() =>
     divisions.map(division => {
       const races = props.round.races[props.stage][division] ?? {}
-      const raceNumOrdering = orderedRaces()
+      const raceNumOrdering = orderedRacesUnnumbered()
       const ordered = Object.entries(races)
         .sort(([groupA], [groupB]) => groupA.localeCompare(groupB))
         .map(([group, races]) => ({
@@ -183,6 +185,13 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       }
     })
   )
+
+  const orderedRaces = createMemo(() => {
+    return orderedRacesUnnumbered().map((r, i) => ({
+      ...r,
+      raceNumber: i + 1,
+    }))
+  })
 
   const [print, setPrint] = usePrint()
   let ref!: HTMLDivElement; // oxlint-disable-line no-unassigned-vars

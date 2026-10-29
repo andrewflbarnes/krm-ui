@@ -1,11 +1,11 @@
 import type { Meta, StoryObj } from 'storybook-solidjs-vite';
-import RaceList from '@/components/RaceList';
+import RaceListV1 from '@/components/RaceListV1';
 import { fn } from 'storybook/test';
 import { knockouts, races } from '@/stories/data';
 import { ComponentProps, createEffect, createSignal, untrack } from 'solid-js';
 import { Race } from '@/kings';
 
-const RaceListWithHandler = (props: ComponentProps<typeof RaceList>) => {
+const RaceListV1WithHandler = (props: ComponentProps<typeof RaceListV1>) => {
   const [races, setRaces] = createSignal<Race[]>(untrack(() => props.orderedRaces))
   createEffect(() => {
     setRaces(props.orderedRaces)
@@ -16,14 +16,14 @@ const RaceListWithHandler = (props: ComponentProps<typeof RaceList>) => {
     setRaces(newRaces)
     props.onRaceUpdate(result)
   }
-  return <RaceList {...props} onRaceUpdate={handleResultChange} orderedRaces={races()} />
+  return <RaceListV1 {...props} onRaceUpdate={handleResultChange} orderedRaces={races()} />
 }
 
 const meta = {
-  title: 'Kings/RaceList',
-  component: RaceList,
-  render: (props) => <RaceListWithHandler {...props} />,
-} satisfies Meta<typeof RaceList>;
+  title: 'Kings/RaceListV1',
+  component: RaceListV1,
+  render: (props) => <RaceListV1WithHandler {...props} />,
+} satisfies Meta<typeof RaceListV1>;
 
 export default meta;
 type Story = StoryObj<typeof meta>;
