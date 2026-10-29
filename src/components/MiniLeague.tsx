@@ -19,6 +19,7 @@ type MiniLeagueProps = {
   noResults?: boolean;
   onResultChange?: (race: Race) => void;
   readonly?: boolean;
+  conflict?: boolean;
   // Selectable allows a user to modify the team/seed in each position, in this
   // case the teams prop is a superset of the actual teams in this minileague
   // and the races are expected to be synthetic
@@ -55,25 +56,42 @@ export default function MiniLeague(props: MiniLeagueProps) {
     setAnchorEl(e.currentTarget as HTMLTableColElement)
     setCtxRace(ctx)
   }
+
   const finished = createMemo(() => props.races.every(({ winner }) => !!winner))
+  const conflict = createMemo(() => props.conflict || (finished() && teamPositions().pos.some(p => p.length > 1)))
+  const complete = createMemo(() => finished() && !conflict())
 
   return (
     <GroupCard
       name={props.name}
       type={props.races[0]?.division}
       endAdornment={
-        <Chip
-          label="Complete"
-          size="small"
-          color="success"
-          sx={{
-            height: 18,
-            fontSize: "0.6rem",
-            fontWeight: 700,
-            "& .MuiChip-label": { px: 1 },
-            visibility: finished() ? "visible" : "hidden",
-          }}
-        />
+        <>
+          <Chip
+            label="Complete"
+            size="small"
+            color="success"
+            sx={{
+              height: 18,
+              fontSize: "0.6rem",
+              fontWeight: 700,
+              "& .MuiChip-label": { px: 1 },
+              visibility: complete() ? "visible" : "hidden",
+            }}
+          />
+          <Chip
+            label="Conflict"
+            size="small"
+            color="warning"
+            sx={{
+              height: 18,
+              fontSize: "0.6rem",
+              fontWeight: 700,
+              "& .MuiChip-label": { px: 1 },
+              visibility: conflict() ? "visible" : "hidden",
+            }}
+          />
+        </>
       }
     >
       <ContextMenu

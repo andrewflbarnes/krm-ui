@@ -52,6 +52,7 @@ export default function MiniLeagues(props: MiniLeaguesProps) {
                 name={division().capitalize() + " " + group().group}
                 races={group().races.races}
                 teams={group().races.teams}
+                conflict={group().races.conflict}
                 onResultChange={props.onRaceUpdate}
                 readonly={props.readonly}
               />

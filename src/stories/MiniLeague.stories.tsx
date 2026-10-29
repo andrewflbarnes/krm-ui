@@ -75,145 +75,14 @@ export default meta;
 
 type Story = StoryObj<typeof meta>;
 
-const m3 = miniLeagueTemplates.mini3
-export const Teams3: Story = {
+const single = miniLeagueTemplates.single
+export const Single: Story = {
   args: {
-    name: "Mini 3",
-    teams: initTeams(m3),
-    races: initRaces(m3),
+    name: "Single",
+    teams: initTeams(single),
+    races: [],
   },
-}
-
-const m4 = miniLeagueTemplates.mini4
-export const Teams4: Story = {
-  args: {
-    name: "Mini 4",
-    teams: initTeams(m4),
-    races: initRaces(m4),
-  },
-}
-
-/**
-  * Ensure that when teams are on other sides of the course, the rendering is correct
-  */
-export const TeamsInverse4: Story = {
-  args: {
-    name: "Mini 4 Inverse",
-    teams: initTeams(m4),
-    races: initRacesInverse(m4),
-  },
-}
-
-/**
-  * Make races share columns where possible
-  */
-export const TeamsCollapse4: Story = {
-  args: {
-    ...Teams4.args,
-    name: "Mini 4 Collapsed",
-    collapsed: true,
-  },
-}
-
-/**
-  * Readonly mini leagues can't be updated
-  */
-export const TeamsReadonly4: Story = {
-  args: {
-    ...Teams4.args,
-    name: "Mini 4 Readonly",
-    readonly: true,
-  },
-  play: async ({ args, canvas, step }) => {
-    await step('Try to set winner of all races to the first team', async () => {
-      for (let i = 0; i < args.races.length; i++) {
-        await selectWinner(canvas, args.races[i].group, i)
-      }
-    })
-    await waitFor(() => expect(canvas.queryByText(/1st/)).not.toBeInTheDocument())
-    await waitFor(() => expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument())
-    await waitFor(() => expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument())
-    await waitFor(() => expect(canvas.queryByText(/4th/)).not.toBeInTheDocument())
-    await waitFor(() => expect(args.onResultChange).not.toHaveBeenCalledTimes(args.races.length))
-  },
-}
-
-/**
-  * Live mini leagues will show positions as soon as once race has occurred
-  */
-export const TeamsLive4: Story = {
-  args: {
-    ...Teams4.args,
-    name: "Mini 4 Live",
-    live: true,
-  },
-  play: async ({ args, canvas, step }) => {
-    await step('Set first race winner', async () => {
-      await selectWinner(canvas, "Z", 0)
-    })
-    await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
-    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledOnce())
-  }
-}
-
-/**
-  * Disable results info on RHS
-  */
-export const NoResults: Story = {
-  args: {
-    ...Teams4.args,
-    name: "Mini 4 No Results",
-    noResults: true,
-  },
-  play: async ({ args, canvas, step }) => {
-    await step('Set winner of all races to the first team', async () => {
-      for (let i = 0; i < args.races.length; i++) {
-        await selectWinner(canvas, args.races[i].group, i)
-      }
-    })
-    expect(canvas.queryByText(/Complete/)).toBeInTheDocument()
-    expect(canvas.queryByText(/1st/)).not.toBeInTheDocument()
-    expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument()
-    expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument()
-    expect(canvas.queryByText(/4th/)).not.toBeInTheDocument()
-    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledTimes(args.races.length))
-  }
-}
-
-const m5 = miniLeagueTemplates.mini5
-export const Teams5: Story = {
-  args: {
-    name: "Mini 5",
-    teams: initTeams(m5),
-    races: initRaces(m5),
-  },
-}
-
-const m6 = miniLeagueTemplates.mini6
-export const Teams6: Story = {
-  args: {
-    name: "Mini 6",
-    teams: initTeams(m6),
-    races: initRaces(m6),
-  },
-}
-
-const f4 = miniLeagueTemplates.full4
-export const Full4: Story = {
-  args: {
-    name: "Full 4",
-    teams: initTeams(f4),
-    races: initRaces(f4),
-  },
-}
-
-const f3 = miniLeagueTemplates.full3
-export const Full3: Story = {
-  args: {
-    name: "Full 3",
-    teams: initTeams(f3),
-    races: initRaces(f3),
-  },
+  play: async () => { },
 }
 
 const f2 = miniLeagueTemplates.full2
@@ -234,12 +103,165 @@ export const Knockout: Story = {
   },
 }
 
-const single = miniLeagueTemplates.single
-export const Single: Story = {
+const m3 = miniLeagueTemplates.mini3
+export const Teams3: Story = {
   args: {
-    name: "Single",
-    teams: initTeams(single),
-    races: [],
+    name: "Mini 3",
+    teams: initTeams(m3),
+    races: initRaces(m3),
   },
-  play: async () => { },
+}
+
+const f3 = miniLeagueTemplates.full3
+export const Full3: Story = {
+  args: {
+    name: "Full 3",
+    teams: initTeams(f3),
+    races: initRaces(f3),
+  },
+}
+
+const m4 = miniLeagueTemplates.mini4
+export const Teams4: Story = {
+  args: {
+    name: "Mini 4",
+    teams: initTeams(m4),
+    races: initRaces(m4),
+  },
+}
+
+const f4 = miniLeagueTemplates.full4
+export const Full4: Story = {
+  args: {
+    name: "Full 4",
+    teams: initTeams(f4),
+    races: initRaces(f4),
+  },
+}
+
+const m5 = miniLeagueTemplates.mini5
+export const Teams5: Story = {
+  args: {
+    name: "Mini 5",
+    teams: initTeams(m5),
+    races: initRaces(m5),
+  },
+}
+
+const m6 = miniLeagueTemplates.mini6
+export const Teams6: Story = {
+  args: {
+    name: "Mini 6",
+    teams: initTeams(m6),
+    races: initRaces(m6),
+  },
+}
+
+/**
+  * Ensure that when teams are on other sides of the course, the rendering is correct
+  */
+export const Inverse: Story = {
+  args: {
+    name: "Inverse",
+    teams: initTeams(m4),
+    races: initRacesInverse(m4),
+  },
+}
+
+/**
+  * Make races share columns where possible
+  */
+export const Collapse: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Collapsed",
+    collapsed: true,
+  },
+}
+
+/**
+  * Readonly mini leagues can't be updated
+  */
+export const Readonly: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Readonly",
+    readonly: true,
+  },
+  play: async ({ args, canvas, step }) => {
+    await step('Try to set winner of all races to the first team', async () => {
+      for (let i = 0; i < args.races.length; i++) {
+        await selectWinner(canvas, args.races[i].group, i)
+      }
+    })
+    await waitFor(() => expect(canvas.queryByText(/1st/)).not.toBeInTheDocument())
+    await waitFor(() => expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument())
+    await waitFor(() => expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument())
+    await waitFor(() => expect(canvas.queryByText(/4th/)).not.toBeInTheDocument())
+    await waitFor(() => expect(args.onResultChange).not.toHaveBeenCalledTimes(args.races.length))
+  },
+}
+
+/**
+  * Live mini leagues will show positions as soon as once race has occurred
+  */
+export const Live: Story = {
+  args: {
+    ...Teams4.args,
+    name: "Live",
+    live: true,
+  },
+  play: async ({ args, canvas, step }) => {
+    await step('Set first race winner', async () => {
+      await selectWinner(canvas, "Z", 0)
+    })
+    await waitFor(() => expect(canvas.getByText(/1st/)).toBeInTheDocument())
+    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledOnce())
+  }
+}
+
+/**
+  * Disable results info on RHS
+  */
+export const NoResults: Story = {
+  args: {
+    ...Teams4.args,
+    name: "No Results",
+    noResults: true,
+  },
+  play: async ({ args, canvas, step }) => {
+    await step('Set winner of all races to the first team', async () => {
+      for (let i = 0; i < args.races.length; i++) {
+        await selectWinner(canvas, args.races[i].group, i)
+      }
+    })
+    expect(canvas.queryByText(/Complete/)).toBeInTheDocument()
+    expect(canvas.queryByText(/1st/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/2nd/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/3rd/)).not.toBeInTheDocument()
+    expect(canvas.queryByText(/4th/)).not.toBeInTheDocument()
+    await waitFor(() => expect(args.onResultChange).toHaveBeenCalledTimes(args.races.length))
+  }
+}
+
+export const ConflictByResults: Story = {
+  args: {
+    name: "Conflict",
+    teams: initTeams(m3),
+    races: initRaces(m3).map(r => ({
+      ...r,
+      winner: 1,
+    })),
+  },
+  play: () => {}
+}
+
+export const ConflictByProp: Story = {
+  args: {
+    name: "Conflict",
+    teams: initTeams(m3),
+    races: initRaces(m3),
+    conflict: true,
+  },
+  play: () => {}
 }
