@@ -222,7 +222,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     <>
       <PrintBlockingModal open={print()} />
       <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
-        <Stack direction="row" padding={2} gap={2} sx={{ justifyContent: "center" }}>
+        <Stack direction="row" gap={2} sx={{ justifyContent: "center" }}>
           <Show when={showList()}>
             <Box sx={{ overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
               <RaceList

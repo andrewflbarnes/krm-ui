@@ -33,7 +33,6 @@ export default function RaceListV2(props: RaceListV2Props) {
   createEffect(startLoad)
   return (
     <div style={{
-      padding: "8px",
       "padding-top": 0,
       width: "30em", // todo something more sensible/responsive/absolute
     }}>

@@ -36,7 +36,10 @@ export default function AppLayout(props: ParentProps<{
           <AppBar />
         </Box>
         <Box component="main" sx={{
-          p: 1,
+          p: {
+            xs: 0,
+            sm: 1,
+          },
           flexGrow: 1,
           position: "relative",
           overflow: "auto",

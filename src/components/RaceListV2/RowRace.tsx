@@ -52,7 +52,8 @@ export default function RowRace(props: {
       <div
         style={{
           display: "table-cell",
-          padding: "0.25em",
+          "padding-top": "0.25em",
+          "padding-bottom": "0.25em",
         }}
       >
         <TeamName readonly={props.readonly || !!props.race.winner} onClick={() => props.onSetWinner(1)} hoverColor={hoverColor()}>
@@ -65,13 +66,14 @@ export default function RowRace(props: {
         }}
       >
         <Typography>
-          vs
+          v
         </Typography>
       </td>
       <div
         style={{
           display: "table-cell",
-          padding: "0.25em",
+          "padding-top": "0.25em",
+          "padding-bottom": "0.25em",
         }}
       >
         <TeamName readonly={props.readonly || !!props.race.winner} onClick={() => props.onSetWinner(2)} hoverColor={hoverColor()} align="right">
@@ -130,7 +132,7 @@ function TeamName(props: ParentProps<{
       }}
       onClick={handleClick}
     >
-      <Typography>
+      <Typography noWrap>
         {props.children}
       </Typography>
     </div>
@@ -142,6 +144,7 @@ function Indicator(props: {
   winner: 1 | 2 | undefined;
   dsq: boolean | undefined;
   indicators: string | undefined;
+  align?: "left" | "center" | "right";
 }) {
   const teamIndicator = () => {
     if (!props.winner) {
@@ -181,13 +184,17 @@ function Indicator(props: {
   }
   return (
     <div style={{
-      color: teamColor(),
       display: "flex",
-      "justify-content": "center",
       "align-items": "center",
-      "min-width": "1.5em",
+      "justify-content": props.align === "right"
+        ? "flex-end"
+        : props.align === "left"
+          ? "flex-start"
+          : "center",
+      "min-width": "20px",
     }}>
       <Typography
+        variant="caption"
         color={teamColor()}
       >
         {teamIndicator()}

@@ -24,24 +24,39 @@ export default function RowHeader(props: {
       }}
     >
       <CellStatusIndicator complete={!!props.race.winner} />
-      <td colspan="100%">
+      <td>
+        <div style={{ display: "flex", "align-items": "center", "justify-content": "center" }}>
+          <NumberBadge value={props.race.division[0].toUpperCase()} bgcolor={props.race.division} />
+        </div>
+      </td>
+      <td colspan="3">
         <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", "justify-content": "space-between", gap: "1em" }}>
-          <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", gap: "0.5em" }}>
-            <NumberBadge value={props.race.division[0].toUpperCase()} bgcolor={props.race.division} />
-            <Typography align="left" variant="caption" color="text.secondary">
-              Race {props.race.raceNumber}{props.raceStr ? ` - ${props.raceStr}` : ""}
-            </Typography>
-          </div>
-          <div style={{ display: "flex", "flex-direction": "row", "align-items": "center", gap: "0.5em" }}>
-            <Typography align="left" variant="caption" color="text.secondary">
-              {props.detailStr}
-            </Typography>
-            <ExpandLess fontSize="small" sx={{
-              transform: props.open ? "rotate(0deg)" : "rotate(180deg)",
-              transition: "transform 0.2s ease",
-              display: props.readonly ? "none" : "inherit",
-            }} />
-          </div>
+          <Typography align="left" variant="caption" color="text.secondary">
+            Race {props.race.raceNumber}{props.raceStr ? ` - ${props.raceStr}` : ""}
+          </Typography>
+          <Typography align="right" variant="caption" color="text.secondary">
+            {props.detailStr}
+          </Typography>
+        </div>
+      </td>
+      <td
+        style={{
+          "padding-left": 0,
+        }}
+      >
+        <div
+          style={{
+            display: "flex",
+            "flex-direction": "row",
+            "align-items": "center",
+            "justify-content": "center",
+          }}
+        >
+          <ExpandLess fontSize="small" sx={{
+            transform: props.open ? "rotate(0deg)" : "rotate(180deg)",
+            transition: "transform 0.2s ease",
+            display: props.readonly ? "none" : "inherit",
+          }} />
         </div>
       </td>
     </Card>

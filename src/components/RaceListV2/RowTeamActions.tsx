@@ -73,7 +73,7 @@ export default function RowTeamActions(props: {
                 display: "grid",
                 "grid-template-columns": "1fr auto 1fr",
                 "align-items": "center",
-                padding: "0.5em",
+                padding: "0.25em",
               }}
             >
               <TeamActions
@@ -121,6 +121,10 @@ export default function RowTeamActions(props: {
   )
 }
 
+const commonButtonProps: Partial<ButtonProps> = {
+  size: "small",
+  variant: "text",
+}
 
 function TeamActions(props: {
   winner: 1 | 2 | undefined;
@@ -142,7 +146,7 @@ function TeamActions(props: {
       }}
     >
       <Button
-        size="small"
+        {...commonButtonProps}
         color="success"
         onClick={props.onSetWinner}
         disabled={props.winner === props.team || !!props.indicators}
@@ -155,7 +159,7 @@ function TeamActions(props: {
         Winner
       </Button>
       <Button
-        size="small"
+        {...commonButtonProps}
         color={props.dsq ? "info" : "error"}
         onClick={props.onDsqToggle}
         disabled={!!props.indicators}
@@ -168,7 +172,7 @@ function TeamActions(props: {
         {props.dsq && "Clear "}DSQ
       </Button>
       <Button
-        size="small"
+        {...commonButtonProps}
         color="warning"
         onClick={props.onConcede}
         disabled={!!props.indicators}
