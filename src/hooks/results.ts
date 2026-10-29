@@ -3,7 +3,6 @@ import { useQuery } from "@tanstack/solid-query"
 import { Round, Stage } from "@/kings"
 import krmEngine from "@/kings/engine"
 import { atom, useAtom } from "solid-jotai"
-import { initialisableAtomWithStorage } from "@/utils/jotai-utils"
 
 export const stages: {
   [s in Stage]: string
@@ -22,23 +21,9 @@ export const views = {
 } as const
 export type View = keyof typeof views
 
-const viewAtom = atom<View>("list")
-const liveAtom = atom(false)
-const collapseAtom = atom(false)
-const northernAtom = atom(false)
 const roundAtom = atom<Round>()
-export const useListStyle = initialisableAtomWithStorage<"v1" | "v2">("results-list-style", "v1")
 
 export const useRaceOptions = () => {
-  const [view, setView] = useAtom(viewAtom)
-  const [live, setLive] = useAtom(liveAtom)
-  const [listStyle, setListStyle] = useListStyle()
-  const toggleListStyle = () => setListStyle(v => v == "v1" ? "v2" : "v1")
-  const switchLive = () => setLive(v => !v)
-  const [collapse, setCollapse] = useAtom(collapseAtom)
-  const switchCollapse = () => setCollapse(v => !v)
-  const [northern, setNorthern] = useAtom(northernAtom)
-  const switchNorthern = () => setNorthern(v => !v)
   const [round, setRound] = useAtom(roundAtom)
 
   const navigate = useNavigate()
@@ -67,18 +52,5 @@ export const useRaceOptions = () => {
     round,
     setRound,
     setStage: updateStage,
-    view,
-    setView,
-    live,
-    setLive,
-    switchLive,
-    collapse,
-    setCollapse,
-    switchCollapse,
-    northern,
-    setNorthern,
-    switchNorthern,
-    listStyle,
-    toggleListStyle,
   }
 }

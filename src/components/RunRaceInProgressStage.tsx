@@ -8,8 +8,8 @@ import notification from "@/hooks/notification";
 import BasicErrorBoundary from "@/ui/BasicErrorBoundary";
 import RaceListPrintable from "@/components/RaceListPrintable";
 import { usePrint } from "@/hooks/print";
-import { useRaceOptions } from "@/hooks/results";
 import MiniLeagues from "@/components/MiniLeagues";
+import { usePreferences } from "@/hooks/preferences";
 
 const orderRaces = (divisionRaces: StageRaces, northern: boolean, knockouts?: boolean): Race[] => {
   if (knockouts) {
@@ -128,7 +128,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     northern,
     listStyle,
     view,
-  } = useRaceOptions()
+  } = usePreferences()
 
   const mut = useMutation(() => ({
     mutationKey: [props.round.id],
