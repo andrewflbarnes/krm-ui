@@ -81,7 +81,7 @@ function HydratedAppLayout(props: ParentProps) {
   } = useKingsTheme()
 
   const handleModeChange = () => setMode(m => {
-    return m === "light" ? "dark" : "light"
+    return m === "dark" ? "light" : "dark"
   })
   return (
     <AuthProvider>

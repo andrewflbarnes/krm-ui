@@ -1,5 +1,6 @@
 import { useFeatureFlags } from "@/hooks/flags";
 import { usePreferences } from "@/hooks/preferences";
+import { useKingsTheme } from "@/theme";
 import {
   Box,
   Dialog,
@@ -33,6 +34,12 @@ export default function RunRacePreferencesModal(props: {
 
   const flags = useFeatureFlags();
 
+  const {
+    mode,
+    setMode,
+  } = useKingsTheme()
+
+
   return (
     <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="xs">
       <DialogTitle>Preferences</DialogTitle>
@@ -48,6 +55,23 @@ export default function RunRacePreferencesModal(props: {
                 control={<Switch checked={!flags.verboseUi()} onChange={() => flags.setVerboseUi(v => !v)} />}
                 label="Simple UI"
               />
+              <FormControl size="small" fullWidth>
+                <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+                  Mode
+                </Typography>
+                <ToggleButtonGroup
+                  exclusive
+                  size="small"
+                  value={mode()}
+                  onChange={(_, value) => value && setMode(value)}
+                  color="primary"
+                  fullWidth
+                >
+                  <For each={["dark", "light"] as const}>
+                    {(m) => <ToggleButton value={m}>{m}</ToggleButton>}
+                  </For>
+                </ToggleButtonGroup>
+              </FormControl>
             </Stack>
           </Box>
           <Box>
