@@ -1,12 +1,12 @@
 import { Box, Button, Card, IconButton, ToggleButton, ToggleButtonGroup } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, For, on, Show } from "solid-js";
-import { GroupRaces, RaceStage, Round } from "@/kings";
+import { Division, GroupRaces, RaceStage, Round } from "@/kings";
 import PopoverButton from "@/ui/PopoverButton";
 import Selector from "@/ui/Selector";
 import krmEngine, { type ProgressionStage } from "@/kings/engine";
 import notification from "@/hooks/notification";
-import { Print, Settings, WarningAmberRounded } from "@suid/icons-material";
+import { Edit, Print, Settings, WarningAmberRounded } from "@suid/icons-material";
 import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import { usePrint } from "@/hooks/print";
 import { stages, useRaceOptions } from "@/hooks/results";
@@ -17,6 +17,7 @@ import { usePreferences, View, views } from "@/hooks/preferences";
 import RunRacePreferencesModal from "./RunRacePreferencesModal";
 import { useFeatureFlags } from "@/hooks/flags";
 import SimpleUi from "@/ui/SimpleUi";
+import RunRaceFixConflictModal from "./RunRaceFixConflictModal";
 
 const allViewOptions = Object.entries(views).map(([value, { label, icon }]) => ({ value, label, icon }))
 
@@ -37,13 +38,35 @@ export default function RunRaceInProgressHeader(props: {
   const handleClose = () => {
     setActionsOpen(false)
   }
+
+  const [fixConflict, setFixConflict] = createSignal<{
+    division: Division;
+    group: string;
+    races: GroupRaces;
+  }>(null)
+
+  const flags = useFeatureFlags()
+
   const errors = createMemo(() => {
     return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {
           const draws = dr.results?.filter(r => r.length > 1) || []
           if (draws.length) {
-            draws.forEach(draw => acc.push(`Draw in ${div} group ${group}: ${draw.join(", ")}`))
+            draws.forEach(draw => acc.push(
+              <div style={{ display: "flex", "align-items": "center", gap: "0.5em" }}>
+                <Show when={flags.experimental()}>
+                  <IconButton
+                    onClick={() => setFixConflict({ division: div as Division, group, races: dr })}
+                  >
+                    <Edit fontSize="small" />
+                  </IconButton>
+                </Show>
+                <span>
+                  Draw in {div} group {group}: {draw.join(", ")}
+                </span>
+              </div>
+            ))
           }
         }
       })
@@ -95,8 +118,6 @@ export default function RunRaceInProgressHeader(props: {
         }
       })
   })
-
-  const flags = useFeatureFlags()
   const viewOptions = createMemo(() => {
     if (flags.developer()) {
       return allViewOptions
@@ -109,6 +130,13 @@ export default function RunRaceInProgressHeader(props: {
       <RunRacePreferencesModal
         open={actionsOpen()}
         onClose={handleClose}
+      />
+      <RunRaceFixConflictModal
+        open={!!fixConflict()}
+        division={fixConflict()?.division}
+        group={fixConflict()?.group}
+        races={fixConflict()?.races}
+        onClose={() => setFixConflict(null)}
       />
       <Card sx={{ p: 1, pb: 3, display: "flex", flexDirection: "column", gap: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>

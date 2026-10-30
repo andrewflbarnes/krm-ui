@@ -3,7 +3,7 @@ import { createSignal, For, JSX, Show } from "solid-js";
 
 type PopoverButtonProps = {
   title: string;
-  messages: string[];
+  messages: JSX.Element[];
   color?: "inherit" | "primary" | "secondary" | "error" | "success" | "warning" | "info";
 } & ({
   variant: "icon";
