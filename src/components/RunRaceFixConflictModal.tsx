@@ -1,7 +1,11 @@
-import { asPosition, Division, GroupRaces } from "@/kings";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle } from "@suid/material";
-import { createComputed, createEffect, createSelector, createSignal, For, onMount } from "solid-js";
+import { asPosition, calcTeamResults, Division, GroupRaces, Race } from "@/kings";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@suid/material";
+import { createComputed, createEffect, createSelector, createSignal, For, Show } from "solid-js";
 import MiniLeague from "./MiniLeague";
+import Seed from "@/ui/Seed";
+import { DoubleArrow } from "@suid/icons-material";
+
+const NO_OPTION_SENTINEL = ["Select an option"]
 
 export default function RunRaceFixConflictModal(props: {
   open: boolean;
@@ -10,6 +14,9 @@ export default function RunRaceFixConflictModal(props: {
     group: string;
     races: GroupRaces;
   }[];
+  seeding: {
+    [division in Division]: string[];
+  },
   selectedGroup?: {
     division: Division;
     group: string;
@@ -29,7 +36,7 @@ export default function RunRaceFixConflictModal(props: {
       return
     }
     setConfirm(undefined)
-    alert("confirmed")
+    alert("TODO :D")
   }
 
   const handleLowSeedWin = () => {
@@ -58,19 +65,9 @@ export default function RunRaceFixConflictModal(props: {
     })
   }
 
-  const initialRefs = props.conflicts.map(() => null)
-  const [sizeRefs, setSizeRefs] = createSignal<HTMLDivElement[]>(initialRefs)
-  onMount(() => {
-    const ret = sizeRefs().reduce((acc, ref) => {
-      return acc > ref?.clientHeight ? acc : ref?.clientHeight
-    }, 0)
-    setContentHeight(ret)
-  })
+  const [sizeRefs, setSizeRefs] = createSignal<HTMLDivElement[]>([])
   const updateRefs = (index: number, ref: HTMLDivElement) => {
     setSizeRefs(prev => {
-      if (!prev?.length) {
-        return prev
-      }
       const newRefs = [...prev]
       newRefs[index] = ref
       return newRefs
@@ -79,6 +76,10 @@ export default function RunRaceFixConflictModal(props: {
 
   const [contentHeight, setContentHeight] = createSignal(0)
   createEffect(() => {
+    const ret = sizeRefs().reduce((acc, ref) => {
+      return acc > ref?.clientHeight ? acc : ref?.clientHeight
+    }, 0)
+    setContentHeight(ret)
   })
 
   return (
@@ -105,6 +106,7 @@ export default function RunRaceFixConflictModal(props: {
             }}>
               <Resolve
                 division={conflict.division}
+                seeding={props.seeding[conflict.division]}
                 group={conflict.group}
                 races={conflict.races}
                 confirm={confirm()}
@@ -113,26 +115,35 @@ export default function RunRaceFixConflictModal(props: {
             </div>
           )}</For>
         </div>
+        <div
+          style={{
+            display: "flex",
+            "justify-content": "center",
+            "margin-top": "1em",
+          }}
+        >
           <Button
-            color="primary"
             onClick={next}
           >
             Next
           </Button>
+        </div>
       </DialogContent>
       <DialogActions>
         <div style={{ display: "flex", "flex-direction": "column", gap: "0.5em", width: "100%" }}>
           <Button
-            color={!!confirm() ? "success" : "primary"}
+            variant="outlined"
+            color={confirm() ? "success" : "primary"}
             onClick={handleHighSeedWin}
           >
-            {!!confirm() ? "Confirm" : "High seed wins"}
+            {confirm() ? "Confirm" : "High seed wins"}
           </Button>
           <Button
-            color={!!confirm() ? "warning" : "primary"}
+            variant="outlined"
+            color={confirm() ? "warning" : "primary"}
             onClick={handleLowSeedWin}
           >
-            {!!confirm() ? "Cancel" : "Low seed loses"}
+            {confirm() ? "Cancel" : "Low seed loses"}
           </Button>
         </div>
       </DialogActions>
@@ -144,6 +155,7 @@ function Resolve(props: {
   division: Division;
   group: string;
   races: GroupRaces;
+  seeding: string[];
   confirm: "high" | "low" | undefined;
   supplyRef: (ref: HTMLDivElement) => void;
 }) {
@@ -155,41 +167,187 @@ function Resolve(props: {
     .filter(r => r.teams.length > 1)
 
   const resolvedDraws = () => {
-    // TODO properly
-    if (props.confirm === "high") {
-      return draws()
-    } else if (props.confirm === "low") {
-      return draws().map(r => ({
-        ...r,
-        teams: r.teams.reverse(),
-      }))
+    switch (props.confirm) {
+      case "high":
+        break;
+      case "low":
+        break;
+      default:
+        return draws().map(r => ({
+          ...r,
+          teams: NO_OPTION_SENTINEL,
+        }))
     }
-    return draws()
+
+    return draws().map(r => {
+      const orderedTeams = getAdjustedResults(
+        r.teams,
+        props.races.races,
+        props.seeding,
+        props.confirm
+      )
+
+      return {
+        ...r,
+        teams: orderedTeams,
+      }
+    })
   }
 
+  const seeded = () => props.seeding
+    .map((team, index) => ({ team, index }))
+    .filter(({ team }) => {
+      return props.races.teams.includes(team)
+    })
+    .reduce((acc, { team, index }) => {
+      acc[team] = index
+      return acc
+    }, {} as Record<string, number>)
+
   return (
-    <div ref={r => props.supplyRef(r)} style={{
-      display: "flex",
-      "flex-direction": "column",
-      gap: "1em",
-      "max-width": "fit-content",
-    }}>
+    <div
+      ref={r => props.supplyRef(r)}
+      style={{
+        display: "flex",
+        "flex-direction": "column",
+        gap: "1em",
+        "max-width": "fit-content",
+      }}
+    >
       <MiniLeague
         races={props.races.races}
         teams={props.races.teams}
         readonly
         name={props.division.capitalize() + " " + props.group}
       />
-      <For each={resolvedDraws()}>{(draw) => (
-        <>
+      <For each={draws()}>{(draw, i) => (
+        <div
+          style={{
+            display: "flex",
+            "flex-direction": "column",
+            gap: "0.5em",
+            "align-items": "center",
+          }}
+        >
           <div>{draw.teams.length}-way draw for {asPosition(draw.position)}</div>
-          <ul>
-            <For each={draw.teams}>{(team) => (
-              <li>{team}</li>
-            )}</For>
-          </ul>
-        </>
+          <div
+            style={{
+              "display": "grid",
+              "grid-template-columns": "1fr minmax(auto, 7em) 1fr",
+              "align-items": "center",
+            }}
+          >
+            <TeamList
+              division={props.division}
+              teams={draw.teams}
+              seeded={seeded()}
+            />
+            <div style={{ margin: "0 auto" }} >
+              <DoubleArrow />
+            </div>
+            <TeamList
+              division={props.division}
+              teams={resolvedDraws()[i()].teams}
+              seeded={seeded()}
+            />
+          </div>
+        </div>
       )}</For>
-    </div>
+    </div >
   )
+}
+
+function TeamList(props: {
+  division: Division;
+  teams: string[];
+  seeded: Record<string, number>;
+}) {
+  return (
+    <ul style={{
+      "list-style": "none",
+      "margin": 0,
+      "padding": 0,
+      display: "flex",
+      "flex-direction": "column",
+      gap: "0.25em",
+    }} >
+      <Show
+        when={props.teams !== NO_OPTION_SENTINEL}
+        fallback={
+          <Typography variant="body2" color="textSecondary">
+            Select an option
+          </Typography>
+        }
+      >
+        <For each={props.teams}>{(team) => {
+          let num: string | number = props.seeded[team]
+          if (num !== undefined) {
+            num += 1
+          } else {
+            num = "?"
+          }
+          return (
+            <Seed
+              team={team}
+              num={num}
+              accent={props.division}
+            />
+          )
+        }}</For>
+      </Show>
+    </ul>
+  )
+}
+
+function getAdjustedResults(
+  teams: string[],
+  races: Race[],
+  seeding: string[],
+  confirm: "high" | "low"
+): string[] {
+  // use reverse seeding if looking for the lowest seed
+  const seedOrder = confirm === "high"
+    ? seeding
+    : seeding.toReversed()
+
+  // find the highest or lowest seed in the draw
+  const targetSeed = teams.reduce((seedAcc, team) => {
+    const seedIndex = seedOrder.indexOf(team)
+    return seedIndex < seedAcc ? seedIndex : seedAcc
+  }, Infinity)
+
+  // identify the team
+  const targetSeedTeam = seedOrder[targetSeed]
+
+  // determine the order of the remaining teams
+  // NOTE: because Kings caps out at 6 teams to a minileague this will
+  // always correctly resolved to a well ordered list of teams - the proof/maths
+  // for this belongs somewhere else...
+  // i.e. the return from calcTeamResults will always be an array of single team
+  // arrays
+  const others = teams.filter(team => team !== targetSeedTeam)
+  const calculatedResults = calcTeamResults(others, races).pos
+  if (calculatedResults.some(r => r.length > 1)) {
+    // log error but don't crash out - allow the round to contine to run
+    console.error(
+      "Unexpected draw in calculated results",
+      {
+        teams,
+        races,
+        seeding,
+        confirm,
+        seedOrder,
+        targetSeed,
+        targetSeedTeam,
+        calculatedResults,
+      }
+    )
+  }
+  const otherResults = calculatedResults.flat()
+
+  // if high then promote the target seed to the top
+  // if low then demote the target seed to the bottom
+  return confirm === "high"
+    ? [targetSeedTeam, ...otherResults]
+    : [...otherResults, targetSeedTeam]
 }

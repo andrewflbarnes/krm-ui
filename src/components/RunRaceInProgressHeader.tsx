@@ -132,6 +132,7 @@ export default function RunRaceInProgressHeader(props: {
         }
       })
   })
+
   const viewOptions = createMemo(() => {
     if (flags.developer()) {
       return allViewOptions
@@ -148,6 +149,7 @@ export default function RunRaceInProgressHeader(props: {
       <RunRaceFixConflictModal
         open={!!fixConflict()}
         conflicts={conflicts()}
+        seeding={props.round.teams}
         selectedGroup={fixConflict()}
         onClose={() => setFixConflict(null)}
       />
