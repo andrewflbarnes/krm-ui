@@ -77,7 +77,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
               fontSize: "0.6rem",
               fontWeight: 700,
               "& .MuiChip-label": { px: 1 },
-              visibility: complete() ? "visible" : "hidden",
+              width: complete() ? undefined : 0,
             }}
           />
           <Show when={conflict()}>
