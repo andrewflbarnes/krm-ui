@@ -42,34 +42,48 @@ export default function RunRaceInProgressHeader(props: {
   const [fixConflict, setFixConflict] = createSignal<{
     division: Division;
     group: string;
-    races: GroupRaces;
   }>(null)
 
   const flags = useFeatureFlags()
 
-  const errors = createMemo(() => {
+  const conflicts = createMemo<{
+    division: Division;
+    group: string;
+    races: GroupRaces;
+  }[]>(() => {
     return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {
-          const draws = dr.results?.filter(r => r.length > 1) || []
-          if (draws.length) {
-            draws.forEach(draw => acc.push(
-              <div style={{ display: "flex", "align-items": "center", gap: "0.5em" }}>
-                <Show when={flags.experimental()}>
-                  <IconButton
-                    onClick={() => setFixConflict({ division: div as Division, group, races: dr })}
-                  >
-                    <Edit fontSize="small" />
-                  </IconButton>
-                </Show>
-                <span>
-                  Draw in {div} group {group}: {draw.join(", ")}
-                </span>
-              </div>
-            ))
-          }
+          acc.push({
+            division: div as Division,
+            group,
+            races: dr,
+          })
         }
       })
+      return acc
+    }, [])
+  })
+
+  const errors = createMemo(() => {
+    return conflicts().reduce((acc, { division: div, group, races: dr }) => {
+      const draws = dr.results?.filter(r => r.length > 1) || []
+      if (draws.length) {
+        draws.forEach(draw => acc.push(
+          <div style={{ display: "flex", "align-items": "center", gap: "0.5em" }}>
+            <Show when={flags.experimental()}>
+              <IconButton
+                onClick={() => setFixConflict({ division: div as Division, group })}
+              >
+                <Edit fontSize="small" />
+              </IconButton>
+            </Show>
+            <span>
+              Draw in {div} group {group}: {draw.join(", ")}
+            </span>
+          </div>
+        ))
+      }
       return acc
     }, [])
   })
@@ -133,9 +147,8 @@ export default function RunRaceInProgressHeader(props: {
       />
       <RunRaceFixConflictModal
         open={!!fixConflict()}
-        division={fixConflict()?.division}
-        group={fixConflict()?.group}
-        races={fixConflict()?.races}
+        conflicts={conflicts()}
+        selectedGroup={fixConflict()}
         onClose={() => setFixConflict(null)}
       />
       <Card sx={{ p: 1, pb: 3, display: "flex", flexDirection: "column", gap: 1 }}>
