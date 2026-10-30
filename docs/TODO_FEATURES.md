@@ -50,8 +50,12 @@
 
 ## Must
 
-- [ ] Results HTML should pin to correct season
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
+- [ ] Calc results should account correctly for 2 way tie with DSQ
+      i.e. check race(s) between the two teams
+      e.g. minileague of 5, teams 1 and 2 with 4 wins, team 1 beat team 2 but
+      team 1 also had a DSQ. Team 1 should win as they beat team 2 head to head
+- [ ] Results HTML should pin to correct season
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
