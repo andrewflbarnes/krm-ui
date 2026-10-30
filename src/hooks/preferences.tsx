@@ -1,5 +1,30 @@
 import { initialisableAtomWithStorage } from "@/utils/jotai-utils"
-import { View } from "./results"
+import { Receipt, VerticalSplit, ViewHeadline, ViewStream } from "@suid/icons-material"
+import { JSX } from "solid-js";
+
+export const views: Record<string, {
+  label: string;
+  icon: JSX.Element;
+}> = {
+  "list": {
+    label: "Race List",
+    icon: <ViewHeadline />,
+
+  },
+  "side-by-side": {
+    label: "Side by side",
+    icon: <VerticalSplit />,
+  },
+  "mini": {
+    label: "Mini Leagues",
+    icon: <ViewStream />,
+  },
+  "printable": {
+    label: "Printable",
+    icon: <Receipt />,
+  },
+} as const
+export type View = keyof typeof views
 
 const useView = initialisableAtomWithStorage<View>("race-view", "list")
 const useLive = initialisableAtomWithStorage("race-minileague-live", false)

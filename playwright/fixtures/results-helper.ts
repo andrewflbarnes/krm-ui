@@ -59,10 +59,8 @@ export class ResultsHelper {
   }
 
   async viewMiniLeagues() {
-    await this.page.getByRole('button', { name: 'View Race List' })
-      .describe('View mode selector')
-      .click();
-    await this.page.getByText('Mini Leagues')
+    // This requires simple UI enabled to consistently work
+    await this.page.getByRole('button', { name: 'Mini Leagues'})
       .describe('Mini Leagues view option')
       .click();
   }

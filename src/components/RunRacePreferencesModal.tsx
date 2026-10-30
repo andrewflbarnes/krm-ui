@@ -1,3 +1,4 @@
+import { useFeatureFlags } from "@/hooks/flags";
 import { usePreferences } from "@/hooks/preferences";
 import {
   Box,
@@ -30,11 +31,25 @@ export default function RunRacePreferencesModal(props: {
     setListStyle,
   } = usePreferences();
 
+  const flags = useFeatureFlags();
+
   return (
     <Dialog onClose={props.onClose} open={props.open} fullWidth maxWidth="xs">
       <DialogTitle>Preferences</DialogTitle>
       <DialogContent>
         <Stack gap={3}>
+          <Box>
+            <Typography variant="overline" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
+              Display
+            </Typography>
+            <Divider sx={{ mb: 1 }} />
+            <Stack>
+              <FormControlLabel
+                control={<Switch checked={!flags.verboseUi()} onChange={() => flags.setVerboseUi(v => !v)} />}
+                label="Simple UI"
+              />
+            </Stack>
+          </Box>
           <Box>
             <Typography variant="overline" color="text.secondary" sx={{ display: "block", mb: 0.5 }}>
               Minileague

@@ -1,23 +1,24 @@
-import { Box, Button, Card } from "@suid/material";
+import { Box, Button, Card, IconButton, ToggleButton, ToggleButtonGroup } from "@suid/material";
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
-import { createEffect, createMemo, createSignal, on, Show } from "solid-js";
+import { createEffect, createMemo, createSignal, For, on, Show } from "solid-js";
 import { GroupRaces, RaceStage, Round } from "@/kings";
 import PopoverButton from "@/ui/PopoverButton";
 import Selector from "@/ui/Selector";
 import krmEngine, { type ProgressionStage } from "@/kings/engine";
 import notification from "@/hooks/notification";
-import { WarningAmberRounded } from "@suid/icons-material";
+import { Print, Settings, WarningAmberRounded } from "@suid/icons-material";
 import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import { usePrint } from "@/hooks/print";
-import { stages, useRaceOptions, View, views } from "@/hooks/results";
+import { stages, useRaceOptions } from "@/hooks/results";
 import { checkStage, isStage } from "@/kings/utils";
 import { useAuth } from "@/hooks/auth";
 import Stepper from "@/ui/Stepper";
-import { usePreferences } from "@/hooks/preferences";
+import { usePreferences, View, views } from "@/hooks/preferences";
 import RunRacePreferencesModal from "./RunRacePreferencesModal";
 import { useFeatureFlags } from "@/hooks/flags";
+import SimpleUi from "@/ui/SimpleUi";
 
-const allViewOptions = Object.entries(views).map(([value, label]) => ({ value, label }))
+const allViewOptions = Object.entries(views).map(([value, { label, icon }]) => ({ value, label, icon }))
 
 const keepValidStages = (s: string, round: Round) => s == round.status || Object.values(round.config).some(c => c[s])
 
@@ -120,14 +121,30 @@ export default function RunRaceInProgressHeader(props: {
         </Box>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1, pt: 1 }}>
           <Show when={stage() != "complete"}>
-            <Selector
-              containerProps={{ style: { "min-width": "10em" } }}
-              title="View"
-              current={view()}
-              onClose={(v: View) => setView(current => v ?? current)}
-              options={viewOptions()}
-              defaultBackground
-            />
+            <SimpleUi
+              verbose={
+                <Selector
+                  containerProps={{ style: { "min-width": "10em" } }}
+                  title="View"
+                  current={view()}
+                  onClose={(v: View) => setView(current => v ?? current)}
+                  options={viewOptions()}
+                  defaultBackground
+                />
+              }
+            >
+              <ToggleButtonGroup
+                exclusive
+                size="small"
+                value={view()}
+                onChange={(_, value) => value && setView(value)}
+                color="primary"
+              >
+                <For each={viewOptions()}>
+                  {(v) => <ToggleButton title={v.label} value={v.value}>{v.icon}</ToggleButton>}
+                </For>
+              </ToggleButtonGroup>
+            </SimpleUi>
           </Show>
           <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
             <Show when={isStage(stage())} keyed>{s => (
@@ -148,17 +165,42 @@ export default function RunRaceInProgressHeader(props: {
                 <Show when={proceed()}>
                   <ProgressButton round={props.round} />
                 </Show>
-                <Button
-                  disabled={print()}
-                  onClick={() => setPrint(true)}
+                <SimpleUi
+                  verbose={
+                    <Button
+                      disabled={print()}
+                      onClick={() => setPrint(true)}
+                    >
+                      Print
+                    </Button>
+                  }
                 >
-                  Print
-                </Button>
-                <Button
-                  onClick={[setActionsOpen, true]}
+                  <IconButton
+                    title="Print"
+                    color="primary"
+                    disabled={print()}
+                    onClick={() => setPrint(true)}
+                  >
+                    <Print />
+                  </IconButton>
+                </SimpleUi>
+                <SimpleUi
+                  verbose={
+                    <Button
+                      onClick={[setActionsOpen, true]}
+                    >
+                      Options
+                    </Button>
+                  }
                 >
-                  Options
-                </Button>
+                  <IconButton
+                    title="Options"
+                    color="primary"
+                    onClick={[setActionsOpen, true]}
+                  >
+                    <Settings />
+                  </IconButton>
+                </SimpleUi>
               </>
             )}</Show>
           </Box>

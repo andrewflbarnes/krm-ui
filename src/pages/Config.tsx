@@ -148,6 +148,12 @@ export default function Config(props: ParentProps) {
       onClick: () => flags.setExperimental(v => !v),
       active: flags.experimental(),
     },
+    {
+      label: "Simple UI",
+      description: "Streamlined UI - only disable if you're not illierate",
+      onClick: () => flags.setVerboseUi(v => !v),
+      active: !flags.verboseUi(),
+    },
   ]))
 
   const nav = useNavigate()
