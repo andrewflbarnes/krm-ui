@@ -67,6 +67,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
       type={props.races[0]?.division}
       endAdornment={
         <>
+          {/* Always render to prevent layout shift */}
           <Chip
             label="Complete"
             size="small"
@@ -79,18 +80,19 @@ export default function MiniLeague(props: MiniLeagueProps) {
               visibility: complete() ? "visible" : "hidden",
             }}
           />
-          <Chip
-            label="Conflict"
-            size="small"
-            color="warning"
-            sx={{
-              height: 18,
-              fontSize: "0.6rem",
-              fontWeight: 700,
-              "& .MuiChip-label": { px: 1 },
-              visibility: conflict() ? "visible" : "hidden",
-            }}
-          />
+          <Show when={conflict()}>
+            <Chip
+              label="Conflict"
+              size="small"
+              color="warning"
+              sx={{
+                height: 18,
+                fontSize: "0.6rem",
+                fontWeight: 700,
+                "& .MuiChip-label": { px: 1 },
+              }}
+            />
+          </Show>
         </>
       }
     >
