@@ -42,12 +42,14 @@
 - [x] Reduce number of clicks to load config from /manage/new
 - [x] Use theme colors for minileague highlighting
 - [x] Loading/updating league config should preserve manually added teams
+- [x] Bug where first racelist update causes scroll to top (try a big list)
+  introduced in commit 7e19cc0c051245ba8ef53ddc1c3a7cb9eacfa4b0: "Navigate to
+  round stage using router". FIX: Root cause unclear but this was caused by a
+  suspense triggerring the first, and only the first, time onRaceUpdate was
+  called. Removed the suspense...
 
 ## Must
 
-- [ ] Bug where first racelist update causes scroll to top (try a big list)
-  introduced in commit 7e19cc0c051245ba8ef53ddc1c3a7cb9eacfa4b0: "Navigate to
-  round stage using router".
 - [ ] Results HTML should pin to correct season
 - [ ] Draw Resolution (by selection/low seed/high seed/other?)
 - [ ] Race skips (teams unavailable)

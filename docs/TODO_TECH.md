@@ -16,6 +16,7 @@
 
 ## Must
 
+- [ ] Responsive layout
 - [ ] Make engine stateful for a given configuration/round
 - [ ] De-couple engine from reactivity
 - [ ] Transition all arrays of arrays to objects of arrays or arrays of obejcts for simpler firestore integration, easier to read code
@@ -24,7 +25,6 @@
 - [ ] Align how RoundConfigs are passed to create/progress/complete
 - [ ] Verify stage 2 should always have same number of teams as stage 1
 - [ ] Validation checks when re-opening a stage
-- [ ] Responsive layout
 - [ ] Place some sensible error boundaries in, at least at a page level
 
 ## Should
