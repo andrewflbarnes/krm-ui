@@ -32,7 +32,7 @@ export default function RaceNewDetail(props: RaceNewDetailProps) {
           <Box sx={{
             display: {
               xs: "block",
-              md: "noni",
+              md: "none",
             }
           }}>
             <ExpandMoreLess
