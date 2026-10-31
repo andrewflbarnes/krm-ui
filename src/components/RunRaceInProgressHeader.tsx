@@ -6,7 +6,7 @@ import PopoverButton from "@/ui/PopoverButton";
 import Selector from "@/ui/Selector";
 import krmEngine, { type ProgressionStage } from "@/kings/engine";
 import notification from "@/hooks/notification";
-import { Edit, Print, Settings, WarningAmberRounded } from "@suid/icons-material";
+import { Edit, NavigateNext, Print, Settings, WarningAmberRounded } from "@suid/icons-material";
 import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import { usePrint } from "@/hooks/print";
 import { stages, useRaceOptions } from "@/hooks/results";
@@ -19,17 +19,11 @@ import { useFeatureFlags } from "@/hooks/flags";
 import SimpleUi from "@/ui/SimpleUi";
 import RunRaceFixConflictModal from "./RunRaceFixConflictModal";
 
-const allViewOptions = Object.entries(views).map(([value, { label, icon }]) => ({ value, label, icon }))
-
 const keepValidStages = (s: string, round: Round) => s == round.status || Object.values(round.config).some(c => c[s])
 
 export default function RunRaceInProgressHeader(props: {
   round: Round;
 }) {
-  const {
-    view,
-    setView,
-  } = usePreferences()
   const {
     stage,
     setStage,
@@ -133,13 +127,6 @@ export default function RunRaceInProgressHeader(props: {
       })
   })
 
-  const viewOptions = createMemo(() => {
-    if (flags.developer()) {
-      return allViewOptions
-    }
-    return allViewOptions.filter(o => o.value != "printable")
-  })
-
   return (
     <>
       <RunRacePreferencesModal
@@ -162,36 +149,23 @@ export default function RunRaceInProgressHeader(props: {
             current={props.round.status}
           />
         </Box>
-        <Box sx={{ display: "flex", alignItems: "center", gap: 1, pt: 1 }}>
+        <Box sx={{ display: "grid", gridTemplateColumns: "1fr auto 1fr", alignItems: "center", gap: 1, pt: 1 }}>
           <Show when={stage() != "complete"}>
-            <SimpleUi
-              verbose={
-                <Selector
-                  containerProps={{ style: { "min-width": "10em" } }}
-                  title="View"
-                  current={view()}
-                  onClose={(v: View) => setView(current => v ?? current)}
-                  options={viewOptions()}
-                  defaultBackground
-                />
-              }
-            >
-              <ToggleButtonGroup
-                exclusive
-                size="small"
-                value={view()}
-                onChange={(_, value) => value && setView(value)}
-                color="primary"
-              >
-                <For each={viewOptions()}>
-                  {(v) => <ToggleButton title={v.label} value={v.value}>{v.icon}</ToggleButton>}
-                </For>
-              </ToggleButtonGroup>
-            </SimpleUi>
+            <ViewButton
+              devViews={flags.developer()}
+            />
           </Show>
-          <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
-            <Show when={isStage(stage())} keyed>{s => (
-              <>
+          <Show when={isStage(stage())} keyed>{s => (
+            <>
+              <Box>
+                <Show when={proceed()}>
+                  <ProgressButton round={props.round} />
+                </Show>
+              </Box>
+              <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
+                <Show when={canReopen()}>
+                  <ReopenButton id={props.round.id} stage={s} />
+                </Show>
                 <Show when={errors().length}>
                   <PopoverButton
                     title="Errors"
@@ -202,54 +176,64 @@ export default function RunRaceInProgressHeader(props: {
                     icon={<WarningAmberRounded />}
                   />
                 </Show>
-                <Show when={canReopen()}>
-                  <ReopenButton id={props.round.id} stage={s} />
-                </Show>
-                <Show when={proceed()}>
-                  <ProgressButton round={props.round} />
-                </Show>
-                <SimpleUi
-                  verbose={
-                    <Button
-                      disabled={print()}
-                      onClick={() => setPrint(true)}
-                    >
-                      Print
-                    </Button>
-                  }
-                >
-                  <IconButton
-                    title="Print"
-                    color="primary"
-                    disabled={print()}
-                    onClick={() => setPrint(true)}
-                  >
-                    <Print />
-                  </IconButton>
-                </SimpleUi>
-                <SimpleUi
-                  verbose={
-                    <Button
-                      onClick={[setActionsOpen, true]}
-                    >
-                      Options
-                    </Button>
-                  }
-                >
-                  <IconButton
-                    title="Options"
-                    color="primary"
-                    onClick={[setActionsOpen, true]}
-                  >
-                    <Settings />
-                  </IconButton>
-                </SimpleUi>
-              </>
-            )}</Show>
-          </Box>
+                <PrintButton
+                  disabled={print()}
+                  onClick={() => setPrint(true)}
+                />
+                <SettingsButton
+                  onClick={() => setActionsOpen(true)}
+                />
+              </Box>
+            </>
+          )}</Show>
         </Box>
       </Card>
     </>
+  )
+}
+
+const allViewOptions = Object.entries(views).map(([value, { label, icon }]) => ({ value, label, icon }))
+
+function ViewButton(props: {
+  devViews?: boolean;
+}) {
+  const {
+    view,
+    setView,
+  } = usePreferences()
+
+  const viewOptions = createMemo(() => {
+    if (props.devViews) {
+      return allViewOptions
+    }
+    return allViewOptions.filter(o => o.value != "printable")
+  })
+
+  return (
+    <SimpleUi
+      verbose={
+        <Selector
+          containerProps={{ style: { "min-width": "10em" } }}
+          title="View"
+          current={view()}
+          onClose={(v: View) => setView(current => v ?? current)}
+          options={viewOptions()}
+          defaultBackground
+        />
+      }
+    >
+      <ToggleButtonGroup
+        exclusive
+        size="small"
+        value={view()}
+        onChange={(_, value) => value && setView(value)}
+        color="primary"
+      >
+        <For each={viewOptions()}>
+          {(v) => <ToggleButton title={v.label} value={v.value}>{v.icon}</ToggleButton>}
+        </For>
+      </ToggleButtonGroup>
+    </SimpleUi>
   )
 }
 
@@ -265,7 +249,7 @@ function ProgressButton(props: {
     if (currentStageIndex == -1) {
       return `This shouldn't be showing (${props.round.status})!`
     }
-    return `Start ${possibleStages[currentStageIndex + 1][1]}`
+    return `${possibleStages[currentStageIndex + 1][1]}`
   }
 
   const queryClient = useQueryClient()
@@ -308,6 +292,7 @@ function ProgressButton(props: {
       <Button
         color="success"
         onClick={handleConfirmProgress}
+        endIcon={<NavigateNext />}
       >
         {proceedText()}
       </Button>
@@ -365,11 +350,23 @@ function ReopenButton(props: {
   }))
   return (
     <>
-      <Button
-        onClick={handleConfirmReopen}
+      <SimpleUi
+        verbose={
+          <Button
+            color="warning"
+            onClick={handleConfirmReopen}
+          >
+            Reopen
+          </Button>
+        }
       >
-        Reopen
-      </Button>
+        <IconButton
+          color="warning"
+          onClick={handleConfirmReopen}
+        >
+          <Edit />
+        </IconButton>
+      </SimpleUi>
       <ModalConfirmAction
         open={reopenConfirmation()}
         confirmLabel="Yes"
@@ -381,5 +378,55 @@ function ReopenButton(props: {
         Are you sure? This will clear all results after this stage.
       </ModalConfirmAction>
     </>
+  )
+}
+
+
+function PrintButton(props: {
+  disabled?: boolean;
+  onClick?: () => void;
+}) {
+  return (
+    <SimpleUi
+      verbose={
+        <Button
+          disabled={props.disabled}
+          onClick={() => props.onClick?.()}
+        >
+          Print
+        </Button>
+      }
+    >
+      <IconButton
+        title="Print"
+        disabled={props.disabled}
+        onClick={() => props.onClick?.()}
+      >
+        <Print />
+      </IconButton>
+    </SimpleUi>
+  )
+}
+
+function SettingsButton(props: {
+  onClick?: () => void;
+}) {
+  return (
+    <SimpleUi
+      verbose={
+        <Button
+          onClick={() => props.onClick?.()}
+        >
+          Options
+        </Button>
+      }
+    >
+      <IconButton
+        title="Options"
+        onClick={() => props.onClick?.()}
+      >
+        <Settings />
+      </IconButton>
+    </SimpleUi>
   )
 }
