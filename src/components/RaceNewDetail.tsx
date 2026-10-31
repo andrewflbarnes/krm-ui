@@ -1,21 +1,19 @@
-import { createMemo, createSignal, For, Show } from "solid-js";
-import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery, CardHeader } from "@suid/material";
-import { LocationOn, Notes } from "@suid/icons-material";
+import { createMemo, createSignal, For, JSX, Show } from "solid-js";
+import { Box, Card, CardContent, InputAdornment, MenuList, MenuItem, Paper, Popper, Stack, TextField, ToggleButton, ToggleButtonGroup, Typography, useTheme, useMediaQuery, CardHeader, Divider, FormControl, Dialog, DialogTitle, DialogContent, IconButton } from "@suid/material";
+import { InfoOutlined, LocationOn, Notes } from "@suid/icons-material";
 import { useKings } from "@/hooks/kings";
 import ExpandMoreLess from "@/ui/ExpandMoreLess";
 import { Collapse } from "solid-collapse";
 import styles from "@/components/RaceNewDetail.module.css";
-
-export type Details = {
-  description: string;
-  venue: string;
-  round: string;
-  season: string;
-}
+import { RoundDetails } from "@/kings/engine";
+import { useFeatureFlags } from "@/hooks/flags";
+import { ConflictResolution, RoundOptions } from "@/kings";
 
 type RaceNewDetailProps = {
-  details: Details;
-  onDetailUpdate: (details: Details) => void;
+  details: RoundDetails;
+  onDetailUpdate: (details: RoundDetails) => void;
+  options: RoundOptions;
+  onOptionsUpdate: (options: RoundOptions) => void;
 }
 
 export default function RaceNewDetail(props: RaceNewDetailProps) {
@@ -76,6 +74,12 @@ export default function RaceNewDetail(props: RaceNewDetailProps) {
               onDescriptionUpdate={description =>
                 props.onDetailUpdate({ ...props.details, description })}
             />
+
+            <Options
+              options={props.options}
+              onOptionsUpdate={options =>
+                props.onOptionsUpdate(options)}
+            />
           </Box>
         </CardContent>
       </Collapse>
@@ -83,7 +87,7 @@ export default function RaceNewDetail(props: RaceNewDetailProps) {
   );
 }
 
-const rounds = [1, 2, 3, 4]
+const rounds = [1, 2, 3, 4] as const
 
 function RoundSelect(props: { round: string, onRoundUpdate: (round: string) => void }) {
   return (
@@ -94,7 +98,7 @@ function RoundSelect(props: { round: string, onRoundUpdate: (round: string) => v
       <ToggleButtonGroup
         value={props.round}
         exclusive
-        color="secondary"
+        color="primary"
         onChange={(_, value) => value && props.onRoundUpdate(value)}
         sx={{ width: "100%", mt: 0.5 }}
       >
@@ -244,6 +248,97 @@ function VenueSelect(props: {
         </Paper>
       </Popper>
     </>
+  )
+}
+
+const optionsConflict: ConflictResolution[] = ["manual", "high", "low"] as const
+
+function Options(props: {
+  options: RoundOptions;
+  onOptionsUpdate: (options: RoundOptions) => void;
+}) {
+  const flags = useFeatureFlags()
+  const [optionInfo, setOptionInfo] = createSignal<{
+    title: string;
+    info: JSX.Element;
+  }>()
+
+  return (
+    <Show when={flags.experimental()}>
+      <Dialog
+        open={!!optionInfo()}
+        onClose={() => setOptionInfo(undefined)}
+        maxWidth="xs"
+      >
+        <DialogTitle>
+          {optionInfo()?.title}
+        </DialogTitle>
+        <DialogContent>
+          {optionInfo()?.info}
+        </DialogContent>
+      </Dialog>
+      <Box>
+        <Typography variant="overline" color="text.secondary" fontWeight={600} letterSpacing={2}>
+          Options
+        </Typography>
+        <Divider sx={{ mb: 1 }} />
+        <Stack gap={1.5}>
+          <FormControl size="small" fullWidth>
+            <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>
+              <div style={{ display: "flex", "align-items": "center" }}>
+                <div>
+                  Draw Resolution
+                </div>
+                <IconButton
+                  size="small"
+                  onClick={() => setOptionInfo({
+                    title: "Draw Resolution",
+                    info: (
+                      <Typography variant="body2">
+                        <span
+                          style={{ display: "block", "margin-bottom": "1em" }}
+                        >
+                          This option determines how the system resolves draws in races. The available options are:
+                        </span>
+                        <div style={{
+                          display: "grid",
+                          "grid-template-columns": "auto auto",
+                          gap: "0.5em",
+                        }}
+                        >
+                          <div><strong>Manual:</strong></div>
+                          <div>Draws must be resolved manually by the user.</div>
+                          <div><strong>High:</strong></div>
+                          <div>Automatically resolve draws by making the highest seed the winner.</div>
+                          <div><strong>Low:</strong></div>
+                          <div>Automatically resolve draws by making the lowest seed the loser</div>
+                        </div>
+                      </Typography>
+                    )
+                  })}>
+                  <InfoOutlined fontSize="small" />
+                </IconButton>
+              </div>
+            </Typography>
+            <ToggleButtonGroup
+              exclusive
+              size="small"
+              value={props.options.conflictResolution}
+              onChange={(_, value) => value && props.onOptionsUpdate({
+                ...props.options,
+                conflictResolution: value
+              })}
+              color="standard"
+              fullWidth
+            >
+              <For each={optionsConflict}>
+                {(o) => <ToggleButton value={o}>{o.capitalize()}</ToggleButton>}
+              </For>
+            </ToggleButtonGroup>
+          </FormControl>
+        </Stack>
+      </Box>
+    </Show>
   )
 }
 

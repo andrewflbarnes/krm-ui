@@ -242,6 +242,8 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
                 races={orderedMiniLeagueRaces()}
                 onRaceUpdate={handleRaceUpdate}
                 readonly={props.readonly}
+                seeds={props.round.teams}
+                conflictResolution={props.round.options.conflictResolution}
               />
             </Box>
           </Show>

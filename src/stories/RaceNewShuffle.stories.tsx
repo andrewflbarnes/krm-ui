@@ -40,7 +40,10 @@ const details = {
   description: "This is a round",
   venue: "Glossy",
 } as const
-const round = createRound("id-of-round", details, seeding, raceConfig)
+
+const options = {} as const
+
+const round = createRound("id-of-round", details, options, seeding, raceConfig)
 
 export const Default: Story = {
   args: {

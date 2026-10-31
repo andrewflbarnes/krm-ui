@@ -1,6 +1,7 @@
 import { parseResults } from "@/kings/utils/result-utils"
-import type { ClubSeeding, Division, League, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, Race, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces } from "@/kings/types"
+import type { ClubSeeding, Division, LeagueData, Round, RoundConfig, RoundSeeding, StageRaces, Race, RaceStage, MiniLeagueTemplate, MiniLeagueSeed, GroupRaces, ConflictResolution, RoundOptions } from "@/kings/types"
 import { divisions } from "@/kings/config/division"
+import { RoundDetails } from "../engine"
 
 export function checkStage(s: unknown): s is RaceStage {
   return s === "stage1" || s === "stage2" || s === "knockout"
@@ -76,6 +77,13 @@ type TeamResults = {
   }
 }
 
+type CalcOptions = {
+  maxDepth?: number;
+  resolveConflicts?: {
+    method: ConflictResolution;
+    seeds: string[];
+  }
+}
 // note teams is a subset of those in races and results are only calculated
 // based on races where both teams are in the subset
 // For the fiven give teams returs both
@@ -84,7 +92,8 @@ type TeamResults = {
 // For the latter draws are indicated by multiple teams in an array e.g.
 // [[team1, team2], [team3]]
 // indicates team1 and team2 are joint first and team3 is third
-export function calcTeamResults(teams: string[], races: Race[], maxDepth: number = 2): TeamResults {
+export function calcTeamResults(teams: string[], races: Race[], options?: CalcOptions): TeamResults {
+  const maxDepth = options?.maxDepth || 2
   // prepos is the positions when looking at wins across the whole minileague
   // In this case we ay have drawn teams whenever two or more teams share the
   // same number of wins
@@ -120,6 +129,30 @@ export function calcTeamResults(teams: string[], races: Race[], maxDepth: number
     // update based on the current iteration
     prepos.pos = pos
   }
+
+  // resolve drawn teams per provided options - if none return as is
+  if (prepos.pos.some(p => p.length > 1) && options?.resolveConflicts) {
+    const { method, seeds } = options.resolveConflicts
+
+    switch (method) {
+      case "high":
+      case "low":
+        prepos.pos = prepos.pos.flatMap((teams) => {
+          if (teams.length < 2) {
+            return [teams]
+          }
+          const resolved = resolveDrawnTeams(teams, races, seeds, method)
+          return resolved.map(t => [t])
+        })
+        break
+      case "manual":
+        // noop
+        break
+      default:
+        console.error(`Unknown conflict resolution method ${method}`)
+    }
+  }
+
   return prepos
 }
 
@@ -180,13 +213,8 @@ function calcTeamResultsIter(teams: string[], allRaces: Race[]): TeamResults {
 
 export function createRound(
   id: string,
-  roundDetails: {
-    league: League;
-    round: string;
-    description: string;
-    season: string;
-    venue: string;
-  },
+  roundDetails: RoundDetails,
+  options: RoundOptions,
   teams: RoundSeeding,
   raceConfigs: {
     [numTeams: number]: RoundConfig
@@ -232,6 +260,7 @@ export function createRound(
       date: new Date(),
       ...details,
     },
+    options,
     status: "stage1",
     config,
     races: {
@@ -240,6 +269,73 @@ export function createRound(
     teams,
     distributionOrder: distributionOrder || teams,
   }
+}
+
+/**
+  * Given a set of drawn teams, their complete races and seeding, resolve the
+  * draw to a single, well ordered list. This always works for Kings races
+  * due to the max number of teams in a minileague being 6 and "hard" draws
+  * only being possible for 3 or 5 teams. In both cases removing a single see
+  * (whether that be the highest or lowest) gives us a sub-group of either 2
+  * or 4 teams for which "hard" draws are not possible.
+  *
+  * @param teams {string[]} The drawn teams to resolve
+  * @param races {Race[]} The complete set of races for the minileague
+  * @param seeding {string[]} The seeding for the minileague
+  * @param confirm {"high" | "low"} High seeds wins or low seed loses
+  * @returns {string[]} The resolved list of teams in order
+  */
+export function resolveDrawnTeams(
+  teams: string[],
+  races: Race[],
+  seeding: string[],
+  confirm: "high" | "low"
+): string[] {
+  // use reverse seeding if looking for the lowest seed
+  const seedOrder = confirm === "high"
+    ? seeding
+    : seeding.toReversed()
+
+  // find the highest or lowest seed in the draw
+  const targetSeed = teams.reduce((seedAcc, team) => {
+    const seedIndex = seedOrder.indexOf(team)
+    return seedIndex < seedAcc ? seedIndex : seedAcc
+  }, Infinity)
+
+  // identify the team
+  const targetSeedTeam = seedOrder[targetSeed]
+
+  // determine the order of the remaining teams
+  // NOTE: because Kings caps out at 6 teams to a minileague this will
+  // always correctly resolved to a well ordered list of teams - the proof/maths
+  // for this belongs somewhere else...
+  // i.e. the return from calcTeamResults will always be an array of single team
+  // arrays
+  const others = teams.filter(team => team !== targetSeedTeam)
+  const calculatedResults = calcTeamResults(others, races).pos
+  if (calculatedResults.some(r => r.length > 1)) {
+    // log error but don't crash out - allow the round to contine to run
+    console.error(
+      "Unexpected draw in calculated results",
+      {
+        teams,
+        races,
+        seeding,
+        confirm,
+        seedOrder,
+        targetSeed,
+        targetSeedTeam,
+        calculatedResults,
+      }
+    )
+  }
+  const otherResults = calculatedResults.flat()
+
+  // if high then promote the target seed to the top
+  // if low then demote the target seed to the bottom
+  return confirm === "high"
+    ? [targetSeedTeam, ...otherResults]
+    : [...otherResults, targetSeedTeam]
 }
 
 /**

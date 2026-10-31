@@ -1,4 +1,4 @@
-import { asPosition, calcTeamResults, Division, GroupRaces, Race } from "@/kings";
+import { asPosition, Division, GroupRaces, resolveDrawnTeams } from "@/kings";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@suid/material";
 import { createComputed, createEffect, createSelector, createSignal, For, Show } from "solid-js";
 import MiniLeague from "./MiniLeague";
@@ -180,7 +180,7 @@ function Resolve(props: {
     }
 
     return draws().map(r => {
-      const orderedTeams = getAdjustedResults(
+      const orderedTeams = resolveDrawnTeams(
         r.teams,
         props.races.races,
         props.seeding,
@@ -219,6 +219,7 @@ function Resolve(props: {
         teams={props.races.teams}
         readonly
         name={props.division.capitalize() + " " + props.group}
+        seeds={props.seeding}
       />
       <For each={draws()}>{(draw, i) => (
         <div
@@ -275,79 +276,32 @@ function TeamList(props: {
         when={props.teams !== NO_OPTION_SENTINEL}
         fallback={
           <Typography variant="body2" color="textSecondary">
-            Select an option
+            Choose option...
           </Typography>
         }
       >
-        <For each={props.teams}>{(team) => {
-          let num: string | number = props.seeded[team]
-          if (num !== undefined) {
-            num += 1
-          } else {
-            num = "?"
-          }
-          return (
-            <Seed
-              team={team}
-              num={num}
-              accent={props.division}
-            />
-          )
-        }}</For>
+        <>
+          {/* For balance to prevent layout shifts with short team names */}
+          <Typography variant="body2" color="textSecondary" sx={{ height: 0, overflow: "hidden" }}>
+            Choose option...
+          </Typography>
+          <For each={props.teams}>{(team) => {
+            let num: string | number = props.seeded[team]
+            if (num !== undefined) {
+              num += 1
+            } else {
+              num = "?"
+            }
+            return (
+              <Seed
+                team={team}
+                num={num}
+                accent={props.division}
+              />
+            )
+          }}</For>
+        </>
       </Show>
     </ul>
   )
-}
-
-function getAdjustedResults(
-  teams: string[],
-  races: Race[],
-  seeding: string[],
-  confirm: "high" | "low"
-): string[] {
-  // use reverse seeding if looking for the lowest seed
-  const seedOrder = confirm === "high"
-    ? seeding
-    : seeding.toReversed()
-
-  // find the highest or lowest seed in the draw
-  const targetSeed = teams.reduce((seedAcc, team) => {
-    const seedIndex = seedOrder.indexOf(team)
-    return seedIndex < seedAcc ? seedIndex : seedAcc
-  }, Infinity)
-
-  // identify the team
-  const targetSeedTeam = seedOrder[targetSeed]
-
-  // determine the order of the remaining teams
-  // NOTE: because Kings caps out at 6 teams to a minileague this will
-  // always correctly resolved to a well ordered list of teams - the proof/maths
-  // for this belongs somewhere else...
-  // i.e. the return from calcTeamResults will always be an array of single team
-  // arrays
-  const others = teams.filter(team => team !== targetSeedTeam)
-  const calculatedResults = calcTeamResults(others, races).pos
-  if (calculatedResults.some(r => r.length > 1)) {
-    // log error but don't crash out - allow the round to contine to run
-    console.error(
-      "Unexpected draw in calculated results",
-      {
-        teams,
-        races,
-        seeding,
-        confirm,
-        seedOrder,
-        targetSeed,
-        targetSeedTeam,
-        calculatedResults,
-      }
-    )
-  }
-  const otherResults = calculatedResults.flat()
-
-  // if high then promote the target seed to the top
-  // if low then demote the target seed to the bottom
-  return confirm === "high"
-    ? [targetSeedTeam, ...otherResults]
-    : [...otherResults, targetSeedTeam]
 }

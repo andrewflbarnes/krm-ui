@@ -1,4 +1,4 @@
-import { divisions, Division, League, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage } from "@/kings"
+import { divisions, Division, League, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, RoundOptions } from "@/kings"
 import { calcTeamResults, createRound, minileagueSeededRaces } from "@/kings";
 import { asPosition } from "@/kings/core-utils";
 import { KrmEngine, ProgressionStage, RoundDetails, RoundInfo } from "@/kings/engine/types";
@@ -133,9 +133,9 @@ export default (function KrmEngine(): KrmEngine {
     saveLeagueConfig: cacher.saveLeagueConfig,
     getLeagueConfig: cacher.getLeagueConfig,
     saveRound: cacher.saveRound,
-    createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
+    createRound(details: RoundDetails, options: RoundOptions, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round {
       const roundId = newRoundId(details.league)
-      const round = createRound(roundId, details, teams, raceConfigs, distributionOrder)
+      const round = createRound(roundId, details, options, teams, raceConfigs, distributionOrder)
       this.saveRound(round)
       return round
     },
@@ -172,7 +172,13 @@ export default (function KrmEngine(): KrmEngine {
       groupData.complete = complete
 
       if (complete) {
-        const results = calcTeamResults(groupData.teams, groupRaces)
+        const calcOptions = {
+          resolveConflicts: {
+            method: round.options.conflictResolution ?? "manual",
+            seeds: round.teams[race.division]
+          }
+        }
+        const results = calcTeamResults(groupData.teams, groupRaces, calcOptions)
         groupData.results = results.pos
         const conflict = results.pos.some(p => p.length > 1)
         groupData.conflict = conflict

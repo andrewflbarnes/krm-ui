@@ -1,6 +1,6 @@
 import { Box, Chip, Menu, MenuItem, Typography, useTheme } from "@suid/material";
 import { createMemo, createSelector, createSignal, For, Match, ParentProps, Show, Switch } from "solid-js";
-import { Race } from "@/kings";
+import { ConflictResolution, Race } from "@/kings";
 import { calcTeamResults, collapseRaces } from "@/kings/utils";
 import RaceResultIcon from "@/ui/RaceResultIcon";
 import { RANK_GRADIENT } from "@/ui/RankBadge";
@@ -13,6 +13,7 @@ const BORDER = "2px solid";
 type MiniLeagueProps = {
   name?: string;
   teams: string[];
+  seeds?: string[];
   races: Race[];
   collapsed?: boolean;
   live?: boolean;
@@ -20,6 +21,7 @@ type MiniLeagueProps = {
   onResultChange?: (race: Race) => void;
   readonly?: boolean;
   conflict?: boolean;
+  conflictResolution?: ConflictResolution;
   // Selectable allows a user to modify the team/seed in each position, in this
   // case the teams prop is a superset of the actual teams in this minileague
   // and the races are expected to be synthetic
@@ -47,7 +49,16 @@ export default function MiniLeague(props: MiniLeagueProps) {
     return [race.team1, race.team2]
   })
 
-  const teamPositions = createMemo(() => calcTeamResults(teams(), props.races))
+  const teamPositions = createMemo(() => {
+    const resolveConflicts = props.seeds && props.conflictResolution && props.conflictResolution !== "manual"
+      ? {
+        method: props.conflictResolution,
+        seeds: props.seeds,
+      } as const : undefined
+    return calcTeamResults(teams(), props.races, {
+      resolveConflicts,
+    })
+  })
 
   const [anchorEl, setAnchorEl] = createSignal<HTMLTableColElement | null>(null)
   const [ctxRace, setCtxRace] = createSignal<{ race: Race, team: string }>()

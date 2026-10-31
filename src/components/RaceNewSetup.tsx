@@ -1,13 +1,16 @@
 import { Show } from "solid-js";
 import { Box, useMediaQuery, useTheme } from "@suid/material"
 import RaceNewSelect from "@/components/RaceNewSelect"
-import { ClubSeeding, Division } from "@/kings"
-import RaceNewDetail, { Details } from "@/components/RaceNewDetail"
+import { ClubSeeding, Division, RoundOptions } from "@/kings"
+import RaceNewDetail from "@/components/RaceNewDetail"
 import RaceNewSelectFooter from "@/components/RaceNewSelectFooter";
+import { RoundDetails } from "@/kings/engine";
 
 type ComponentProps = {
-  details: Details;
-  onDetailUpdate: (details: Details) => void;
+  details: RoundDetails;
+  onDetailUpdate: (details: RoundDetails) => void;
+  options: RoundOptions;
+  onOptionsUpdate: (options: RoundOptions) => void;
   config: ClubSeeding;
   onUpdate: (club: string, division: Division, num: number) => void;
   onErrorUpdate?: (errors: string[]) => void;
@@ -41,6 +44,8 @@ export default function RaceNewSetup(props: ComponentProps) {
         <RaceNewDetail
           details={props.details}
           onDetailUpdate={props.onDetailUpdate}
+          options={props.options}
+          onOptionsUpdate={props.onOptionsUpdate}
         />
 
         <Show when={small()}>

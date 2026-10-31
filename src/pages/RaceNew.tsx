@@ -3,7 +3,7 @@ import { batch, createEffect, createMemo, createSignal, JSX, lazy, on, onCleanup
 const RaceNewSetup = lazy(() => import("@/components/RaceNewSetup"))
 const RaceNewSeeding = lazy(() => import("@/components/RaceNewSeeding"))
 const RaceNewShuffle = lazy(() => import("@/components/RaceNewShuffle"))
-import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundSeeding } from "@/kings"
+import { ClubSeeding, Division, LeagueData, raceConfig, Round, RoundConfig, RoundOptions, RoundSeeding } from "@/kings"
 import { useKings } from "@/hooks/kings";
 import krmEngine, { type RoundDetails } from "@/kings/engine"
 import notification from "@/hooks/notification"
@@ -85,19 +85,46 @@ function RaceNewInternal() {
     return `${fmt(y1)}/${fmt(y2)}`
   })()
 
-  const [details, setDetails] = createSignal<Omit<RoundDetails, 'league'>>({
+  const [details, setDetails] = createSignal<RoundDetails>({
+    league: k.league(),
     venue: "",
     description: "",
     round: "1",
     season: defaultSeason,
   })
 
-  const roundDetails = (): RoundDetails => ({
-    ...details(),
-    league: k.league(),
+  const [options, setOptions] = createSignal<RoundOptions>({
+    conflictResolution: "manual",
   })
 
-  const handleDetailUpdate = (d: ReturnType<typeof details>) => {
+  createEffect(on(k.league, (league) => {
+    setDetails(details => ({
+      ...details,
+      league,
+    }))
+  }))
+
+  createEffect(on(k.leagueConfig, (leagueConfig) => {
+    let round = 1
+    // ewwww - hindisght 20 20... move this somewhere better
+    Object.values(leagueConfig ?? {}).forEach(club => {
+      Object.values(club.teams).forEach((teams) => {
+        Object.values(teams).forEach((team) => {
+          team.results.forEach((result, index) => {
+            if (index >= (round - 1) && result[0] > 0) {
+              round = index + 2
+            }
+          })
+        })
+      })
+    })
+    setDetails(details => ({
+      ...details,
+      round: String(round),
+    }))
+  }))
+
+  const handleDetailUpdate = (d: RoundDetails) => {
     setDetails(d)
   }
 
@@ -128,6 +155,8 @@ function RaceNewInternal() {
           <RaceNewSetup
             details={details()}
             onDetailUpdate={handleDetailUpdate}
+            options={options()}
+            onOptionsUpdate={setOptions}
             config={numTeams()}
             onUpdate={handleTeamNumsUpdate}
             onErrorUpdate={setTeamSelectErrors}
@@ -182,7 +211,7 @@ function RaceNewInternal() {
         }
 
         const seeding = orderSeeds(k.leagueConfig(), numTeams())
-        const r = createRound("setup", roundDetails(), seeding, raceConfig)
+        const r = createRound("setup", details(), options(), seeding, raceConfig)
         batch(() => {
           setSeeding(seeding)
           setDistributionOrder(seeding)
@@ -198,7 +227,7 @@ function RaceNewInternal() {
       onArrive: lock,
       content: () => {
         const handleEdit = (seeds: RoundSeeding) => {
-          const r = createRound("setup", roundDetails(), seeds, raceConfig)
+          const r = createRound("setup", details(), options(), seeds, raceConfig)
           batch(() => {
             setRound(r)
             setSeeding(seeds)
@@ -227,7 +256,7 @@ function RaceNewInternal() {
       title: "Adjust Groups",
       content: () => {
         const handleShuffle = (seeds: RoundSeeding) => {
-          const r = createRound("setup", roundDetails(), seeds, raceConfig)
+          const r = createRound("setup", details(), options(), seeds, raceConfig)
           batch(() => {
             setRound(r)
             setDistributionOrder(seeds)
@@ -285,7 +314,7 @@ function RaceNewInternal() {
   }
 
   const handleDone = () => {
-    const r = krmEngine.createRound(roundDetails(), seeding(), raceConfig, distributionOrder())
+    const r = krmEngine.createRound(details(), options(), seeding(), raceConfig, distributionOrder())
     const [pass, err] = steps[step()].validator()
     if (pass) {
       setNumTeams(initConfig(k.leagueConfig()))

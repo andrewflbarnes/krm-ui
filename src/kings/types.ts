@@ -1,6 +1,7 @@
 import type { Division, League } from "@/kings/config";
 export type { Division, League } from "@/kings/config";
 
+export type ConflictResolution = "high" | "low" | "manual";
 export type RaceStage = "stage1" | "stage2" | "knockout";
 export type Stage = RaceStage | "complete";
 
@@ -143,6 +144,11 @@ export type RoundResultPoints = {
   teams: string[];
 }
 
+export type RoundOptions = {
+  // how conflicts/draws should be resolved
+  conflictResolution?: ConflictResolution;
+}
+
 /** Full configuration for a round including races and metadata */
 export type Round = {
   /** The unique ID of the round */
@@ -164,6 +170,10 @@ export type Round = {
     /** The date the round took place */
     date: Date;
   };
+  /**
+    * Options for running the round
+    */
+  options: RoundOptions;
   /** The current status of the round */
   status: RoundStatus;
   /** The teams in the round, ordered by seeding */

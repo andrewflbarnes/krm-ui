@@ -1,4 +1,4 @@
-import { League, LeagueData, Race, RoundConfig, RoundSeeding, Round, RaceStage, Stage, MiniLeagueTemplate } from "@/kings/types"
+import { League, LeagueData, Race, RoundConfig, RoundSeeding, Round, RaceStage, Stage, MiniLeagueTemplate, RoundOptions } from "@/kings/types"
 
 export type CustomConfig<T> = {
   configs: {
@@ -24,7 +24,7 @@ export type KrmEngine = {
   clearLocalData(): void;
   saveLeagueConfig(league: League, config: LeagueData): void;
   getLeagueConfig(league: League): LeagueData | null;
-  createRound(details: RoundDetails, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
+  createRound(details: RoundDetails, options: RoundOptions, teams: RoundSeeding, raceConfigs: Record<number, RoundConfig>, distributionOrder?: RoundSeeding): Round;
   saveRound(round: Round): void;
   getRounds(league?: string): RoundInfo[];
   getRound(id: string): Round | null;

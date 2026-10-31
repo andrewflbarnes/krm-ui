@@ -558,6 +558,8 @@ describe("round-utils", () => {
       league: testLeague,
     } as const
 
+    const testOptions = {} as const
+
     const emptySeeding = {
       mixed: [],
       ladies: [],
@@ -632,7 +634,7 @@ describe("round-utils", () => {
         races,
         teams,
         distributionOrder,
-      } = createRound(testId, testDetails, emptySeeding, testConfigs)
+      } = createRound(testId, testDetails, testOptions, emptySeeding, testConfigs)
       expect(id).toEqual(testId)
       expect(league).toEqual(testLeague)
       expect(actualDetails).toEqual(testDetailsNoLeague)
@@ -664,7 +666,7 @@ describe("round-utils", () => {
     })
 
     it("1 team no races", () => {
-      const round = createRound(testId, testDetails, {
+      const round = createRound(testId, testDetails, testOptions, {
         mixed: ["team1"],
         ladies: ["team2"],
         board: ["team3"],
@@ -693,7 +695,7 @@ describe("round-utils", () => {
         ladies: ["team4", "team5", "team6"],
         board: ["team7", "team8", "team9"],
       }
-      const actual = createRound(testId, testDetails, testSeeding, testConfigs)
+      const actual = createRound(testId, testDetails, testOptions, testSeeding, testConfigs)
       const asserter = new RoundAsserter(actual)
       asserter
         .expectTeams(testSeeding)
@@ -737,7 +739,7 @@ describe("round-utils", () => {
         ladies: ["team6", "team4", "team5"],
         board: ["team8", "team9", "team7"],
       }
-      const round = createRound(testId, testDetails, testSeeding, testConfigs, testDistributionOrder)
+      const round = createRound(testId, testDetails, testOptions, testSeeding, testConfigs, testDistributionOrder)
       const asserter = new RoundAsserter(round)
       asserter
         .expectTeams(testSeeding)

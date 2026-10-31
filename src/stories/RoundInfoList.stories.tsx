@@ -47,6 +47,7 @@ const exampleRound: RoundInfo = {
     date: new Date(),
     round: "1"
   },
+  options: {},
   teams: examplepTeams,
   distributionOrder: examplepTeams,
   owner: "local",

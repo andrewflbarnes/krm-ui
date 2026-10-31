@@ -1,6 +1,6 @@
 import Stack from "@suid/material/Stack";
 import { createEffect, createSignal, Index, onMount } from "solid-js";
-import { GroupRaces, Race } from "@/kings";
+import { ConflictResolution, GroupRaces, Race, RoundSeeding } from "@/kings";
 import MiniLeague from "@/components/MiniLeague";
 import { useIncrementalLoader } from "@/hooks/incremental-loader";
 import styles from "@/components/MiniLeagues.module.css";
@@ -16,6 +16,8 @@ type MiniLeaguesProps = {
       races: GroupRaces;
     }[]
   }[];
+  seeds: RoundSeeding;
+  conflictResolution?: ConflictResolution;
   onRaceUpdate: (race: Race) => void;
 }
 
@@ -52,6 +54,8 @@ export default function MiniLeagues(props: MiniLeaguesProps) {
                 name={division().capitalize() + " " + group().group}
                 races={group().races.races}
                 teams={group().races.teams}
+                seeds={props.seeds[division()]}
+                conflictResolution={props.conflictResolution}
                 conflict={group().races.conflict}
                 onResultChange={props.onRaceUpdate}
                 readonly={props.readonly}
