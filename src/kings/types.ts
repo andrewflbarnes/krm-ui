@@ -173,7 +173,7 @@ export type Round = {
   /**
     * Options for running the round
     */
-  options: RoundOptions;
+  options?: RoundOptions;
   /** The current status of the round */
   status: RoundStatus;
   /** The teams in the round, ordered by seeding */
