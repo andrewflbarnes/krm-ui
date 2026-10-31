@@ -1,6 +1,6 @@
-import { createComputed, createSignal, Show } from "solid-js";
+import { createComputed, createSignal, lazy, Show } from "solid-js";
 import krmEngine, { type RoundInfo } from "@/kings/engine";
-import ManageContinueList from "@/components/ManageContinueList";
+const ManageContinueList = lazy(() => import("@/components/ManageContinueList"));
 import { useKings } from "@/hooks/kings";
 import notification from "@/hooks/notification";
 import { Box, Paper } from "@suid/material";
@@ -12,6 +12,7 @@ import ButtonCard from "@/ui/ButtonCard";
 import { getRounds, uploadRound } from "@/api/persistence";
 import { useAuth } from "@/hooks/auth";
 import { Round } from "@/kings";
+import LoadingSuspense from "@/ui/LoadingSuspense";
 
 function getSortedRounds(league: string) {
   const unsortedRounds = krmEngine.getRounds(league);
@@ -44,7 +45,9 @@ function DownloadRoundsButton(props: { onDownload: (v: boolean) => void }) {
 export default function Races() {
   return (
     <BasicErrorBoundary message="Failed to render">
-      <RacesInternal />
+      <LoadingSuspense>
+        <RacesInternal />
+      </LoadingSuspense>
     </BasicErrorBoundary>
   )
 }
