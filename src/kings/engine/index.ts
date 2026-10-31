@@ -174,7 +174,7 @@ export default (function KrmEngine(): KrmEngine {
       if (complete) {
         const calcOptions = {
           resolveConflicts: {
-            method: round.options.conflictResolution ?? "manual",
+            method: round.options?.conflictResolution ?? "manual",
             seeds: round.teams[race.division]
           }
         }
