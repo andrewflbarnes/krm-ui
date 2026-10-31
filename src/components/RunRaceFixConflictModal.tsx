@@ -183,8 +183,10 @@ function Resolve(props: {
       const orderedTeams = resolveDrawnTeams(
         r.teams,
         props.races.races,
-        props.seeding,
-        props.confirm
+        {
+          method: props.confirm,
+          seeds: props.seeding,
+        }
       )
 
       return {

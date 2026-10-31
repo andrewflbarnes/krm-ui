@@ -132,7 +132,7 @@ export function calcTeamResults(teams: string[], races: Race[], options?: CalcOp
 
   // resolve drawn teams per provided options - if none return as is
   if (prepos.pos.some(p => p.length > 1) && options?.resolveConflicts) {
-    const { method, seeds } = options.resolveConflicts
+    const { method } = options.resolveConflicts
 
     switch (method) {
       case "high":
@@ -141,7 +141,10 @@ export function calcTeamResults(teams: string[], races: Race[], options?: CalcOp
           if (teams.length < 2) {
             return [teams]
           }
-          const resolved = resolveDrawnTeams(teams, races, seeds, method)
+          const resolved = resolveDrawnTeams(teams, races, {
+            method,
+            seeds: options.resolveConflicts.seeds,
+          })
           return resolved.map(t => [t])
         })
         break
@@ -288,13 +291,15 @@ export function createRound(
 export function resolveDrawnTeams(
   teams: string[],
   races: Race[],
-  seeding: string[],
-  confirm: "high" | "low"
+  options: {
+    method: Exclude<ConflictResolution, "manual">;
+    seeds: string[];
+  },
 ): string[] {
   // use reverse seeding if looking for the lowest seed
-  const seedOrder = confirm === "high"
-    ? seeding
-    : seeding.toReversed()
+  const seedOrder = options.method === "high"
+    ? options.seeds
+    : options.seeds.toReversed()
 
   // find the highest or lowest seed in the draw
   const targetSeed = teams.reduce((seedAcc, team) => {
@@ -312,7 +317,9 @@ export function resolveDrawnTeams(
   // i.e. the return from calcTeamResults will always be an array of single team
   // arrays
   const others = teams.filter(team => team !== targetSeedTeam)
-  const calculatedResults = calcTeamResults(others, races).pos
+  const calculatedResults = calcTeamResults(others, races, {
+    resolveConflicts: options,
+  }).pos
   if (calculatedResults.some(r => r.length > 1)) {
     // log error but don't crash out - allow the round to contine to run
     console.error(
@@ -320,8 +327,7 @@ export function resolveDrawnTeams(
       {
         teams,
         races,
-        seeding,
-        confirm,
+        options,
         seedOrder,
         targetSeed,
         targetSeedTeam,
@@ -333,7 +339,7 @@ export function resolveDrawnTeams(
 
   // if high then promote the target seed to the top
   // if low then demote the target seed to the bottom
-  return confirm === "high"
+  return options.method === "high"
     ? [targetSeedTeam, ...otherResults]
     : [...otherResults, targetSeedTeam]
 }

@@ -47,14 +47,17 @@
   round stage using router". FIX: Root cause unclear but this was caused by a
   suspense triggerring the first, and only the first, time onRaceUpdate was
   called. Removed the suspense...
+- [x] Draw Resolution (automatic by high/low seed)
 
 ## Must
 
-- [ ] Draw Resolution (by selection/low seed/high seed/other?)
+- [ ] Draw Resolution (manual by low/high seed or other)
 - [ ] Calc results should account correctly for 2 way tie with DSQ
       i.e. check race(s) between the two teams
       e.g. minileague of 5, teams 1 and 2 with 4 wins, team 1 beat team 2 but
       team 1 also had a DSQ. Team 1 should win as they beat team 2 head to head
+- [ ] bug: distribution order / team order should be correct wrt config
+- [ ] remove isNew flag from team on round completion
 - [ ] Results HTML should pin to correct season
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
