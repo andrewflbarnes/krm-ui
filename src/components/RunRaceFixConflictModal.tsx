@@ -1,5 +1,5 @@
 import { asPosition, Division, GroupRaces, resolveDrawnTeams } from "@/kings";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, Typography } from "@suid/material";
+import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ToggleButton, ToggleButtonGroup, Typography } from "@suid/material";
 import { createComputed, createEffect, createSelector, createSignal, For, Show } from "solid-js";
 import MiniLeague from "./MiniLeague";
 import Seed from "@/ui/Seed";
@@ -28,23 +28,6 @@ export default function RunRaceFixConflictModal(props: {
   const handleClose = () => {
     setConfirm(undefined)
     props.onClose()
-  }
-
-  const handleHighSeedWin = () => {
-    if (!confirm()) {
-      setConfirm("high")
-      return
-    }
-    setConfirm(undefined)
-    alert("TODO :D")
-  }
-
-  const handleLowSeedWin = () => {
-    if (!confirm()) {
-      setConfirm("low")
-      return
-    }
-    setConfirm(undefined)
   }
 
   const [showIndex, setShowIndex] = createSignal<number>()
@@ -135,20 +118,30 @@ export default function RunRaceFixConflictModal(props: {
       </DialogContent>
       <DialogActions>
         <div style={{ display: "flex", "flex-direction": "column", gap: "0.5em", width: "100%" }}>
-          <Button
-            variant="outlined"
-            color={confirm() ? "success" : "primary"}
-            onClick={handleHighSeedWin}
+          <ToggleButtonGroup
+            value={confirm()}
+            onChange={(_, v) => setConfirm(v)}
+            exclusive
+            orientation="vertical"
+            size="small"
+            color="success"
           >
-            {confirm() ? "Confirm" : "High seed wins"}
-          </Button>
-          <Button
-            variant="outlined"
-            color={confirm() ? "warning" : "primary"}
-            onClick={handleLowSeedWin}
-          >
-            {confirm() ? "Cancel" : "Low seed loses"}
-          </Button>
+            <ToggleButton
+              value="manual"
+            >
+              Manual
+            </ToggleButton>
+            <ToggleButton
+              value="high"
+            >
+              High seed wins
+            </ToggleButton>
+            <ToggleButton
+              value="low"
+            >
+              Low seed lose
+            </ToggleButton>
+          </ToggleButtonGroup>
         </div>
       </DialogActions>
     </Dialog>
