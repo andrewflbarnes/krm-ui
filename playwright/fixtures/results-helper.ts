@@ -26,8 +26,7 @@ export class ResultsHelper {
   }
 
   async startStage2() {
-    await expect(this.page.getByRole('main'), 'Can start stage 2').toContainText('Start Stage 2');
-    await this.page.getByRole('button', { name: 'Start Stage' })
+    await this.page.getByTestId('proceed-to-stage-2-ok')
       .describe('Start stage 2 button')
       .click();
     await this.page.getByText('Yes')
@@ -37,8 +36,7 @@ export class ResultsHelper {
   }
 
   async startKnockouts() {
-    await expect(this.page.getByRole('main'), 'Can start knockouts').toContainText('Start Knockouts');
-    await this.page.getByRole('button', { name: 'Start Knockouts' })
+    await this.page.getByTestId('proceed-to-knockouts-ok')
       .describe('Start knockouts button')
       .click();
     await this.page.getByText('Yes')
@@ -48,8 +46,7 @@ export class ResultsHelper {
   }
 
   async finishRaces() {
-    await expect(this.page.getByRole('main'), 'Can finish races').toContainText('Finish');
-    await this.page.getByRole('button', { name: 'Finish' })
+    await this.page.getByTestId('proceed-to-finish-ok')
       .describe('Finish races button')
       .click();
     await this.page.getByText('Yes')

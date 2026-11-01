@@ -290,9 +290,15 @@ function ProgressButton(props: {
     setProgressConfirmation(false)
   }
 
+  const testId = () => {
+    const id = `proceed-to-${proceedText()}-${props.conflicts.length > 0 ? "conflict" : "ok"}`
+    return id.replace(/\s+/g, "-").toLowerCase()
+  }
+
   return (
     <>
       <Button
+        data-testid={testId()}
         color={props.conflicts.length > 0 ? "warning" : "success"}
         onClick={handleConfirmProgress}
         startIcon={props.conflicts?.length > 0 ? <WarningAmberRounded /> : <Start />}
