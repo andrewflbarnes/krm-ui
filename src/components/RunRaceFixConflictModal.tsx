@@ -89,7 +89,7 @@ export default function RunRaceFixConflictModal(props: {
       onClose={handleClose}
     >
       <DialogTitle style={{ "text-align": "center" }}>
-        Resolve {props.conflicts.length} conflict(s)
+        Resolved 0 / {props.conflicts.length} conflict(s)
       </DialogTitle>
       <DialogContent>
         <div style={{

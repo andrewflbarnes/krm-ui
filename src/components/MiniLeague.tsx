@@ -311,6 +311,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                               display: "inline-flex",
                               alignItems: "center",
                               justifyContent: "center",
+                              maxWidth: "2em",
                               px: 1,
                               py: 0.25,
                               borderRadius: "10px",
