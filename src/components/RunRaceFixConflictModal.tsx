@@ -88,7 +88,9 @@ export default function RunRaceFixConflictModal(props: {
       maxWidth="lg"
       onClose={handleClose}
     >
-      <DialogTitle>Resolve Conflicts</DialogTitle>
+      <DialogTitle style={{ "text-align": "center" }}>
+        Resolve {props.conflicts.length} conflict(s)
+      </DialogTitle>
       <DialogContent>
         <div style={{
           display: "flex",
@@ -115,19 +117,21 @@ export default function RunRaceFixConflictModal(props: {
             </div>
           )}</For>
         </div>
-        <div
-          style={{
-            display: "flex",
-            "justify-content": "center",
-            "margin-top": "1em",
-          }}
-        >
-          <Button
-            onClick={next}
+        <Show when={props.conflicts.length > 1}>
+          <div
+            style={{
+              display: "flex",
+              "justify-content": "center",
+              "margin-top": "1em",
+            }}
           >
-            Next
-          </Button>
-        </div>
+            <Button
+              onClick={next}
+            >
+              Next
+            </Button>
+          </div>
+        </Show>
       </DialogContent>
       <DialogActions>
         <div style={{ display: "flex", "flex-direction": "column", gap: "0.5em", width: "100%" }}>

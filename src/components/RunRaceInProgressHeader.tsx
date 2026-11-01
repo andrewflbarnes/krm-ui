@@ -2,11 +2,10 @@ import { Box, Button, Card, IconButton, ToggleButton, ToggleButtonGroup } from "
 import { useMutation, useQueryClient } from "@tanstack/solid-query";
 import { createEffect, createMemo, createSignal, For, on, Show } from "solid-js";
 import { Division, GroupRaces, RaceStage, Round } from "@/kings";
-import PopoverButton from "@/ui/PopoverButton";
 import Selector from "@/ui/Selector";
 import krmEngine, { type ProgressionStage } from "@/kings/engine";
 import notification from "@/hooks/notification";
-import { Edit, NavigateNext, Print, Settings, WarningAmberRounded } from "@suid/icons-material";
+import { Edit, Print, Settings, Start, WarningAmberRounded } from "@suid/icons-material";
 import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import { usePrint } from "@/hooks/print";
 import { stages, useRaceOptions } from "@/hooks/results";
@@ -20,6 +19,12 @@ import SimpleUi from "@/ui/SimpleUi";
 import RunRaceFixConflictModal from "./RunRaceFixConflictModal";
 
 const keepValidStages = (s: string, round: Round) => s == round.status || Object.values(round.config).some(c => c[s])
+
+type Conflict = {
+  division: Division;
+  group: string;
+  races: GroupRaces;
+}
 
 export default function RunRaceInProgressHeader(props: {
   round: Round;
@@ -40,11 +45,7 @@ export default function RunRaceInProgressHeader(props: {
 
   const flags = useFeatureFlags()
 
-  const conflicts = createMemo<{
-    division: Division;
-    group: string;
-    races: GroupRaces;
-  }[]>(() => {
+  const conflicts = createMemo<Conflict[]>(() => {
     return Object.entries(props.round.races[stage()] || {}).reduce((acc, [div, divRaces]: [string, GroupRaces[]]) => {
       Object.entries(divRaces).forEach(([group, dr]) => {
         if (dr.conflict) {
@@ -87,10 +88,6 @@ export default function RunRaceInProgressHeader(props: {
 
   const proceed = () => {
     if (!owned()) {
-      return false
-    }
-
-    if (errors().length) {
       return false
     }
 
@@ -159,22 +156,21 @@ export default function RunRaceInProgressHeader(props: {
             <>
               <Box>
                 <Show when={proceed()}>
-                  <ProgressButton round={props.round} />
+                  <ProgressButton
+                    round={props.round}
+                    conflicts={errors()}
+                    onFixConflicts={() => {
+                      const conflict = conflicts()[0]
+                      if (conflict) {
+                        setFixConflict({ division: conflict.division, group: conflict.group })
+                      }
+                    }}
+                  />
                 </Show>
               </Box>
               <Box sx={{ ml: "auto", display: "flex", gap: 1 }}>
                 <Show when={canReopen()}>
                   <ReopenButton id={props.round.id} stage={s} />
-                </Show>
-                <Show when={errors().length}>
-                  <PopoverButton
-                    title="Errors"
-                    messages={errors()}
-                    noPadding
-                    color="warning"
-                    variant="icon"
-                    icon={<WarningAmberRounded />}
-                  />
                 </Show>
                 <PrintButton
                   disabled={print()}
@@ -239,6 +235,8 @@ function ViewButton(props: {
 
 function ProgressButton(props: {
   round: Round;
+  conflicts: Conflict[];
+  onFixConflicts: () => void;
 }) {
   const proceedText = () => {
     const possibleStages = Object.entries(stages).filter(([s]) => keepValidStages(s, props.round))
@@ -278,6 +276,11 @@ function ProgressButton(props: {
 
   const [progressConfirmation, setProgressConfirmation] = createSignal(false)
   const handleConfirmProgress = () => {
+    if (props.conflicts?.length > 0) {
+      props.onFixConflicts()
+      return
+    }
+
     setProgressConfirmation(true)
   }
   const handleProgress = () => {
@@ -290,9 +293,9 @@ function ProgressButton(props: {
   return (
     <>
       <Button
-        color="success"
+        color={props.conflicts.length > 0 ? "warning" : "success"}
         onClick={handleConfirmProgress}
-        endIcon={<NavigateNext />}
+        startIcon={props.conflicts?.length > 0 ? <WarningAmberRounded /> : <Start />}
       >
         {proceedText()}
       </Button>
@@ -380,7 +383,6 @@ function ReopenButton(props: {
     </>
   )
 }
-
 
 function PrintButton(props: {
   disabled?: boolean;
