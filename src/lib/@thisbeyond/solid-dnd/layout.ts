@@ -6,10 +6,10 @@ interface Point {
 }
 
 class Layout {
-  x;
-  y;
-  width;
-  height;
+  x: number;
+  y: number;
+  width: number;
+  height: number;
 
   constructor(rect: { x: number; y: number; width: number; height: number }) {
     this.x = Math.floor(rect.x);
@@ -75,7 +75,7 @@ const stripTransformFromLayout = (
   layout: Layout,
   transform: string
 ): Layout => {
-  let translateX, translateY;
+  let translateX: number, translateY: number;
 
   if (transform.startsWith("matrix3d(")) {
     const matrix = transform.slice(9, -1).split(/, /);
