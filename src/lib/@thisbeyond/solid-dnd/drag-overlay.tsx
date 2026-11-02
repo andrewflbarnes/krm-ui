@@ -16,7 +16,7 @@ const DragOverlay: Component<DragOverlayProps> = (props) => {
   const [state, { onDragStart, onDragEnd, setOverlay, clearOverlay }] =
     useDragDropContext()!;
 
-  let node: HTMLDivElement | undefined;
+  let node!: HTMLDivElement; // oxlint-disable-line no-unassigned-vars
 
   onDragStart(({ draggable }) => {
     setOverlay({

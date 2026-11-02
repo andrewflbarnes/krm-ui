@@ -1,11 +1,9 @@
-import { Box, IconButton, Typography } from "@suid/material"
+import { Box, IconButton } from "@suid/material"
 import { createEffect, createMemo, createSignal, For, Show, untrack } from "solid-js"
 import { Division, RoundSeeding } from "@/kings"
 import StageCard from "@/ui/StageCard"
-import { createDraggable, createDroppable, DragDropProvider, DragDropSensors, DragEventHandler, DragOverlay } from "@thisbeyond/solid-dnd"
-import SeedInteractive from "@/ui/SeedInteractive"
-import { North, Replay, South } from "@suid/icons-material"
-import DragAnchor from "@/ui/DragAnchor"
+import { Replay } from "@suid/icons-material"
+import TeamOrderer from "@/ui/TeamOrderer"
 
 /**
   * Shows the seeding per division. Original seeds will default to seeds if not]
@@ -91,7 +89,7 @@ export default function RaceNewSeeding(props: {
         return (
           <Box sx={{ width: "100%" }}>
             <StageCard
-              namer={() =>"Seeds"}
+              namer={() => "Seeds"}
               title={`${division.capitalize()} - ${teams.length} teams`}
               titleEndAdornment={
                 <Show when={props.editable}>
@@ -111,150 +109,26 @@ export default function RaceNewSeeding(props: {
               type={division}
               groups={[teams]}
             >{(group) => {
-              const [seeding, setSeeding] = createSignal(group.map((team, i) => ({
-                team,
-                seed: i + 1,
-                originalSeed: originalSeeds()[division].indexOf(team) + 1,
-              })))
-
-              const [moveFrom, setMoveFrom] = createSignal<number | null>(null)
-              const [moveTo, setMoveTo] = createSignal<number | null>(null)
-
-              const handleDragStart: DragEventHandler = ({ draggable }) => {
-                const movingTeam = draggable.data.team
-                const overPosition = seeding().findIndex((t) => t.team === movingTeam)
-                setMoveTo(overPosition)
-                setMoveFrom(overPosition)
-              }
-              
-              const handleDragOver: DragEventHandler = ({ droppable }) => {
-                const overTeam = droppable?.data.team
-                if(!overTeam) {
-                  return
-                }
-                const overPosition = seeding().findIndex((t) => t.team === overTeam)
-                setMoveTo(overPosition)
-              }
-
-              const handleDragEnd: DragEventHandler = ({ droppable }) => {
-                if (droppable) {
-                  const moveTeam = seeding()[moveFrom()]
-                  const next = seeding()
-                    .toSpliced(moveFrom(), 1)
-                    .toSpliced(moveTo(), 0, moveTeam)
-                    .map((t, i) => ({
-                      ...t,
-                      seed: i + 1,
-                    }))
-                  setSeeding(next)
-
-                  if (props.editable) {
-                    const nextRoundSeeding = {
-                      ...seeds(),
-                      [division]: next.map((t) => t.team),
-                    }
-                    props.onEdit?.(nextRoundSeeding)
-                    setSeeds(nextRoundSeeding)
+              const handleEdit = (newSeeds: string[]) => {
+                if (props.editable) {
+                  const nextRoundSeeding = {
+                    ...seeds(),
+                    [division]: newSeeds,
                   }
+                  props.onEdit?.(nextRoundSeeding)
+                  setSeeds(nextRoundSeeding)
                 }
-                setMoveFrom(null)
-                setMoveTo(null)
               }
               return (
-                <DragDropProvider onDragOver={handleDragOver} onDragStart={handleDragStart} onDragEnd={handleDragEnd}>
-                  <DragDropSensors />
-                  <Show when={moveFrom() != null}>
-                    <DragOverlay>
-                      <div style={{
-                        cursor: "row-resize",
-                        "z-index": 100,
-                        height: "30px",
-                        width: "30px",
-                      }} />
-                    </DragOverlay>
-                  </Show>
-                  <Box sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.5rem",
-                  }}>
-                    <For each={seeding()}>{(team) => {
-                      const { team: teamName, seed, originalSeed } = team
-                      const pos = seed - 1
-                      const order = () => {
-                        const from = moveFrom()
-                        const to = moveTo()
-                        if (from === null || to === null) {
-                          return pos
-                        }
-                        if (pos === from) {
-                          return to
-                        }
-                        if (pos < to && pos < from) {
-                          return pos
-                        }
-                        if (pos > to && pos > from) {
-                          return pos
-                        }
-                        if (to > from) {
-                          return pos - 1
-                        }
-                        if (from > to) {
-                          return pos + 1
-                        }
-                        return pos
-                      }
-                      const draggable = createDraggable(teamName, team)
-                      const droppable = createDroppable(teamName, team)
-                      const isNew = () => props.newSeeds?.[division]?.includes(teamName)
-                      const moved = () => {
-                        const change = originalSeed - seed
-                        return change !== 0 ? change : undefined
-                      }
-                      return (
-                        <div
-                          use:droppable={!!droppable}
-                          style={{
-                            order: order(),
-                            transition: "all 0.15s",
-                          }}
-                        >
-                          <div ref={draggable.ref}>
-                            <SeedInteractive
-                              highlight={moveFrom() === pos}
-                              seed={seed}
-                              division={division as Division}
-                              team={team.team}
-                              startAdornment={
-                                <Show when={props.editable}>
-                                  <DragAnchor
-                                    data-testid={`${division}-${teamName}-drag-anchor`}
-                                    dragActivators={draggable.dragActivators}
-                                  />
-                                </Show>
-                              }
-                              endAdornment={
-                                <Box sx={{
-                                  display: "flex",
-                                  alignItems: "center",
-                                  gap: 0.5,
-                                  marginLeft: "auto"
-                                }}>
-                                  <Show when={isNew()}>
-                                    <MovementIndicator moved={"New"} />
-                                  </Show>
-                                  <Show when={moved()}>{(moveIndicator) => (
-                                    <MovementIndicator moved={moveIndicator()} />
-                                  )}</Show>
-                                </Box>
-                              }
-                            />
-                          </div>
-                        </div>
-                      )
-                    }}</For>
-                  </Box>
-                </DragDropProvider>
+                <TeamOrderer
+                  onEdit={handleEdit}
+                  division={division}
+                  editable={props.editable}
+                  originalSeeds={originalSeeds()[division]}
+                  teams={group}
+                  newSeeds={props.newSeeds?.[division]}
+                  seeding
+                />
               )
             }}</StageCard>
           </Box>
@@ -262,61 +136,5 @@ export default function RaceNewSeeding(props: {
       }}
       </For>
     </Box>
-  )
-}
-
-function asMovement(value: number | string): number | null {
-  return typeof value === "number" ? value : null
-}
-
-function MovementIndicator(props: { moved: number | string }) {
-  const color = () => {
-    if (typeof props.moved === "string") {
-      return undefined
-    }
-    return props.moved > 0
-      ? "success.main"
-      : "error.main"
-  }
-
-  return (
-    <Typography
-      color={color()}
-      sx={{
-        fontSize: "0.75em",
-      }}
-    >
-      <Show
-        when={asMovement(props.moved)}
-        fallback={
-          <Box sx={{
-            fontSize: "0.75em",
-            color: "text.secondary",
-          }}>
-          {props.moved}
-          </Box>
-        }
-      >{(movement) => {
-        const text = () => {
-          if (typeof props.moved === "string") {
-            return props.moved
-          }
-          return props.moved > 0
-            ? props.moved
-            : Math.abs(props.moved)
-        }
-        return <>
-          <Show
-            when={movement() > 0}
-            fallback={
-              <South sx={{ fontSize: "0.75em" }} />
-            }
-          >
-            <North sx={{ fontSize: "0.75em" }} />
-          </Show>
-          {text()}
-        </>
-      }}</Show>
-    </Typography>
   )
 }

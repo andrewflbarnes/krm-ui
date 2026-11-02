@@ -1,9 +1,9 @@
-import { asPosition, Division, GroupRaces, resolveDrawnTeams } from "@/kings";
+import { asPosition, ConflictResolution, Division, GroupRaces, resolveDrawnTeams } from "@/kings";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ToggleButton, ToggleButtonGroup, Typography } from "@suid/material";
 import { createComputed, createEffect, createSelector, createSignal, For, Show } from "solid-js";
 import MiniLeague from "./MiniLeague";
-import Seed from "@/ui/Seed";
 import { DoubleArrow } from "@suid/icons-material";
+import TeamOrderer from "@/ui/TeamOrderer";
 
 const NO_OPTION_SENTINEL = ["Select an option"]
 
@@ -23,7 +23,7 @@ export default function RunRaceFixConflictModal(props: {
   }
   onClose: () => void;
 }) {
-  const [confirm, setConfirm] = createSignal<"high" | "low">()
+  const [confirm, setConfirm] = createSignal<ConflictResolution>()
 
   const handleClose = () => {
     setConfirm(undefined)
@@ -153,7 +153,7 @@ function Resolve(props: {
   group: string;
   races: GroupRaces;
   seeding: string[];
-  confirm: "high" | "low" | undefined;
+  confirm: ConflictResolution | undefined;
   supplyRef: (ref: HTMLDivElement) => void;
 }) {
   const draws = () => props.races.results
@@ -164,11 +164,14 @@ function Resolve(props: {
     .filter(r => r.teams.length > 1)
 
   const resolvedDraws = () => {
-    switch (props.confirm) {
+    const confirm = props.confirm
+    switch (confirm) {
       case "high":
         break;
       case "low":
         break;
+      case "manual":
+        return draws()
       default:
         return draws().map(r => ({
           ...r,
@@ -181,7 +184,7 @@ function Resolve(props: {
         r.teams,
         props.races.races,
         {
-          method: props.confirm,
+          method: confirm,
           seeds: props.seeding,
         }
       )
@@ -193,33 +196,31 @@ function Resolve(props: {
     })
   }
 
-  const seeded = () => props.seeding
-    .map((team, index) => ({ team, index }))
-    .filter(({ team }) => {
-      return props.races.teams.includes(team)
-    })
-    .reduce((acc, { team, index }) => {
-      acc[team] = index
-      return acc
-    }, {} as Record<string, number>)
+  const [overlayMount, setOverlayMount] = createSignal<HTMLElement>()
 
   return (
     <div
-      ref={r => props.supplyRef(r)}
+      ref={(ref: HTMLDivElement) => {
+        setOverlayMount(ref)
+        props.supplyRef(ref)
+      }}
       style={{
         display: "flex",
         "flex-direction": "column",
         gap: "1em",
         "max-width": "fit-content",
+        "align-items": "center"
       }}
     >
-      <MiniLeague
-        races={props.races.races}
-        teams={props.races.teams}
-        readonly
-        name={props.division.capitalize() + " " + props.group}
-        seeds={props.seeding}
-      />
+      <div style={{ width: "fit-content" }}>
+        <MiniLeague
+          races={props.races.races}
+          teams={props.races.teams}
+          readonly
+          name={props.division.capitalize() + " " + props.group}
+          seeds={props.seeding}
+        />
+      </div>
       <For each={draws()}>{(draw, i) => (
         <div
           style={{
@@ -240,7 +241,7 @@ function Resolve(props: {
             <TeamList
               division={props.division}
               teams={draw.teams}
-              seeded={seeded()}
+              seeded={props.seeding}
             />
             <div style={{ margin: "0 auto" }} >
               <DoubleArrow />
@@ -248,7 +249,9 @@ function Resolve(props: {
             <TeamList
               division={props.division}
               teams={resolvedDraws()[i()].teams}
-              seeded={seeded()}
+              seeded={props.seeding}
+              manual={props.confirm === "manual"}
+              overlayMount={overlayMount()}
             />
           </div>
         </div>
@@ -260,47 +263,50 @@ function Resolve(props: {
 function TeamList(props: {
   division: Division;
   teams: string[];
-  seeded: Record<string, number>;
+  seeded: string[];
+  manual?: boolean;
+  overlayMount?: HTMLElement;
 }) {
+  const handleEdit = (_: string[]) => {
+    // todo
+  }
+
   return (
-    <ul style={{
-      "list-style": "none",
+    <div style={{
       "margin": 0,
       "padding": 0,
       display: "flex",
       "flex-direction": "column",
       gap: "0.25em",
     }} >
+      {/* For balance to prevent layout shifts with short team names */}
+      <Typography variant="body2" color="textSecondary" sx={{ height: 0, overflow: "hidden" }}>
+        Choose option...
+      </Typography>
       <Show
-        when={props.teams !== NO_OPTION_SENTINEL}
+        when={props.teams !== NO_OPTION_SENTINEL ? props.teams : false}
         fallback={
           <Typography variant="body2" color="textSecondary">
             Choose option...
           </Typography>
         }
-      >
+        keyed
+      >{(teams) => (
         <>
           {/* For balance to prevent layout shifts with short team names */}
           <Typography variant="body2" color="textSecondary" sx={{ height: 0, overflow: "hidden" }}>
             Choose option...
           </Typography>
-          <For each={props.teams}>{(team) => {
-            let num: string | number = props.seeded[team]
-            if (num !== undefined) {
-              num += 1
-            } else {
-              num = "?"
-            }
-            return (
-              <Seed
-                team={team}
-                num={num}
-                accent={props.division}
-              />
-            )
-          }}</For>
+          <TeamOrderer
+            division={props.division}
+            originalSeeds={props.seeded}
+            initialTeams={teams}
+            onEdit={handleEdit}
+            editable={props.manual}
+            overlayMount={props.overlayMount}
+          />
         </>
-      </Show>
-    </ul>
+      )}</Show>
+    </div>
   )
 }
