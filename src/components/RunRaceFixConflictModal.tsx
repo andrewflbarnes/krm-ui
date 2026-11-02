@@ -120,7 +120,7 @@ export default function RunRaceFixConflictModal(props: {
         <div style={{ display: "flex", "flex-direction": "column", gap: "0.5em", width: "100%" }}>
           <ToggleButtonGroup
             value={confirm()}
-            onChange={(_, v) => setConfirm(v)}
+            onChange={(_, v) => v && setConfirm(v)}
             exclusive
             orientation="vertical"
             size="small"
