@@ -7,6 +7,11 @@ import TeamOrderer from "@/ui/TeamOrderer";
 
 const NO_OPTION_SENTINEL = ["Select an option"]
 
+type DrawInfo = {
+  position: number;
+  teams: string[];
+}
+
 export default function RunRaceFixConflictModal(props: {
   open: boolean;
   conflicts: {
@@ -22,6 +27,7 @@ export default function RunRaceFixConflictModal(props: {
     group: string;
   }
   onClose: () => void;
+  onUpdate: (division: Division, group: string, ranking: string[]) => void;
 }) {
   const [confirm, setConfirm] = createSignal<ConflictResolution>()
 
@@ -65,6 +71,10 @@ export default function RunRaceFixConflictModal(props: {
     setContentHeight(ret)
   })
 
+  const handleUpdate = (division: Division, group: string, ranking: string[]) => {
+    props.onUpdate?.(division, group, ranking)
+  }
+
   return (
     <Dialog
       open={props.open}
@@ -96,6 +106,7 @@ export default function RunRaceFixConflictModal(props: {
                 races={conflict.races}
                 confirm={confirm()}
                 supplyRef={(ref) => updateRefs(i(), ref)}
+                onUpdate={(ranking) => handleUpdate(conflict.division, conflict.group, ranking)}
               />
             </div>
           )}</For>
@@ -155,6 +166,7 @@ function Resolve(props: {
   seeding: string[];
   confirm: ConflictResolution | undefined;
   supplyRef: (ref: HTMLDivElement) => void;
+  onUpdate: (ranking: string[]) => void;
 }) {
   const draws = () => props.races.results
     .map((teams, position) => ({
@@ -194,6 +206,32 @@ function Resolve(props: {
         teams: orderedTeams,
       }
     })
+  }
+
+  createEffect(() => {
+    if (resolvedDraws().length === 0 || resolvedDraws().some(r => r.teams === NO_OPTION_SENTINEL)) {
+      return
+    }
+    const finalRanking = resolvedDraws().map(r => r.teams).flat()
+    props.onUpdate(finalRanking)
+  })
+
+  const handleUpdate = (position: number, ranking: string[]) => {
+    const resolvedDraws = updateRanking(draws(), [{
+      position,
+      teams: ranking,
+    }])
+
+    const nextRaces = props.races.results.map((results, i) => {
+      const draw = resolvedDraws.find(d => d.position === i + 1)
+      if (draw) {
+        return draw.teams
+      }
+      return results
+    })
+
+    const ordered = nextRaces.flat()
+    props.onUpdate(ordered)
   }
 
   const [overlayMount, setOverlayMount] = createSignal<HTMLElement>()
@@ -252,6 +290,7 @@ function Resolve(props: {
               seeded={props.seeding}
               manual={props.confirm === "manual"}
               overlayMount={overlayMount()}
+              onUpdate={(ranking) => handleUpdate(draw.position, ranking)}
             />
           </div>
         </div>
@@ -266,9 +305,10 @@ function TeamList(props: {
   seeded: string[];
   manual?: boolean;
   overlayMount?: HTMLElement;
+  onUpdate?: (ranking: string[]) => void;
 }) {
-  const handleEdit = (_: string[]) => {
-    // todo
+  const handleEdit = (ranking: string[]) => {
+    props.onUpdate?.(ranking)
   }
 
   return (
@@ -309,4 +349,17 @@ function TeamList(props: {
       )}</Show>
     </div>
   )
+}
+
+function updateRanking(draws: DrawInfo[], resolutions: DrawInfo[]): DrawInfo[] {
+  return draws.map(draw => {
+    const resolution = resolutions.find(r => r.position === draw.position)
+    if (resolution) {
+      return {
+        ...draw,
+        teams: resolution.teams,
+      }
+    }
+    return draw
+  })
 }
