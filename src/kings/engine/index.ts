@@ -196,7 +196,7 @@ export default (function KrmEngine(): KrmEngine {
 
       this.saveRound(round)
     },
-    progressRound(id: string): ProgressionStage {
+    progressRound(id: string, options: ProgressOptions): ProgressionStage {
       const round: Round = this.getRound(id)
       const { status } = round
       switch (status) {
