@@ -1,6 +1,6 @@
 import { asPosition, ConflictResolution, Division, GroupRaces, resolveDrawnTeams } from "@/kings";
 import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ToggleButton, ToggleButtonGroup, Typography } from "@suid/material";
-import { createComputed, createEffect, createSelector, createSignal, For, Show } from "solid-js";
+import { createComputed, createEffect, createMemo, createSelector, createSignal, For, Show } from "solid-js";
 import MiniLeague from "./MiniLeague";
 import { DoubleArrow } from "@suid/icons-material";
 import TeamOrderer from "@/ui/TeamOrderer";
@@ -14,7 +14,7 @@ type DrawInfo = {
 
 export default function RunRaceFixConflictModal(props: {
   open: boolean;
-  conflicts: {
+  initialConflicts: {
     division: Division;
     group: string;
     races: GroupRaces;
@@ -27,29 +27,74 @@ export default function RunRaceFixConflictModal(props: {
     group: string;
   }
   onClose: () => void;
-  onUpdate: (division: Division, group: string, ranking: string[]) => void;
 }) {
   const [confirm, setConfirm] = createSignal<ConflictResolution>()
+  const [resolvedConflicts, setResolvedConflicts] = createSignal(props.initialConflicts)
+  const [showIndex, setShowIndex] = createSignal<number>()
+  const isSelected = createSelector(showIndex)
 
   const handleClose = () => {
     setConfirm(undefined)
     props.onClose()
   }
 
-  const [showIndex, setShowIndex] = createSignal<number>()
   createComputed(() => {
     const selected = props.selectedGroup
-      ? props.conflicts
+      ? props.initialConflicts
         .findIndex(c => c.division === props.selectedGroup?.division && c.group === props.selectedGroup?.group)
       : 0
     setShowIndex(selected)
   })
-  const isSelected = createSelector(showIndex)
+
+  createComputed(() => {
+    setConfirm(resolvedConflicts()?.[showIndex()]?.races?.overrideResults?.type)
+  })
+
+  const changeResolutionType = (type: ConflictResolution) => {
+    setResolvedConflicts(prev => prev?.map((c, i) => {
+      if (i !== showIndex()) {
+        return c
+      }
+      if (type === c?.races?.overrideResults?.type) {
+        return c
+      }
+      switch (type) {
+        case "manual":
+        case "high":
+        case "low":
+          break;
+        default:
+          console.error(`Invalid resolution type ${type}`)
+          return c
+      }
+      const results = type === "manual"
+        ? props.seeding[c.division].filter(team => c.races.teams.includes(team))
+        : resolveDrawnTeams(
+          c.races.teams,
+          c.races.races,
+          {
+            method: type,
+            seeds: props.seeding[c.division],
+          }
+        )
+
+      return {
+        ...c,
+        races: {
+          ...c.races,
+          overrideResults: {
+            type,
+            results,
+          }
+        }
+      }
+    }))
+  }
 
   const next = () => {
     setShowIndex(prev => {
       if (prev === undefined) return 0
-      if (prev + 1 >= props.conflicts.length) return 0
+      if (prev + 1 >= props.initialConflicts.length) return 0
       return prev + 1
     })
   }
@@ -71,18 +116,42 @@ export default function RunRaceFixConflictModal(props: {
     setContentHeight(ret)
   })
 
-  const handleUpdate = (division: Division, group: string, ranking: string[]) => {
-    props.onUpdate?.(division, group, ranking)
+  const handleUpdate = (index: number, ranking: string[]) => {
+    setResolvedConflicts(prev => prev.map((c, i) => {
+      if (i !== index) {
+        return c
+      }
+      const overrideResults = {
+        type: c.races.overrideResults?.type ?? "manual",
+        results: ranking,
+      }
+      return {
+        ...c,
+        races: {
+          ...c.races,
+          overrideResults,
+        }
+      }
+    }))
   }
+
+  const resolved = createMemo(() => {
+    return resolvedConflicts().filter(({ races }) => races.overrideResults?.type && races.overrideResults?.results).length
+  })
 
   return (
     <Dialog
       open={props.open}
       maxWidth="lg"
       onClose={handleClose}
+      keepMounted
+      sx={{
+        position: props.open ? undefined : "relative",
+        zIndex: props.open ? undefined : -1,
+      }}
     >
       <DialogTitle style={{ "text-align": "center" }}>
-        Resolved 0 / {props.conflicts.length} conflict(s)
+        Resolved {resolved()} / {props.initialConflicts.length} conflict(s)
       </DialogTitle>
       <DialogContent>
         <div style={{
@@ -91,7 +160,7 @@ export default function RunRaceFixConflictModal(props: {
           overflow: "hidden",
           height: contentHeight() + "px",
         }}>
-          <For each={props.conflicts}>{(conflict, i) => (
+          <For each={resolvedConflicts()}>{(conflict, i) => (
             <div style={{
               height: isSelected(i()) ? undefined : 0,
               overflow: "hidden",
@@ -104,14 +173,14 @@ export default function RunRaceFixConflictModal(props: {
                 seeding={props.seeding[conflict.division]}
                 group={conflict.group}
                 races={conflict.races}
-                confirm={confirm()}
+                resolved={conflict.races.overrideResults}
                 supplyRef={(ref) => updateRefs(i(), ref)}
-                onUpdate={(ranking) => handleUpdate(conflict.division, conflict.group, ranking)}
+                onUpdate={(ranking) => handleUpdate(i(), ranking)}
               />
             </div>
           )}</For>
         </div>
-        <Show when={props.conflicts.length > 1}>
+        <Show when={props.initialConflicts.length > 1}>
           <div
             style={{
               display: "flex",
@@ -131,7 +200,7 @@ export default function RunRaceFixConflictModal(props: {
         <div style={{ display: "flex", "flex-direction": "column", gap: "0.5em", width: "100%" }}>
           <ToggleButtonGroup
             value={confirm()}
-            onChange={(_, v) => v && setConfirm(v)}
+            onChange={(_, v) => v && changeResolutionType(v)}
             exclusive
             orientation="vertical"
             size="small"
@@ -153,6 +222,13 @@ export default function RunRaceFixConflictModal(props: {
               Low seed lose
             </ToggleButton>
           </ToggleButtonGroup>
+          <Button
+            variant="contained"
+            color="success"
+            disabled={resolved() < props.initialConflicts.length}
+          >
+            Continue
+          </Button>
         </div>
       </DialogActions>
     </Dialog>
@@ -164,57 +240,39 @@ function Resolve(props: {
   group: string;
   races: GroupRaces;
   seeding: string[];
-  confirm: ConflictResolution | undefined;
+  resolved?: {
+    type: ConflictResolution;
+    results: string[];
+  };
   supplyRef: (ref: HTMLDivElement) => void;
   onUpdate: (ranking: string[]) => void;
 }) {
+  let drawnPosition = 0
   const draws = () => props.races.results
-    .map((teams, position) => ({
-      position: position + 1,
-      teams,
-    }))
+    .map(teams => {
+      const ret = {
+        position: drawnPosition + 1,
+        teams,
+      }
+      drawnPosition += teams.length
+      return ret
+    })
     .filter(r => r.teams.length > 1)
 
   const resolvedDraws = () => {
-    const confirm = props.confirm
-    switch (confirm) {
-      case "high":
-        break;
-      case "low":
-        break;
-      case "manual":
-        return draws()
-      default:
-        return draws().map(r => ({
-          ...r,
-          teams: NO_OPTION_SENTINEL,
-        }))
+    if (!props.resolved) {
+      return draws().map(r => ({
+        ...r,
+        teams: NO_OPTION_SENTINEL,
+      }))
     }
-
     return draws().map(r => {
-      const orderedTeams = resolveDrawnTeams(
-        r.teams,
-        props.races.races,
-        {
-          method: confirm,
-          seeds: props.seeding,
-        }
-      )
-
       return {
         ...r,
-        teams: orderedTeams,
+        teams: props.resolved.results.filter(team => r.teams.includes(team)),
       }
     })
   }
-
-  createEffect(() => {
-    if (resolvedDraws().length === 0 || resolvedDraws().some(r => r.teams === NO_OPTION_SENTINEL)) {
-      return
-    }
-    const finalRanking = resolvedDraws().map(r => r.teams).flat()
-    props.onUpdate(finalRanking)
-  })
 
   const handleUpdate = (position: number, ranking: string[]) => {
     const resolvedDraws = updateRanking(draws(), [{
@@ -235,6 +293,8 @@ function Resolve(props: {
   }
 
   const [overlayMount, setOverlayMount] = createSignal<HTMLElement>()
+
+  const isManual = createMemo(() => props.resolved?.type === "manual")
 
   return (
     <div
@@ -288,7 +348,7 @@ function Resolve(props: {
               division={props.division}
               teams={resolvedDraws()[i()].teams}
               seeded={props.seeding}
-              manual={props.confirm === "manual"}
+              manual={isManual()}
               overlayMount={overlayMount()}
               onUpdate={(ranking) => handleUpdate(draw.position, ranking)}
             />

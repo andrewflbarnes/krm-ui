@@ -132,7 +132,7 @@ export default function RunRaceInProgressHeader(props: {
       />
       <RunRaceFixConflictModal
         open={!!fixConflict()}
-        conflicts={conflicts()}
+        initialConflicts={conflicts()}
         seeding={props.round.teams}
         selectedGroup={fixConflict()}
         onClose={() => setFixConflict(null)}

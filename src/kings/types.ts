@@ -41,6 +41,12 @@ export type GroupRaces = {
   conflict: boolean;
   /** The rankings if races are complete - draws have multiple teams in one array */
   results?: string[][];
+  /** Manual result overrides e.g. when drawn without automatic resolution */
+  overrideResults?: {
+    type: ConflictResolution;
+    /** The manual ranking of teams in this group */
+    results: string[];
+  };
 }
 
 /** All races for a given stage -> division -> group */

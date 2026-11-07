@@ -170,6 +170,9 @@ export default (function KrmEngine(): KrmEngine {
 
       const complete = groupRaces.every(r => r.winner)
       groupData.complete = complete
+      groupData.results = undefined
+      groupData.conflict = false
+      groupData.overrideResults = undefined
 
       if (complete) {
         const calcOptions = {
@@ -182,9 +185,6 @@ export default (function KrmEngine(): KrmEngine {
         groupData.results = results.pos
         const conflict = results.pos.some(p => p.length > 1)
         groupData.conflict = conflict
-      } else {
-        groupData.results = undefined
-        groupData.conflict = false
       }
 
       this.saveRound(round)
