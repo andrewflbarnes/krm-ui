@@ -260,9 +260,10 @@ function Resolve(props: {
 }) {
   let drawnPosition = 0
   const draws = () => props.races.results
-    .map(teams => {
+    .map((teams, position) => {
       const ret = {
-        position: drawnPosition + 1,
+        realPosition: drawnPosition + 1,
+        position: position + 1,
         teams,
       }
       drawnPosition += teams.length
@@ -339,7 +340,7 @@ function Resolve(props: {
             "align-items": "center",
           }}
         >
-          <div>{draw.teams.length}-way draw for {asPosition(draw.position)}</div>
+          <div>{draw.teams.length}-way draw for {asPosition(draw.realPosition)}</div>
           <div
             style={{
               "display": "grid",
