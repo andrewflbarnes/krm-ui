@@ -152,8 +152,7 @@ export default function RunRaceFixConflictModal(props: {
       onClose={handleClose}
       keepMounted
       sx={{
-        position: props.open ? undefined : "relative",
-        zIndex: props.open ? undefined : -1,
+        height: props.open ? undefined : 0,
       }}
     >
       <DialogTitle style={{ "text-align": "center" }}>
