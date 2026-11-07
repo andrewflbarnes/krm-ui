@@ -55,9 +55,11 @@ export default function RunRaceFixConflictModal(props: {
       if (i !== showIndex()) {
         return c
       }
+
       if (type === c?.races?.overrideResults?.type) {
         return c
       }
+
       switch (type) {
         case "manual":
         case "high":
@@ -68,7 +70,8 @@ export default function RunRaceFixConflictModal(props: {
           console.error(`Invalid resolution type ${type}`)
           return c
       }
-      let results: string[] = null
+
+      let results: string[]
       if (type === "manual") {
         results = props.seeding[c.division].filter(team => c.races.teams.includes(team))
       } else if (type === "seed") {
