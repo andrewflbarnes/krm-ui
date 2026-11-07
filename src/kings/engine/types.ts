@@ -1,4 +1,4 @@
-import { League, LeagueData, Race, RoundConfig, RoundSeeding, Round, RaceStage, Stage, MiniLeagueTemplate, RoundOptions } from "@/kings/types"
+import { League, LeagueData, Race, RoundConfig, RoundSeeding, Round, RaceStage, Stage, MiniLeagueTemplate, RoundOptions, Division, GroupRaces } from "@/kings/types"
 
 export type CustomConfig<T> = {
   configs: {
@@ -20,6 +20,13 @@ export type RoundDetails = {
   season: string;
   description: string;
 }
+export type ProgressOptions = {
+  conflicts?: {
+    division: Division;
+    group: string;
+    races: GroupRaces;
+  }[]
+}
 export type KrmEngine = {
   clearLocalData(): void;
   saveLeagueConfig(league: League, config: LeagueData): void;
@@ -30,7 +37,7 @@ export type KrmEngine = {
   getRound(id: string): Round | null;
   deleteRound(id: string): void;
   updateRace(id: string, race: Race): void;
-  progressRound(id: string): ProgressionStage;
+  progressRound(id: string, options?: ProgressOptions): ProgressionStage;
   reopenStage(id: string, stage: RaceStage, user: string): void;
   getCustomRoundConfigs(): Promise<CustomRoundConfigs>;
   getCustomMiniLeagueConfigs(): Promise<CustomMiniLeagueTemplates>;

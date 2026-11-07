@@ -1,7 +1,7 @@
 import { divisions, Division, League, RoundConfig, RoundSeeding, Round, StageRaces, RoundResult, RaceStage, RoundOptions } from "@/kings"
 import { calcTeamResults, createRound, minileagueSeededRaces } from "@/kings";
 import { asPosition } from "@/kings/core-utils";
-import { KrmEngine, ProgressionStage, RoundDetails, RoundInfo } from "@/kings/engine/types";
+import { KrmEngine, ProgressionStage, ProgressOptions, RoundDetails, RoundInfo } from "@/kings/engine/types";
 import cacher from "@/kings/engine/cacher"
 
 export type * from "@/kings/engine/types"
@@ -31,7 +31,8 @@ export default (function KrmEngine(): KrmEngine {
 
     const ready = Object.values(races)
       .every(divRaces => Object.values(divRaces)
-        .every(groupRaces => groupRaces.complete && !groupRaces.conflict))
+        .every(groupRaces => groupRaces.complete
+          && (!groupRaces.conflict || groupRaces.overrideResults?.results?.length === groupRaces.teams.length)))
     if (!ready) {
       const err = `Races for ${status} are incomplete or results conflict - cannot progress`
       console.error(err, round.races)
@@ -48,7 +49,11 @@ export default (function KrmEngine(): KrmEngine {
         const races = minileagueSeededRaces(template, seeds, lastStageDivisionRaces, groupName, nextStatus, division)
         accd[groupName] = {
           races,
-          teams: seeds.map(({ group, position }) => lastStageDivisionRaces[group].results[position][0]),
+          teams: seeds.map(({ group, position }) => {
+            const results = lastStageDivisionRaces[group].overrideResults?.results
+              ?? lastStageDivisionRaces[group].results.map(r => r[0])
+            return results[position]
+          }),
           complete: !races.length,
           conflict: false,
         }
@@ -108,7 +113,9 @@ export default (function KrmEngine(): KrmEngine {
         } else if (rankResult.teams.length < 2) {
           rankResult.rankStr = "= " + rankResult.rankStr
         }
-        const team = round.races[stage]?.[division]?.[group]?.results?.[position]?.[0]
+        const groupResults = round.races[stage]?.[division]?.[group]
+        const team = groupResults?.overrideResults?.results?.[position]
+          ?? groupResults?.results?.[position]?.[0]
         if (!team) {
           console.error(`No team found for ${division} ${stage} ${group} ${position}`)
         }
@@ -192,6 +199,24 @@ export default (function KrmEngine(): KrmEngine {
     progressRound(id: string): ProgressionStage {
       const round: Round = this.getRound(id)
       const { status } = round
+      switch (status) {
+        case "stage1":
+        case "stage2":
+        case "knockout":
+          break
+        default:
+          console.error(`Cannot progress round with status ${status}`)
+          throw new Error(`Cannot progress round with status ${status}`)
+      }
+      options?.conflicts?.forEach(({ division, group, races }) => {
+        const groupData = round.races[status]?.[division]?.[group]
+        if (!groupData) {
+          console.error(`No group data exists for ${status} ${division} ${group}`, round.races)
+          throw new Error(`No group data exists for ${status} ${division} ${group}`)
+        }
+        groupData.complete = true
+        groupData.overrideResults = races.overrideResults
+      })
       const nextStatus = (function(): ProgressionStage {
         switch (status) {
           case "stage1":

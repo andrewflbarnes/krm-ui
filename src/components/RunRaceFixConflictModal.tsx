@@ -7,18 +7,15 @@ import TeamOrderer from "@/ui/TeamOrderer";
 
 const NO_OPTION_SENTINEL = ["Select an option"]
 
-type DrawInfo = {
-  position: number;
-  teams: string[];
+export type Conflict = {
+  division: Division;
+  group: string;
+  races: GroupRaces;
 }
 
 export default function RunRaceFixConflictModal(props: {
   open: boolean;
-  initialConflicts: {
-    division: Division;
-    group: string;
-    races: GroupRaces;
-  }[];
+  initialConflicts: Conflict[];
   seeding: {
     [division in Division]: string[];
   },
@@ -27,14 +24,14 @@ export default function RunRaceFixConflictModal(props: {
     group: string;
   }
   onClose: () => void;
+  onResolved: (resolvedConflicts: Conflict[]) => void;
 }) {
   const [confirm, setConfirm] = createSignal<ConflictResolution>()
-  const [resolvedConflicts, setResolvedConflicts] = createSignal(props.initialConflicts)
+  const [resolvedConflicts, setResolvedConflicts] = createSignal<Conflict[]>(props.initialConflicts)
   const [showIndex, setShowIndex] = createSignal<number>()
   const isSelected = createSelector(showIndex)
 
   const handleClose = () => {
-    setConfirm(undefined)
     props.onClose()
   }
 
@@ -240,6 +237,10 @@ export default function RunRaceFixConflictModal(props: {
             variant="contained"
             color="success"
             disabled={resolved() < props.initialConflicts.length}
+            onClick={() => {
+              props.onResolved(resolvedConflicts())
+              handleClose()
+            }}
           >
             Continue
           </Button>
@@ -424,6 +425,11 @@ function TeamList(props: {
       )}</Show>
     </div>
   )
+}
+
+type DrawInfo = {
+  position: number;
+  teams: string[];
 }
 
 function updateRanking(draws: DrawInfo[], resolutions: DrawInfo[]): DrawInfo[] {

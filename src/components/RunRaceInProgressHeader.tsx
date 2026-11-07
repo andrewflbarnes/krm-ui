@@ -124,19 +124,65 @@ export default function RunRaceInProgressHeader(props: {
       })
   })
 
+  const handleCloseConflicts = () => {
+    setFixConflict(null)
+  }
+
+  const handleResolvedConflicts = (resolvedConflicts: Conflict[]) => {
+    setFixConflict(null)
+    progressRound.mutate({
+      id: props.round.id,
+      conflicts: resolvedConflicts,
+    })
+  }
+
+  const queryClient = useQueryClient()
+
+  const progressRound = useMutation(() => ({
+    mutationKey: ["progressRound"],
+    mutationFn: async (data: { id: string, conflicts?: Conflict[] }) => new Promise<ProgressionStage>((res) => {
+      const nextStatus = krmEngine.progressRound(data.id, {
+        conflicts: data.conflicts,
+      });
+      res(nextStatus);
+    }),
+    onSuccess: (nextStatus) => {
+      notification.success("Round progressed")
+      queryClient.invalidateQueries({
+        queryKey: [props.round.id],
+      })
+      setStage(nextStatus)
+    }
+  }))
+
+  createEffect(on(() => progressRound.isPending, (pend) => {
+    if (!pend && progressRound.error) {
+      notification.error(`Failed to progress round: ${progressRound.error.message}`)
+    }
+  }))
+
+  const handleProgressRound = () => {
+    progressRound.mutate({
+      id: props.round.id,
+    })
+  }
+
   return (
     <>
       <RunRacePreferencesModal
         open={actionsOpen()}
         onClose={handleClose}
       />
-      <RunRaceFixConflictModal
-        open={!!fixConflict()}
-        initialConflicts={conflicts()}
-        seeding={props.round.teams}
-        selectedGroup={fixConflict()}
-        onClose={() => setFixConflict(null)}
-      />
+      <Show when={stage() !== "complete" && conflicts().length ? conflicts() : null} keyed>{(initialConflicts) => (
+        <RunRaceFixConflictModal
+          open={!!fixConflict()}
+          initialConflicts={initialConflicts}
+          seeding={props.round.teams}
+          selectedGroup={fixConflict()}
+          onClose={() => handleCloseConflicts()}
+          onResolved={(resolved) => handleResolvedConflicts(resolved)}
+        />
+      )}</Show>
       <Card sx={{ p: 1, pb: 3, display: "flex", flexDirection: "column", gap: 1 }}>
         <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
           <Stepper
@@ -159,6 +205,7 @@ export default function RunRaceInProgressHeader(props: {
                   <ProgressButton
                     round={props.round}
                     conflicts={errors()}
+                    onProgressRound={() => handleProgressRound()}
                     onFixConflicts={() => {
                       const conflict = conflicts()[0]
                       if (conflict) {
@@ -236,6 +283,7 @@ function ViewButton(props: {
 function ProgressButton(props: {
   round: Round;
   conflicts: Conflict[];
+  onProgressRound: () => void;
   onFixConflicts: () => void;
 }) {
   const proceedText = () => {
@@ -250,30 +298,6 @@ function ProgressButton(props: {
     return `${possibleStages[currentStageIndex + 1][1]}`
   }
 
-  const queryClient = useQueryClient()
-  const { setStage } = useRaceOptions()
-
-  const progressRound = useMutation(() => ({
-    mutationKey: ["progressRound"],
-    mutationFn: async (data: { id: string }) => new Promise<ProgressionStage>((res) => {
-      const nextStatus = krmEngine.progressRound(data.id);
-      res(nextStatus);
-    }),
-    onSuccess: (nextStatus) => {
-      notification.success("Round progressed")
-      queryClient.invalidateQueries({
-        queryKey: [props.round.id],
-      })
-      setStage(nextStatus)
-    }
-  }))
-
-  createEffect(on(() => progressRound.isPending, (pend) => {
-    if (!pend && progressRound.error) {
-      notification.error(`Failed to progress round: ${progressRound.error.message}`)
-    }
-  }))
-
   const [progressConfirmation, setProgressConfirmation] = createSignal(false)
   const handleConfirmProgress = () => {
     if (props.conflicts?.length > 0) {
@@ -284,9 +308,7 @@ function ProgressButton(props: {
     setProgressConfirmation(true)
   }
   const handleProgress = () => {
-    progressRound.mutate({
-      id: props.round.id,
-    })
+    props.onProgressRound()
     setProgressConfirmation(false)
   }
 

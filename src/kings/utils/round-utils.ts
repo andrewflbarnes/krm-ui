@@ -406,7 +406,10 @@ export function minileagueSeededRaces(
   stage: RaceStage,
   division: Division,
   seedResolver: (seed: MiniLeagueSeed, races: Record<string, GroupRaces>) => string =
-    (seed, races) => races[seed.group].results[seed.position][0],
+    (seed, races) => {
+      return races[seed.group].overrideResults?.results?.[seed.position]
+        ?? races[seed.group].results[seed.position][0]
+    },
 ): Race[] {
   return template.races.map((r, i) => {
     const seed1 = seeds[r[0]]
