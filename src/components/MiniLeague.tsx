@@ -270,6 +270,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                   const pos = () => teamPositions().pos.findIndex(p => p.includes(team))
                   const posInfo = () => {
                     const p = pos()
+                    const realPos = teamPositions().pos.slice(0, p).reduce((acc, curr) => acc + curr.length, 0)
                     const posLen = teamPositions().pos[p]?.length
                     if (posLen == teams().length) {
                       if (!props.races.some(r => r.winner)) {
@@ -277,11 +278,11 @@ export default function MiniLeague(props: MiniLeagueProps) {
                       }
                     }
                     const joint = posLen > 1
-                    switch (p) {
+                    switch (realPos) {
                       case 0: return { text: `${joint ? "=" : ""}1st`, rank: 1 }
                       case 1: return { text: `${joint ? "=" : ""}2nd`, rank: 2 }
                       case 2: return { text: `${joint ? "=" : ""}3rd`, rank: 3 }
-                      default: return { text: `${joint ? "=" : ""}${p + 1}th`, rank: p + 1 }
+                      default: return { text: `${joint ? "=" : ""}${realPos + 1}th`, rank: realPos + 1 }
                     }
                   }
                   return (
