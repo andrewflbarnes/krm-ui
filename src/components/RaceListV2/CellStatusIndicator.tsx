@@ -7,7 +7,7 @@ export default function CellStatusIndicator(props: { complete: boolean }) {
     <div
       style={{
         display: "table-cell",
-        width: "0.2em",
+        width: "0.1em",
         padding: 0,
         height: "100%",
         "background-color": props.complete ? color() : undefined
