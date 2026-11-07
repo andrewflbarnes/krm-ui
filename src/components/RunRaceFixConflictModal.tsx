@@ -61,15 +61,20 @@ export default function RunRaceFixConflictModal(props: {
       switch (type) {
         case "manual":
         case "high":
+        case "seed":
         case "low":
           break;
         default:
           console.error(`Invalid resolution type ${type}`)
           return c
       }
-      const results = type === "manual"
-        ? props.seeding[c.division].filter(team => c.races.teams.includes(team))
-        : resolveDrawnTeams(
+      let results: string[] = null
+      if (type === "manual") {
+        results = props.seeding[c.division].filter(team => c.races.teams.includes(team))
+      } else if (type === "seed") {
+        results = props.seeding[c.division].filter(team => c.races.teams.includes(team))
+      } else {
+        results = resolveDrawnTeams(
           c.races.teams,
           c.races.races,
           {
@@ -77,6 +82,7 @@ export default function RunRaceFixConflictModal(props: {
             seeds: props.seeding[c.division],
           }
         )
+      }
 
       return {
         ...c,
@@ -220,6 +226,11 @@ export default function RunRaceFixConflictModal(props: {
               value="low"
             >
               Low seed lose
+            </ToggleButton>
+            <ToggleButton
+              value="seed"
+            >
+              Seed order
             </ToggleButton>
           </ToggleButtonGroup>
           <Button

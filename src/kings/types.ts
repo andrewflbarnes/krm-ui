@@ -1,7 +1,7 @@
 import type { Division, League } from "@/kings/config";
 export type { Division, League } from "@/kings/config";
 
-export type ConflictResolution = "high" | "low" | "manual";
+export type ConflictResolution = "high" | "low" | "manual" | "seed";
 export type RaceStage = "stage1" | "stage2" | "knockout";
 export type Stage = RaceStage | "complete";
 

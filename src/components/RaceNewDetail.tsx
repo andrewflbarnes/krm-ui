@@ -251,7 +251,7 @@ function VenueSelect(props: {
   )
 }
 
-const optionsConflict: ConflictResolution[] = ["manual", "high", "low"] as const
+const optionsConflict: ConflictResolution[] = ["manual", "high", "low", "seed"] as const
 
 function Options(props: {
   options: RoundOptions;
@@ -312,6 +312,8 @@ function Options(props: {
                           <div>Automatically resolve draws by making the highest seed the winner.</div>
                           <div><strong>Low:</strong></div>
                           <div>Automatically resolve draws by making the lowest seed the loser</div>
+                          <div><strong>Seed:</strong></div>
+                          <div>Automatically resolve draws by following seeding order.</div>
                         </div>
                       </Typography>
                     )

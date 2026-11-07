@@ -148,6 +148,15 @@ export function calcTeamResults(teams: string[], races: Race[], options?: CalcOp
           return resolved.map(t => [t])
         })
         break
+      case "seed":
+        prepos.pos = prepos.pos.flatMap((teams) => {
+          if (teams.length < 2) {
+            return [teams]
+          }
+          const resolved = options.resolveConflicts.seeds.filter(t => teams.includes(t))
+          return resolved.map(t => [t])
+        })
+        break
       case "manual":
         // noop
         break
