@@ -48,10 +48,10 @@
   suspense triggerring the first, and only the first, time onRaceUpdate was
   called. Removed the suspense...
 - [x] Draw Resolution (automatic by high/low seed)
+- [x] Draw Resolution (manual by low/high seed or other)
 
 ## Must
 
-- [ ] Draw Resolution (manual by low/high seed or other)
 - [ ] Calc results should account correctly for 2 way tie with DSQ
       i.e. check race(s) between the two teams
       e.g. minileague of 5, teams 1 and 2 with 4 wins, team 1 beat team 2 but

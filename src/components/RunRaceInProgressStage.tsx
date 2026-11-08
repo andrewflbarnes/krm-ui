@@ -223,7 +223,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
       <PrintBlockingModal open={print()} />
       <Box sx={{ overflowY: "auto", mt: 1, height: 1 }}>
         <Stack direction="row" gap={2} sx={{ justifyContent: "center" }}>
-          <Show when={showList()}>
+          <Show when={showList() ? view() : undefined} keyed>
             <Box sx={{ overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
               <RaceList
                 knockout={props.stage == "knockout"}
@@ -234,7 +234,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
               />
             </Box>
           </Show>
-          <Show when={showMiniLeagues()}>
+          <Show when={showMiniLeagues() ? view() : undefined} keyed>
             <Box sx={{ overflowX: "auto", height: "100%", display: "flex", alignItems: "start", justifyContent: showSideBySide() ? "space-around" : "center" }}>
               <MiniLeagues
                 live={live()}
