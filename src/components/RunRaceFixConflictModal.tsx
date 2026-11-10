@@ -1,8 +1,8 @@
 import { asPosition, ConflictResolution, Division, GroupRaces, resolveDrawnTeams } from "@/kings";
-import { Button, Dialog, DialogActions, DialogContent, DialogTitle, ToggleButton, ToggleButtonGroup, Typography } from "@suid/material";
-import { createComputed, createEffect, createMemo, createSelector, createSignal, For, Show } from "solid-js";
+import { Box, Button, Chip, Dialog, DialogActions, DialogContent, DialogTitle, Divider, Stack, ToggleButton, ToggleButtonGroup, Typography } from "@suid/material";
+import { createComputed, createEffect, createMemo, createSelector, createSignal, For, onCleanup, Show } from "solid-js";
 import MiniLeague from "./MiniLeague";
-import { DoubleArrow } from "@suid/icons-material";
+import { ArrowForward, DoubleArrow } from "@suid/icons-material";
 import TeamOrderer from "@/ui/TeamOrderer";
 
 const NO_OPTION_SENTINEL = ["Select an option"]
@@ -45,6 +45,16 @@ export default function RunRaceFixConflictModal(props: {
 
   createComputed(() => {
     setConfirm(resolvedConflicts()?.[showIndex()]?.races?.overrideResults?.type)
+  })
+
+  // hack as no focus trap in suid - should add a proper one
+  createEffect(() => {
+    if (!props.open) return
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === "Escape") handleClose()
+    }
+    document.addEventListener("keydown", handler)
+    onCleanup(() => document.removeEventListener("keydown", handler))
   })
 
   const changeResolutionType = (type: ConflictResolution) => {
@@ -105,23 +115,6 @@ export default function RunRaceFixConflictModal(props: {
     })
   }
 
-  const [sizeRefs, setSizeRefs] = createSignal<HTMLDivElement[]>([])
-  const updateRefs = (index: number, ref: HTMLDivElement) => {
-    setSizeRefs(prev => {
-      const newRefs = [...prev]
-      newRefs[index] = ref
-      return newRefs
-    })
-  }
-
-  const [contentHeight, setContentHeight] = createSignal(0)
-  createEffect(() => {
-    const ret = sizeRefs().reduce((acc, ref) => {
-      return acc > ref?.clientHeight ? acc : ref?.clientHeight
-    }, 0)
-    setContentHeight(ret)
-  })
-
   const handleUpdate = (index: number, ranking: string[]) => {
     setResolvedConflicts(prev => prev.map((c, i) => {
       if (i !== index) {
@@ -145,25 +138,49 @@ export default function RunRaceFixConflictModal(props: {
     return resolvedConflicts().filter(({ races }) => races.overrideResults?.type && races.overrideResults?.results).length
   })
 
+  const allResolved = createMemo(() => resolved() >= props.initialConflicts.length)
+
+  const selectedConflictCount = createMemo(() => {
+    return (resolvedConflicts()[showIndex()].races.results ?? []).filter(r => r.length > 1).length
+  })
+
   return (
     <Dialog
       open={props.open}
       maxWidth="lg"
       onClose={handleClose}
       keepMounted
+      fullScreen
       sx={{
         height: props.open ? undefined : 0,
       }}
     >
-      <DialogTitle style={{ "text-align": "center" }}>
-        Resolved {resolved()} / {props.initialConflicts.length} conflict(s)
+      <DialogTitle sx={{ pb: 1 }}>
+        <Stack direction="row" alignItems="center" justifyContent="center" gap={1.5}>
+          <Typography variant="h6" component="span" fontWeight={600}>
+            Resolve Draws
+          </Typography>
+          <Chip
+            label={`${resolved()} / ${props.initialConflicts.length} resolved`}
+            size="small"
+            color={allResolved() ? "success" : "default"}
+            variant={allResolved() ? "filled" : "outlined"}
+          />
+        </Stack>
+        <Typography
+          variant="body2"
+          color="text.secondary"
+          sx={{ textAlign: "center", mt: 0.5 }}
+        >
+          {selectedConflictCount()} draw(s) for this group.
+        </Typography>
       </DialogTitle>
+
       <DialogContent>
         <div style={{
           display: "flex",
           "flex-direction": "column",
           overflow: "hidden",
-          height: contentHeight() + "px",
         }}>
           <For each={resolvedConflicts()}>{(conflict, i) => (
             <div style={{
@@ -179,71 +196,117 @@ export default function RunRaceFixConflictModal(props: {
                 group={conflict.group}
                 races={conflict.races}
                 resolved={conflict.races.overrideResults}
-                supplyRef={(ref) => updateRefs(i(), ref)}
                 onUpdate={(ranking) => handleUpdate(i(), ranking)}
               />
             </div>
           )}</For>
         </div>
-        <Show when={props.initialConflicts.length > 1}>
-          <div
-            style={{
-              display: "flex",
-              "justify-content": "center",
-              "margin-top": "1em",
-            }}
-          >
-            <Button
-              onClick={next}
-            >
-              Next
-            </Button>
-          </div>
-        </Show>
       </DialogContent>
-      <DialogActions>
-        <div style={{ display: "flex", "flex-direction": "column", gap: "0.5em", width: "100%" }}>
-          <ToggleButtonGroup
-            value={confirm()}
-            onChange={(_, v) => v && changeResolutionType(v)}
-            exclusive
-            orientation="vertical"
-            size="small"
-            color="success"
-          >
-            <ToggleButton
-              value="manual"
+
+      <DialogActions sx={{ p: 0 }}>
+        <Stack direction="column" sx={{ width: "100%" }}>
+
+          {/* Resolution method picker */}
+          <Box sx={{ px: 2, pt: 1.5, pb: 1 }}>
+            <Typography
+              variant="overline"
+              color="text.secondary"
+              sx={{ display: "block", mb: 1, letterSpacing: "0.08em" }}
             >
-              Manual
-            </ToggleButton>
-            <ToggleButton
-              value="high"
+              Resolution method
+            </Typography>
+            <ToggleButtonGroup
+              value={confirm()}
+              onChange={(_, v) => v && changeResolutionType(v)}
+              exclusive
+              size="small"
+              color="success"
+              fullWidth
+              sx={{
+                "& .MuiToggleButton-root": {
+                  flexDirection: "column",
+                  gap: 0.25,
+                  py: 1,
+                  textTransform: "none",
+                  lineHeight: 1.2,
+                },
+              }}
             >
-              High seed wins
-            </ToggleButton>
-            <ToggleButton
-              value="low"
-            >
-              Low seed lose
-            </ToggleButton>
-            <ToggleButton
-              value="seed"
-            >
-              Seed order
-            </ToggleButton>
-          </ToggleButtonGroup>
-          <Button
-            variant="contained"
-            color="success"
-            disabled={resolved() < props.initialConflicts.length}
-            onClick={() => {
-              props.onResolved(resolvedConflicts())
-              handleClose()
-            }}
-          >
-            Continue
-          </Button>
-        </div>
+              <ToggleButton value="manual">
+                <Typography variant="body2" fontWeight={600} component="span">Manual</Typography>
+                <Typography variant="caption" color="inherit" component="span" sx={{ opacity: 0.7 }}>drag to rank</Typography>
+              </ToggleButton>
+              <ToggleButton value="high">
+                <Typography variant="body2" fontWeight={600} component="span">High</Typography>
+                <Typography variant="caption" color="inherit" component="span" sx={{ opacity: 0.7 }}>highest seed wins</Typography>
+              </ToggleButton>
+              <ToggleButton value="low">
+                <Typography variant="body2" fontWeight={600} component="span">Low</Typography>
+                <Typography variant="caption" color="inherit" component="span" sx={{ opacity: 0.7 }}>lowest seed loses</Typography>
+              </ToggleButton>
+              <ToggleButton value="seed">
+                <Typography variant="body2" fontWeight={600} component="span">Seed</Typography>
+                <Typography variant="caption" color="inherit" component="span" sx={{ opacity: 0.7 }}>by seeding order</Typography>
+              </ToggleButton>
+            </ToggleButtonGroup>
+          </Box>
+
+          <Divider />
+
+          <Box sx={{ px: 2, py: 1.5 }}>
+            <Stack direction="row" alignItems="center" gap={1}>
+              <Button
+                variant="outlined"
+                color="error"
+                size="small"
+                sx={{ flexShrink: 0 }}
+                onClick={() => props.onClose()}
+              >
+                Cancel
+              </Button>
+
+              <Show when={props.initialConflicts.length > 1}>
+                <Typography
+                  variant="body2"
+                  color="text.secondary"
+                  sx={{ flex: 1, textAlign: "center", fontVariantNumeric: "tabular-nums" }}
+                >
+                  {(showIndex() ?? 0) + 1} of {props.initialConflicts.length}
+                </Typography>
+
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  size="small"
+                  endIcon={<ArrowForward />}
+                  sx={{ flexShrink: 0 }}
+                  onClick={next}
+                >
+                  Next
+                </Button>
+              </Show>
+
+              {/* Spacer when only one conflict — push Continue to the right */}
+              <Show when={props.initialConflicts.length <= 1}>
+                <Box sx={{ flex: 1 }} />
+              </Show>
+
+              <Button
+                variant="contained"
+                color="success"
+                size="small"
+                disabled={!allResolved()}
+                sx={{ flexShrink: 0 }}
+                onClick={() => {
+                  props.onResolved(resolvedConflicts())
+                  handleClose()
+                }}
+              >
+                Continue
+              </Button>
+            </Stack>
+          </Box>
+        </Stack>
       </DialogActions>
     </Dialog>
   )
@@ -258,7 +321,6 @@ function Resolve(props: {
     type: ConflictResolution;
     results: string[];
   };
-  supplyRef: (ref: HTMLDivElement) => void;
   onUpdate: (ranking: string[]) => void;
 }) {
   let drawnPosition = 0
@@ -315,7 +377,6 @@ function Resolve(props: {
     <div
       ref={(ref: HTMLDivElement) => {
         setOverlayMount(ref)
-        props.supplyRef(ref)
       }}
       style={{
         display: "flex",
@@ -325,7 +386,7 @@ function Resolve(props: {
         "align-items": "center"
       }}
     >
-      <div style={{ width: "fit-content" }}>
+      <div style={{ width: "100%", overflow: "auto" }}>
         <MiniLeague
           races={props.races.races}
           teams={props.races.teams}

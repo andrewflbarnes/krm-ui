@@ -5,7 +5,7 @@ import { Division, GroupRaces, RaceStage, Round } from "@/kings";
 import Selector from "@/ui/Selector";
 import krmEngine, { type ProgressionStage } from "@/kings/engine";
 import notification from "@/hooks/notification";
-import { Edit, Print, Settings, Start, WarningAmberRounded } from "@suid/icons-material";
+import { ArrowForward, Edit, Print, Settings } from "@suid/icons-material";
 import ModalConfirmAction from "@/ui/ModalConfirmAction";
 import { usePrint } from "@/hooks/print";
 import { stages, useRaceOptions } from "@/hooks/results";
@@ -323,7 +323,7 @@ function ProgressButton(props: {
         data-testid={testId()}
         color={props.conflicts.length > 0 ? "warning" : "success"}
         onClick={handleConfirmProgress}
-        startIcon={props.conflicts?.length > 0 ? <WarningAmberRounded /> : <Start />}
+        endIcon={<ArrowForward />}
       >
         {proceedText()}
       </Button>
