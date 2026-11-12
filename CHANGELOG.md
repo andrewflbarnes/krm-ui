@@ -2,6 +2,75 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.10.0] - 2026-11-12
+
+### 🚀 Features
+
+- Display conflict chip in minileague as appropriate
+- Add support for simplified UI
+- Add ui mode to preferences
+- Start adding draw resolution under experimental flag
+- Selecting high/low seed resolution now calculates results
+- Implement automatic conflict resolution, some minor refactors
+- Add @thisbeyond/solid-dnd drag-overlay and supporting layout
+- Update @thisbeyond/solid-dnd drag-overlay with mount, types
+- Add dnd for manual conflict, refactor out TeamOrderer
+- Emit events for resolved draws
+- More stable, simpler conflict processing
+- Support resolving conflicts by seed order
+- Progress rounds with conflict resolution
+- Warning log when round results over 4, format fix
+- Promote new teams when round completes
+
+### 🐛 Bug Fixes
+
+- Correct layout issue with conflict chip in minileague
+- Prevent title crushing when v. small
+- Prevent details window from being collapsible when md
+- Treat round options as optional for backwards support
+- Correct recursive draw resolution
+- Ensure calc results works on rounds with no options
+- Keep conflict result if selecting already selected option
+- Correct drawn team positions in minileagues
+- Make manual conflict moves work again
+- Linting issues
+- Prevent perma-mounted modal from taking up space
+- Add missed method signature change
+- Conflicts resolution works on all stages
+
+### 💼 Other
+
+- Re-prioritise / group / add some todos
+
+### 📚 Documentation
+
+- Update todos, add build + deploy badge
+- Remove incorrect feature
+- Move/remove superfluous comments, fixmes and todos
+
+### 🎨 Styling
+
+- Better support of race list on small screens
+- Show all conflicts and allow moving between
+- More consistent simple UI theming
+- Prevent layout shift, resolved count in title
+- Use toggle button group for conflict resolving
+- Thinner status indicator on race list
+- Transition minileagues and race list consistently and smoother
+- Improved fullscreen modal for conflict resolution
+
+### 🧪 Testing
+
+- Update playwright tests and some data testids
+
+### ⚙️ Miscellaneous Tasks
+
+- Manage preferences separately and persist locally
+- Only show printable race view if developer mode
+- Update todos
+- Show loading suspense while race list lazy loads
+- Consolidate progress and fix conflicts button into 1
+
 ## [0.9.0] - 2026-10-29
 
 ### 🚀 Features
