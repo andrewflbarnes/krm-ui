@@ -141,6 +141,9 @@ export function combineResults(leagueData: LeagueData, round: number, results: R
               total += newResult.r1 + newResult.r2 + newResult.r3
               break
             default:
+              console.warn(`Unexpected round ${round} for team ${team} in division ${div}`, {
+                rank, points
+              })
           }
           newResult.total = total ?? 0
           teamAcc[team] = newResult
@@ -200,6 +203,6 @@ function asHtml_(position: number, {
         <td>${total}</td>
         <td>${comment}</td>
       </tr>`
-      .replaceAll(/\n/g, "")
-      .replaceAll(/>\s*/g, ">");
+    .replaceAll(/\n/g, "")
+    .replaceAll(/>\s*/g, ">");
 }
