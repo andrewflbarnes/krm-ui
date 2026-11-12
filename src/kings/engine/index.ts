@@ -29,15 +29,7 @@ export default (function KrmEngine(): KrmEngine {
       return completeRound(round)
     }
 
-    const ready = Object.values(races)
-      .every(divRaces => Object.values(divRaces)
-        .every(groupRaces => groupRaces.complete
-          && (!groupRaces.conflict || groupRaces.overrideResults?.results?.length === groupRaces.teams.length)))
-    if (!ready) {
-      const err = `Races for ${status} are incomplete or results conflict - cannot progress`
-      console.error(err, round.races)
-      throw new Error(err)
-    }
+    canRoundCompleteOrThrow(round)
 
     const { config } = round
 
@@ -99,19 +91,36 @@ export default (function KrmEngine(): KrmEngine {
     console.log("Promoted new teams for league", league, teams)
   }
 
-  function completeRound(round: Round): "complete" {
+  function canRoundCompleteOrThrow(round: Round): boolean {
     const { status } = round
-    // Prior stage races must be complete or not exist (e.g. all divisions < 7 teams)
+    switch (status) {
+      case "stage1":
+      case "stage2":
+      case "knockout":
+        break
+      case "complete":
+        return true
+      default:
+        console.error(`Cannot check round with status ${status}`)
+        throw new Error(`Cannot check round with status ${status}`)
+    }
+
     const races = round.races[status]
 
     const ready = Object.values(races)
       .every(divRaces => Object.values(divRaces)
-        .every(groupRaces => groupRaces.complete && !groupRaces.conflict))
+        .every(groupRaces => groupRaces.complete
+          && (!groupRaces.conflict || groupRaces.overrideResults?.results?.length === groupRaces.teams.length)))
+
     if (!ready) {
       const err = `Races for ${status} are incomplete or results conflict - cannot progress`
       console.error(err, round.races)
       throw new Error(err)
     }
+  }
+
+  function completeRound(round: Round): "complete" {
+    canRoundCompleteOrThrow(round)
 
     const { config } = round
 
