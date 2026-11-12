@@ -246,11 +246,9 @@ export default (function KrmEngine(): KrmEngine {
       this.saveRound(round)
     },
     async getCustomRoundConfigs() {
-      // FIXME
       return new Promise((res) => res({ configs: [] }))
     },
     async getCustomMiniLeagueConfigs() {
-      // FIXME
       return new Promise((res) => res({ configs: [] }))
     },
   }

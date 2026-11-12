@@ -1,19 +1,5 @@
 # TODO: Tech
 
-## Completed
-
-- [x] Downgrade to vite-solid-plugin 2.1.0
-- [x] Deploy to GitHub pages
-- [x] Upgrade vite-solid-plugin when [fix is available][vite-build-bug]
-- [x] Refactor to a common model for in progress race list and mini league views
-- [x] Deploy to andrewflbarnes.com
-- [x] Protect sensitive variables with serverless function calls
-- [x] Playwright tests for all round configurations
-- [x] ManageNewSelect should be uncontrolled with event emits - reduce duplice update implementations
-- [x] REJECT(global signals not a thing, use jotai if necessary) Replace KingsContext with global signals - maybe bad idea as "computations created outside a `createRoot` or `render` will never be disposed"
-- [x] Service worker for offline use
-- [x] De-couple engine from local storage persistence in kings/engine
-
 ## Must
 
 - [ ] Responsive layout
@@ -43,5 +29,23 @@
 - [ ] Consistent, sensible boundaries of responsiblity between context and api
 - [ ] Throw error if attempting to change league when lock in place in setLeagueEnhanced
 - [ ] Throw error if attempting to change to an invalid league in setLeagueEnhanced
+- [ ] Use builtin firestore converter capabilities
+- [ ] Address hardcoded 30em width in RaceListV2
+- [ ] Auth hook is a MESS
+- [ ] "Silently" ignored rounds in html-utils over 4 should emit some _visible_ error
+
+## Completed
+
+- [x] Downgrade to vite-solid-plugin 2.1.0
+- [x] Deploy to GitHub pages
+- [x] Upgrade vite-solid-plugin when [fix is available][vite-build-bug]
+- [x] Refactor to a common model for in progress race list and mini league views
+- [x] Deploy to andrewflbarnes.com
+- [x] Protect sensitive variables with serverless function calls
+- [x] Playwright tests for all round configurations
+- [x] ManageNewSelect should be uncontrolled with event emits - reduce duplice update implementations
+- [x] REJECT(global signals not a thing, use jotai if necessary) Replace KingsContext with global signals - maybe bad idea as "computations created outside a `createRoot` or `render` will never be disposed"
+- [x] Service worker for offline use
+- [x] De-couple engine from local storage persistence in kings/engine
 
 [vite-build-bug]: https://github.com/solidjs/vite-plugin-solid/issues/164

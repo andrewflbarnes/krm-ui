@@ -34,7 +34,7 @@ export default function RaceListV2(props: RaceListV2Props) {
   return (
     <div style={{
       "padding-top": 0,
-      width: "30em", // todo something more sensible/responsive/absolute
+      width: "30em",
     }}>
       <table style={{ width: "100%", "border-collapse": "collapse" }}>
         <Index each={raceSlice()}>{(race, raceNum) => {

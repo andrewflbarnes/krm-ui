@@ -141,7 +141,6 @@ export function combineResults(leagueData: LeagueData, round: number, results: R
               total += newResult.r1 + newResult.r2 + newResult.r3
               break
             default:
-            // TODO
           }
           newResult.total = total ?? 0
           teamAcc[team] = newResult

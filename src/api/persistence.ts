@@ -22,7 +22,6 @@ export async function uploadRound(round: Round, owner: string) {
     throw new Error("Cannot update rounds you do not own")
   }
 
-  // TODO use built in support for converters in firestore
   const fsRound = serde.toFirestoreRound(round)
   const payload = {
     ...fsRound,
@@ -37,7 +36,6 @@ export async function getRounds(league: string) {
   const roundsRef = collection(db, refpathRounds)
   const q = query(roundsRef, where("league", "==", league))
   const rounds = await getDocsFromServer(q)
-  // FIXME detect dups
   return rounds.docs
     .map(doc => doc.data())
     .map(d => serde.fromFirestoreRound(d as unknown as Round))

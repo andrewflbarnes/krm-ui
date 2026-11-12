@@ -30,7 +30,6 @@ export function orderResults(a: Result, b: Result): number {
 }
 
 export function newTeams(leagueData: LeagueData): RoundSeeding {
-  // TODO resolve duplication
   const results = parseResults(leagueData)
   const ret = {
     mixed: [],

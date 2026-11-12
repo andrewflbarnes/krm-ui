@@ -1,5 +1,42 @@
 # TODO: Features
 
+## Must
+
+- [ ] bug: distribution order / team order should be correct wrt config
+- [ ] remove isNew flag from team on round completion
+- [ ] Results HTML should pin to correct season
+- [ ] Race skips (teams unavailable)
+- [ ] Optional races (high team numbers)
+- [ ] Knockout draws (teams unavailable/race unrun)
+- [ ] Ability to run individual board races
+- [ ] Modify configuration presets for mini leagues
+- [ ] Modify configuration presets for rounds
+- [ ] Custom configuration groups
+- [ ] Support abandoning races
+- [ ] Support modifying league data
+
+## Should
+
+- [ ] Minileague ordering should always be correct e.g. group IX after VIII
+- [ ] Don't show empty mini leagues or divisions (0/1 team) as appropriate
+- [ ] Split 30 races (all mini5) into 5 segments
+- [ ] More general solution for configuring 10 races/5 team league race splits
+- [ ] Dynamic test/validation for custom round config
+- [ ] DSQ reasons
+- [ ] Support optional knockouts
+- [ ] Support custom splits (instead of an alogrithmic split 3 ways)
+- [ ] Track seeding by year from tracker/scraping
+- [ ] Add validity checks to ManageConfigRound
+- [ ] Import data from file
+- [ ] Import data via link (base64)
+
+## Could
+
+- [ ] Preserve valid future stage results when progressing following a re-open
+- [ ] Push results to Google Sheets
+- [ ] Push results to website
+- [ ] Consolidate the confirm/discard modals in ConfigClub
+
 ## Completed
 
 - [x] Preset for all 4 leagues, 3 divisions
@@ -49,40 +86,3 @@
   called. Removed the suspense...
 - [x] Draw Resolution (automatic by high/low seed)
 - [x] Draw Resolution (manual by low/high seed or other)
-
-## Must
-
-- [ ] bug: distribution order / team order should be correct wrt config
-- [ ] remove isNew flag from team on round completion
-- [ ] Results HTML should pin to correct season
-- [ ] Race skips (teams unavailable)
-- [ ] Optional races (high team numbers)
-- [ ] Knockout draws (teams unavailable/race unrun)
-- [ ] Ability to run individual board races
-- [ ] Modify configuration presets for mini leagues
-- [ ] Modify configuration presets for rounds
-- [ ] Custom configuration groups
-- [ ] Support abandoning races
-- [ ] Support modifying league data
-
-## Should
-
-- [ ] Minileague ordering should always be correct e.g. group IX after VIII
-- [ ] Don't show empty mini leagues or divisions (0/1 team) as appropriate
-- [ ] Split 30 races (all mini5) into 5 segments
-- [ ] More general solution for configuring 10 races/5 team league race splits
-- [ ] Dynamic test/validation for custom round config
-- [ ] DSQ reasons
-- [ ] Support optional knockouts
-- [ ] Support custom splits (instead of an alogrithmic split 3 ways)
-- [ ] Track seeding by year from tracker/scraping
-- [ ] Add validity checks to ManageConfigRound
-- [ ] Import data from file
-- [ ] Import data via link (base64)
-
-## Could
-
-- [ ] Preserve valid future stage results when progressing following a re-open
-- [ ] Push results to Google Sheets
-- [ ] Push results to website
-- [ ] Consolidate the confirm/discard modals in ConfigClub

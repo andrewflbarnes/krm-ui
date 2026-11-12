@@ -20,8 +20,6 @@ export class RoundSetup {
     // Create new round
     await this.goToNewRound();
 
-    // Info step - todo
-
     // Add teams step
     // Add new test club with 7, 8 and 9 teams
     for (const [club, counts] of Object.entries(clubs)) {

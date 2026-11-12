@@ -2,14 +2,6 @@ import { FirebaseOptions, initializeApp } from "firebase/app";
 import { getAuth } from "firebase/auth";
 import { connectFirestoreEmulator, getFirestore } from "firebase/firestore";
 import { GroupRaces, MiniLeagueConfig, Round } from "@/kings";
-//import { getAnalytics } from "firebase/analytics";
-
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-
-
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 
 const firebaseConfig: FirebaseOptions = {
   apiKey: "AIzaSyDlXiU-m-CqadoYPnTVcVEeaQJ40RDGNg4",
@@ -21,10 +13,8 @@ const firebaseConfig: FirebaseOptions = {
   measurementId: "G-GHRG15FKF2"
 };
 
-// Initialize Firebase
-
 const app = initializeApp(firebaseConfig);
-//const analytics = getAnalytics(app);
+
 export const db = getFirestore(app);
 if (import.meta.env.VITE_FIRESTORE_EMULATOR) {
   console.warn("Connecting to Firestore emulator at", import.meta.env.VITE_FIRESTORE_EMULATOR);

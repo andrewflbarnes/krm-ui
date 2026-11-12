@@ -201,7 +201,6 @@ function RaceNewInternal() {
         }, [])
 
         if (missing.length > 0) {
-          // TODO at round end set isNew to false for all teams that were in the round
           try {
             addLeagueTeams(missing)
             notification.success("Missing teams added")
@@ -236,7 +235,6 @@ function RaceNewInternal() {
         }
 
         const newSeeds = createMemo(() => newTeams(k.leagueConfig()))
-        // TODO pass isNew in as part of seeding
         return (
           <RaceNewSeeding
             originalSeeds={originalSeeding()}

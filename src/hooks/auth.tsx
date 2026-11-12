@@ -111,7 +111,6 @@ function FirebaseProvider(props: ParentProps) {
             error = true
             console.error(e)
             notification.error("Failed to authenticate with backend")
-            // TODO set backend failure signal and display
             await new Promise(r => setTimeout(r, 10000))
           }
         }

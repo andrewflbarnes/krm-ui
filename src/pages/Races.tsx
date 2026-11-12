@@ -59,8 +59,6 @@ function RacesInternal() {
     setRounds(getSortedRounds(k.league()))
   })
 
-  // TODO we should use a render prop equivalent, below is getting
-  //   out of hand
   const handleDeleteRound = (id: string) => {
     krmEngine.deleteRound(id)
     setRounds(getSortedRounds(k.league()))
