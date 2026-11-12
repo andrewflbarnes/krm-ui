@@ -15,7 +15,7 @@
 
 ## Should
 
-- [ ] Fix Story types which are empty for some reason
+- [ ] DX - Fix Story types which are empty for some reason
 - [ ] Use actual drawer component for nav
 - [ ] playwright - add description, venue, etc. in info step
 - [ ] playwright - validate missing teams
@@ -31,9 +31,10 @@
 - [ ] Throw error if attempting to change to an invalid league in setLeagueEnhanced
 - [ ] Use builtin firestore converter capabilities
 - [ ] Address hardcoded 30em width in RaceListV2
-- [ ] Auth hook is a MESS
+- [ ] DX - Auth hook is a MESS
 - [ ] "Silently" ignored rounds in html-utils over 4 should emit some _visible_ error
 - [ ] When promoting a new team on round completion, verify the team is in the right club rather than assuming unique name
+- [ ] DX - createRound (and possibly other functions) should take an object rather than a list of arguments
 
 ## Completed
 

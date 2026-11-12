@@ -3,7 +3,6 @@
 ## Must
 
 - [ ] Preserve valid future stage results when progressing following a re-open
-- [ ] Results HTML should pin to correct season
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
 - [ ] Knockout draws (teams unavailable/race unrun)
@@ -13,21 +12,23 @@
 - [ ] Custom configuration groups
 - [ ] Support abandoning races
 - [ ] Support modifying league data
+- [ ] Results HTML should pin to correct season
 
 ## Should
 
 - [ ] Minileague ordering should always be correct e.g. group IX after VIII
 - [ ] Don't show empty mini leagues or divisions (0/1 team) as appropriate
-- [ ] Split 30 races (all mini5) into 5 segments
+- [ ] Offer smarter, optional, race splitting i.e. not just northern or not
 - [ ] More general solution for configuring 10 races/5 team league race splits
+- [ ] Support custom splits (instead of an alogrithmic split 3 ways)
 - [ ] Dynamic test/validation for custom round config
 - [ ] DSQ reasons
 - [ ] Support optional knockouts
-- [ ] Support custom splits (instead of an alogrithmic split 3 ways)
 - [ ] Track seeding by year from tracker/scraping
+- [ ] Push tracking to firebase as primary source of truth, repurpose netlify function
 - [ ] Add validity checks to ManageConfigRound
 - [ ] Import data from file
-- [ ] Import data via link (base64)
+- [ ] Import data via link (base64) - probably not possible due to size
 
 ## Could
 
