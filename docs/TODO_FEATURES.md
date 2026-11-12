@@ -2,8 +2,7 @@
 
 ## Must
 
-- [ ] bug: distribution order / team order should be correct wrt config
-- [ ] remove isNew flag from team on round completion
+- [ ] Preserve valid future stage results when progressing following a re-open
 - [ ] Results HTML should pin to correct season
 - [ ] Race skips (teams unavailable)
 - [ ] Optional races (high team numbers)
@@ -32,7 +31,6 @@
 
 ## Could
 
-- [ ] Preserve valid future stage results when progressing following a re-open
 - [ ] Push results to Google Sheets
 - [ ] Push results to website
 - [ ] Consolidate the confirm/discard modals in ConfigClub
@@ -86,3 +84,5 @@
   called. Removed the suspense...
 - [x] Draw Resolution (automatic by high/low seed)
 - [x] Draw Resolution (manual by low/high seed or other)
+- [x] REJECT(working as intende, we don't save originSeeding at all though) bug: distribution order / team order should be correct wrt config
+- [x] remove isNew flag from team on round completion

@@ -83,6 +83,22 @@ export default (function KrmEngine(): KrmEngine {
     round.status = stage
   }
 
+  function promoteNewTeams(league: League, teams: RoundSeeding) {
+    console.log("Promoting new teams for league", league, teams)
+    const leagueConfig = cacher.getLeagueConfig(league)
+    Object.entries(teams).forEach(([division, divisionTeams]) => {
+      Object.entries(leagueConfig).forEach(([_, clubData]) => {
+        Object.entries(clubData.teams[division] ?? {}).forEach(([team, teamData]) => {
+          if (divisionTeams.includes(team)) {
+            teamData.isNew = undefined
+          }
+        })
+      })
+    })
+    cacher.saveLeagueConfig(league, leagueConfig)
+    console.log("Promoted new teams for league", league, teams)
+  }
+
   function completeRound(round: Round): "complete" {
     const { status } = round
     // Prior stage races must be complete or not exist (e.g. all divisions < 7 teams)
@@ -132,6 +148,9 @@ export default (function KrmEngine(): KrmEngine {
     })
 
     round.results = results
+
+    promoteNewTeams(round.league, round.teams)
+
     return "complete"
   }
 

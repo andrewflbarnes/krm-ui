@@ -33,6 +33,7 @@
 - [ ] Address hardcoded 30em width in RaceListV2
 - [ ] Auth hook is a MESS
 - [ ] "Silently" ignored rounds in html-utils over 4 should emit some _visible_ error
+- [ ] When promoting a new team on round completion, verify the team is in the right club rather than assuming unique name
 
 ## Completed
 
