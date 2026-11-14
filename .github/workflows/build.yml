@@ -19,7 +19,7 @@ concurrency:
 jobs:
   smoke:
     timeout-minutes: 60
-    runs-on: ubuntu-latest
+    runs-on: runloft-ubuntu-24.04-4cpu
     steps:
     - uses: actions/checkout@v6
     - name: Setup
@@ -29,7 +29,7 @@ jobs:
     - name: Run Playwright tests
       run: pnpm e2e:smoke
   test:
-    runs-on: ubuntu-latest
+    runs-on: runloft-ubuntu-24.04-4cpu
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -38,7 +38,7 @@ jobs:
       - name: Test
         run: pnpm test
   check:
-    runs-on: ubuntu-latest
+    runs-on: runloft-ubuntu-24.04-4cpu
     steps:
       - name: Checkout
         uses: actions/checkout@v6
@@ -50,7 +50,7 @@ jobs:
         run: pnpm lint
   deploy:
     needs: [test, check, smoke]
-    runs-on: ubuntu-latest
+    runs-on: runloft-ubuntu-24.04-4cpu
     steps:
       - name: Checkout
         uses: actions/checkout@v6

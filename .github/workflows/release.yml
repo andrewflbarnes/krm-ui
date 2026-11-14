@@ -10,7 +10,7 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    runs-on: runloft-ubuntu-24.04-4cpu
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
