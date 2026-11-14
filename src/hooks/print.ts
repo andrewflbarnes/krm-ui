@@ -1,6 +1,9 @@
-import { createSignal } from "solid-js";
+import { atom, useAtom } from "solid-jotai";
 
-const [print, setPrint] = createSignal(false);
+const printAtom = atom(false);
 
 
-export const usePrint = () => [print, setPrint] as const;
+export const usePrint = () => {
+  const printSignal = useAtom(printAtom);
+  return printSignal
+}
