@@ -17,18 +17,18 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  smoke:
+  smoke-test:
     timeout-minutes: 60
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v6
-    - name: Setup
-      uses: ./.github/actions/setup
-    - name: Setup Playwright
-      uses: ./.github/actions/playwright
-    - name: Run Playwright tests
-      run: pnpm e2e:smoke
-  test:
+      - uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Setup Playwright
+        uses: ./.github/actions/playwright
+      - name: Run Playwright tests
+        run: pnpm e2e:smoke
+  unit-test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -37,6 +37,17 @@ jobs:
         uses: ./.github/actions/setup
       - name: Test
         run: pnpm test
+  storybook-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+      - name: Setup
+        uses: ./.github/actions/setup
+      - name: Setup Playwright
+        uses: ./.github/actions/playwright
+      - name: Test
+        run: pnpm storybook:test
   check:
     runs-on: ubuntu-latest
     steps:
@@ -49,7 +60,11 @@ jobs:
       - name: Check ESLint violations
         run: pnpm lint
   deploy:
-    needs: [test, check, smoke]
+    needs:
+      - check
+      - smoke-test
+      - storybook-test
+      - unit-test
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
