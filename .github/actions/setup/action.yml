@@ -6,18 +6,13 @@ runs:
     # https://github.com/pnpm/pnpm/issues/9191
     - name: Set up pnpm global bin directory`
       run: |
-        if [ "$RUNNER_OS" == "Windows" ]; then
-          PNPM_HOME=/c/Program\ Files/Git/home/runner/.local/share/pnpm
-        elif [ "$RUNNER_OS" == "Linux" ]; then
-          PNPM_HOME=/home/runner/.local/share/pnpm
-        fi
+        PNPM_HOME=/home/runner/.local/share/pnpm
+        mkdir -p "$PNPM_HOME"
         echo "PNPM_HOME=$PNPM_HOME" >> "$GITHUB_ENV"
         echo "$PNPM_HOME" >> "$GITHUB_PATH"
       shell: bash
     - name: Enable corepack
-      run: |
-        npm install -g corepack@latest
-        corepack enable
+      run: npx --yes corepack@latest enable --install-directory "$PNPM_HOME"
       shell: bash
     - name: Cache
       uses: actions/setup-node@v6
