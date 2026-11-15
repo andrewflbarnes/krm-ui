@@ -58,17 +58,6 @@ jobs:
         uses: ./.github/actions/setup
       - name: Update version
         run: .github/update_version.sh
-      - name: Cache netlify-cli
-        id: netlify-cache
-        uses: actions/cache@v4
-        with:
-          path: ~/.netlify-cli
-          key: netlify-cli-${{ runner.os }}-27
-      - name: Install netlify
-        if: steps.netlify-cache.outputs.cache-hit != 'true'
-        run: npm install -g netlify-cli@27 --prefix ~/.netlify-cli
-      - name: Add netlify to PATH
-        run: echo "$HOME/.netlify-cli/bin" >> $GITHUB_PATH
       - name: Build and deploy to Netlify
         env:
           NODE_ENV: production

@@ -69,6 +69,7 @@
     "eslint-plugin-storybook": "^10.6.2",
     "globals": "^17.13.0",
     "jsdom": "^30.1.2",
+    "netlify-cli": "27",
     "oxlint": "^1.87.0",
     "playwright": "^1.64.0",
     "serve": "^14.2.6",
