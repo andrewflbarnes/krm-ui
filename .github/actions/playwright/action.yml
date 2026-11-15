@@ -6,7 +6,7 @@ runs:
     - name: Get Playwright version
       id: versions
       run: |
-        echo "playwright=$(npm ls @playwright/test --json | jq -r '.devDependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
+        echo "playwright=$(pnpm ls @playwright/test --json | jq -r '.[0].devDependencies["@playwright/test"].version')" >> $GITHUB_OUTPUT
       shell: bash
     - name: Cache Playwright browsers
       id: playwright-cache
