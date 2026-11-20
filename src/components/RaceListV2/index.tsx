@@ -12,6 +12,7 @@ type RaceListV2Props = {
   onRaceUpdate: (race: Race) => void;
   readonly?: boolean;
   knockout?: boolean;
+  easyEdit?: boolean;
 }
 
 function raceInfoString(race: Race): string {
@@ -58,6 +59,7 @@ export default function RaceListV2(props: RaceListV2Props) {
               readonly={props.readonly}
               open={isOpenRace(raceNum)}
               onOpen={() => setOpenRace(prev => prev == raceNum ? null : raceNum)}
+              easyEdit={props.easyEdit}
             />
           )
         }}</Index>
@@ -74,6 +76,7 @@ type RaceTableV2RowProps = {
   readonly?: boolean;
   open?: boolean;
   onOpen: () => void;
+  easyEdit?: boolean;
 }
 
 function RaceTableV2Row(props: RaceTableV2RowProps) {
@@ -82,7 +85,8 @@ function RaceTableV2Row(props: RaceTableV2RowProps) {
       props.onOpen()
       return
     }
-    if (props.race.winner) {
+
+    if (props.race.winner && !props.easyEdit) {
       props.onOpen()
       return
     }

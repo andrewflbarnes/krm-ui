@@ -30,6 +30,8 @@ export default function RunRacePreferencesModal(props: {
     switchNorthern,
     listStyle,
     setListStyle,
+    fatFingers,
+    switchFatFingers,
   } = usePreferences();
 
   const flags = useFeatureFlags();
@@ -99,6 +101,10 @@ export default function RunRacePreferencesModal(props: {
               <FormControlLabel
                 control={<Switch checked={northern()} onChange={switchNorthern} />}
                 label="Northern style"
+              />
+              <FormControlLabel
+                control={<Switch checked={fatFingers()} onChange={switchFatFingers} />}
+                label="Fat fingers"
               />
               <FormControl size="small" fullWidth>
                 <Typography variant="body2" color="text.secondary" sx={{ mb: 0.5 }}>

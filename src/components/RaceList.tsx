@@ -9,6 +9,9 @@ type RaceListProps = {
   listStyle?: "v1" | "v2";
   readonly?: boolean;
   knockout?: boolean;
+  /** allows the winner to be changed when already set by just clicking the
+      other team name i.e. without being force through the context menu */
+  easyEdit?: boolean;
 }
 
 export default function RaceList(props: RaceListProps) {

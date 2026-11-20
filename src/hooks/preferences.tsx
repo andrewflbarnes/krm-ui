@@ -30,7 +30,8 @@ const useView = initialisableAtomWithStorage<View>("race-view", "list")
 const useLive = initialisableAtomWithStorage("race-minileague-live", false)
 const useCollapse = initialisableAtomWithStorage("race-minileague-collapsed", false)
 const useNorthern = initialisableAtomWithStorage("race-list-northern", false)
-const useListStyle = initialisableAtomWithStorage<"v1" | "v2">("race-list-style", "v1")
+const useFatFingers = initialisableAtomWithStorage("race-list-fat-fingers", false)
+const useListStyle = initialisableAtomWithStorage<"v1" | "v2">("race-list-style", "v2")
 
 export function usePreferences() {
   const [view, setView] = useView()
@@ -47,6 +48,9 @@ export function usePreferences() {
   const [northern, setNorthern] = useNorthern()
   const switchNorthern = () => setNorthern(v => !v)
 
+  const [fatFingers, setFatFingers] = useFatFingers()
+  const switchFatFingers = () => setFatFingers(v => !v)
+
   return {
     view,
     setView,
@@ -62,5 +66,8 @@ export function usePreferences() {
     listStyle,
     setListStyle,
     toggleListStyle,
+    fatFingers,
+    setFatFingers,
+    switchFatFingers,
   }
 }

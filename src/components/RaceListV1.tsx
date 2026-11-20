@@ -13,6 +13,7 @@ type RaceListV1Props = {
   onRaceUpdate: (race: Race) => void;
   readonly?: boolean;
   knockout?: boolean;
+  easyEdit?: boolean;
 }
 
 export default function RaceListV1(props: RaceListV1Props) {
@@ -44,6 +45,7 @@ export default function RaceListV1(props: RaceListV1Props) {
                     race={race()}
                     onRaceUpdate={handleRaceUpdate}
                     readonly={props.readonly}
+                    easyEdit={props.easyEdit}
                   />
                 )
               }}</Index>
@@ -61,12 +63,13 @@ type RaceTableV1RowProps = {
   race: Race;
   onRaceUpdate: (race: Partial<Race>) => void;
   readonly?: boolean;
+  easyEdit?: boolean;
 }
 
 function RaceTableV1Row(props: RaceTableV1RowProps) {
   const setWinner = (winner: 1 | 2, e: MouseEvent) => {
     e.stopPropagation()
-    if (props.readonly || props.race.winner) {
+    if (props.readonly || (props.race.winner && !props.easyEdit)) {
       return
     }
     props.onRaceUpdate({ winner })

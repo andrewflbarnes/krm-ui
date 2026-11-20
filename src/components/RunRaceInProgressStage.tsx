@@ -128,6 +128,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
     northern,
     listStyle,
     view,
+    fatFingers,
   } = usePreferences()
 
   const mut = useMutation(() => ({
@@ -231,6 +232,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
                 onRaceUpdate={handleRaceUpdate}
                 readonly={props.readonly}
                 listStyle={listStyle()}
+                easyEdit={!fatFingers()}
               />
             </Box>
           </Show>
