@@ -72,7 +72,13 @@ function RaceTableV1Row(props: RaceTableV1RowProps) {
     if (props.readonly || (props.race.winner && !props.easyEdit)) {
       return
     }
-    props.onRaceUpdate({ winner })
+    const team1Dsq = props.race.team1Dsq || (winner == 2 && props.race.team2Dsq)
+    const team2Dsq = props.race.team2Dsq || (winner == 1 && props.race.team1Dsq)
+    props.onRaceUpdate({
+      winner,
+      team1Dsq,
+      team2Dsq,
+    })
   }
   const canDsq = () => !props.readonly && props.race.indicators != "by"
   const toggleDsq = (dsq: 1 | 2, e: MouseEvent) => {
@@ -82,9 +88,20 @@ function RaceTableV1Row(props: RaceTableV1RowProps) {
     }
     const t1Dsq = props.race.team1Dsq
     const t2Dsq = props.race.team2Dsq
+
+    let nextT1Dsq = dsq == 1 ? !t1Dsq : t1Dsq
+    let nextT2Dsq = dsq == 2 ? !t2Dsq : t2Dsq
+
+    if (props.race.winner == 1 && nextT1Dsq) {
+      nextT2Dsq = true
+    }
+    if (props.race.winner == 2 && nextT2Dsq) {
+      nextT1Dsq = true
+    }
+
     props.onRaceUpdate({
-      team1Dsq: dsq == 1 ? !t1Dsq : t1Dsq,
-      team2Dsq: dsq == 2 ? !t2Dsq : t2Dsq,
+      team1Dsq: nextT1Dsq,
+      team2Dsq: nextT2Dsq,
     })
   }
   const team1Dsq = () => props.race.team1Dsq
