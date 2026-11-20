@@ -12,11 +12,10 @@ Install the deps and run the dev server
 
 ```bash
 pnpm install
-pnpm install -g netlify-cli
 cat << EOF > .env
 VITE_CLERK_PUBLISHABLE_KEY=...
 EOF
-netlify dev
+pnpm dev
 ```
 
 ## Optional functionality
