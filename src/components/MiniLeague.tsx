@@ -28,6 +28,7 @@ type MiniLeagueProps = {
   selectable?: string[];
   initialSelected?: string[];
   onTeamSelected?: (team: string, i: number) => void;
+  easyEdit?: boolean;
   contextRef?: Element;
 }
 
@@ -242,7 +243,7 @@ export default function MiniLeague(props: MiniLeagueProps) {
                               transition: "border-color 0.12s ease, background 0.12s ease",
                             }}
                             onContextMenu={props.readonly ? null : [handleContext, { race: raceDetails, team }]}
-                            onClick={() => !props.readonly && !raceDetails.winner && props.onResultChange?.({ ...raceDetails, winner: ti })}
+                            onClick={() => !props.readonly && (props.easyEdit || !raceDetails.winner) && props.onResultChange?.({ ...raceDetails, winner: ti })}
                           >
                             <div style={{
                               display: "flex",

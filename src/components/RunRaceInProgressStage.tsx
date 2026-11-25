@@ -245,6 +245,7 @@ function RunRaceInProgressStageInternal(props: RunRaceInProgressStageProps) {
                 onRaceUpdate={handleRaceUpdate}
                 readonly={props.readonly}
                 seeds={props.round.teams}
+                easyEdit={!fatFingers()}
                 conflictResolution={props.round.options?.conflictResolution}
               />
             </Box>

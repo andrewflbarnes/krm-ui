@@ -19,6 +19,7 @@ type MiniLeaguesProps = {
   seeds: RoundSeeding;
   conflictResolution?: ConflictResolution;
   onRaceUpdate: (race: Race) => void;
+  easyEdit?: boolean;
 }
 
 export default function MiniLeagues(props: MiniLeaguesProps) {
@@ -59,6 +60,7 @@ export default function MiniLeagues(props: MiniLeaguesProps) {
                 conflict={group().races.conflict}
                 onResultChange={props.onRaceUpdate}
                 readonly={props.readonly}
+                easyEdit={props.easyEdit}
               />
             </div>
           )}</Index>

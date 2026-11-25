@@ -75,16 +75,17 @@ export class ResultsHelper {
     }
   }
 
-  // NOTE: This method relies on overclicking i.e. it will click all possible buttons
-  // but expect to do so by highest seeding precedence. It relies on a team getting
-  // marked as the winner disabling the competing teams button.
+  // NOTE: This method relies on overclicking i.e. it will click all possible
+  // buttons but expect to do so by highest seeding precedence. It relies on a
+  // team getting marked as the winner overriding a previous winner, i.e.
+  // easyedit is enabled.
   async setWinnersByTeamName(division: string, group: string, club: string) {
     const ml = this.getMiniLeagueTable(division, group);
     await expect(ml, `${division} ${group} minileague found`).toBeVisible();
 
     const count = this.config[club][division.toLowerCase()];
 
-    for (let i = 1; i <= count; i++) {
+    for (let i = count; i >= 1; i--) {
       const team = `${club} ${i}`;
       const description = `${division} ${group} ${team}`
       const markers = ml.getByRole('row', { name: new RegExp(`${team}\\b`) })
